@@ -1,0 +1,14 @@
+C:\Proyectos\Tecmein\SO\SolucionTecmein\Entity\bin\Debug\net8.0\Entity.deps.json
+C:\Proyectos\Tecmein\SO\SolucionTecmein\Entity\bin\Debug\net8.0\Entity.runtimeconfig.json
+C:\Proyectos\Tecmein\SO\SolucionTecmein\Entity\bin\Debug\net8.0\Entity.dll
+C:\Proyectos\Tecmein\SO\SolucionTecmein\Entity\bin\Debug\net8.0\Entity.pdb
+C:\Proyectos\Tecmein\SO\SolucionTecmein\Entity\obj\Debug\net8.0\Entity.csproj.AssemblyReference.cache
+C:\Proyectos\Tecmein\SO\SolucionTecmein\Entity\obj\Debug\net8.0\Entity.GeneratedMSBuildEditorConfig.editorconfig
+C:\Proyectos\Tecmein\SO\SolucionTecmein\Entity\obj\Debug\net8.0\Entity.AssemblyInfoInputs.cache
+C:\Proyectos\Tecmein\SO\SolucionTecmein\Entity\obj\Debug\net8.0\Entity.AssemblyInfo.cs
+C:\Proyectos\Tecmein\SO\SolucionTecmein\Entity\obj\Debug\net8.0\Entity.csproj.CoreCompileInputs.cache
+C:\Proyectos\Tecmein\SO\SolucionTecmein\Entity\obj\Debug\net8.0\Entity.dll
+C:\Proyectos\Tecmein\SO\SolucionTecmein\Entity\obj\Debug\net8.0\refint\Entity.dll
+C:\Proyectos\Tecmein\SO\SolucionTecmein\Entity\obj\Debug\net8.0\Entity.pdb
+C:\Proyectos\Tecmein\SO\SolucionTecmein\Entity\obj\Debug\net8.0\Entity.genruntimeconfig.cache
+C:\Proyectos\Tecmein\SO\SolucionTecmein\Entity\obj\Debug\net8.0\ref\Entity.dll

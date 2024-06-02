@@ -1,0 +1,15 @@
+C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\bin\Debug\net8.0\DAL.deps.json
+C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\bin\Debug\net8.0\DAL.dll
+C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\bin\Debug\net8.0\DAL.pdb
+C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\bin\Debug\net8.0\Entity.dll
+C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\bin\Debug\net8.0\Entity.pdb
+C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\obj\Debug\net8.0\DAL.csproj.AssemblyReference.cache
+C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\obj\Debug\net8.0\DAL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\obj\Debug\net8.0\DAL.AssemblyInfoInputs.cache
+C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\obj\Debug\net8.0\DAL.AssemblyInfo.cs
+C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\obj\Debug\net8.0\DAL.csproj.CoreCompileInputs.cache
+C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\obj\Debug\net8.0\DAL.csproj.Up2Date
+C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\obj\Debug\net8.0\DAL.dll
+C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\obj\Debug\net8.0\refint\DAL.dll
+C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\obj\Debug\net8.0\DAL.pdb
+C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\obj\Debug\net8.0\ref\DAL.dll

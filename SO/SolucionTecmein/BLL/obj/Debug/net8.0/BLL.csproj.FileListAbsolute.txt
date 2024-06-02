@@ -1,0 +1,17 @@
+C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\bin\Debug\net8.0\BLL.deps.json
+C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\bin\Debug\net8.0\BLL.dll
+C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\bin\Debug\net8.0\BLL.pdb
+C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\bin\Debug\net8.0\DAL.dll
+C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\bin\Debug\net8.0\Entity.dll
+C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\bin\Debug\net8.0\DAL.pdb
+C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\bin\Debug\net8.0\Entity.pdb
+C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\obj\Debug\net8.0\BLL.csproj.AssemblyReference.cache
+C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\obj\Debug\net8.0\BLL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\obj\Debug\net8.0\BLL.AssemblyInfoInputs.cache
+C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\obj\Debug\net8.0\BLL.AssemblyInfo.cs
+C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\obj\Debug\net8.0\BLL.csproj.CoreCompileInputs.cache
+C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\obj\Debug\net8.0\BLL.csproj.Up2Date
+C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\obj\Debug\net8.0\BLL.dll
+C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\obj\Debug\net8.0\refint\BLL.dll
+C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\obj\Debug\net8.0\BLL.pdb
+C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\obj\Debug\net8.0\ref\BLL.dll
