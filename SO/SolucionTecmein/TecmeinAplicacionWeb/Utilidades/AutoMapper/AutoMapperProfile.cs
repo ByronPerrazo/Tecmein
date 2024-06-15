@@ -1,9 +1,9 @@
-﻿using AplicacionWeb.Models.ViewModel;
+﻿using TecmeinWebApp.Models.ViewModel;
 using Entity;
 using System.Globalization;
 using AutoMapper;
 
-namespace AplicacionWeb.Utilidades.AutoMapper
+namespace TecmeinWebApp.Utilidades.AutoMapper
 {
     public class AutoMapperProfile : Profile
     {
@@ -11,6 +11,7 @@ namespace AplicacionWeb.Utilidades.AutoMapper
         {
             
             CreateMap<Rol,RolVM>().ReverseMap();
+            CreateMap<Empresa,EmpresaVM>().ReverseMap();    
 
             #region Usuario
             CreateMap<Usuario, UsuarioVM>()

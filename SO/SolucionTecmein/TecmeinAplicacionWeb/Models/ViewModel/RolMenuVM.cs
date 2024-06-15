@@ -1,6 +1,6 @@
 ﻿using Entity;
 
-namespace AplicacionWeb.Models.ViewModel
+namespace TecmeinWebApp.Models.ViewModel
 {
     public class RolMenuVM
     {

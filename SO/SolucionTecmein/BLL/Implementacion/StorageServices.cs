@@ -1,8 +1,8 @@
 ﻿using BLL.Interfaces;
 using DAL.Interfaces;
 using Entity;
-//using Firebase.Auth;
-//using Firebase.Storage;
+using Firebase.Auth;
+using Firebase.Storage;
 
 
 namespace BLL.Implementacion
@@ -18,37 +18,38 @@ namespace BLL.Implementacion
         public async Task<string> SubirStorage(Stream RepositorioExterno, string CarpetaDestino, string NombreArchivo)
         {
             var UrlImagen = string.Empty;
-            //try
-            //{
-            //    var storage
-            //        = await _repositorio
-            //                .Obtener(x => x.EstaActivo == true);
+            try
+            {
+                var storage
+                    = await _repositorio
+                            .Obtener(x => x.EstaActivo == 1);
 
-            //    var config
-            //        = new FirebaseAuthProvider(
-            //            new FirebaseConfig(storage.ApiKey));
-            //    var usuarioStorage
-            //        = await
-            //            config
-            //            .SignInWithEmailAndPasswordAsync(storage.Email,
-            //                                             storage.Clave);
-            //    var cancelToken = new CancellationTokenSource();
-            //    var tarea
-            //        = new FirebaseStorage(
-            //                              storage.Ruta,
-            //                              new FirebaseStorageOptions
-            //                              {
-            //                                  AuthTokenAsyncFactory = ()
-            //                                      => Task.FromResult(usuarioStorage.FirebaseToken),
-            //                                  ThrowOnCancel = true
-            //                              })
-            //        .Child(CarpetaDestino)
-            //        .Child(NombreArchivo)
-            //        .PutAsync(RepositorioExterno, cancelToken.Token);
+                var config
+                    = new  FirebaseAuthProvider(
+                        new FirebaseConfig(storage.ApiKey));
+                var usuarioStorage
+                    = await
+                        config
+                        .SignInWithEmailAndPasswordAsync(storage.Email,
+                                                         storage.Clave);
+                var cancelToken = new CancellationTokenSource();
+                var tarea
+                    = new FirebaseStorage(
+                                          storage.Ruta,
+                                          new FirebaseStorageOptions
+                                          {
+                                              AuthTokenAsyncFactory = ()
+                                                  => Task.FromResult(usuarioStorage.FirebaseToken),
+                                              ThrowOnCancel = true
+                                          })
+                    .Child(CarpetaDestino)
+                    .Child(NombreArchivo)
+                    .PutAsync(RepositorioExterno, cancelToken.Token);
 
-            //    return UrlImagen = await tarea;
+                return UrlImagen = await tarea;
 
-            //} catch (Exception){}
+            }
+            catch (Exception) { }
 
             return UrlImagen;
         }
@@ -61,27 +62,27 @@ namespace BLL.Implementacion
                     = await _repositorio
                             .Obtener(x => x.EstaActivo == 1 );
 
-                //var config
-                //    = new FirebaseAuthProvider(
-                //        new FirebaseConfig(storage.ApiKey));
-                //var usuarioStorage
-                //    = await
-                //        config
-                //        .SignInWithEmailAndPasswordAsync(storage.Email,
-                //                                         storage.Clave);
-                //var cancelToken = new CancellationTokenSource();
-                //var tarea
-                //    = new FirebaseStorage(
-                //                          storage.Ruta,
-                //                          new FirebaseStorageOptions
-                //                          {
-                //                              AuthTokenAsyncFactory = ()
-                //                                  => Task.FromResult(usuarioStorage.FirebaseToken),
-                //                              ThrowOnCancel = true
-                //                          })
-                //    .Child(CarpetaDestino)
-                //    .Child(NombreArchivo)
-                //    .DeleteAsync();
+                var config
+                    = new FirebaseAuthProvider(
+                        new FirebaseConfig(storage.ApiKey));
+                var usuarioStorage
+                    = await
+                        config
+                        .SignInWithEmailAndPasswordAsync(storage.Email,
+                                                         storage.Clave);
+                var cancelToken = new CancellationTokenSource();
+                var tarea
+                    = new FirebaseStorage(
+                                          storage.Ruta,
+                                          new FirebaseStorageOptions
+                                          {
+                                              AuthTokenAsyncFactory = ()
+                                                  => Task.FromResult(usuarioStorage.FirebaseToken),
+                                              ThrowOnCancel = true
+                                          })
+                    .Child(CarpetaDestino)
+                    .Child(NombreArchivo)
+                    .DeleteAsync();
 
                 seProceso = true;
 

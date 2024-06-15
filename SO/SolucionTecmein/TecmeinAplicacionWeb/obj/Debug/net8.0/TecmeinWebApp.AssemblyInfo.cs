@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TecmeinWebApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+705f1e56386c415b9fedd975c983ce32dee70f64")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+004d9b5a03fa48148128c752aca479a1477df231")]
 [assembly: System.Reflection.AssemblyProductAttribute("TecmeinWebApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TecmeinWebApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Entity;
 
-public partial class Rolmenu
+public partial class RolMenu
 {
     public int Secuencial { get; set; }
 

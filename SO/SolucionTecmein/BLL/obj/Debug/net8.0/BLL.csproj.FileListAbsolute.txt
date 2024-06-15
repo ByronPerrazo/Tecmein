@@ -10,6 +10,7 @@ C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\obj\Debug\net8.0\BLL.GeneratedMSBuil
 C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\obj\Debug\net8.0\BLL.AssemblyInfoInputs.cache
 C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\obj\Debug\net8.0\BLL.AssemblyInfo.cs
 C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\obj\Debug\net8.0\BLL.csproj.CoreCompileInputs.cache
+C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\obj\Debug\net8.0\BLL.sourcelink.json
 C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\obj\Debug\net8.0\BLL.csproj.Up2Date
 C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\obj\Debug\net8.0\BLL.dll
 C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\obj\Debug\net8.0\refint\BLL.dll

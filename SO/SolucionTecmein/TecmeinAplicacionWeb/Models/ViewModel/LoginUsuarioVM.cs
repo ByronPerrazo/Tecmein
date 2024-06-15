@@ -1,9 +1,9 @@
-﻿namespace AplicacionWeb.Models.ViewModel
+﻿namespace TecmeinWebApp.Models.ViewModel
 {
     public class LoginUsuarioVM
     {
-        public string? Email { get; set; }
-        public string? Password { get; set; }
+        public string? Correo { get; set; }
+        public string? Clave { get; set; }
 
         public bool MantenerSesionIniciada { get; set; }
     }

@@ -1,8 +1,8 @@
 {
   "Files": [
     {
-      "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\AplicacionWeb.bundle.scp.css",
-      "PackagePath": "staticwebassets\\AplicacionWeb.bundle.scp.css"
+      "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\TecmeinWebApp.bundle.scp.css",
+      "PackagePath": "staticwebassets\\TecmeinWebApp.bundle.scp.css"
     },
     {
       "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\css\\sb-admin-2.css",
@@ -15,6 +15,26 @@
     {
       "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\img\\Emp2.png",
+      "PackagePath": "staticwebassets\\img\\Emp2.png"
+    },
+    {
+      "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\img\\Emp2_1.jpg",
+      "PackagePath": "staticwebassets\\img\\Emp2_1.jpg"
+    },
+    {
+      "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\img\\EmpLogIn_Vert.jpg",
+      "PackagePath": "staticwebassets\\img\\EmpLogIn_Vert.jpg"
+    },
+    {
+      "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\img\\EmpresaLogIn.png",
+      "PackagePath": "staticwebassets\\img\\EmpresaLogIn.png"
+    },
+    {
+      "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\img\\EmpresaLogIn2.png",
+      "PackagePath": "staticwebassets\\img\\EmpresaLogIn2.png"
     },
     {
       "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\img\\undraw_posting_photo.svg",
@@ -47,6 +67,14 @@
     {
       "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\js\\sb-admin-2.min.js",
       "PackagePath": "staticwebassets\\js\\sb-admin-2.min.js"
+    },
+    {
+      "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Controles_Generales.js",
+      "PackagePath": "staticwebassets\\js\\vistas\\Controles_Generales.js"
+    },
+    {
+      "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Empresa_Index.js",
+      "PackagePath": "staticwebassets\\js\\vistas\\Empresa_Index.js"
     },
     {
       "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Usuario_Index.js",
@@ -7525,20 +7553,20 @@
       "PackagePath": "staticwebassets\\vendor\\toastr\\toastr.min.js"
     },
     {
-      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.AplicacionWeb.Microsoft.AspNetCore.StaticWebAssets.props",
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.TecmeinWebApp.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     },
     {
-      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.AplicacionWeb.props",
-      "PackagePath": "build\\AplicacionWeb.props"
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.TecmeinWebApp.props",
+      "PackagePath": "build\\TecmeinWebApp.props"
     },
     {
-      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.AplicacionWeb.props",
-      "PackagePath": "buildMultiTargeting\\AplicacionWeb.props"
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.TecmeinWebApp.props",
+      "PackagePath": "buildMultiTargeting\\TecmeinWebApp.props"
     },
     {
-      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.AplicacionWeb.props",
-      "PackagePath": "buildTransitive\\AplicacionWeb.props"
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.TecmeinWebApp.props",
+      "PackagePath": "buildTransitive\\TecmeinWebApp.props"
     }
   ],
   "ElementsToRemove": []

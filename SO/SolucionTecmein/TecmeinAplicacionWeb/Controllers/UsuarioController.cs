@@ -1,13 +1,15 @@
-﻿using AplicacionWeb.Models.ViewModel;
-using AplicacionWeb.Utilidades.Response;
+﻿using TecmeinWebApp.Models.ViewModel;
+using TecmeinWebApp.Utilidades.Response;
 using AutoMapper;
 using BLL.Interfaces;
 using Entity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
-namespace AplicacionWeb.Controllers
+namespace TecmeinWebApp.Controllers
 {
+    [Authorize]
     public class UsuarioController : Controller
     {
         private readonly IUsuarioServices _usuarioServices;
@@ -28,7 +30,7 @@ namespace AplicacionWeb.Controllers
 
         public IActionResult Index()
         {
-            return View();
+           return View();
         }
 
         [HttpGet]
@@ -70,7 +72,7 @@ namespace AplicacionWeb.Controllers
 
                 if (imagen != null)
                 {
-                    string nombreCodificado = Guid.NewGuid().ToString("N");
+                    string nombreCodificado = $"{usuariosVM.Secuencial.ToString()}-{Guid.NewGuid().ToString("N").Substring(0, 8)}";
                     string extension = Path.GetExtension(imagen.FileName);
                     nombreFoto = string.Concat(nombreCodificado, extension);
                     imagenStream = imagen.OpenReadStream();
@@ -97,31 +99,30 @@ namespace AplicacionWeb.Controllers
 
 
         [HttpPut]
-        public async Task<IActionResult> Editar([FromForm] IFormFile imagen, [FromForm] string modelo)
+        public async Task<IActionResult> Editar([FromForm] IFormFile Foto, [FromForm] string modelo, string cabeceraUrlCorreo = "")
         {
 
             var genericResponse = new GenericResponse<UsuarioVM>();
             try
             {
-                UsuarioVM? usuariosVM = JsonConvert.DeserializeObject<UsuarioVM>(modelo);
+                    UsuarioVM? usuariosVM = JsonConvert.DeserializeObject<UsuarioVM>(modelo);
 
-                string nombreFoto = string.Empty;
-                Stream? imagenStream = null;
+                    string nombreFoto = string.Empty;
+                    Stream? imagenStream = null;
 
-                if (imagen != null)
-                {
+                    if (Foto != null)
+                    {
+                        string nombreCodificado = Guid.NewGuid().ToString("N");
+                        string extension = Path.GetExtension(Foto.FileName);
+                        nombreFoto = string.Concat(nombreCodificado, extension);
+                        imagenStream = Foto.OpenReadStream();
+                    }
+                    var cabecera = $"{this.Request.Scheme}://{this.Request.Host}";
 
-                    string nombreCodificado = Guid.NewGuid().ToString("N");
-                    string extension = Path.GetExtension(imagen.FileName);
-                    nombreFoto = string.Concat(nombreCodificado, extension);
-                    imagenStream = imagen.OpenReadStream();
-                }
-
-                Usuario usuarioEditado = await _usuarioServices.Editar(_mapper.Map<Usuario>(usuariosVM), imagenStream, nombreFoto);
-                usuariosVM = _mapper.Map<UsuarioVM>(usuarioEditado);
-                genericResponse.Estado = true;
-                genericResponse.Objeto = usuariosVM;
-
+                    Usuario usuarioEditado = await _usuarioServices.Editar(_mapper.Map<Usuario>(usuariosVM), imagenStream, nombreFoto, cabecera);
+                    usuariosVM = _mapper.Map<UsuarioVM>(usuarioEditado);
+                    genericResponse.Estado = true;
+                    genericResponse.Objeto = usuariosVM;
 
             }
             catch (Exception ex)

@@ -1,4 +1,4 @@
-﻿namespace AplicacionWeb.Utilidades.Response
+﻿namespace TecmeinWebApp.Utilidades.Response
 {
     public class GenericResponse<TObject>
     {

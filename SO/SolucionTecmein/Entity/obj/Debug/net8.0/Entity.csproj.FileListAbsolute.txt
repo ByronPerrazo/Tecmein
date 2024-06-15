@@ -7,6 +7,7 @@ C:\Proyectos\Tecmein\SO\SolucionTecmein\Entity\obj\Debug\net8.0\Entity.Generated
 C:\Proyectos\Tecmein\SO\SolucionTecmein\Entity\obj\Debug\net8.0\Entity.AssemblyInfoInputs.cache
 C:\Proyectos\Tecmein\SO\SolucionTecmein\Entity\obj\Debug\net8.0\Entity.AssemblyInfo.cs
 C:\Proyectos\Tecmein\SO\SolucionTecmein\Entity\obj\Debug\net8.0\Entity.csproj.CoreCompileInputs.cache
+C:\Proyectos\Tecmein\SO\SolucionTecmein\Entity\obj\Debug\net8.0\Entity.sourcelink.json
 C:\Proyectos\Tecmein\SO\SolucionTecmein\Entity\obj\Debug\net8.0\Entity.dll
 C:\Proyectos\Tecmein\SO\SolucionTecmein\Entity\obj\Debug\net8.0\refint\Entity.dll
 C:\Proyectos\Tecmein\SO\SolucionTecmein\Entity\obj\Debug\net8.0\Entity.pdb

@@ -5,17 +5,14 @@ const MODELO_BASE = {
     correo: "",
     telefono: "",
     secRol: 0,
-    nombrePerfil: "",
-    nombreImagen: "",
+    nombreRol: "",
     urlFoto: "",
     nombreFoto: "",
     esActivo: 1,
-    fechaRegistro : ""
 }
 
 $(document).ready(function () {
-
-    fetch("Usuario/ListaRol")
+    fetch("ListaRol")
         .then(
             respuesta => {
                 return respuesta.ok
@@ -43,16 +40,16 @@ $(document).ready(function () {
     $('#tbdata').DataTable({
         responsive: true,
         "ajax": {
-            "url": 'Usuario/Lista',
+            "url": 'Lista',
             "type": "GET",
             "datatype": "json"
         },
         "columns": [
-            { data: "secuencial", visible: true, searchable: true },
+            { data: "secuencial", visible: false, searchable: true },
 
             {
                 data: "urlFoto", render: function (data) {
-                    return `<img style="height:60px" src="${data}" class="rounded mx-auto d-block"/>`;
+                    return `<img style="height:60px" src=${data} class="rounded mx-auto d-block"/>`;
                 }
 
             },
@@ -65,16 +62,16 @@ $(document).ready(function () {
                     if (data == 1)
                         return '<span class="badge badge-info">Activo</span>';
                     else
-                        return '<span class="badge badge-info">Inactivo</span>';
+                        return '<span class="badge badge-danger">Inactivo</span>';
                 }
             },
 
             {
-                defaultContent: '<button class="btn btn-primary btn-editar btn-sm mr-2"><i class="fas fa-pencil-alt"></i></button>' +
-                    '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button>',
-                orderable: false,
-                searchable: false,
-                width: "80px"
+                "defaultContent": '<button class="btn btn-primary btn-editar btn-sm mr-2"><i class="fas fa-pencil-alt"></i></button>' +
+                                  '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button>',
+                         "orderable": false,
+                         "searchable": false,
+                         "width": "80px"
             }
         ],
         order: [[0, "desc"]],
@@ -106,8 +103,9 @@ function mostrarModal(modelo = MODELO_BASE) {
     $("#txtTelefono").val(modelo.telefono)
     $("#cboRol").val(modelo.secRol == "" ? $("#cboRol option:first").val() : modelo.secRol)
     $("#cboEstado").val(modelo.esActivo)
-    $("#txtFoto").val(modelo.nombreFoto)
-    $("#imgUsuario").attr("src", modelo.imagenUrl)
+    $("#txtFoto").val("")
+    debugger
+    $("#imgUsuario").attr("src", modelo.urlFoto)
     $("#modalData").modal("show")
 };
 
@@ -149,7 +147,7 @@ $("#btnGuardar").click(function () {
 
     if (!esEdicion) {
 
-        fetch("Usuario/Crear", {
+        fetch("Crear", {
             method: "POST",
             body: datosFormulario
         })
@@ -162,7 +160,7 @@ $("#btnGuardar").click(function () {
                 if (responseJson.estado) {
                     tablaData.row.add(responseJson.objeto).draw(false);
                     $("#modalData").modal("hide");
-                    swal("Listo!", "Usuario " + responseJson.objeto.nombre + " Creado con Exito", "success");
+                    swal("Listo!", "Usuario " + responseJson.objeto.nombre + " Creado ", "success");
                 }
                 else {
                     swal("Fallo!", responseJson.mensajes, "error");
@@ -170,7 +168,7 @@ $("#btnGuardar").click(function () {
             });
     } else {
 
-        fetch("Usuario/Editar", {
+        fetch("Editar", {
             method: "PUT",
             body: datosFormulario
         })
@@ -184,7 +182,7 @@ $("#btnGuardar").click(function () {
                     debugger;
                     tablaData.row(filaSeleccionada).data(responseJson.objeto).draw(false);
                     $("#modalData").modal("hide");
-                    swal("Listo!", "Usuario " + responseJson.objeto.nombre + " Editado con Exito", "success");
+                    swal("Listo!", "Usuario " + responseJson.objeto.nombre + " Editado ", "success");
                 }
                 else {
                     swal("Fallo!", responseJson.mensajes, "error");

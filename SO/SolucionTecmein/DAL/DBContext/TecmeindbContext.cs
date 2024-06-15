@@ -24,7 +24,7 @@ public partial class TecmeindbContext : DbContext
 
     public virtual DbSet<Rol> Rols { get; set; }
 
-    public virtual DbSet<Rolmenu> Rolmenus { get; set; }
+    public virtual DbSet<RolMenu> Rolmenus { get; set; }
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
@@ -187,7 +187,7 @@ public partial class TecmeindbContext : DbContext
                 .HasColumnName("fechaRegistro");
         });
 
-        modelBuilder.Entity<Rolmenu>(entity =>
+        modelBuilder.Entity<RolMenu>(entity =>
         {
             entity.HasKey(e => e.Secuencial).HasName("PRIMARY");
 

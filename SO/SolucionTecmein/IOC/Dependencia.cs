@@ -34,6 +34,8 @@ namespace IOC
             services.AddScoped<IUtilidadesServices, UtilidadesServices>();
             services.AddScoped<ICorreoServices, CorreoServices> ();
             services.AddScoped<IEmpresaStorageServices, EmpresaStorageServices> ();
+            services.AddScoped<IEmpresaServices, EmpresaServices> ();
+            services.AddScoped<IMenuServices, MenuServices>();
         }
     }
 }

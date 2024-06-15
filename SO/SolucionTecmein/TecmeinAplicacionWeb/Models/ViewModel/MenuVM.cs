@@ -1,19 +1,21 @@
-﻿namespace AplicacionWeb.Models.ViewModel
+﻿namespace TecmeinWebApp.Models.ViewModel
 {
     public class MenuVM
     {
-        public string Descripcion { get; set; } = null!;
+        public string? Descripcion { get; set; }
 
+        public int? SecMenuPadre { get; set; }
 
-        public string Icono { get; set; } = null!;
+        public string? Icono { get; set; }
 
-        public string Controlador { get; set; } = null!;
+        public string? Controlador { get; set; }
 
-        public int PaginaAccion { get; set; }
+        public string? PaginaAccion { get; set; }
 
-        public bool EstaActivo { get; set; }
+        public short? EsActivo { get; set; }
 
         public virtual ICollection<MenuVM>? SubMenu { get; set; }
+                    
 
     }
 }

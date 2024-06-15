@@ -1,4 +1,4 @@
-namespace TecmeinAplicacionWeb.Models
+namespace TecmeinWebApp.Models
 {
     public class ErrorViewModel
     {

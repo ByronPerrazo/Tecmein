@@ -1,4 +1,4 @@
-﻿namespace AplicacionWeb.Models.ViewModel
+﻿namespace TecmeinWebApp.Models.ViewModel
 {
     public class RolVM
     {

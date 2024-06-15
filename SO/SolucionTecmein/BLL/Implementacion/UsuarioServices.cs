@@ -63,7 +63,7 @@ namespace BLL.Implementacion
 
                 if (imagen != null)
                 {
-                    //var imagenTransformada = _utilidadesServices.ConvertToWebPComprimido(nombreImagen, "C:/", "C:/convert/");
+                    //var imagenTransformada = _utilidadesServices.ConvertToWebPComprimido(NombreFoto, "C:/", "C:/convert/");
                     entidad.UrlFoto = await _storageServies.SubirStorage(imagen,
                                                                          almacenamientoEmpresa.CarpetaUsuario,
                                                                          nombreImagen);
@@ -94,8 +94,8 @@ namespace BLL.Implementacion
 
             // Asunto del correo
             string asunto = esRecuperarClave
-                ? $"Restablecer Contraseña de {empresa.Empresacorreo.Alias}"
-                : $"Registro en el Sistema de {empresa.Empresacorreo.Alias}";
+                ? $"Restablecer Contraseña de {empresa.Nombre}"
+                : $"Registro en el Sistema de {empresa.Nombre}";
 
             // Envío del correo con el HTML generado
             bool seEnvio = await _correoServies.EnvioCorreo(usuario.Correo, asunto, htmlCorreo);
@@ -115,7 +115,7 @@ namespace BLL.Implementacion
             }
             else
             {
-                urlPlantilla = urlPlantilla.Replace("[clave]", usuario.Clave);
+                urlPlantilla = urlPlantilla.Replace("[clave]", claveGenerada);
             }
 
             // Descargar y leer la plantilla HTML
@@ -127,20 +127,20 @@ namespace BLL.Implementacion
                 return html;
             }
         }
-        public async Task<bool> CambiarClave(string correo, string ClaveActual, string ClaveNueva)
+        public async Task<bool> CambiarClave(int secuencialUsuario, string ClaveActual, string ClaveNueva)
         {
             try
             {
                 var usuario =
                     _repositorio
-                    .Obtener(x => !x.Correo.Equals(correo))
-                    .Result ?? 
+                    .Obtener(x => x.Secuencial == secuencialUsuario)
+                    .Result ??
                      throw new TaskCanceledException("Usuario No Registrado");
 
                 if (!usuario.Clave.Equals(_utilidadesServices.ConvertirSha256(ClaveActual)))
                     throw new TaskCanceledException("Contraseña Incorrecta, Intente Otra Vez");
 
-                usuario.Clave = _utilidadesServices.ConvertirSha256(ClaveActual);
+                usuario.Clave = _utilidadesServices.ConvertirSha256(ClaveNueva);
 
                 return await _repositorio.Editar(usuario);
             }
@@ -149,7 +149,7 @@ namespace BLL.Implementacion
                 throw;
             }
         }
-        public async Task<Usuario> Editar(Usuario entidad, Stream? imagen = null, string? nombreImagen = "")
+        public async Task<Usuario> Editar(Usuario entidad, Stream? Foto = null, string? NombreFoto = "", string cabeceraUrlCorreo = "")
         {
             try
             {
@@ -158,7 +158,7 @@ namespace BLL.Implementacion
                             .Consultar();
 
                 if (usuario
-                    .Any(x => x.Correo == entidad.Correo && 
+                    .Any(x => x.Correo == entidad.Correo &&
                               x.Secuencial != entidad.Secuencial))
                     throw new TaskCanceledException("Correo Ya Registrado");
 
@@ -176,23 +176,29 @@ namespace BLL.Implementacion
                 usuarioProcesado.Telefono = string.IsNullOrEmpty(entidad.Telefono) ? usuarioProcesado.Telefono : entidad.Telefono;
                 usuarioProcesado.EsActivo = entidad.EsActivo;
 
-                var empresaStorage = _empresaStorageServices.Obtener(1).Result;
 
-                if (imagen != null)
+                var empresaStorage = await _empresaStorageServices.Consultar();
+                var almacenamientoEmpresa = empresaStorage.FirstOrDefault(x => x.SecEmpresa == 1);
+                if (almacenamientoEmpresa == null)
+                    throw new TaskCanceledException($"Error Empresa No ha definido un FTP");
+
+
+                if (Foto != null)
                 {
-                    //var imagenTransformada = _utilidadesServices.ConvertToWebPComprimido(nombreImagen, "C:/", "C:/convert/");
-                    usuarioProcesado.UrlFoto = await _storageServies.SubirStorage(imagen,
-                                                                                  empresaStorage.CarpetaUsuario,
-                                                                                  nombreImagen);
+                    //var imagenTransformada = _utilidadesServices.ConvertToWebPComprimido(NombreFoto, "C:/", "C:/convert/");
+                    usuarioProcesado.UrlFoto = await _storageServies.SubirStorage(Foto,
+                                                                                  almacenamientoEmpresa.CarpetaUsuario,
+                                                                                  NombreFoto);
                 }
 
-                var urlPantillaCorreo = string.Empty;
+                var urlPantillaCorreo = cabeceraUrlCorreo;
 
                 if (correoModificado)
                 {
+                    urlPantillaCorreo += $"/Plantilla/RestablecerClave?clave=[clave]";
                     string claveGenerada = _utilidadesServices.GenerarClave(8);
                     usuarioProcesado.Clave = _utilidadesServices.ConvertirSha256(claveGenerada);
-                    urlPantillaCorreo = await EnviarCorreoConPlantilla(urlPantillaCorreo, usuarioProcesado, empresaStorage.SecEmpresaNavigation, true, claveGenerada);
+                    urlPantillaCorreo = await EnviarCorreoConPlantilla(urlPantillaCorreo, usuarioProcesado, almacenamientoEmpresa.SecEmpresaNavigation, true, claveGenerada);
                 }
 
                 var usuarioGenerado = await _repositorio.Editar(usuarioProcesado);
@@ -234,13 +240,33 @@ namespace BLL.Implementacion
             }
 
         }
-        public Task<bool> GuardarRol(Usuario entidad)
+        public async Task<bool> GuardarPerfil(Usuario entidad)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var usuario =
+                    await _repositorio
+                          .Obtener(x => x.Secuencial == entidad.Secuencial)
+                          ?? throw new TaskCanceledException("Usuario no Encontrado");
+
+                usuario.Correo = entidad.Correo;
+                usuario.Telefono = entidad.Telefono;
+
+                return await _repositorio.Editar(usuario);
+            }
+            catch 
+            {
+
+                throw;
+            }
         }
         public async Task<Usuario> ExistePorSecuencial(int secuencialUsuario)
         {
-            return await _repositorio.Obtener(x => x.Secuencial == secuencialUsuario);
+            var query = await _repositorio.Consultar();
+            return query
+                .Where(x => x.Secuencial == secuencialUsuario)
+                .Include(x => x.SecRolNavigation)
+                .FirstOrDefault();
         }
         public async Task<Usuario> OtenerPorCredenciales(string correo, string clave)
          => await _repositorio.Obtener(x =>
@@ -262,9 +288,14 @@ namespace BLL.Implementacion
                 var claveGenerada = _utilidadesServices.GenerarClave(8);
 
                 usuario.Clave = _utilidadesServices.ConvertirSha256(claveGenerada);
-                var empresaStorage = _empresaStorageServices.Obtener(1).Result;
 
-                urlPantillaCorreo = await EnviarCorreoConPlantilla(urlPantillaCorreo, usuario, empresaStorage.SecEmpresaNavigation, true, claveGenerada);
+                var empresaStorage = await _empresaStorageServices.Consultar();
+                var almacenamientoEmpresa = empresaStorage.FirstOrDefault(x => x.SecEmpresa == 1);
+                if (almacenamientoEmpresa == null)
+                    throw new TaskCanceledException($"Error Empresa No ha definido un FTP");
+
+
+                urlPantillaCorreo = await EnviarCorreoConPlantilla(urlPantillaCorreo, usuario, almacenamientoEmpresa.SecEmpresaNavigation, true, claveGenerada);
 
                 return await _repositorio.Editar(usuario);
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace AplicacionWeb.Controllers
+namespace TecmeinWebApp.Controllers
 {
     public class DashboardController : Controller
     {
