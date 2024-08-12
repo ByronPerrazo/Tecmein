@@ -5,6 +5,7 @@ using TecmeinWebApp.Models.ViewModel;
 using TecmeinWebApp.Utilidades.Response;
 using BLL.Interfaces;
 using Entity;
+using BLL.Implementacion;
 
 namespace TecmeinWebApp.Controllers
 {
@@ -23,6 +24,15 @@ namespace TecmeinWebApp.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Lista()
+        {
+            var listaEmpresaVM
+               = _mapper.Map<List<EmpresaVM>>(await _empresaServices.Lista());
+            return StatusCode(StatusCodes.Status200OK, new { data = listaEmpresaVM });
+        }
+
         [HttpGet]
         public async Task<IActionResult> Obtener()
         {
@@ -50,7 +60,7 @@ namespace TecmeinWebApp.Controllers
                 var empresaVM = JsonConvert.DeserializeObject<EmpresaVM>(modelo);
 
                 string nombreLogo = string.Empty;
-                Stream logoStream = null;
+                Stream? logoStream = null;
 
                 if (logo != null) { 
                     string nombreCodificado = Guid.NewGuid().ToString("N");
@@ -59,6 +69,7 @@ namespace TecmeinWebApp.Controllers
                     logoStream = logo.OpenReadStream();
                 
                 }
+                empresaVM.EstaActivo = 1;
                 Empresa empresaEcontrada = await _empresaServices.GuardarCambios(_mapper.Map<Empresa>(empresaVM),logoStream, nombreLogo);
 
                 empresaVM = _mapper.Map<EmpresaVM>(empresaEcontrada);
@@ -73,5 +84,45 @@ namespace TecmeinWebApp.Controllers
             }
             return StatusCode(StatusCodes.Status200OK, gResponse);
         }
+
+        [HttpPut]
+        public async Task<IActionResult> Editar([FromForm] IFormFile logo, [FromForm] string modelo)
+        {
+            var genericResponse = new GenericResponse<EmpresaVM>();
+            try
+            {
+                EmpresaVM? tipoProductoVM = JsonConvert.DeserializeObject<EmpresaVM>(modelo);
+
+                var tipoProdEdit = await _empresaServices.Editar(_mapper.Map<Empresa>(tipoProductoVM));
+                tipoProductoVM = _mapper.Map<EmpresaVM>(tipoProdEdit);
+
+                genericResponse.Estado = true;
+                genericResponse.Objeto = tipoProductoVM;
+            }
+            catch (Exception ex)
+            {
+                genericResponse.Estado = false;
+                genericResponse.Mensajes = ex.Message;
+            }
+            return StatusCode(StatusCodes.Status200OK, genericResponse);
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Eliminar(int secuencial)
+        {
+            var gResponse = new GenericResponse<string>();
+            try
+            {
+                gResponse.Estado = await _empresaServices.Eliminar(secuencial);
+            }
+            catch (Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+                throw;
+            }
+            return StatusCode(StatusCodes.Status200OK, gResponse);
+        }
+
     }
 }

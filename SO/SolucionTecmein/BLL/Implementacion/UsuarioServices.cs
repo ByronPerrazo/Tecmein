@@ -2,11 +2,6 @@
 using DAL.Interfaces;
 using Entity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL.Implementacion
 {
@@ -254,7 +249,7 @@ namespace BLL.Implementacion
 
                 return await _repositorio.Editar(usuario);
             }
-            catch 
+            catch
             {
 
                 throw;
@@ -263,10 +258,10 @@ namespace BLL.Implementacion
         public async Task<Usuario> ExistePorSecuencial(int secuencialUsuario)
         {
             var query = await _repositorio.Consultar();
-            return query
-                .Where(x => x.Secuencial == secuencialUsuario)
-                .Include(x => x.SecRolNavigation)
-                .FirstOrDefault();
+            query.Where(x => x.Secuencial == secuencialUsuario)
+                 .Include(x => x.SecRolNavigation)
+                 .FirstOrDefault();
+            return (Usuario)query;
         }
         public async Task<Usuario> OtenerPorCredenciales(string correo, string clave)
          => await _repositorio.Obtener(x =>

@@ -14,17 +14,19 @@ using Entity;
 namespace TecmeinWebApp.Controllers
 {
     [Authorize]
-    public class HomeController : Controller
+    public class HomeController : Controller 
     {
         //private readonly ILogger<HomeController> _logger;
         private readonly IMapper _mapper;
         private readonly IUsuarioServices _usuarioServicio;
 
-        public HomeController(IUsuarioServices usuarioServicio, IMapper mapper)
+        public HomeController(IUsuarioServices usuarioServicio, IMapper mapper
+            //, ILogger<HomeController> logger
+            )
         {
             _usuarioServicio = usuarioServicio;
             _mapper = mapper;
-
+            //_logger = logger;
 
         }
 
@@ -51,12 +53,12 @@ namespace TecmeinWebApp.Controllers
             try
             {
                 ClaimsPrincipal claimsUser = HttpContext.User;
-                string idUsuario = 
-                       claimsUser
-                       .Claims
-                       .Where(x=> x.Type == ClaimTypes.NameIdentifier)
-                       .Select(x=> x.Value).SingleOrDefault();
-
+                string? idUsuario 
+                        = claimsUser.Claims
+                                    .Where(x=> x.Type == ClaimTypes.NameIdentifier)
+                                    .Select(x=> x.Value)
+                                    .SingleOrDefault();
+                
                 var usuario = 
                     _mapper.Map<UsuarioVM>(await _usuarioServicio.ExistePorSecuencial( int.Parse(idUsuario)));
 
@@ -78,7 +80,7 @@ namespace TecmeinWebApp.Controllers
             try
             {
                 ClaimsPrincipal claimsUser = HttpContext.User;
-                string idUsuario =
+                string? idUsuario =
                        claimsUser
                        .Claims
                        .Where(x => x.Type == ClaimTypes.NameIdentifier)
@@ -107,7 +109,7 @@ namespace TecmeinWebApp.Controllers
             try
             {
                 ClaimsPrincipal claimsUser = HttpContext.User;
-                string idUsuario =
+                string? idUsuario =
                        claimsUser
                        .Claims
                        .Where(x => x.Type == ClaimTypes.NameIdentifier)

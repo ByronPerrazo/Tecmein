@@ -1,13 +1,137 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-
-@{
+﻿@{
     ViewData["Title"] = "Empresa";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section Estilos {
+    <link rel="stylesheet" href="~/vendor/datatables/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/buttons.dataTables.min.css">
+}
 
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 bg-second-primary">
+        <h6 class="m-0 font-weight-bold text-white">Listado de Empresas</h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-3">
+                <button class="btn btn-success" id="btnNuevaEmpresa" data-toggle="modal" data-target="#modalData">
+                    <i class="fas fa-plus-circle"></i> Nueva Empresa
+                </button>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-bordered" id="tbdata" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Nombre</th>
+                            <th>Identificacion</th>
+                            <th>Correo</th>
+                            <th>Dirección</th>
+                            <th>Teléfono</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--  Modal-->
+<div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6>Detalle Empresa</h6>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+
+                <form>
+                    <input type="hidden" value="0" id="txtId">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-row">
+                                <div class="form-group col-sm-6">
+                                    <label for="txtIndentificacion">Numero Identificación</label>
+                                    <input type="text" class="form-control form-control-sm input-validar" id="txtIndentificacion" name="Numero Documento">
+                                </div>
+
+
+                                <div class="form-group col-sm-6">
+                                    <label for="txtCorreo">Razon Social</label>
+                                    <input type="text" class="form-control form-control-sm input-validar" id="txtRazonSocial" name="Razon Social">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-sm-12">
+                                    <label for="txtDireccion">Direccion</label>
+                                    <input type="text" class="form-control form-control-sm input-validar" id="txtDireccion" name="Direccion">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-sm-6">
+                                    <label for="txtCorreo">Correo</label>
+                                    <input type="email" class="form-control form-control-sm input-validar" id="txtCorreo" name="Correo">
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label for="txTelefono">Telefono</label>
+                                    <input type="text" class="form-control form-control-sm input-validar" id="txTelefono" name="Telefono">
+                                </div>
+                                
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-sm-6">
+                                    <label for="cboEstado">Estado</label>
+                                    <select class="form-control form-control-sm" id="cboEstado">
+                                        <option value="1">Activo</option>
+                                        <option value="0">Inactivo</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label for="txtCodigoOperador">Codigo Operador</label>
+                                    <input type="text" class="form-control form-control-sm input-validar" id="txtCodigoOperador" name="Impuesto">
+                                </div>
+                              
+                            </div>
+                            <div class="form-row">
+                                <div class="row">
+                                    <div class="form-group col-sm-6">
+                                        <label for="txtLogo">Logo</label>
+                                        <input class="form-control-file" type="file" id="txtLogo" />
+                                    </div>
+                                <div class="col-sm-6">
+                                    <img id="imgLogo" style="max-width:200px;" src="" class="rounded" alt="Logo">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary btn-sm" type="button" id="btnGuardar">Guardar</button>
+                <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*
 <div class="card shadow mb-4">
     <div class="card-header py-3 bg-second-primary">
         <h6 class="m-0 font-weight-bold text-white">Datos Empresa</h6>
@@ -16,6 +140,7 @@
 
         <div class="row">
             <div class="col-sm-12">
+
                 <form>
                     <div class="row">
                         <div class="col-sm-6">
@@ -77,12 +202,24 @@
 
                     </div>
                 </form>
+
+
             </div>
         </div>
     </div>
 </div>
+
+ *@
 @section Scripts {
 
-        <script src="~/js/vistas/Empresa_Index.js"></script>
+    <script src="~/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/dataTables.responsive.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/dataTables.buttons.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/jszip.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.html5.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.print.min.js"></script>
+
+    <script src="~/js/vistas/Empresa_Index.js"></script>
 
 }

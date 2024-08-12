@@ -13,6 +13,10 @@
       "PackagePath": "staticwebassets\\css\\sb-admin-2.min.css"
     },
     {
+      "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\css\\styleGenerales.css",
+      "PackagePath": "staticwebassets\\css\\styleGenerales.css"
+    },
+    {
       "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
     },
@@ -35,6 +39,18 @@
     {
       "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\img\\EmpresaLogIn2.png",
       "PackagePath": "staticwebassets\\img\\EmpresaLogIn2.png"
+    },
+    {
+      "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\img\\EmpresaLogIn3.png",
+      "PackagePath": "staticwebassets\\img\\EmpresaLogIn3.png"
+    },
+    {
+      "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\img\\config_azure.png",
+      "PackagePath": "staticwebassets\\img\\config_azure.png"
+    },
+    {
+      "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\img\\prueba 1.png",
+      "PackagePath": "staticwebassets\\img\\prueba 1.png"
     },
     {
       "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\img\\undraw_posting_photo.svg",
@@ -61,6 +77,10 @@
       "PackagePath": "staticwebassets\\img\\undraw_rocket.svg"
     },
     {
+      "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\js\\mapa.js",
+      "PackagePath": "staticwebassets\\js\\mapa.js"
+    },
+    {
       "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\js\\sb-admin-2.js",
       "PackagePath": "staticwebassets\\js\\sb-admin-2.js"
     },
@@ -69,12 +89,24 @@
       "PackagePath": "staticwebassets\\js\\sb-admin-2.min.js"
     },
     {
+      "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Catalogo_Index.js",
+      "PackagePath": "staticwebassets\\js\\vistas\\Catalogo_Index.js"
+    },
+    {
       "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Controles_Generales.js",
       "PackagePath": "staticwebassets\\js\\vistas\\Controles_Generales.js"
     },
     {
       "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Empresa_Index.js",
       "PackagePath": "staticwebassets\\js\\vistas\\Empresa_Index.js"
+    },
+    {
+      "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Producto_Index.js",
+      "PackagePath": "staticwebassets\\js\\vistas\\Producto_Index.js"
+    },
+    {
+      "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\TipoProducto_Index.js",
+      "PackagePath": "staticwebassets\\js\\vistas\\TipoProducto_Index.js"
     },
     {
       "Id": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Usuario_Index.js",

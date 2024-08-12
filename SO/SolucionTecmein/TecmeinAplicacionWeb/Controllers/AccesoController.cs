@@ -56,8 +56,6 @@ namespace TecmeinWebApp.Controllers
             {
                 AllowRefresh = true,
                 IsPersistent = modelo.MantenerSesionIniciada,
-
-
             };
 
             await HttpContext
