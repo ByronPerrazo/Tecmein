@@ -43,8 +43,18 @@
     padding: 25px;
 }
 
-./*modal-body mapa {
-    height: 100%;
-    width: 100%;
-    padding: 20px;
-}*/
+fieldset {
+    border: 1px solid #247381;
+    padding: 0.5rem;
+    border-radius: 5px;
+}
+
+legend {
+    color: #7b9fa6;
+    font-weight: bold;
+    font-size: 14pt;
+}
+
+div {
+    margin-bottom: 10px;
+}

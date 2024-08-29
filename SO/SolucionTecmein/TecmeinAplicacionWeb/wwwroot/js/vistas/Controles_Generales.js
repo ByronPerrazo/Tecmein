@@ -40,11 +40,11 @@ function validarInput(control, input, tipo) {
             break;
         case 'fechamayor':
             if (fechaMaquina.getTime() >= new Date(input).getTime()) {
-                mensajeError = 'Error: Fecha inferior o igual a la Fecha Actual';
+                mensajeError = 'Error: Fecha inferior o igual a la Fecha Actual; \n';
             }
             break;
         default:
-            mensajeError = 'Error: tipo de validación no reconocido';
+            mensajeError = 'Error: tipo de validación no reconocido; \n';
 
 
     }
@@ -79,6 +79,7 @@ function validarFormulario() {
 
 }
 
+//card - body Contacto
 
 function validarFechaFormulario(valida) {
     let controles = document.querySelectorAll('.validar-fecha-mayor');
@@ -110,3 +111,4 @@ function abrirModal() {
     };
     var map = new google.maps.Map(document.getElementById('mapa'), mapOptions);
 }
+

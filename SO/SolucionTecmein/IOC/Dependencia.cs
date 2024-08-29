@@ -39,7 +39,8 @@ namespace IOC
             services.AddScoped<IProductoServices, ProductoServices>();
             services.AddScoped<IVisitaServices, VisitaServices>();
             services.AddScoped<ICatalogoServices, CatalogoServices>();
-            
+            services.AddScoped<IConstructoraServices, ConstructoraServices>();
+
 
 
         }

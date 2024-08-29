@@ -11,7 +11,19 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
         {
 
             CreateMap<Rol, RolVM>().ReverseMap();
-            CreateMap<Empresa, EmpresaVM>().ReverseMap();
+            CreateMap<Empresa, EmpresaVM>()
+                .ForMember(destino =>
+                           destino.EstaActivo,
+                                   opt =>
+                                   opt.MapFrom(origen =>
+                                               origen.EstaActivo));
+
+            CreateMap<EmpresaVM, Empresa>()
+                .ForMember(destino =>
+                           destino.EstaActivo,
+                                   opt =>
+                                   opt.MapFrom(origen =>
+                                                      origen.EstaActivo == 1));
 
             #region Usuario
             CreateMap<Usuario, UsuarioVM>()
@@ -153,6 +165,21 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
                                                origen.EstaActivo));
 
             CreateMap<CatalogoVM, Catalogo>()
+                .ForMember(destino =>
+                           destino.EstaActivo,
+                                   opt =>
+                                   opt.MapFrom(origen =>
+                                                      origen.EstaActivo == 1));
+
+
+            CreateMap<Constructora, ConstructoraVM>()
+            .ForMember(destino =>
+                       destino.EstaActivo,
+                               opt =>
+                               opt.MapFrom(origen =>
+                                           origen.EstaActivo));
+
+            CreateMap<ConstructoraVM, Constructora>()
                 .ForMember(destino =>
                            destino.EstaActivo,
                                    opt =>

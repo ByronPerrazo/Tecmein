@@ -16,14 +16,65 @@
     estaActivo: 1,
 }
 
-
-
-
 let tablaData;
 let listaCompletaProvincias;
 let listaCompletaCanton;
 let listaCompletaParroquia;
 $(document).ready(function () {
+    
+    fetch("EmpresaConstructora")
+        .then(
+            respuesta => {
+                return respuesta.ok
+                    ? respuesta.json()
+                    : Promise.reject(respuesta);
+            }
+        )
+        .then(
+            respuestaJson => {
+                listaCompletaCanton = respuestaJson;
+                respuestaJson
+                    .forEach(item => {
+                        $("#cboEmpresa")
+                            .append(
+                                $("<option>")
+                                    .val(item.secuencial)
+                                    .text(item.nombre.trim())
+                            )
+                    })
+
+            }
+        )
+        .catch(error => {
+            console.error('Error al obtener la lista de Operadores:', error);
+        });
+
+    fetch("Operadores")
+        .then(
+            respuesta => {
+                return respuesta.ok
+                    ? respuesta.json()
+                    : Promise.reject(respuesta);
+            }
+        )
+        .then(
+            respuestaJson => {
+                listaCompletaCanton = respuestaJson;
+                respuestaJson
+                    .forEach(item => {
+                        $("#cboOperador")
+                            .append(
+                                $("<option>")
+                                    .val(item.secuencial)
+                                    .text(item.codigoOperador.trim())
+                            )
+                    })
+
+            }
+        )
+        .catch(error => {
+            console.error('Error al obtener la lista de Operadores:', error);
+        });
 
     fetch("Parroquias")
         .then(
@@ -123,10 +174,11 @@ $(document).ready(function () {
                 { data: "nombreCanton", searchable: true, width: "80px" },
                 { data: "direccion", searchable: true },
 
-                { data: 'geoUbicacion', width: "20px",
+                {
+                    data: 'geoUbicacion', width: "20px",
                     render: function (data) {
-                    return '<button onclick=\"initMap(\'' + data + '\')\" class=\"btn btn-success btn-mapa btn-sm mr-1\"><i class=\"fas fa-eye\"></i></button>';
-                        }
+                        return '<button onclick=\"initMap(\'' + data + '\')\" class=\"btn btn-success btn-mapa btn-sm mr-1\"><i class=\"fas fa-eye\"></i></button>';
+                    }
                 },
                 {
                     data: "estaActivo", render: function (data) {
@@ -176,10 +228,40 @@ tieneSigVisita.addEventListener('change', function () {
         fechaSiguienteVisita.style.display = 'block';
         validaFecha = true;
     } else {
+        var minDate = new Date(-8640000000000); 
+            $("#dtpkFechaSigVisita").val('');
         fechaSiguienteVisita.style.display = 'none';
         validaFecha = false;
     }
 });
+
+let estadoVisita;
+function mostrarDiv() {
+    const contenedores = document.querySelectorAll('.DetalleVisita');
+    contenedores.forEach(div => div.style.display = 'none');
+
+    document.getElementById('Detalle_Contacto_vista').style.display = 'none'
+
+   const seleccion = document.getElementById('cboEtapaObra').value;
+    if (seleccion != 'VIS') {
+        document.getElementById('detalleVisita_Vista').style.display = 'block';
+        document.getElementById('Datos_ContratoObra').style.display = 'block'
+        document.getElementById('Detalle_Contacto_vista').style.display = 'block'
+    }
+    estadoVisita = seleccion;
+
+    document.getElementById('div_fechaContrato').style.display = 'none';
+    document.getElementById('div_fechaAnticipo').style.display = 'none';
+    document.getElementById('txtDiasEntrega').style.display = 'none';
+
+    if (seleccion == 'PRE' || seleccion == 'CON' || seleccion == 'POR') {
+        document.getElementById('div_fechaContrato').style.display = 'block';
+        document.getElementById('div_fechaAnticipo').style.display = 'block';
+        document.getElementById('txtDiasEntrega').style.display = 'block';
+
+    }
+}
+
 
 const cmboProvincia = document.getElementById('cboProvincia');
 const cmboCanton = document.getElementById('cboCanton');
@@ -217,8 +299,6 @@ cmboProvincia.onchange = function () {
         .catch(error => {
             console.error('Error al obtener la lista de Provincias:', error);
         });
-
-
 };
 cmboCanton.onchange = function () {
 
@@ -249,7 +329,6 @@ cmboCanton.onchange = function () {
 
             }
         )
-
         .catch(error => {
             console.error('Error al obtener la lista de Provincias:', error);
         });
@@ -283,6 +362,7 @@ function limpiarFormularioModal() {
     $("#txtDireccion").val('');
     $("#txtGeolocallizacion").val('');
     $("#cboEstado").val(1);
+    document.getElementById('chkEsSigVisita').checked = false;
     $("#dtpkFechaSigVisita").val('');
 }
 function mostrarModalVisita(modeloVisita = MODELO_BASEVISITA) {
@@ -295,15 +375,56 @@ function mostrarModalVisita(modeloVisita = MODELO_BASEVISITA) {
     $("#txtDireccion").val(modeloVisita.direccion)
     $("#txtGeolocallizacion").val(modeloVisita.geoUbicacion)
     $("#cboEstado").val(modeloVisita.estaActivo)
-    $("#dtpkFechaSigVisita").val(modeloVisita.fechaSiguienteVisita)
+
+    loadDateFromString(modeloVisita.fechaSiguienteVisita)
+    
     $("#txtDescripcion").val(modeloVisita.detalle)
     $("#modalData").modal("show")
 };
+
+
+function loadDateFromString(dateString) {
+    if( !(!dateString || dateString.trim() === "")) {
+    
+    var dateParts = dateString.split('-'); 
+    var day = parseInt(dateParts[2], 10);
+    var month = parseInt(dateParts[1], 10) - 1; 
+    var year = parseInt(dateParts[0], 10);
+
+    var dateObject = new Date(year, month, day); 
+
+    var minDate = new Date(-8640000000000); 
+    if (dateObject <= minDate) {
+        document.getElementById('chkEsSigVisita').checked = false;
+        fechaSiguienteVisita.style.display = 'none';
+    } else {
+        
+        document.getElementById('chkEsSigVisita').checked = true;
+        fechaSiguienteVisita.style.display = 'block';
+        var formattedDate = dateObject.toISOString().split('T')[0];
+        
+        $("#dtpkFechaSigVisita").val(formattedDate);
+    }
+    }
+}
+
 
 let esEdicion;
 $("#btnNuevo").click(function () {
     limpiarFormularioModal();
     esEdicion = false;
+
+    obtenerGeoubicacion()
+        .then((ubicacion) => {
+            var geo = ubicacion.toString();
+            $("#txtGeolocallizacion").val(geo)
+        })
+        .catch((error) => {
+            geo = "";
+            const mensaje = `Error al obtener la ubicación : "${error}"\n`;
+            toastr.warning("", mensaje);
+        });
+
     mostrarModalVisita(MODELO_BASEVISITA)
 })
 $("#btnGuardarVisitas").click(function () {
@@ -336,50 +457,35 @@ $("#btnGuardarVisitas").click(function () {
         return;
     });
 
-    var respuesta = validarFechaFormulario(validaFecha);
-    respuesta += validarFormulario();
+    const seleccion = document.getElementById('cboEtapaObra').value;
+    if (seleccion != 'VIS') {
+        var respuesta = validarFechaFormulario(validaFecha);
+        respuesta += validarFormulario();
 
-    if (respuesta != '') {
-        toastr.warning("", respuesta);
-        return;
+        if (respuesta != '') {
+            toastr.warning("", respuesta);
+            return;
+        }
+
     }
-
-
-
-    let geo = "";
-    debugger;
-
-    obtenerGeoubicacion()
-        .then((ubicacion) => {
-            //console.log('Ubicación obtenida:', ubicacion);
-            geo = ubicacion.toString();
-        })
-        .catch((error) => {
-            geo = "";
-            const mensaje = `Error al obtener la ubicación : "${error}"\n`;
-            toastr.warning("", mensaje);
-        })
-
-    debugger;
-    $("#txtGeolocallizacion").val(geo);
 
     let secuencialVisita = $("#txtId").val().trim() == "" ? "0" : $("#txtId").val().trim();
 
     const modeloVisita = structuredClone(MODELO_BASEVISITA);
-          modeloVisita["secuencial"] = secuencialVisita;
-          modeloVisita["nombre"] = $("#txtNombreObra").val().trim();
-          modeloVisita["secProvincia"] = parseInt($("#cboProvincia").val());
-          modeloVisita["secCanton"] = parseInt($("#cboCanton").val());
-          modeloVisita["secParroquia"] = parseInt($("#cboParroquia").val());
-          modeloVisita["direccion"] = $("#txtDireccion").val().trim();
-          modeloVisita["geoUbicacion"] = geo; 
-          modeloVisita["fechaSiguienteVisita"] = $("#dtpkFechaSigVisita").val();
-          modeloVisita["detalle"] = $("#txtDescripcion").val();
-          modeloVisita["esActivo"] = $("#cboEstado").val();
+    modeloVisita["secuencial"] = secuencialVisita;
+    modeloVisita["nombre"] = $("#txtNombreObra").val().trim();
+    modeloVisita["secProvincia"] = parseInt($("#cboProvincia").val());
+    modeloVisita["secCanton"] = parseInt($("#cboCanton").val());
+    modeloVisita["secParroquia"] = parseInt($("#cboParroquia").val());
+    modeloVisita["direccion"] = $("#txtDireccion").val().trim();
+    modeloVisita["geoUbicacion"] = $("#txtGeolocallizacion").val().trim();
+    modeloVisita["fechaSiguienteVisita"] = $("#dtpkFechaSigVisita").val();
+    modeloVisita["detalle"] = $("#txtDescripcion").val();
+    modeloVisita["esActivo"] = $("#cboEstado").val();
 
     const datosFormulario = new FormData();
     datosFormulario.append("modelo", JSON.stringify(modeloVisita));
-    
+
 
     $("#modalData").find("div.modal-content").LoadingOverlay("show");
 
@@ -453,11 +559,9 @@ $("#tbdata tbody").on("click", ".btn-editar", function () {
     }
 
     const data = tablaData.row(filaSeleccionada).data();
-    debugger;
+
     mostrarModalVisita(data);
-
 })
-
 $("#tbdata tbody").on("click", ".btn-eliminar", function () {
 
     let fila
@@ -493,7 +597,6 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
                             ? response.json()
                             : Promise.reject(response);
                     }).then(responseJson => {
-                        debugger;
                         if (responseJson.estado) {
                             tablaData.row(fila).remove().draw(false);
 
@@ -506,7 +609,6 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
             }
         }
     )
-
 })
 
 $("#tbdata tbody").on("click", ".btn-mapa", function () {
@@ -518,8 +620,6 @@ $("#tbdata tbody").on("click", ".btn-mapa", function () {
     }
 
     const data = tablaData.row(filaSeleccionada).data();
-    debugger;
-    //mostrarModalVisita(data);
     $("#modalDataMapa").modal("show");
 })
 

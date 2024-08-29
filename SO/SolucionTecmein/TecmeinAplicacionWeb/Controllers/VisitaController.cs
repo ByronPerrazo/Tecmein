@@ -14,25 +14,47 @@ namespace TecmeinWebApp.Controllers
     public class VisitaController : Controller
     {
         private readonly IVisitaServices _visitaServices;
-
+        private readonly IEmpresaServices _empresaServices;
         private readonly IProvinciaServices _provinciaServices;
         private readonly ICantonServices _cantonServices;
         private readonly IParroquiaServices _parroquiaServices;
+        private readonly IConstructoraServices _constructoraServices;
 
         private readonly IMapper _mapper;
         public VisitaController(IVisitaServices visitaServices,
-                                          IProvinciaServices provinciaServices,
-                                          ICantonServices cantonServices,
-                                          IParroquiaServices parroquiaServices,
-                                          IMapper mapper
-
+                                IEmpresaServices empresaServices,    
+                                IProvinciaServices provinciaServices,
+                                ICantonServices cantonServices,
+                                IParroquiaServices parroquiaServices,
+                                IMapper mapper,
+                                IConstructoraServices constructoraServices
             )
         {
             _visitaServices = visitaServices;
+            _empresaServices = empresaServices;
             _provinciaServices = provinciaServices;
             _cantonServices = cantonServices;
             _parroquiaServices = parroquiaServices;
             _mapper = mapper;
+            _constructoraServices = constructoraServices;
+
+        }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> EmpresaConstructora() {
+            var listaConstructorasVM
+                   = _mapper.Map<List<ConstructoraVM>>(await _constructoraServices.Lista());
+            return StatusCode(StatusCodes.Status200OK, listaConstructorasVM);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Operadores()
+        {
+            var listaOperadoresVM
+                = _mapper.Map<List<EmpresaVM>>(await _empresaServices.Lista());
+            return StatusCode(StatusCodes.Status200OK, listaOperadoresVM);
         }
 
         [HttpGet]

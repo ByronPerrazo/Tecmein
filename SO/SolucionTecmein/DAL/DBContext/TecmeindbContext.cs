@@ -11,6 +11,7 @@ public partial class TecmeindbContext : DbContext
     {
     }
 
+    public virtual DbSet<Constructora> Constructoras { get; set; }
     public virtual DbSet<Catalogo> Catalogos { get; set; }
 
     public virtual DbSet<Canton> Cantones { get; set; }
@@ -49,6 +50,40 @@ public partial class TecmeindbContext : DbContext
         modelBuilder
             .UseCollation("utf8mb3_general_ci")
             .HasCharSet("utf8mb3");
+
+        modelBuilder.Entity<Constructora>(entity =>
+        {
+            entity.HasKey(e => e.Secuencial).HasName("PRIMARY");
+
+            entity.ToTable("constructora");
+
+            entity.Property(e => e.Secuencial).HasColumnName("secuencial");
+            entity.Property(e => e.Administrador)
+                .HasMaxLength(150)
+                .HasColumnName("administrador");
+            entity.Property(e => e.Atencion)
+                .HasMaxLength(150)
+                .HasColumnName("atencion");
+            entity.Property(e => e.Correo)
+                .HasMaxLength(150)
+                .HasColumnName("correo");
+            entity.Property(e => e.CorreoAdministrador)
+                .HasMaxLength(150)
+                .HasColumnName("correoAdministrador");
+            entity.Property(e => e.Direccion)
+                .HasMaxLength(250)
+                .HasColumnName("direccion");
+            entity.Property(e => e.EstaActivo).HasColumnName("estaActivo");
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(50)
+                .HasColumnName("nombre");
+            entity.Property(e => e.Telefono)
+                .HasMaxLength(50)
+                .HasColumnName("telefono");
+            entity.Property(e => e.TelefonoAdministrador)
+                .HasMaxLength(10)
+                .HasColumnName("telefonoAdministrador");
+        });
 
         modelBuilder.Entity<Catalogo>(entity =>
         {

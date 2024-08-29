@@ -11,8 +11,11 @@
 
 }
 
+
+
+
 <!-- Grilla inicial de proceso -->
-<div class="card shadow mb-2">
+<div class="card shadow-sm mb-2">
     <div class="card-header py-3 bg-second-primary">
         <h6 class="m-0 font-weight-bold text-white">Lista de Visitas</h6>
     </div>
@@ -65,7 +68,7 @@
                             <div class="row">
                                 <!--seccion Obra -->
                                 <div class="col-sm-8">
-                                    <div class="card shadow mb-4">
+                                    <div class="card shadow-sm mb-6">
                                         <div class="card-header py-3 bg-second-primary">
                                             <h6 class="m-0 font-weight-bold text-white"><i class="fas fa-factory"></i> Obra </h6>
                                         </div>
@@ -76,32 +79,32 @@
 
                                             <div class="form-row">
                                                 <div class="form-group col-sm-10 text-xs">
-                                                    <i class="cab_i_sm">Nombre Obra / Proyecto</i>
+                                                    <i class="cab_i_sm text-xs">Nombre Obra / Proyecto</i>
                                                     <input type="text" class="form-control form-control-sm text-xs"
                                                            name="Nombre Proyecto"
                                                            id="txtNombreObra">
                                                 </div>
                                                 <div class="form-group col-sm-2 text-xs">
-                                                    <i class="cab_i_sm">Operador</i>
-                                                    <select class="form-control form-control-sm  text-xs" id="cboOperador" name="Operador">
+                                                    <i class="cab_i_sm text-xs">Operador</i>
+                                                    <select class="form-control form-control-sm text-xs" id="cboOperador" name="Operador">
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="form-group col-sm-4 text-xs">
-                                                    <i class="cab_i_sm">Provincia</i>
-                                                    <select class="form-control form-control-sm  text-xs" id="cboProvincia" name="Provincia">
+                                                    <i class="cab_i_sm text-xs">Provincia</i>
+                                                    <select class="form-control form-control-sm text-xs" id="cboProvincia" name="Provincia">
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-sm-4 text-xs">
-                                                    <i class="cab_i_sm">Cantón</i>
-                                                    <select class="form-control form-control-sm  text-xs"
+                                                    <i class="cab_i_sm text-xs">Cantón</i>
+                                                    <select class="form-control form-control-sm text-xs"
                                                             id="cboCanton"
                                                             name="Canton">
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-sm-4 text-xs">
-                                                    <i class="cab_i_sm">Parroquia</i>
+                                                    <i class="cab_i_sm text-xs">Parroquia</i>
                                                     <select class="form-control form-control-sm text-xs"
                                                             id="cboParroquia"
                                                             name="Parroquia">
@@ -112,34 +115,27 @@
                                             <div class="form-row">
                                                 <div class="form-group col-sm-12 text-xs">
                                                     <i class="cab_i_sm">Dirección Obra / Proyecto</i>
-                                                    <input type="text" class="form-control form-control-sm" id="txtDireccion" placeholder="Dirección" name="Dirección">
+                                                    <input type="text" class="form-control form-control-sm text-xs" id="txtDireccion" placeholder="Dirección" name="Dirección">
                                                 </div>
 
                                             </div>
 
                                             <div class="form-row">
-                                                <div class="form-group col-sm-4">
-                                                    <i class="cab_i_sm">Tipo Obra</i>
-                                                    <select class="form-control form-control-sm text-xs"
-                                                            id="cboTipoObra"
-                                                            name="Tipo">
-                                                        <option value="MAN">Mantenimiento</option>
-                                                        <option value="MOD">Modernización</option>
-                                                        <option value="NEW">Nuevo Equipo</option>
-                                                    </select>
-                                                </div>
-                                                <div class="form-group col-sm-4">
+											
+												<div class="form-group col-sm-4">
                                                     <i class="cab_i_sm">Etapa</i>
                                                     <select class="form-control form-control-sm  text-xs"
                                                             id="cboEtapaObra"
-                                                            name="Etapa">
+                                                            name="Etapa" onchange="mostrarDiv()">
+                                                        <option value="VIS">Visita</option>
                                                         <option value="COT">Cotización</option>
                                                         <option value="SEG">Seguimiento</option>
                                                         <option value="PRE">Pre-Contrato</option>
                                                         <option value="CON">Contrato</option>
-                                                        <option value="PRE">Por Renovar</option>
+                                                        <option value="POR">Por Renovar</option>
                                                     </select>
                                                 </div>
+												
                                                 <div class="form-group col-sm-4">
                                                     <i class="cab_i_sm">Estado Obra</i>
                                                     <select class="form-control form-control-sm text-xs" id="cboEstado">
@@ -147,12 +143,27 @@
                                                         <option value="0">Inactivo</option>
                                                     </select>
                                                 </div>
+
+												<div class="form-group col-sm-4">
+                                                    <i class="cab_i_sm">Próxima Visita</i>
+                                                    <input type="checkbox" name="esSigVisita" id="chkEsSigVisita">
+                                                    <input type="date"
+                                                           class="form-control form-control-sm validar-fecha-mayor text-xs"
+                                                           id="dtpkFechaSigVisita" style="display:none"
+                                                           name="Fecha Siguiente Visita">
+                                                </div>
+                                            </div>
+											<div class="form-row">
+                                                <div class="form-group col-sm-12 text-xs">
+                                                    <i class="cab_i_sm">Detalle</i>
+                                                    <textarea rows="2" cols="50" class="form-control form-control-sm input-validar text-xs" id="txtDescripcion" name="Detalle"></textarea>
+                                                </div>
                                             </div>
 
                                             <!--seccion Contrato -->
-
-                                            <div class="form-row">
-                                                <div class="form-group col-sm-4">
+											<div class="form-row"  id="Datos_ContratoObra" style="display:none" >
+                                            <div class="form-row" >
+                                                <div class="form-group col-sm-4 text-xs">
                                                     <i class="cab_i_sm">Poliza</i>
                                                     <select class="form-control form-control-sm text-xs" id="cboPoliza">
                                                         <option value="0">NO</option>
@@ -176,12 +187,12 @@
                                                 <div class="form-group col-sm-4 text-xs">
                                                     <i class="cab_i_sm">Valor</i>
                                                     <input type="text"
-                                                           class="form-control form-control-sm"
+                                                           class="form-control form-control-sm text-xs"
                                                            id="txtvalor"
                                                            placeholder="Valor Contrato"
                                                            name="Valor Contrato">
                                                 </div>
-                                                <div class="form-group col-sm-4 text-xs">
+                                                <div class="form-group col-sm-4 text-xs" style="display:none">
                                                     <i class="cab_i_sm">Dias Entrega</i>
                                                     <input type="number"
                                                            class="form-control form-control-sm"
@@ -192,24 +203,25 @@
                                             </div>
 
                                             <div class="form-row">
-                                                
-                                                <div class="form-group col-sm-4">
-                                                    <i class="cab_i_sm">Próxima Visita</i>
-                                                    <input type="checkbox" name="esSigVisita" id="chkEsSigVisita">
-                                                    <input type="date"
-                                                           class="form-control form-control-sm validar-fecha-mayor text-xs"
-                                                           id="dtpkFechaSigVisita" style="display:none"
-                                                           name="Fecha Siguiente Visita">
+                                                  <div class="form-group col-sm-4 text-xs" style="display:none">
+                                                    <i class="cab_i_sm">Tipo Obra</i>
+                                                    <select class="form-control form-control-sm text-xs"
+                                                            id="cboTipoObra"
+                                                            name="Tipo">
+                                                        <option value="MAN">Mantenimiento</option>
+                                                        <option value="MOD">Modernización</option>
+                                                        <option value="NEW">Nuevo Equipo</option>
+                                                    </select>
                                                 </div>
-                                                <div class="form-group col-sm-4">
+                                              
+                                                <div class="form-group col-sm-4" style="display:none" id="div_fechaContrato">
                                                     <i class="cab_i_sm">Fecha Contrato</i>
                                                     <input type="date"
                                                            class="form-control form-control-sm validar-fecha-mayor text-xs"
                                                            id="dtpkFechaContrato"
                                                            name="Fecha Contrato">
                                                 </div>
-                                                <div class="form-group col-sm-4">
-
+                                                <div class="form-group col-sm-4" style="display:none" id="div_fechaAnticipo">
                                                     <i class="cab_i_sm">Anticipo Pagado:</i>
                                                     <input type="checkbox" name="anticipoPagado" id="chkAnticipoPagado">
                                                     <input type="date"
@@ -220,12 +232,7 @@
 
                                             </div>
 
-                                            <div class="form-row">
-                                                <div class="form-group col-sm-12">
-                                                    <i class="cab_i_sm">Detalle</i>
-                                                    <textarea rows="2" cols="50" class="form-control form-control-sm input-validar text-xs" id="txtDescripcion" name="Detalle"></textarea>
-                                                </div>
-                                            </div>
+                                          </div>
 
 
                                         </div>
@@ -234,23 +241,18 @@
                                 </div>
 
                                 <!--seccion Contacto -->
-                                <div class="col-sm-4">
-                                    <div class="card shadow mb-4">
+                                <div class="col-sm-4" id="Detalle_Contacto_vista">
+                                    <div class="card shadow-sm ml-1">
                                         <div class="card-header py-3 bg-second-primary">
                                             <h6 class="m-0 font-weight-bold text-white"><i class="fas fa-id-card"></i> Contacto</h6>
                                         </div>
 
-                                        <div class="card-body">
+                                        <div class="card-body Contacto">
                                             <div class="form-row">
                                                 <div class="form-group col-sm-12">
                                                     <i class="cab_i_sm">Empresa</i>
                                                     <select class="form-control form-control-sm text-xs" id="cboEmpresa"
-                                                            name="Abreviatura">
-                                                        <option value="ND">No Definida</option>
-                                                        <option value="Rosa">El Rosal</option>
-                                                        <option value="MetQ">Metro Quito</option>
-                                                        <option value="Mont">Montero</option>
-                                                        <option value="HPaute">Hidro Paute</option>
+                                                            name="Constructora">
                                                     </select>
                                                 </div>
                                             </div>
@@ -266,8 +268,7 @@
                                                         <option value="ND">ND</option>
                                                     </select>
                                                 </div>
-                                                @*  </div>
-                                                <div class="form-row"> *@
+                                               
                                                 <div class="form-group col-sm-8">
                                                     <i class="cab_i_sm">Nombre</i>
                                                     <input type="text" class="form-control form-control-sm text-xs validar-texto text-xs" id="txtNombreContacto" placeholder="Nombre Contacto" name="Nombre ">
@@ -305,8 +306,8 @@
                             </div>
 
                         </div>
-                        <div class="col-sm-12">
-                            <div class="card shadow mb-4">
+                        <div class="DetalleVisita" id="detalleVisita_Vista" style="display:none">
+                            <div class="card shadow-sm mb-4">
                                 <div class="card-header py-3 bg-second-primary">
                                     <h6 class="m-0 font-weight-bold text-white"> <i class="fas fa-thumbtack"></i> Detalle Visita</h6>
                                 </div>
@@ -572,6 +573,7 @@
                                                 </thead>
                                                 <tbody>
                                                 </tbody>
+                                                </tbody>
                                             </table>
                                         </div>
                                     </div>
@@ -630,6 +632,7 @@
         </div>
     </div>
 </div>
+
 
 
 
