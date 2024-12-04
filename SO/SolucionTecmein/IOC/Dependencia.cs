@@ -40,6 +40,8 @@ namespace IOC
             services.AddScoped<IVisitaServices, VisitaServices>();
             services.AddScoped<ICatalogoServices, CatalogoServices>();
             services.AddScoped<IConstructoraServices, ConstructoraServices>();
+            services.AddScoped<IContactoServices, ContactoServices>();
+            services.AddScoped<IContactoVisitaServices, ContactoVisitaServices>();
 
 
 

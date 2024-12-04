@@ -1,12 +1,6 @@
 ﻿using BLL.Interfaces;
 using DAL.Interfaces;
 using Entity;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL.Implementacion
 {
@@ -15,9 +9,9 @@ namespace BLL.Implementacion
         private readonly IGenericRepository<Provincia> _repositorio;
         public ProvinciaServices(IGenericRepository<Provincia> repositorio)
         {
-                _repositorio = repositorio;
+            _repositorio = repositorio;
         }
-       
+
 
         public async Task<List<Provincia>> Lista()
         {
@@ -29,7 +23,7 @@ namespace BLL.Implementacion
         {
             return _repositorio.Obtener(x => x.Secuencial == secuencial);
         }
-       
-        
+
+
     }
 }

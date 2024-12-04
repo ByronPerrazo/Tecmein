@@ -1,6 +1,4 @@
-﻿using Entity;
-
-namespace TecmeinWebApp.Models.ViewModel
+﻿namespace TecmeinWebApp.Models.ViewModel
 {
     public class CantonVM
     {

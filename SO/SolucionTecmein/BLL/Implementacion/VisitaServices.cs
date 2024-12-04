@@ -15,15 +15,15 @@ namespace BLL.Implementacion
 
         public async Task<Visita> ConsultaVisita(int secuencial)
         {
-            var visita = await _repositorio.Consultar(x=>x.Secuencial == secuencial);
-                visita
-                      .Include(x => x.SecProvinciaNavigation)
-                      .Include(x => x.SecCantonNavigation)
-                      .Include(x => x.SecParroquiaNavigation)
-                      .Include(u => u.SecUsuarioNavigation)
-                      .FirstOrDefault();
+            var visita = await _repositorio.Consultar(x => x.Secuencial == secuencial);
+            visita
+                  .Include(x => x.SecProvinciaNavigation)
+                  .Include(x => x.SecCantonNavigation)
+                  .Include(x => x.SecParroquiaNavigation)
+                  .Include(u => u.SecUsuarioNavigation)
+                  .FirstOrDefault();
 
-             return visita.First();
+            return visita.First();
         }
 
         public async Task<Visita> CreaVisita(Visita entidad)
@@ -35,7 +35,7 @@ namespace BLL.Implementacion
                 visitaProceso = await _repositorio.Crear(entidad);
 
                 if (visitaProceso.Secuencial == 0)
-                    throw new TaskCanceledException($"Error Visita{ entidad.Nombre } No se Guarda");
+                    throw new TaskCanceledException($"Error Visita{entidad.Nombre} No se Guarda");
 
                 var vistaCreada = await ConsultaVisita(visitaProceso.Secuencial);
             }
@@ -59,20 +59,20 @@ namespace BLL.Implementacion
                 visitaProceso.SecCanton = entidad.SecCanton;
                 visitaProceso.SecParroquia = entidad.SecParroquia;
                 visitaProceso.Direccion = entidad.Direccion;
-                visitaProceso.GeoUbicacion = string.IsNullOrEmpty(entidad.GeoUbicacion) ? "0,0": entidad.GeoUbicacion.ToString();
+                visitaProceso.GeoUbicacion = string.IsNullOrEmpty(entidad.GeoUbicacion) ? "0,0" : entidad.GeoUbicacion.ToString();
                 visitaProceso.EstaActivo = entidad.EstaActivo;
                 visitaProceso.FechaRegistro = DateTime.Now;
                 visitaProceso.FechaSiguienteVisita = entidad.FechaSiguienteVisita;
                 visitaProceso.Detalle = entidad.Detalle;
 
                 await _repositorio.Editar(visitaProceso);
-              
+
 
                 var visitaModificada
                       = await _repositorio
                              .Consultar(x => x.Secuencial == entidad.Secuencial);
 
-                var visitaProcesada 
+                var visitaProcesada
                     = visitaModificada
                     .Include(x => x.SecProvinciaNavigation)
                     .Include(y => y.SecCantonNavigation)
@@ -114,11 +114,12 @@ namespace BLL.Implementacion
         public async Task<List<Visita>> ListaVisitas()
         {
             var query = await _repositorio.Consultar();
-            var queryIncludes =  query.Include(x => x.SecProvinciaNavigation)
+            var queryIncludes = query.Include(x => x.SecProvinciaNavigation)
                                       .Include(y => y.SecCantonNavigation)
                                       .Include(z => z.SecParroquiaNavigation)
                                       .Include(u => u.SecUsuarioNavigation)
                                       .ToList();
+
             return queryIncludes;
         }
     }

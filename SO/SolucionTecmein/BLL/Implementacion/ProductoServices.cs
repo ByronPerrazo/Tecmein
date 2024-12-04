@@ -2,11 +2,6 @@
 using DAL.Interfaces;
 using Entity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL.Implementacion
 {
@@ -19,7 +14,8 @@ namespace BLL.Implementacion
         public ProductoServices(IGenericRepository<Producto> repositorio,
                                 IStorageServices storageServies,
                                 IUtilidadesServices utilidadesServices,
-                                IEmpresaStorageServices empresaStorageServices){
+                                IEmpresaStorageServices empresaStorageServices)
+        {
             _repositorio = repositorio;
             _storageServies = storageServies;
             _utilidadesServices = utilidadesServices;
@@ -42,7 +38,7 @@ namespace BLL.Implementacion
                 entidad.NombreImagen = string.IsNullOrEmpty(nombreImagen) ? $"{entidad.Nombre}_img" : nombreImagen;
 
                 var empresaStorage = await _empresaStorageServices.Consultar();
-                var almacenamientoEmpresa 
+                var almacenamientoEmpresa
                     = empresaStorage
                       .FirstOrDefault(x => x.SecEmpresa == 1)
                         ?? throw new TaskCanceledException($"Error Empresa No ha definido un FTP");
@@ -62,10 +58,10 @@ namespace BLL.Implementacion
 
                 var userAdquirido = await _repositorio.Consultar(x => x.Secuencial == productoGenerado.Secuencial);
 
-                    productoGenerado 
-                        = userAdquirido
-                          .Include(x => x.SecTipoProductoNavigation)
-                          .First();
+                productoGenerado
+                    = userAdquirido
+                      .Include(x => x.SecTipoProductoNavigation)
+                      .First();
 
                 return productoGenerado;
             }
@@ -88,30 +84,30 @@ namespace BLL.Implementacion
                               x.Secuencial != entidad.Secuencial))
                     throw new TaskCanceledException("Nombre Producto Ya Registrado");
 
-               
+
 
                 var productoProcesado = producto.First(x => x.Secuencial == entidad.Secuencial);
-                    productoProcesado.Nombre = string.IsNullOrEmpty(entidad.Nombre) ? productoProcesado.Nombre : entidad.Nombre;
-                    productoProcesado.Descripcion = string.IsNullOrEmpty(entidad.Descripcion) ? productoProcesado.Descripcion : entidad.Descripcion;
-                    productoProcesado.SecTipoProducto = entidad.SecTipoProducto == 0 ? productoProcesado.SecTipoProducto : entidad.SecTipoProducto;
-                    productoProcesado.Marca = entidad.Marca;
-                    productoProcesado.Sistema = entidad.Sistema;
-                    productoProcesado.Capacidad = entidad.Capacidad;
-                    productoProcesado.Motor = entidad.Motor;
-                    productoProcesado.Stock = entidad.Stock;
-                    productoProcesado.Precio = entidad.Precio;
-                    productoProcesado.EstaActivo = entidad.EstaActivo;
+                productoProcesado.Nombre = string.IsNullOrEmpty(entidad.Nombre) ? productoProcesado.Nombre : entidad.Nombre;
+                productoProcesado.Descripcion = string.IsNullOrEmpty(entidad.Descripcion) ? productoProcesado.Descripcion : entidad.Descripcion;
+                productoProcesado.SecTipoProducto = entidad.SecTipoProducto == 0 ? productoProcesado.SecTipoProducto : entidad.SecTipoProducto;
+                productoProcesado.Marca = entidad.Marca;
+                productoProcesado.Sistema = entidad.Sistema;
+                productoProcesado.Capacidad = entidad.Capacidad;
+                productoProcesado.Motor = entidad.Motor;
+                productoProcesado.Stock = entidad.Stock;
+                productoProcesado.Precio = entidad.Precio;
+                productoProcesado.EstaActivo = entidad.EstaActivo;
 
                 var empresaStorage = await _empresaStorageServices.Consultar();
 
-                var almacenamientoEmpresa 
+                var almacenamientoEmpresa
                     = empresaStorage
-                      .FirstOrDefault(x => x.SecEmpresa == 1) 
+                      .FirstOrDefault(x => x.SecEmpresa == 1)
                         ?? throw new TaskCanceledException($"Error Empresa No ha definido un FTP");
 
                 if (Foto != null)
                 {
-                    productoProcesado.UrlImagen 
+                    productoProcesado.UrlImagen
                         = await _storageServies
                                 .SubirStorage(Foto,
                                               almacenamientoEmpresa.CarpetaUsuario,

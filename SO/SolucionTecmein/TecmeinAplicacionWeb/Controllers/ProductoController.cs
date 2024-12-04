@@ -71,7 +71,7 @@ namespace TecmeinWebApp.Controllers
                     nombreFoto = string.Concat(nombreCodificado, extension);
                     imagenStream = imagen.OpenReadStream();
                 }
-             
+
                 var usurioGenerado = await _productoServices.Crear(_mapper.Map<Producto>(productoVM), imagenStream, nombreFoto);
                 productoVM = _mapper.Map<ProductoVM>(usurioGenerado);
 

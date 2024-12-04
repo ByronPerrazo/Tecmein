@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using BLL.Implementacion;
 using BLL.Interfaces;
 using Entity;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Security.Claims;
@@ -19,15 +17,19 @@ namespace TecmeinWebApp.Controllers
         private readonly ICantonServices _cantonServices;
         private readonly IParroquiaServices _parroquiaServices;
         private readonly IConstructoraServices _constructoraServices;
+        private readonly IContactoServices _contactoServices;
+        private readonly IContactoVisitaServices _contactoVistaServices;
 
         private readonly IMapper _mapper;
         public VisitaController(IVisitaServices visitaServices,
-                                IEmpresaServices empresaServices,    
+                                IEmpresaServices empresaServices,
                                 IProvinciaServices provinciaServices,
                                 ICantonServices cantonServices,
                                 IParroquiaServices parroquiaServices,
                                 IMapper mapper,
-                                IConstructoraServices constructoraServices
+                                IConstructoraServices constructoraServices,
+                                IContactoServices contactoServices,
+                                IContactoVisitaServices contactoVistaServices
             )
         {
             _visitaServices = visitaServices;
@@ -37,13 +39,22 @@ namespace TecmeinWebApp.Controllers
             _parroquiaServices = parroquiaServices;
             _mapper = mapper;
             _constructoraServices = constructoraServices;
+            _contactoServices = contactoServices;
+            _contactoVistaServices = contactoVistaServices;
 
         }
 
-
+        [HttpGet]
+        public async Task<IActionResult> Contactos()
+        {
+            var listaContactoVM
+                = _mapper.Map<List<ContactoVM>>(await _contactoServices.Lista());
+            return StatusCode(StatusCodes.Status200OK, listaContactoVM);
+        }
 
         [HttpGet]
-        public async Task<IActionResult> EmpresaConstructora() {
+        public async Task<IActionResult> EmpresaConstructora()
+        {
             var listaConstructorasVM
                    = _mapper.Map<List<ConstructoraVM>>(await _constructoraServices.Lista());
             return StatusCode(StatusCodes.Status200OK, listaConstructorasVM);
@@ -105,7 +116,7 @@ namespace TecmeinWebApp.Controllers
                                    .Where(x => x.Type == ClaimTypes.NameIdentifier)
                                    .Select(x => x.Value)
                                    .SingleOrDefault();
-                
+
                 visitaIngresadaVM.SecUsuario = ObtieneSecuencialUsuario();
 
                 var visitaGenerada
@@ -125,14 +136,15 @@ namespace TecmeinWebApp.Controllers
             return StatusCode(StatusCodes.Status200OK, genericResponse);
         }
 
-        public async Task<IActionResult> Editar([FromForm] string modelo, [FromForm] string modeloVisitaDetalle)
+        [HttpPost]
+        public async Task<IActionResult> EditarVisita([FromForm] string modelo)
         {
             var genericResponse = new GenericResponse<VisitaVM>();
             try
             {
                 VisitaVM? visitaVM = JsonConvert.DeserializeObject<VisitaVM>(modelo);
 
-                var visitaObtenida 
+                var visitaObtenida
                     = await _visitaServices
                             .EditaVisita(_mapper.Map<Visita>(visitaVM));
 
@@ -149,12 +161,49 @@ namespace TecmeinWebApp.Controllers
             return StatusCode(StatusCodes.Status200OK, genericResponse);
         }
 
+
+        [HttpPost]
+        public async Task<IActionResult> ProcesoGuardasContactoVisita([FromForm] string modelo)
+        {
+            var genericResponse = new GenericResponse<ContactoVisitaVM>();
+            try
+            {
+                ContactoVisitaVM? visitaIngresadaVM
+                    = JsonConvert
+                      .DeserializeObject<ContactoVisitaVM>(modelo);
+
+                if (visitaIngresadaVM != null && visitaIngresadaVM.SecContacto != 0)
+                {
+                    var visitaGenerada
+                        = await _contactoVistaServices
+                                .ProcesaGuardarContactoVisita(_mapper.Map<Contactovisita>(visitaIngresadaVM));
+
+                    visitaIngresadaVM = _mapper.Map<ContactoVisitaVM>(visitaGenerada);
+
+                    genericResponse.Estado = true;
+                    genericResponse.Objeto = visitaIngresadaVM;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                genericResponse.Estado = false;
+                genericResponse.Mensajes = ex.Message;
+            }
+            return StatusCode(StatusCodes.Status200OK, genericResponse);
+        }
+
         [HttpDelete]
         public async Task<IActionResult> Eliminar(int secuencial)
         {
             var gResponse = new GenericResponse<string>();
             try
             {
+                var visitaContacto = await _contactoVistaServices.ContactoVisitaPorVisita(secuencial);
+
+                if (visitaContacto != null)
+                    await _contactoVistaServices.EliminarContactoVisita(visitaContacto.Secuencial);
+
                 gResponse.Estado = await _visitaServices.Eliminar(secuencial);
             }
             catch (Exception ex)
@@ -165,7 +214,16 @@ namespace TecmeinWebApp.Controllers
             }
             return StatusCode(StatusCodes.Status200OK, gResponse);
         }
-        public int ObtieneSecuencialUsuario() {
+
+        [HttpGet]
+        public async Task<IActionResult> VisitaContacto(int secuencialVisita)
+        {
+            var contactoVisitaVM
+                = _mapper.Map<ContactoVisitaVM>(await _contactoVistaServices.ContactoVisitaPorVisita(secuencialVisita));
+            return StatusCode(StatusCodes.Status200OK, new { data = contactoVisitaVM });
+        }
+        public int ObtieneSecuencialUsuario()
+        {
 
             ClaimsPrincipal claimsUser = HttpContext.User;
             string? secUsuario
@@ -175,8 +233,9 @@ namespace TecmeinWebApp.Controllers
                                .SingleOrDefault();
 
             return (int)(string.IsNullOrEmpty(secUsuario) ? 0 : Convert.ToUInt32(secUsuario));
-            
+
         }
+
         public IActionResult Index()
         {
             return View();

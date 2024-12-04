@@ -14,11 +14,11 @@ namespace TecmeinWebApp.Controllers
     {
         private readonly ITipoProductoServices _tipoProductoServices;
         private readonly IMapper _mapper;
-        public TipoProductoController(ITipoProductoServices tipoProductoServices, 
+        public TipoProductoController(ITipoProductoServices tipoProductoServices,
                                       IMapper mapper)
         {
             _tipoProductoServices = tipoProductoServices;
-            _mapper = mapper;   
+            _mapper = mapper;
         }
 
         public IActionResult Index()
@@ -41,7 +41,7 @@ namespace TecmeinWebApp.Controllers
             var genericResponse = new GenericResponse<TipoProductoVM>();
             try
             {
-                var tipoProductoVM 
+                var tipoProductoVM
                     = JsonConvert
                       .DeserializeObject<TipoProductoVM>(modelo);
 
@@ -68,7 +68,7 @@ namespace TecmeinWebApp.Controllers
                 TipoProductoVM? tipoProductoVM = JsonConvert.DeserializeObject<TipoProductoVM>(modelo);
 
                 var tipoProdEdit = await _tipoProductoServices.Editar(_mapper.Map<TipoProducto>(tipoProductoVM));
-                    tipoProductoVM = _mapper.Map<TipoProductoVM>(tipoProdEdit);
+                tipoProductoVM = _mapper.Map<TipoProductoVM>(tipoProdEdit);
 
                 genericResponse.Estado = true;
                 genericResponse.Objeto = tipoProductoVM;
@@ -98,6 +98,6 @@ namespace TecmeinWebApp.Controllers
             return StatusCode(StatusCodes.Status200OK, gResponse);
         }
 
-        
+
     }
 }

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using BLL.Implementacion;
 using BLL.Interfaces;
 using Entity;
 using Microsoft.AspNetCore.Mvc;
@@ -77,7 +76,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Editar( [FromForm] string modelo)
+        public async Task<IActionResult> Editar([FromForm] string modelo)
         {
             var genericResponse = new GenericResponse<ConstructoraVM>();
             try

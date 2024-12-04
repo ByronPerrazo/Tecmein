@@ -1,20 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
+﻿using AutoMapper;
+using BLL.Interfaces;
+using Entity;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using TecmeinWebApp.Models.ViewModel;
 using TecmeinWebApp.Utilidades.Response;
-using BLL.Interfaces;
-using Entity;
-using BLL.Implementacion;
 
 namespace TecmeinWebApp.Controllers
 {
     public class EmpresaController : Controller
     {
-        private readonly IMapper _mapper;    
+        private readonly IMapper _mapper;
         private readonly IEmpresaServices _empresaServices;
 
-        public EmpresaController(IMapper mapper,IEmpresaServices empresaServices)
+        public EmpresaController(IMapper mapper, IEmpresaServices empresaServices)
         {
             _mapper = mapper;
             _empresaServices = empresaServices;
@@ -52,7 +51,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GuardarCambios( [FromForm]IFormFile logo, [FromForm]string modelo )
+        public async Task<IActionResult> GuardarCambios([FromForm] IFormFile logo, [FromForm] string modelo)
         {
             var gResponse = new GenericResponse<EmpresaVM>();
             try
@@ -62,15 +61,16 @@ namespace TecmeinWebApp.Controllers
                 string nombreLogo = string.Empty;
                 Stream? logoStream = null;
 
-                if (logo != null) { 
+                if (logo != null)
+                {
                     string nombreCodificado = Guid.NewGuid().ToString("N");
                     string extension = Path.GetExtension(logo.FileName);
-                    nombreLogo= string.Concat( nombreCodificado, extension);
+                    nombreLogo = string.Concat(nombreCodificado, extension);
                     logoStream = logo.OpenReadStream();
-                
+
                 }
                 empresaVM.EstaActivo = 1;
-                Empresa empresaEcontrada = await _empresaServices.GuardarCambios(_mapper.Map<Empresa>(empresaVM),logoStream, nombreLogo);
+                Empresa empresaEcontrada = await _empresaServices.GuardarCambios(_mapper.Map<Empresa>(empresaVM), logoStream, nombreLogo);
 
                 empresaVM = _mapper.Map<EmpresaVM>(empresaEcontrada);
 

@@ -1,9 +1,4 @@
 ﻿using Entity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL.Interfaces
 {
@@ -13,6 +8,6 @@ namespace BLL.Interfaces
 
         Task<List<Canton>> ListaPorProvincia(int secuencial);
 
-        Task<Canton> CantonPorSecuencial( int secuencial);
+        Task<Canton> CantonPorSecuencial(int secuencial);
     }
 }

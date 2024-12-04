@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Implementacion
 {
-
     public class UsuarioServices : IUsuarioServices
     {
         private readonly IGenericRepository<Usuario> _repositorio;
@@ -144,32 +143,29 @@ namespace BLL.Implementacion
                 throw;
             }
         }
+
+
         public async Task<Usuario> Editar(Usuario entidad, Stream? Foto = null, string? NombreFoto = "", string cabeceraUrlCorreo = "")
         {
             try
             {
                 var usuario
                     = await _repositorio
-                            .Consultar();
+                            .Obtener(x => x.Correo == entidad.Correo);
 
-                if (usuario
-                    .Any(x => x.Correo == entidad.Correo &&
-                              x.Secuencial != entidad.Secuencial))
+                if (usuario != null && usuario.Secuencial != entidad.Secuencial)
                     throw new TaskCanceledException("Correo Ya Registrado");
 
                 var correoModificado
-                    = usuario.Any(x =>
-                                  x.Secuencial == entidad.Secuencial &&
-                                  x.Correo != entidad.Correo);
+                    = usuario != null
+                    ? usuario.Correo != entidad.Correo
+                    : false;
 
-
-                var usuarioProcesado = usuario.First(x => x.Secuencial == entidad.Secuencial);
-
-                usuarioProcesado.Nombre = string.IsNullOrEmpty(entidad.Nombre) ? usuarioProcesado.Nombre : entidad.Nombre;
-                usuarioProcesado.Correo = string.IsNullOrEmpty(entidad.Correo) ? usuarioProcesado.Correo : entidad.Correo;
-                usuarioProcesado.SecRol = entidad.SecRol == 0 ? usuarioProcesado.SecRol : entidad.SecRol;
-                usuarioProcesado.Telefono = string.IsNullOrEmpty(entidad.Telefono) ? usuarioProcesado.Telefono : entidad.Telefono;
-                usuarioProcesado.EsActivo = entidad.EsActivo;
+                usuario.Nombre = entidad.Nombre;
+                usuario.Correo = entidad.Correo;
+                usuario.SecRol = entidad.SecRol;
+                usuario.Telefono = entidad.Telefono;
+                usuario.EsActivo = entidad.EsActivo;
 
 
                 var empresaStorage = await _empresaStorageServices.Consultar();
@@ -181,9 +177,9 @@ namespace BLL.Implementacion
                 if (Foto != null)
                 {
                     //var imagenTransformada = _utilidadesServices.ConvertToWebPComprimido(NombreFoto, "C:/", "C:/convert/");
-                    usuarioProcesado.UrlFoto = await _storageServies.SubirStorage(Foto,
-                                                                                  almacenamientoEmpresa.CarpetaUsuario,
-                                                                                  NombreFoto);
+                    usuario.UrlFoto = await _storageServies.SubirStorage(Foto,
+                                                                         almacenamientoEmpresa.CarpetaUsuario,
+                                                                         NombreFoto);
                 }
 
                 var urlPantillaCorreo = cabeceraUrlCorreo;
@@ -192,18 +188,18 @@ namespace BLL.Implementacion
                 {
                     urlPantillaCorreo += $"/Plantilla/RestablecerClave?clave=[clave]";
                     string claveGenerada = _utilidadesServices.GenerarClave(8);
-                    usuarioProcesado.Clave = _utilidadesServices.ConvertirSha256(claveGenerada);
-                    urlPantillaCorreo = await EnviarCorreoConPlantilla(urlPantillaCorreo, usuarioProcesado, almacenamientoEmpresa.SecEmpresaNavigation, true, claveGenerada);
+                    usuario.Clave = _utilidadesServices.ConvertirSha256(claveGenerada);
+                    urlPantillaCorreo = await EnviarCorreoConPlantilla(urlPantillaCorreo, usuario, almacenamientoEmpresa.SecEmpresaNavigation, true, claveGenerada);
                 }
 
-                var usuarioGenerado = await _repositorio.Editar(usuarioProcesado);
+                await _repositorio.Editar(usuario);
 
                 var usuarioModificado
-                      = await _repositorio
-                             .Consultar(x => x.Secuencial == usuarioProcesado.Secuencial);
-                usuarioProcesado = usuarioModificado.Include(x => x.SecRolNavigation).First();
+                            = await _repositorio
+                             .Consultar(x => x.Secuencial == usuario.Secuencial);
+                usuarioModificado.Include(x => x.SecRolNavigation).First();
 
-                return usuarioProcesado;
+                return (Usuario)usuarioModificado;
             }
             catch (Exception)
             {
@@ -264,9 +260,12 @@ namespace BLL.Implementacion
             return (Usuario)query;
         }
         public async Task<Usuario> OtenerPorCredenciales(string correo, string clave)
-         => await _repositorio.Obtener(x =>
-                                       x.Correo.Equals(correo) &&
-                                       x.Clave.Equals(_utilidadesServices.ConvertirSha256(clave)));
+        {
+            return await _repositorio.Obtener(x =>
+                                               x.Correo.Equals(correo) &&
+                                               x.Clave.Equals(_utilidadesServices.ConvertirSha256(clave)));
+        }
+
         public async Task<bool> RestablecerClave(string? correoDestino, string urlPantillaCorreo = "")
         {
             try

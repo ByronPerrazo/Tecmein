@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace TecmeinWebApp.Models.ViewModel
+﻿namespace TecmeinWebApp.Models.ViewModel
 {
     public class UsuarioVM
     {

@@ -11,14 +11,16 @@ public partial class TecmeindbContext : DbContext
     {
     }
 
+
     public virtual DbSet<Constructora> Constructoras { get; set; }
+
     public virtual DbSet<Catalogo> Catalogos { get; set; }
 
     public virtual DbSet<Canton> Cantones { get; set; }
 
     public virtual DbSet<Contacto> Contactos { get; set; }
 
-    public virtual DbSet<ContactoVisita> Contactovista { get; set; }
+    public virtual DbSet<Contactovisita> Contactovista { get; set; }
 
     public virtual DbSet<Empresa> Empresas { get; set; }
 
@@ -85,6 +87,59 @@ public partial class TecmeindbContext : DbContext
                 .HasColumnName("telefonoAdministrador");
         });
 
+        modelBuilder.Entity<Contacto>(entity =>
+        {
+            entity.HasKey(e => e.Secuencial).HasName("PRIMARY");
+
+            entity.ToTable("contacto");
+
+            entity.HasIndex(e => e.SecConstructora, "FK_Contacto_Constructora_idx");
+
+            entity.Property(e => e.Secuencial).HasColumnName("secuencial");
+            entity.Property(e => e.Correo)
+                .HasMaxLength(50)
+                .HasColumnName("correo");
+            entity.Property(e => e.EstaActivo).HasColumnName("estaActivo");
+            entity.Property(e => e.Nombres)
+                .HasMaxLength(150)
+                .HasColumnName("nombre");
+            entity.Property(e => e.Apellidos)
+               .HasMaxLength(150)
+               .HasColumnName("apellidos");
+            entity.Property(e => e.SecConstructora).HasColumnName("secConstructora");
+            entity.Property(e => e.Telefono)
+                .HasMaxLength(50)
+                .HasColumnName("telefono");
+            entity.Property(e => e.Titulo)
+                .HasMaxLength(50)
+                .HasColumnName("titulo");
+
+            entity.HasOne(d => d.SecConstructoraNavigation).WithMany(p => p.Contactos)
+                .HasForeignKey(d => d.SecConstructora)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Contacto_Constructora");
+        });
+
+        modelBuilder.Entity<Contactovisita>(entity =>
+        {
+            entity.HasKey(e => e.Secuencial).HasName("PRIMARY");
+
+            entity.ToTable("contactovisita");
+
+            entity.HasIndex(e => e.SecContacto, "Fk_Contacto_ContactoVisita");
+
+            entity.HasIndex(e => e.SecVisita, "Fk_Contacto_Visita");
+
+            entity.Property(e => e.Secuencial).HasColumnName("secuencial");
+            entity.Property(e => e.EstaActivo).HasColumnName("estaActivo");
+            entity.Property(e => e.SecContacto).HasColumnName("secContacto");
+            entity.Property(e => e.SecVisita).HasColumnName("secVisita");
+
+            entity.HasOne(d => d.SecContactoNavigation).WithMany(p => p.Contactovisita)
+                .HasForeignKey(d => d.SecContacto)
+                .HasConstraintName("Fk_Contacto_ContactoVisita");
+        });
+
         modelBuilder.Entity<Catalogo>(entity =>
         {
             entity.HasKey(e => e.Secuencial).HasName("PRIMARY");
@@ -131,53 +186,6 @@ public partial class TecmeindbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Fk_Provincia_Canton");
         });
-
-        modelBuilder.Entity<Contacto>(entity =>
-        {
-            entity.HasKey(e => e.Secuencial).HasName("PRIMARY");
-
-            entity.ToTable("contacto");
-
-            entity.Property(e => e.Secuencial).HasColumnName("secuencial");
-            entity.Property(e => e.Correo)
-                .HasMaxLength(50)
-                .HasColumnName("correo");
-            entity.Property(e => e.EstaActivo).HasColumnName("estaActivo");
-            entity.Property(e => e.Nombre)
-                .HasMaxLength(150)
-                .HasColumnName("nombre");
-            entity.Property(e => e.Telefono)
-                .HasMaxLength(50)
-                .HasColumnName("telefono");
-            entity.Property(e => e.Titulo)
-                .HasMaxLength(50)
-                .HasColumnName("titulo");
-        });
-
-        modelBuilder.Entity<ContactoVisita>(entity =>
-        {
-            entity.HasKey(e => e.Secuencial).HasName("PRIMARY");
-
-            entity.ToTable("contactovista");
-
-            entity.HasIndex(e => e.SecContacto, "Fk_Contacto_ContactoVisita");
-
-            entity.HasIndex(e => e.SecVisita, "Fk_Contacto_Visita");
-
-            entity.Property(e => e.Secuencial).HasColumnName("secuencial");
-            entity.Property(e => e.EstaActivo).HasColumnName("estaActivo");
-            entity.Property(e => e.SecContacto).HasColumnName("secContacto");
-            entity.Property(e => e.SecVisita).HasColumnName("secVisita");
-
-            entity.HasOne(d => d.SecContactoNavigation).WithMany(p => p.Contactovista)
-                .HasForeignKey(d => d.SecContacto)
-                .HasConstraintName("Fk_Contacto_ContactoVisita");
-
-            entity.HasOne(d => d.SecVisitaNavigation).WithMany(p => p.Contactovista)
-                .HasForeignKey(d => d.SecVisita)
-                .HasConstraintName("Fk_Contacto_Visita");
-        });
-
 
         modelBuilder.Entity<Empresa>(entity =>
         {
@@ -278,7 +286,6 @@ public partial class TecmeindbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("empresastorage_ibfk_1");
         });
-
 
         modelBuilder.Entity<Menu>(entity =>
         {
@@ -520,6 +527,7 @@ public partial class TecmeindbContext : DbContext
 
             entity.HasIndex(e => e.SecUsuario, "Fk_Visita_Usuario_idx");
 
+
             entity.Property(e => e.Secuencial).HasColumnName("secuencial");
             entity.Property(e => e.Detalle)
                 .HasMaxLength(500)
@@ -563,6 +571,8 @@ public partial class TecmeindbContext : DbContext
                 .HasForeignKey(d => d.SecUsuario)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Fk_Visita_Usuario");
+
+
         });
 
 

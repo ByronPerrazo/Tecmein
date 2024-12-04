@@ -1,6 +1,4 @@
-﻿using Entity;
-
-namespace TecmeinWebApp.Models.ViewModel
+﻿namespace TecmeinWebApp.Models.ViewModel
 {
     public class ParroquiaVM
     {
@@ -12,6 +10,6 @@ namespace TecmeinWebApp.Models.ViewModel
 
         public string? Nombre { get; set; }
 
-      
+
     }
 }

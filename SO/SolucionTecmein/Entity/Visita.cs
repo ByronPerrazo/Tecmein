@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Entity;
+﻿namespace Entity;
 
 public partial class Visita
 {
@@ -28,8 +25,6 @@ public partial class Visita
     public string? Detalle { get; set; }
 
     public short? EstaActivo { get; set; }
-
-    public virtual ICollection<ContactoVisita> Contactovista { get; set; } = new List<ContactoVisita>();
 
     public virtual Canton? SecCantonNavigation { get; set; }
 

@@ -1,6 +1,4 @@
-﻿using Entity;
-
-namespace TecmeinWebApp.Models.ViewModel
+﻿namespace TecmeinWebApp.Models.ViewModel
 {
     public class VisitaVM
     {
@@ -31,7 +29,7 @@ namespace TecmeinWebApp.Models.ViewModel
 
         public string? Detalle { get; set; }
 
-        public virtual ICollection<ContactoVisita> Contactovista { get; set; } = new List<ContactoVisita>();
+        //public virtual ICollection<ContactoVisita> Contactovista { get; set; } = new List<ContactoVisita>();
 
     }
 }

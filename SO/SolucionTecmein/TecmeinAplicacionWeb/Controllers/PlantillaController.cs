@@ -6,7 +6,7 @@ namespace TecmeinWebApp.Controllers
     [Authorize]
     public class PlantillaController : Controller
     {
-        public IActionResult EnviarClave( string correo, string clave)
+        public IActionResult EnviarClave(string correo, string clave)
         {
             ViewData["Correo"] = correo;
             ViewData["Clave"] = clave;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Entity;
+﻿namespace Entity;
 
 public partial class Constructora
 {
@@ -24,4 +21,6 @@ public partial class Constructora
     public string? CorreoAdministrador { get; set; }
 
     public short? EstaActivo { get; set; }
+
+    public virtual ICollection<Contacto> Contactos { get; set; } = new List<Contacto>();
 }

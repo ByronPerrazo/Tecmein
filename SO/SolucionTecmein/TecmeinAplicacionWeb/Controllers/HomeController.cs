@@ -1,20 +1,20 @@
-using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using TecmeinWebApp.Models;
-using System.Security.Claims;
+using AutoMapper;
+using BLL.Interfaces;
+using Entity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
+using System.Security.Claims;
+using TecmeinWebApp.Models;
 using TecmeinWebApp.Models.ViewModel;
 using TecmeinWebApp.Utilidades.Response;
-using BLL.Interfaces;
-using Entity;
 
 namespace TecmeinWebApp.Controllers
 {
     [Authorize]
-    public class HomeController : Controller 
+    public class HomeController : Controller
     {
         //private readonly ILogger<HomeController> _logger;
         private readonly IMapper _mapper;
@@ -49,18 +49,18 @@ namespace TecmeinWebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> ObtenerUsuario()
         {
-           var response = new GenericResponse<UsuarioVM>();
+            var response = new GenericResponse<UsuarioVM>();
             try
             {
                 ClaimsPrincipal claimsUser = HttpContext.User;
-                string? idUsuario 
+                string? idUsuario
                         = claimsUser.Claims
-                                    .Where(x=> x.Type == ClaimTypes.NameIdentifier)
-                                    .Select(x=> x.Value)
+                                    .Where(x => x.Type == ClaimTypes.NameIdentifier)
+                                    .Select(x => x.Value)
                                     .SingleOrDefault();
-                
-                var usuario = 
-                    _mapper.Map<UsuarioVM>(await _usuarioServicio.ExistePorSecuencial( int.Parse(idUsuario)));
+
+                var usuario =
+                    _mapper.Map<UsuarioVM>(await _usuarioServicio.ExistePorSecuencial(int.Parse(idUsuario)));
 
                 response.Estado = true;
                 response.Objeto = usuario;
@@ -69,12 +69,12 @@ namespace TecmeinWebApp.Controllers
             {
                 response.Estado = false;
                 response.Mensajes = ex.Message;
-               
+
             }
-            return StatusCode(StatusCodes.Status200OK,response);
+            return StatusCode(StatusCodes.Status200OK, response);
         }
         [HttpPost]
-        public async Task<IActionResult> GuardarPerfil([FromBody] UsuarioVM modelo )
+        public async Task<IActionResult> GuardarPerfil([FromBody] UsuarioVM modelo)
         {
             var response = new GenericResponse<UsuarioVM>();
             try
@@ -87,8 +87,8 @@ namespace TecmeinWebApp.Controllers
                        .Select(x => x.Value).SingleOrDefault();
 
                 var entiadadUsuario = _mapper.Map<Usuario>(modelo);
-                    entiadadUsuario.Secuencial = int.Parse(idUsuario);
-                
+                entiadadUsuario.Secuencial = int.Parse(idUsuario);
+
                 bool resultado = await _usuarioServicio.GuardarPerfil(entiadadUsuario);
 
                 response.Estado = resultado;
@@ -115,11 +115,11 @@ namespace TecmeinWebApp.Controllers
                        .Where(x => x.Type == ClaimTypes.NameIdentifier)
                        .Select(x => x.Value).SingleOrDefault();
 
-                bool resultado = 
+                bool resultado =
                     await _usuarioServicio
-                           .CambiarClave( int.Parse(idUsuario),
-                                          modelo.claveActual, 
-                                          modelo.claveNueva );
+                           .CambiarClave(int.Parse(idUsuario),
+                                          modelo.claveActual,
+                                          modelo.claveNueva);
 
                 response.Estado = resultado;
             }
@@ -141,7 +141,7 @@ namespace TecmeinWebApp.Controllers
         public async Task<IActionResult> Salir()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login","Acceso");
+            return RedirectToAction("Login", "Acceso");
         }
 
     }

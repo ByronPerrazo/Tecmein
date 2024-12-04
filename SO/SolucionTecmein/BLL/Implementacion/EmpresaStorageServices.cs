@@ -1,13 +1,7 @@
 ﻿using BLL.Interfaces;
-using DAL.Implementacion;
 using DAL.Interfaces;
 using Entity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL.Implementacion
 {
@@ -21,14 +15,14 @@ namespace BLL.Implementacion
         public async Task<List<Empresastorage>> Consultar()
         {
             var query = await _repositorio.Consultar();
-           return [.. query.Include(x => x.SecEmpresaNavigation)];
+            return [.. query.Include(x => x.SecEmpresaNavigation)];
         }
         public async Task<Empresastorage> ProcesaGuardar(Empresastorage empresaStorage)
         {
             try
             {
-                var empresaRegistro 
-                    =_repositorio
+                var empresaRegistro
+                    = _repositorio
                         .Obtener(x => x.SecEmpresa == empresaStorage.SecEmpresa)
                         .Result;
 

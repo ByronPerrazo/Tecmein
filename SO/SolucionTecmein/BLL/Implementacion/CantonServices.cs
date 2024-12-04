@@ -2,11 +2,6 @@
 using DAL.Interfaces;
 using Entity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL.Implementacion
 {
@@ -15,18 +10,18 @@ namespace BLL.Implementacion
         private readonly IGenericRepository<Canton> _repositorio;
         public CantonServices(IGenericRepository<Canton> repositorio)
         {
-                _repositorio = repositorio;
+            _repositorio = repositorio;
         }
 
         public async Task<List<Canton>> Lista()
         {
             var query = await _repositorio.Consultar();
-            return query.Include(x=> x.SecProvinciaNavigation).ToList();
+            return query.Include(x => x.SecProvinciaNavigation).ToList();
         }
 
-        public async Task<List<Canton>> ListaPorProvincia( int secProvincia)
+        public async Task<List<Canton>> ListaPorProvincia(int secProvincia)
         {
-            var query = await _repositorio.Consultar(x=> x.SecProvincia == secProvincia);
+            var query = await _repositorio.Consultar(x => x.SecProvincia == secProvincia);
             return query.Include(x => x.SecProvinciaNavigation).ToList();
         }
 

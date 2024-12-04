@@ -1,6 +1,6 @@
 ﻿using BLL.Interfaces;
-using Entity;
 using DAL.Interfaces;
+using Entity;
 
 namespace BLL.Implementacion
 {

@@ -1,21 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Entity;
+﻿namespace Entity;
 
 public partial class Contacto
 {
     public int Secuencial { get; set; }
 
-    public string? Nombre { get; set; }
+    public int SecConstructora { get; set; }
+
+    public string? Titulo { get; set; }
+
+    public string? Nombres { get; set; }
+
+    public string? Apellidos { get; set; }
 
     public string? Telefono { get; set; }
 
     public string? Correo { get; set; }
 
-    public string? Titulo { get; set; }
-
     public short? EstaActivo { get; set; }
 
-    public virtual ICollection<ContactoVisita> Contactovista { get; set; } = new List<ContactoVisita>();
+    public virtual ICollection<Contactovisita> Contactovisita { get; set; } = new List<Contactovisita>();
+
+    public virtual Constructora SecConstructoraNavigation { get; set; } = null!;
 }

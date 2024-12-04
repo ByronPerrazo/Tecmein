@@ -11,7 +11,7 @@ namespace BLL.Implementacion
     {
         public string GenerarClave(int longitud)
         {
-           const string caracteresPermitidos = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+            const string caracteresPermitidos = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
             var claveAleatoria = new StringBuilder();
 
             var rnd = new Random();

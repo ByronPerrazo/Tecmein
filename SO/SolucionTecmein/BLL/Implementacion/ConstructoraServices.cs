@@ -6,7 +6,7 @@ namespace BLL.Implementacion
 {
     public class ConstructoraServices : IConstructoraServices
     {
-        private readonly IGenericRepository<Constructora> _repositorio;
+        public readonly IGenericRepository<Constructora> _repositorio;
 
         public ConstructoraServices(IGenericRepository<Constructora> repositorio)
         {
@@ -20,7 +20,7 @@ namespace BLL.Implementacion
         }
         public async Task<Constructora> ConstructoraPorSecuencial(int secuencial)
         {
-            var query = await _repositorio.Obtener(x=> x.Secuencial == secuencial);
+            var query = await _repositorio.Obtener(x => x.Secuencial == secuencial);
             return query;
         }
 
@@ -32,30 +32,30 @@ namespace BLL.Implementacion
             var regitroGuardado = await _repositorio.Crear(entidad);
 
             return regitroGuardado;
-            
         }
 
         public async Task<Constructora> Editar(Constructora entidad)
         {
-            var registro 
+            var registro
                 = await _repositorio.Obtener(x => x.Secuencial == entidad.Secuencial)
                   ?? throw new TaskCanceledException("Registro No Existe");
 
-            if (registro != null){
+            if (registro != null)
+            {
 
                 registro.Nombre = entidad.Nombre;
                 registro.Direccion = entidad.Direccion;
-                registro.Telefono = entidad.Telefono;   
-                registro.Correo = entidad.Correo;   
+                registro.Telefono = entidad.Telefono;
+                registro.Correo = entidad.Correo;
                 registro.Atencion = entidad.Atencion;
-                registro.Administrador = entidad.Administrador; 
+                registro.Administrador = entidad.Administrador;
                 registro.TelefonoAdministrador = entidad.TelefonoAdministrador;
                 registro.CorreoAdministrador = entidad.CorreoAdministrador;
                 registro.EstaActivo = entidad.EstaActivo;
                 var regitroGuardado = await _repositorio.Editar(entidad);
 
             }
-            return await _repositorio.Obtener(x=> x.Secuencial == entidad.Secuencial);
+            return await _repositorio.Obtener(x => x.Secuencial == entidad.Secuencial);
         }
 
         public async Task<bool> Eliminar(int secuencial)

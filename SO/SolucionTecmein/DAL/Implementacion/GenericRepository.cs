@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DAL.DBContext;
+﻿using DAL.DBContext;
+using DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using DAL.Interfaces;
 
 namespace DAL.Implementacion
 {
@@ -16,7 +11,7 @@ namespace DAL.Implementacion
 
         public GenericRepository(TecmeindbContext dbContext)
         {
-            this._dbContext = dbContext; 
+            this._dbContext = dbContext;
         }
         public async Task<TEntity> Obtener(Expression<Func<TEntity, bool>> filtro)
         {
@@ -77,10 +72,10 @@ namespace DAL.Implementacion
 
         public async Task<IQueryable<TEntity>> Consultar(Expression<Func<TEntity, bool>> filtro = null)
         {
-           IQueryable<TEntity> queryEntidad = filtro == null 
-                                             ?  _dbContext.Set<TEntity>()
-                                             :  _dbContext.Set<TEntity>()
-                                             .Where(filtro);
+            IQueryable<TEntity> queryEntidad = filtro == null
+                                              ? _dbContext.Set<TEntity>()
+                                              : _dbContext.Set<TEntity>()
+                                              .Where(filtro);
             return queryEntidad;
         }
 

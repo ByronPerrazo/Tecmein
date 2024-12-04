@@ -1,7 +1,6 @@
-﻿using TecmeinWebApp.Models.ViewModel;
+﻿using AutoMapper;
 using Entity;
-using System.Globalization;
-using AutoMapper;
+using TecmeinWebApp.Models.ViewModel;
 
 namespace TecmeinWebApp.Utilidades.AutoMapper
 {
@@ -88,7 +87,7 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
                                    opt =>
                                    opt.Ignore());
 
-               
+
 
             CreateMap<Visita, VisitaVM>()
                .ForMember(destino =>
@@ -150,7 +149,7 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
                            destino.Precio, opt =>
                                            opt.MapFrom(origen =>
                                                       Math.Round(Convert.ToDecimal(origen.Precio), 2)))
-               
+
                 .ForMember(destino =>
                            destino.SecTipoProductoNavigation,
                                    opt =>
@@ -185,6 +184,55 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
                                    opt =>
                                    opt.MapFrom(origen =>
                                                       origen.EstaActivo == 1));
+
+            #region Contacto
+
+            CreateMap<Contacto, ContactoVM>()
+                .ForMember(destino =>
+                           destino.EstaActivo,
+                                   opt =>
+                                   opt.MapFrom(origen =>
+                                               origen.EstaActivo))
+                .ForMember(destino =>
+                           destino.NombreConstructora,
+                                    opt =>
+                                    opt.MapFrom(origen =>
+                                                origen.SecConstructoraNavigation.Nombre));
+
+            CreateMap<ContactoVM, Contacto>()
+                .ForMember(destino =>
+                           destino.EstaActivo,
+                                   opt =>
+                                   opt.MapFrom(origen =>
+                                                      origen.EstaActivo == 1))
+                .ForMember(destino =>
+                           destino.SecConstructoraNavigation,
+                                   opt =>
+                                   opt.Ignore());
+            #endregion usuar
+
+            CreateMap<Contactovisita, ContactoVisitaVM>()
+               .ForMember(destino =>
+                          destino.EstaActivo,
+                                  opt =>
+                                  opt.MapFrom(origen =>
+                                              origen.EstaActivo))
+               .ForMember(destino =>
+                          destino.SecConstructora,
+                                   opt =>
+                                   opt.MapFrom(origen =>
+                                               origen.SecContactoNavigation.SecConstructora)); ;
+
+            CreateMap<ContactoVisitaVM, Contactovisita>()
+                .ForMember(destino =>
+                           destino.EstaActivo,
+                                   opt =>
+                                   opt.MapFrom(origen =>
+                                                      origen.EstaActivo == 1))
+                .ForMember(destino =>
+                           destino.SecContactoNavigation,
+                                   opt =>
+                                   opt.Ignore()); ;
         }
     }
 }

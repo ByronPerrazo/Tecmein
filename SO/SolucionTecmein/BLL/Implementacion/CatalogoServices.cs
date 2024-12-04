@@ -60,11 +60,12 @@ namespace BLL.Implementacion
                                   _datosGlobalesServices.PathCatalogos,
                                   nombreArchivo);
 
-            if (rutaGuardada != null) {
+            if (rutaGuardada != null)
+            {
                 entidad.UrlCatalogo = rutaGuardada;
                 entidad.NombreArchivo = nombreArchivo;
             }
-                
+
             else
                 throw new TaskCanceledException($"Error No se genera una url para el Archivo");
 
@@ -140,8 +141,9 @@ namespace BLL.Implementacion
                     if (seElimino)
                     {
                         seElimino = await _repositorio.Eliminar(doc);
-                    }else
-                    throw new TaskCanceledException("No se elmino el archivo del repositorio Web");
+                    }
+                    else
+                        throw new TaskCanceledException("No se elmino el archivo del repositorio Web");
 
                 }
                 else

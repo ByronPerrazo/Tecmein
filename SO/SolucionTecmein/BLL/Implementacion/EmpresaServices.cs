@@ -40,20 +40,22 @@ namespace BLL.Implementacion
         {
             try
             {
-                if (await _repositorio.Obtener(x => x.Identificacion == entidad.Identificacion) != null){
+                if (await _repositorio.Obtener(x => x.Identificacion == entidad.Identificacion) != null)
+                {
                     throw new TaskCanceledException($"Error Identificación Empresa Ya Registrada");
                 }
-                var empresaEncontrada 
-                    = new Empresa{
-                    Secuencial = entidad.Secuencial,
-                    Identificacion = entidad.Identificacion,
-                    Nombre = entidad.Nombre,
-                    Correo = entidad.Correo,
-                    Direccion = entidad.Direccion,
-                    Telefono = entidad.Telefono,
-                    CodigoOperador = entidad.CodigoOperador,
-                    EstaActivo = entidad.EstaActivo,
-                };
+                var empresaEncontrada
+                    = new Empresa
+                    {
+                        Secuencial = entidad.Secuencial,
+                        Identificacion = entidad.Identificacion,
+                        Nombre = entidad.Nombre,
+                        Correo = entidad.Correo,
+                        Direccion = entidad.Direccion,
+                        Telefono = entidad.Telefono,
+                        CodigoOperador = entidad.CodigoOperador,
+                        EstaActivo = entidad.EstaActivo,
+                    };
 
                 empresaEncontrada.NombreLogo
                         = empresaEncontrada.NombreLogo == ""
@@ -63,7 +65,7 @@ namespace BLL.Implementacion
                 if (logo != null)
                 {
 
-                    var empresaStorage = await 
+                    var empresaStorage = await
                                          _empresaStorageServices
                                          .Consultar();
 
@@ -130,7 +132,7 @@ namespace BLL.Implementacion
                     registroDb.UrlLogo = urlLogo;
 
                     await _storageService
-                            .EliminarStorage(almacenamientoEmpresa.CarpetaLogo, 
+                            .EliminarStorage(almacenamientoEmpresa.CarpetaLogo,
                                              nombreLogoAnterior);
 
                 }

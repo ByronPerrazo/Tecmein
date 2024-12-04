@@ -1,9 +1,9 @@
-﻿using TecmeinWebApp.Models.ViewModel;
-using BLL.Interfaces;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using BLL.Interfaces;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using TecmeinWebApp.Models.ViewModel;
 
 namespace TecmeinWebApp.Controllers
 {
