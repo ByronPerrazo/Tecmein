@@ -1,7 +1,6 @@
-using TecmeinWebApp.Utilidades.AutoMapper;
 using IOC;
 using Microsoft.AspNetCore.Authentication.Cookies;
-//using Microsoft.AspNetCore.Authentication;
+using TecmeinWebApp.Utilidades.AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,8 +9,10 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(
-        op => { op.LoginPath = "/Acceso/Login";
-                op.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+        op =>
+        {
+            op.LoginPath = "/Acceso/Login";
+            op.ExpireTimeSpan = TimeSpan.FromMinutes(20);
         }
     );
 

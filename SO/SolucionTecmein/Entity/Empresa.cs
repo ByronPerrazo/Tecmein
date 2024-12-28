@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Entity;
+﻿namespace Entity;
 
 public partial class Empresa
 {
@@ -11,7 +8,7 @@ public partial class Empresa
 
     public string? NombreLogo { get; set; }
 
-    public string? NumeroDocumento { get; set; }
+    public string? Identificacion { get; set; }
 
     public string? Nombre { get; set; }
 
@@ -21,9 +18,7 @@ public partial class Empresa
 
     public string? Telefono { get; set; }
 
-    public decimal? PorcentajeImpuesto { get; set; }
-
-    public string? SimboloMoneda { get; set; }
+    public string? CodigoOperador { get; set; }
 
     public short? EstaActivo { get; set; }
 

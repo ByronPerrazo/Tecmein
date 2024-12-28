@@ -1,11 +1,11 @@
-﻿using TecmeinWebApp.Models.ViewModel;
-using TecmeinWebApp.Utilidades.Response;
-using AutoMapper;
+﻿using AutoMapper;
 using BLL.Interfaces;
 using Entity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Authorization;
+using TecmeinWebApp.Models.ViewModel;
+using TecmeinWebApp.Utilidades.Response;
 
 namespace TecmeinWebApp.Controllers
 {
@@ -30,7 +30,7 @@ namespace TecmeinWebApp.Controllers
 
         public IActionResult Index()
         {
-           return View();
+            return View();
         }
 
         [HttpGet]
@@ -105,24 +105,24 @@ namespace TecmeinWebApp.Controllers
             var genericResponse = new GenericResponse<UsuarioVM>();
             try
             {
-                    UsuarioVM? usuariosVM = JsonConvert.DeserializeObject<UsuarioVM>(modelo);
+                UsuarioVM? usuariosVM = JsonConvert.DeserializeObject<UsuarioVM>(modelo);
 
-                    string nombreFoto = string.Empty;
-                    Stream? imagenStream = null;
+                string nombreFoto = string.Empty;
+                Stream? imagenStream = null;
 
-                    if (Foto != null)
-                    {
-                        string nombreCodificado = Guid.NewGuid().ToString("N");
-                        string extension = Path.GetExtension(Foto.FileName);
-                        nombreFoto = string.Concat(nombreCodificado, extension);
-                        imagenStream = Foto.OpenReadStream();
-                    }
-                    var cabecera = $"{this.Request.Scheme}://{this.Request.Host}";
+                if (Foto != null)
+                {
+                    string nombreCodificado = Guid.NewGuid().ToString("N");
+                    string extension = Path.GetExtension(Foto.FileName);
+                    nombreFoto = string.Concat(nombreCodificado, extension);
+                    imagenStream = Foto.OpenReadStream();
+                }
+                var cabecera = $"{this.Request.Scheme}://{this.Request.Host}";
 
-                    Usuario usuarioEditado = await _usuarioServices.Editar(_mapper.Map<Usuario>(usuariosVM), imagenStream, nombreFoto, cabecera);
-                    usuariosVM = _mapper.Map<UsuarioVM>(usuarioEditado);
-                    genericResponse.Estado = true;
-                    genericResponse.Objeto = usuariosVM;
+                Usuario usuarioEditado = await _usuarioServices.Editar(_mapper.Map<Usuario>(usuariosVM), imagenStream, nombreFoto, cabecera);
+                usuariosVM = _mapper.Map<UsuarioVM>(usuarioEditado);
+                genericResponse.Estado = true;
+                genericResponse.Objeto = usuariosVM;
 
             }
             catch (Exception ex)

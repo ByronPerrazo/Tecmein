@@ -1,0 +1,60 @@
+﻿.error-mensaje {
+    display: none;
+    position: relative;
+    padding: 0px;
+    background-color: #ff0000;
+    color: #fff;
+    border-radius: 3px;
+    font-size: 12px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.error-mostrando {
+    display: inline-block;
+}
+
+.cab_i_me {
+    font-size: medium;
+    color: darkslateblue;
+}
+
+.cab_i_sm {
+    font-display:block;
+    font-style:italic;
+    font-size: small;
+    color: darkslateblue;
+}
+
+.cab_i_xs {
+    font-size: x-small;
+    color: darkslateblue;
+}
+
+/* Set the size of the div element that contains the map */
+#map {
+    height: 300px; /* The height is 400 pixels */
+    width: 100%; /* The width is the width of the web page */
+}
+
+.modal-body{
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 25px;
+}
+
+fieldset {
+    border: 1px solid #247381;
+    padding: 0.5rem;
+    border-radius: 5px;
+}
+
+legend {
+    color: #7b9fa6;
+    font-weight: bold;
+    font-size: 14pt;
+}
+
+div {
+    margin-bottom: 10px;
+}

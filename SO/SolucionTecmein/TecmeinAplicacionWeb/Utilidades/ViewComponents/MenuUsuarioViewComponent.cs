@@ -11,7 +11,7 @@ namespace TecmeinWebApp.Utilidades.ViewComponents
             string nombreUsuario = string.Empty;
             string urlFotoUsuario = string.Empty;
 
-            if (claimUser != null && 
+            if (claimUser != null &&
                 claimUser.Identity.IsAuthenticated)
             {
                 nombreUsuario =
@@ -27,6 +27,6 @@ namespace TecmeinWebApp.Utilidades.ViewComponents
 
             return View();
         }
-    } 
-    
+    }
+
 }

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Ts1jqKNB2lw=",
+  "dgSpecHash": "qtAaoYnq32A=",
   "success": true,
   "projectFilePath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\Entity\\Entity.csproj",
   "expectedPackageFiles": [
@@ -46,5 +46,12 @@
     "C:\\Users\\darkb\\.nuget\\packages\\system.text.json\\8.0.0\\system.text.json.8.0.0.nupkg.sha512",
     "C:\\Users\\darkb\\.nuget\\packages\\system.threading.channels\\6.0.0\\system.threading.channels.6.0.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1900",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Error al obtener los datos de vulnerabilidad del paquete: No se puede cargar el índice de servicio del origen https://api.nuget.org/v3/index.json."
+    }
+  ]
 }

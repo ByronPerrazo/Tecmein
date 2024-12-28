@@ -1,11 +1,6 @@
 ﻿using BLL.Interfaces;
 using DAL.Interfaces;
 using Entity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL.Implementacion
 {
@@ -30,10 +25,11 @@ namespace BLL.Implementacion
             IQueryable<RolMenu> listaRolMenu = await _repositorioRolMenu.Consultar(x => x.EsActivo == 1);
             IQueryable<Usuario> usuarioMenu = await _repositorioUsuario.Consultar(x => x.Secuencial == secuencialUsuario && x.EsActivo == 1);
 
-            var menuPadre = ( from um in usuarioMenu join rm in  listaRolMenu on  um.SecRol equals rm.SecRol
-                              join me in listaMenu on rm.SecMenu equals me.Secuencial
-                              join mPadre in listaMenu on me.SecMenuPadre equals mPadre.Secuencial
-                              select mPadre)
+            var menuPadre = (from um in usuarioMenu
+                             join rm in listaRolMenu on um.SecRol equals rm.SecRol
+                             join me in listaMenu on rm.SecMenu equals me.Secuencial
+                             join mPadre in listaMenu on me.SecMenuPadre equals mPadre.Secuencial
+                             select mPadre)
                               .Distinct()
                               .AsQueryable();
 
@@ -52,9 +48,9 @@ namespace BLL.Implementacion
                                    Icono = mPadre.Icono,
                                    Controlador = mPadre.Controlador,
                                    PaginaAccion = mPadre.PaginaAccion,
-                                   InverseSecMenuPadreNavigation 
-                                        = (from mhijo in menuHijos 
-                                           where mhijo.SecMenuPadre == mPadre.SecMenuPadre 
+                                   InverseSecMenuPadreNavigation
+                                        = (from mhijo in menuHijos
+                                           where mhijo.SecMenuPadre == mPadre.SecMenuPadre
                                            select mhijo).ToList()
                                }
                                ).ToList();

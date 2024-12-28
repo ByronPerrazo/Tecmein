@@ -8,13 +8,13 @@ let controlVenta = document.getElementById("charVentas");
 let myBarChart = new Chart(controlVenta, {
   type: 'bar',
   data: {
-    labels: ["06/07/2022", "07/07/2022", "08/07/2022", "09/07/2022","10/07/2022","11/07/2022", "12/07/2022"],
+    labels: ["06/07/2024", "07/07/2024", "08/07/2024", "09/07/2024","10/07/2024","11/07/2024", "12/07/2024"],
     datasets: [{
       label: "Cantidad",
-      backgroundColor: "#4e73df",
-      hoverBackgroundColor: "#2e59d9",
+      backgroundColor: "#5e93df",
+      hoverBackgroundColor: "#2e59A9",
       borderColor: "#4e73df",
-      data: [12,10,22,11,15,10,22],
+      data: [120,100,220,10,150,80,322],
     }],
   },
   options: {

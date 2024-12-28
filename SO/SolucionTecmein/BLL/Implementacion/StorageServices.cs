@@ -25,7 +25,7 @@ namespace BLL.Implementacion
                             .Obtener(x => x.EstaActivo == 1);
 
                 var config
-                    = new  FirebaseAuthProvider(
+                    = new FirebaseAuthProvider(
                         new FirebaseConfig(storage.ApiKey));
                 var usuarioStorage
                     = await
@@ -60,7 +60,7 @@ namespace BLL.Implementacion
             {
                 var storage
                     = await _repositorio
-                            .Obtener(x => x.EstaActivo == 1 );
+                            .Obtener(x => x.EstaActivo == 1);
 
                 var config
                     = new FirebaseAuthProvider(

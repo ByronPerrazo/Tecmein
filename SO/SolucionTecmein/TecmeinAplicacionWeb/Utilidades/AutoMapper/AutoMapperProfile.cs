@@ -1,7 +1,6 @@
-﻿using TecmeinWebApp.Models.ViewModel;
+﻿using AutoMapper;
 using Entity;
-using System.Globalization;
-using AutoMapper;
+using TecmeinWebApp.Models.ViewModel;
 
 namespace TecmeinWebApp.Utilidades.AutoMapper
 {
@@ -9,9 +8,21 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
     {
         public AutoMapperProfile()
         {
-            
-            CreateMap<Rol,RolVM>().ReverseMap();
-            CreateMap<Empresa,EmpresaVM>().ReverseMap();    
+
+            CreateMap<Rol, RolVM>().ReverseMap();
+            CreateMap<Empresa, EmpresaVM>()
+                .ForMember(destino =>
+                           destino.EstaActivo,
+                                   opt =>
+                                   opt.MapFrom(origen =>
+                                               origen.EstaActivo));
+
+            CreateMap<EmpresaVM, Empresa>()
+                .ForMember(destino =>
+                           destino.EstaActivo,
+                                   opt =>
+                                   opt.MapFrom(origen =>
+                                                      origen.EstaActivo == 1));
 
             #region Usuario
             CreateMap<Usuario, UsuarioVM>()
@@ -24,7 +35,7 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
                            destino.NombreRol,
                                     opt =>
                                     opt.MapFrom(origen =>
-                                                origen.SecRolNavigation.Descripcion)); 
+                                                origen.SecRolNavigation.Descripcion));
 
             CreateMap<UsuarioVM, Usuario>()
                 .ForMember(destino =>
@@ -48,6 +59,180 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
                                             origen.InverseSecMenuPadreNavigation));
             #endregion
 
+            CreateMap<Provincia, ProvinciaVM>().ReverseMap();
+            CreateMap<Canton, CantonVM>().ReverseMap();
+
+
+
+            CreateMap<Parroquia, ParroquiaVM>().ReverseMap();
+
+            #region Visita
+
+            CreateMap<VisitaVM, Visita>()
+               .ForMember(destino =>
+                           destino.EstaActivo,
+                                   opt =>
+                                   opt.MapFrom(origen =>
+                                                      origen.EstaActivo == 1))
+                .ForMember(destino =>
+                           destino.SecProvinciaNavigation,
+                                   opt =>
+                                   opt.Ignore())
+                .ForMember(destino =>
+                           destino.SecCantonNavigation,
+                                   opt =>
+                                   opt.Ignore())
+                .ForMember(destino =>
+                           destino.SecParroquiaNavigation,
+                                   opt =>
+                                   opt.Ignore());
+
+
+
+            CreateMap<Visita, VisitaVM>()
+               .ForMember(destino =>
+                          destino.EstaActivo,
+                                  opt =>
+                                  opt.MapFrom(origen =>
+                                              origen.EstaActivo))
+               .ForMember(destino => destino.NombreProvincia,
+                           opt => opt.MapFrom(origen =>
+                                              origen.SecProvinciaNavigation.Nombre))
+               .ForMember(destino => destino.NombreCanton,
+                           opt => opt.MapFrom(origen =>
+                                              origen.SecCantonNavigation.Nombre))
+               .ForMember(destino => destino.NombreParroquia,
+                           opt => opt.MapFrom(origen =>
+                                              origen.SecParroquiaNavigation.Nombre))
+               ;
+
+            #endregion
+
+            #region TipoProducto
+            CreateMap<TipoProducto, TipoProductoVM>().ForMember(destino =>
+                          destino.EstaActivo,
+                                  opt =>
+                                  opt.MapFrom(origen =>
+                                              origen.EstaActivo));
+
+            CreateMap<TipoProductoVM, TipoProducto>().ForMember(destino =>
+                          destino.EstaActivo,
+                                  opt =>
+                                  opt.MapFrom(origen =>
+                                                     origen.EstaActivo == 1));
+            #endregion
+
+            #region Producto
+            CreateMap<Producto, ProductoVM>()
+                 .ForMember(destino =>
+                            destino.Precio, opt =>
+                                           opt.MapFrom(origen =>
+                                                      Math.Round(Convert.ToDecimal(origen.Precio), 2)))
+                .ForMember(destino =>
+                           destino.EstaActivo,
+                                   opt =>
+                                   opt.MapFrom(origen =>
+                                               origen.EstaActivo))
+                .ForMember(destino =>
+                           destino.NombreTipoProducto,
+                                    opt =>
+                                    opt.MapFrom(origen =>
+                                                origen.SecTipoProductoNavigation.Nombre));
+
+            CreateMap<ProductoVM, Producto>()
+                .ForMember(destino =>
+                           destino.EstaActivo,
+                                   opt =>
+                                   opt.MapFrom(origen =>
+                                                      origen.EstaActivo == 1))
+                .ForMember(destino =>
+                           destino.Precio, opt =>
+                                           opt.MapFrom(origen =>
+                                                      Math.Round(Convert.ToDecimal(origen.Precio), 2)))
+
+                .ForMember(destino =>
+                           destino.SecTipoProductoNavigation,
+                                   opt =>
+                                   opt.Ignore());
+            #endregion Producto
+
+            CreateMap<Catalogo, CatalogoVM>()
+                .ForMember(destino =>
+                           destino.EstaActivo,
+                                   opt =>
+                                   opt.MapFrom(origen =>
+                                               origen.EstaActivo));
+
+            CreateMap<CatalogoVM, Catalogo>()
+                .ForMember(destino =>
+                           destino.EstaActivo,
+                                   opt =>
+                                   opt.MapFrom(origen =>
+                                                      origen.EstaActivo == 1));
+
+
+            CreateMap<Constructora, ConstructoraVM>()
+            .ForMember(destino =>
+                       destino.EstaActivo,
+                               opt =>
+                               opt.MapFrom(origen =>
+                                           origen.EstaActivo));
+
+            CreateMap<ConstructoraVM, Constructora>()
+                .ForMember(destino =>
+                           destino.EstaActivo,
+                                   opt =>
+                                   opt.MapFrom(origen =>
+                                                      origen.EstaActivo == 1));
+
+            #region Contacto
+
+            CreateMap<Contacto, ContactoVM>()
+                .ForMember(destino =>
+                           destino.EstaActivo,
+                                   opt =>
+                                   opt.MapFrom(origen =>
+                                               origen.EstaActivo))
+                .ForMember(destino =>
+                           destino.NombreConstructora,
+                                    opt =>
+                                    opt.MapFrom(origen =>
+                                                origen.SecConstructoraNavigation.Nombre));
+
+            CreateMap<ContactoVM, Contacto>()
+                .ForMember(destino =>
+                           destino.EstaActivo,
+                                   opt =>
+                                   opt.MapFrom(origen =>
+                                                      origen.EstaActivo == 1))
+                .ForMember(destino =>
+                           destino.SecConstructoraNavigation,
+                                   opt =>
+                                   opt.Ignore());
+            #endregion usuar
+
+            CreateMap<Contactovisita, ContactoVisitaVM>()
+               .ForMember(destino =>
+                          destino.EstaActivo,
+                                  opt =>
+                                  opt.MapFrom(origen =>
+                                              origen.EstaActivo))
+               .ForMember(destino =>
+                          destino.SecConstructora,
+                                   opt =>
+                                   opt.MapFrom(origen =>
+                                               origen.SecContactoNavigation.SecConstructora)); ;
+
+            CreateMap<ContactoVisitaVM, Contactovisita>()
+                .ForMember(destino =>
+                           destino.EstaActivo,
+                                   opt =>
+                                   opt.MapFrom(origen =>
+                                                      origen.EstaActivo == 1))
+                .ForMember(destino =>
+                           destino.SecContactoNavigation,
+                                   opt =>
+                                   opt.Ignore()); ;
         }
     }
 }

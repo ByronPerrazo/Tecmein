@@ -23,13 +23,14 @@ namespace BLL.Implementacion
                             .Obtener(x =>
                                      x.SecEmpresa == 1);
 
-                var credenciales =
-                        new NetworkCredential(empresaCorreo.Email,
-                                              empresaCorreo.Clave);
+                var correoEmpresarial = empresaCorreo.Email;
+                var credenciales = 
+                    new NetworkCredential(correoEmpresarial,
+                                          empresaCorreo.Clave);
 
                 var correo = new MailMessage()
                 {
-                    From = new MailAddress(empresaCorreo.Email), // correo de Origen
+                    From = new MailAddress(address: correoEmpresarial), // correo de Origen
                     Subject = Asunto,
                     Body = Mensaje,
                     IsBodyHtml = true
@@ -49,6 +50,7 @@ namespace BLL.Implementacion
                     };
 
                 servidorCorreo.Send(correo);
+
                 respuesta = true;
             }
             catch (Exception)
