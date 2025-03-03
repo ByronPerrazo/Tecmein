@@ -46,6 +46,7 @@ public partial class TecmeindbContext : DbContext
 
     public virtual DbSet<Visita> Visita { get; set; }
 
+    public virtual DbSet<Equiposvisita> Equiposvisita { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -575,6 +576,69 @@ public partial class TecmeindbContext : DbContext
 
         });
 
+        modelBuilder.Entity<Equiposvisita>(entity =>
+        {
+            entity.HasKey(e => e.Secuencial).HasName("PRIMARY");
+
+            entity.ToTable("equiposvisita");
+
+            entity.HasIndex(e => e.Secuencial, "secuencial_UNIQUE").IsUnique();
+
+            entity.Property(e => e.Secuencial)
+                .ValueGeneratedNever()
+                .HasColumnName("secuencial");
+            entity.Property(e => e.AlturaEntrePisos).HasColumnName("alturaEntrePisos");
+            entity.Property(e => e.Cantidad).HasColumnName("cantidad");
+            entity.Property(e => e.Capacidad).HasColumnName("capacidad");
+            entity.Property(e => e.DimencionEntrada).HasColumnName("dimencionEntrada");
+            entity.Property(e => e.Embarque)
+                .HasMaxLength(50)
+                .HasColumnName("embarque");
+            entity.Property(e => e.Energia)
+                .HasMaxLength(50)
+                .HasColumnName("energia");
+            entity.Property(e => e.EstaActivo).HasColumnName("estaActivo");
+            entity.Property(e => e.Foso).HasColumnName("foso");
+            entity.Property(e => e.IngresosFrontales).HasColumnName("ingresosFrontales");
+            entity.Property(e => e.IngresosPosteriores).HasColumnName("ingresosPosteriores");
+            entity.Property(e => e.Marca)
+                .HasMaxLength(50)
+                .HasColumnName("marca");
+            entity.Property(e => e.MaterialPuertas)
+                .HasMaxLength(50)
+                .HasColumnName("materialPuertas");
+            entity.Property(e => e.MedidasAfducto)
+                .HasMaxLength(50)
+                .HasColumnName("medidasAFDucto");
+            entity.Property(e => e.NombresParadas)
+                .HasMaxLength(50)
+                .HasColumnName("nombresParadas");
+            entity.Property(e => e.NumeroParadas).HasColumnName("numeroParadas");
+            entity.Property(e => e.NumeroPersonas).HasColumnName("numeroPersonas");
+            entity.Property(e => e.Recorrido).HasColumnName("recorrido");
+            entity.Property(e => e.SalaControl)
+                .HasMaxLength(45)
+                .HasColumnName("salaControl");
+            entity.Property(e => e.SalaMaquinas)
+                .HasMaxLength(45)
+                .HasColumnName("salaMaquinas");
+            entity.Property(e => e.SecVisita).HasColumnName("secVisita");
+            entity.Property(e => e.Sistema)
+                .HasMaxLength(50)
+                .HasColumnName("sistema");
+            entity.Property(e => e.TipoDucto)
+                .HasMaxLength(50)
+                .HasColumnName("tipoDucto");
+            entity.Property(e => e.TipoEquipo)
+                .HasMaxLength(150)
+                .HasColumnName("tipoEquipo");
+            entity.Property(e => e.TipoMotor)
+                .HasMaxLength(50)
+                .HasColumnName("tipoMotor");
+            entity.Property(e => e.Velocidad)
+                .HasPrecision(18, 2)
+                .HasColumnName("velocidad");
+        });
 
         OnModelCreatingPartial(modelBuilder);
     }

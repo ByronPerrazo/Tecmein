@@ -36,38 +36,43 @@ namespace BLL.Implementacion
 
         public async Task<Contactovisita?> ProcesaGuardarContactoVisita(Contactovisita entidad)
         {
-            Contactovisita? regitroGuardado = null;
+            Contactovisita? registroGuardado = null;
 
             if (await _repositorio.Obtener(x => x.SecVisita == entidad.SecVisita) == null)
             {
-                regitroGuardado = await _repositorio.Crear(entidad);
+                registroGuardado = await _repositorio.Crear(entidad);
 
-                regitroGuardado
+                registroGuardado
                     .SecContactoNavigation
                      = await _contactoServices
                      .ContactoPorSecuencial(entidad.SecContacto);
             }
 
-            if (regitroGuardado == null)
+            if (registroGuardado == null)
             {
                 var registro
                     = _repositorio
                     .Consultar(x =>
-                               x.SecVisita == entidad.SecVisita &&
-                               x.SecContacto == entidad.SecContacto)
+                               x.SecVisita == entidad.SecVisita)
                     .Result
                     .Include(x => x.SecContactoNavigation)
                     .FirstOrDefault();
 
                 if (registro != null)
-                {
+                {    
+                    var contactoSeleccionado = 
+                    _contactoServices.ContactoPorSecuencial(entidad.SecContacto)
+                    ?? throw new TaskCanceledException($"Registro Secuencial Contacto {entidad.SecContacto} No Existe");
+
                     registro.SecContacto = entidad.SecContacto;
-                    await _repositorio.Editar(registro);
-                    regitroGuardado = registro;
+                    registro.SecContactoNavigation = await contactoSeleccionado;
+
+                    if (await _repositorio.Editar(registro))
+                        registroGuardado = registro;
                 }
             }
 
-            return regitroGuardado;
+            return registroGuardado;
         }
 
         public async Task<Contactovisita> CrearContactoVisita(Contactovisita entidad)

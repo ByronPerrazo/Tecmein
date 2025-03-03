@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "ZkIWJg427Aw=",
+  "dgSpecHash": "dbyrduTlNVA=",
   "success": true,
   "projectFilePath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\TecmeinWebApp.csproj",
   "expectedPackageFiles": [
@@ -224,12 +224,5 @@
     "C:\\Users\\darkb\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512",
     "C:\\Users\\darkb\\.nuget\\packages\\zstdsharp.port\\0.8.0\\zstdsharp.port.0.8.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1900",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Error al obtener los datos de vulnerabilidad del paquete: No se puede cargar el índice de servicio del origen https://api.nuget.org/v3/index.json."
-    }
-  ]
+  "logs": []
 }

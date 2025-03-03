@@ -11,7 +11,7 @@ namespace BLL.Interfaces
         Task<Usuario> Editar(Usuario entidad, Stream? Foto = null, string? NombreFoto = "", string cabeceraUrlCorreo = "");
         Task<bool> Eliminar(int secuencialUsuario);
         Task<bool> GuardarPerfil(Usuario entidad);
-        Task<Usuario> ExistePorSecuencial(int secuencialUsuario);
+        Task<Usuario?> ExistePorSecuencial(int secuencialUsuario);
         Task<Usuario> OtenerPorCredenciales(string correo, string clave);
         Task<bool> RestablecerClave(string? correoDestino, string urlPantillaCorreo = "");
 

@@ -251,13 +251,16 @@ namespace BLL.Implementacion
                 throw;
             }
         }
-        public async Task<Usuario> ExistePorSecuencial(int secuencialUsuario)
+        public async Task<Usuario?> ExistePorSecuencial(int secuencialUsuario)
         {
             var query = await _repositorio.Consultar();
-            query.Where(x => x.Secuencial == secuencialUsuario)
-                 .Include(x => x.SecRolNavigation)
-                 .FirstOrDefault();
-            return (Usuario)query;
+
+            Usuario? usuario =
+                      query.Where(x => x.Secuencial == secuencialUsuario)
+                     .Include(x => x.SecRolNavigation)
+                     .FirstOrDefault();
+
+            return usuario;
         }
         public async Task<Usuario> OtenerPorCredenciales(string correo, string clave)
         {

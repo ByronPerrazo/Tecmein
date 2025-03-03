@@ -232,7 +232,27 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
                 .ForMember(destino =>
                            destino.SecContactoNavigation,
                                    opt =>
-                                   opt.Ignore()); ;
+                                   opt.Ignore());
+
+            #region ProductosVisita
+
+            CreateMap<Equiposvisita, EquiposVisitaVM>()
+              .ForMember(destino =>
+                         destino.EstaActivo,
+                                 opt =>
+                                 opt.MapFrom(origen =>
+                                             origen.EstaActivo));
+             
+
+            CreateMap<EquiposVisitaVM, Equiposvisita>()
+                .ForMember(destino =>
+                           destino.EstaActivo,
+                                   opt =>
+                                   opt.MapFrom(origen =>
+                                                      origen.EstaActivo == 1));
+            #endregion
+
+
         }
     }
 }

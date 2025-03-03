@@ -3,16 +3,16 @@
   "WorkspaceRootPath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\tecmeinaplicacionweb\\wwwroot\\js\\vistas\\visita_index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|solutionrelative:tecmeinaplicacionweb\\wwwroot\\js\\vistas\\visita_index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\tecmeinaplicacionweb\\wwwroot\\js\\vistas\\visita_contacto_index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|solutionrelative:tecmeinaplicacionweb\\wwwroot\\js\\vistas\\visita_contacto_index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\tecmeinaplicacionweb\\views\\visita\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|solutionrelative:tecmeinaplicacionweb\\views\\visita\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\tecmeinaplicacionweb\\wwwroot\\js\\vistas\\visita_index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|solutionrelative:tecmeinaplicacionweb\\wwwroot\\js\\vistas\\visita_index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\tecmeinaplicacionweb\\controllers\\visitacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -23,68 +23,64 @@
       "RelativeMoniker": "D:0:0:{1982D57A-0562-4C36-8542-90259E1DC3F9}|BLL\\BLL.csproj|solutionrelative:bll\\implementacion\\contactovisitaservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{58F46457-D310-4A29-A9B6-EFA0225651D7}|Entity\\Entity.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\entity\\contactovisita.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{58F46457-D310-4A29-A9B6-EFA0225651D7}|Entity\\Entity.csproj|solutionrelative:entity\\contactovisita.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{58F46457-D310-4A29-A9B6-EFA0225651D7}|Entity\\Entity.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\entity\\contacto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{58F46457-D310-4A29-A9B6-EFA0225651D7}|Entity\\Entity.csproj|solutionrelative:entity\\contacto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{4FE377FD-374E-4C33-9A20-4BDA33DA270F}|DAL\\DAL.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\dal\\interfaces\\igenericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4FE377FD-374E-4C33-9A20-4BDA33DA270F}|DAL\\DAL.csproj|solutionrelative:dal\\interfaces\\igenericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{1982D57A-0562-4C36-8542-90259E1DC3F9}|BLL\\BLL.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\bll\\interfaces\\icontactovisitaservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{1982D57A-0562-4C36-8542-90259E1DC3F9}|BLL\\BLL.csproj|solutionrelative:bll\\interfaces\\icontactovisitaservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{58F46457-D310-4A29-A9B6-EFA0225651D7}|Entity\\Entity.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\entity\\visita.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{58F46457-D310-4A29-A9B6-EFA0225651D7}|Entity\\Entity.csproj|solutionrelative:entity\\visita.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1982D57A-0562-4C36-8542-90259E1DC3F9}|BLL\\BLL.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\bll\\implementacion\\correoservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1982D57A-0562-4C36-8542-90259E1DC3F9}|BLL\\BLL.csproj|solutionrelative:bll\\implementacion\\correoservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1982D57A-0562-4C36-8542-90259E1DC3F9}|BLL\\BLL.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\bll\\implementacion\\visitaservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1982D57A-0562-4C36-8542-90259E1DC3F9}|BLL\\BLL.csproj|solutionrelative:bll\\implementacion\\visitaservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1982D57A-0562-4C36-8542-90259E1DC3F9}|BLL\\BLL.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\bll\\implementacion\\usuarioservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1982D57A-0562-4C36-8542-90259E1DC3F9}|BLL\\BLL.csproj|solutionrelative:bll\\implementacion\\usuarioservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4FE377FD-374E-4C33-9A20-4BDA33DA270F}|DAL\\DAL.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\dal\\dbcontext\\tecmeindbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4FE377FD-374E-4C33-9A20-4BDA33DA270F}|DAL\\DAL.csproj|solutionrelative:dal\\dbcontext\\tecmeindbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1982D57A-0562-4C36-8542-90259E1DC3F9}|BLL\\BLL.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\bll\\implementacion\\contactoservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1982D57A-0562-4C36-8542-90259E1DC3F9}|BLL\\BLL.csproj|solutionrelative:bll\\implementacion\\contactoservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1982D57A-0562-4C36-8542-90259E1DC3F9}|BLL\\BLL.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\bll\\interfaces\\icontactoservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1982D57A-0562-4C36-8542-90259E1DC3F9}|BLL\\BLL.csproj|solutionrelative:bll\\interfaces\\icontactoservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\tecmeinaplicacionweb\\utilidades\\automapper\\automapperprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|solutionrelative:tecmeinaplicacionweb\\utilidades\\automapper\\automapperprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1982D57A-0562-4C36-8542-90259E1DC3F9}|BLL\\BLL.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\bll\\interfaces\\ivisitaservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1982D57A-0562-4C36-8542-90259E1DC3F9}|BLL\\BLL.csproj|solutionrelative:bll\\interfaces\\ivisitaservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4FE377FD-374E-4C33-9A20-4BDA33DA270F}|DAL\\DAL.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\dal\\interfaces\\igenericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4FE377FD-374E-4C33-9A20-4BDA33DA270F}|DAL\\DAL.csproj|solutionrelative:dal\\interfaces\\igenericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{58F46457-D310-4A29-A9B6-EFA0225651D7}|Entity\\Entity.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\entity\\contacto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{58F46457-D310-4A29-A9B6-EFA0225651D7}|Entity\\Entity.csproj|solutionrelative:entity\\contacto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{4FE377FD-374E-4C33-9A20-4BDA33DA270F}|DAL\\DAL.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\dal\\implementacion\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4FE377FD-374E-4C33-9A20-4BDA33DA270F}|DAL\\DAL.csproj|solutionrelative:dal\\implementacion\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\tecmeinaplicacionweb\\utilidades\\response\\genericresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|solutionrelative:tecmeinaplicacionweb\\utilidades\\response\\genericresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1982D57A-0562-4C36-8542-90259E1DC3F9}|BLL\\BLL.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\bll\\interfaces\\icorreoservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1982D57A-0562-4C36-8542-90259E1DC3F9}|BLL\\BLL.csproj|solutionrelative:bll\\interfaces\\icorreoservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\tecmeinaplicacionweb\\models\\viewmodel\\loginusuariovm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|solutionrelative:tecmeinaplicacionweb\\models\\viewmodel\\loginusuariovm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1FE8646A-14A0-4353-A900-B51C420AC77B}|IOC\\IOC.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\ioc\\dependencia.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1FE8646A-14A0-4353-A900-B51C420AC77B}|IOC\\IOC.csproj|solutionrelative:ioc\\dependencia.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4FE377FD-374E-4C33-9A20-4BDA33DA270F}|DAL\\DAL.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\dal\\dbcontext\\tecmeindbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4FE377FD-374E-4C33-9A20-4BDA33DA270F}|DAL\\DAL.csproj|solutionrelative:dal\\dbcontext\\tecmeindbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\tecmeinaplicacionweb\\utilidades\\automapper\\automapperprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|solutionrelative:tecmeinaplicacionweb\\utilidades\\automapper\\automapperprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1982D57A-0562-4C36-8542-90259E1DC3F9}|BLL\\BLL.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\bll\\implementacion\\contactoservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1982D57A-0562-4C36-8542-90259E1DC3F9}|BLL\\BLL.csproj|solutionrelative:bll\\implementacion\\contactoservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\tecmeinaplicacionweb\\models\\viewmodel\\equiposvisitavm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|solutionrelative:tecmeinaplicacionweb\\models\\viewmodel\\equiposvisitavm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\tecmeinaplicacionweb\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|solutionrelative:tecmeinaplicacionweb\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\tecmeinaplicacionweb\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|solutionrelative:tecmeinaplicacionweb\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{58F46457-D310-4A29-A9B6-EFA0225651D7}|Entity\\Entity.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\entity\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{58F46457-D310-4A29-A9B6-EFA0225651D7}|Entity\\Entity.csproj|solutionrelative:entity\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1982D57A-0562-4C36-8542-90259E1DC3F9}|BLL\\BLL.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\bll\\implementacion\\parroquiaservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1982D57A-0562-4C36-8542-90259E1DC3F9}|BLL\\BLL.csproj|solutionrelative:bll\\implementacion\\parroquiaservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|c:\\proyectos\\tecmein\\so\\soluciontecmein\\tecmeinaplicacionweb\\controllers\\usuariocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1B15B022-8E46-4529-9746-2ED9E07C2B5B}|TecmeinAplicacionWeb\\TecmeinWebApp.csproj|solutionrelative:tecmeinaplicacionweb\\controllers\\usuariocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -93,50 +89,44 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 124,
-          "SelectedChildIndex": 22,
+          "DockedWidth": 297,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "VisitaController.cs",
-              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Controllers\\VisitaController.cs",
-              "RelativeDocumentMoniker": "TecmeinAplicacionWeb\\Controllers\\VisitaController.cs",
-              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Controllers\\VisitaController.cs",
-              "RelativeToolTip": "TecmeinAplicacionWeb\\Controllers\\VisitaController.cs",
-              "ViewState": "AgIAADIAAAAAAAAAAAAUwDcAAAA8AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-12T15:00:51.486Z",
+              "DocumentIndex": 2,
+              "Title": "Visita_Index.js",
+              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Visita_Index.js",
+              "RelativeDocumentMoniker": "TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Visita_Index.js",
+              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Visita_Index.js",
+              "RelativeToolTip": "TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Visita_Index.js",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAABkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-01-03T16:13:50.276Z",
               "IsPinned": true,
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "ContactoVisitaServices.cs",
-              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Implementacion\\ContactoVisitaServices.cs",
-              "RelativeDocumentMoniker": "BLL\\Implementacion\\ContactoVisitaServices.cs",
-              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Implementacion\\ContactoVisitaServices.cs",
-              "RelativeToolTip": "BLL\\Implementacion\\ContactoVisitaServices.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAIwBsAAAAeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-23T14:39:05.625Z",
+              "DocumentIndex": 0,
+              "Title": "Visita_Contacto_Index.js",
+              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Visita_Contacto_Index.js",
+              "RelativeDocumentMoniker": "TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Visita_Contacto_Index.js",
+              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Visita_Contacto_Index.js",
+              "RelativeToolTip": "TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Visita_Contacto_Index.js",
+              "ViewState": "AgIAAFcAAAAAAAAAAAArwG0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-02-19T15:21:42.838Z",
               "IsPinned": true,
               "EditorCaption": ""
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Visita.cs",
-              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\Entity\\Visita.cs",
-              "RelativeDocumentMoniker": "Entity\\Visita.cs",
-              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\Entity\\Visita.cs",
-              "RelativeToolTip": "Entity\\Visita.cs",
-              "ViewState": "AgIAABYAAAAAAAAAAAAYwBwAAAAEAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-28T15:50:39.215Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
             {
               "$type": "Bookmark",
@@ -155,8 +145,77 @@
               "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ContactoVisitaServices.cs",
+              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Implementacion\\ContactoVisitaServices.cs",
+              "RelativeDocumentMoniker": "BLL\\Implementacion\\ContactoVisitaServices.cs",
+              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Implementacion\\ContactoVisitaServices.cs",
+              "RelativeToolTip": "BLL\\Implementacion\\ContactoVisitaServices.cs",
+              "ViewState": "AgIAAC8AAAAAAAAAAAAgwDoAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-26T17:21:15.792Z",
+              "EditorCaption": ""
+            },
+            {
               "$type": "Document",
               "DocumentIndex": 6,
+              "Title": "IContactoVisitaServices.cs",
+              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Interfaces\\IContactoVisitaServices.cs",
+              "RelativeDocumentMoniker": "BLL\\Interfaces\\IContactoVisitaServices.cs",
+              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Interfaces\\IContactoVisitaServices.cs",
+              "RelativeToolTip": "BLL\\Interfaces\\IContactoVisitaServices.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAgAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-02T04:59:35.429Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "VisitaController.cs",
+              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Controllers\\VisitaController.cs",
+              "RelativeDocumentMoniker": "TecmeinAplicacionWeb\\Controllers\\VisitaController.cs",
+              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Controllers\\VisitaController.cs",
+              "RelativeToolTip": "TecmeinAplicacionWeb\\Controllers\\VisitaController.cs",
+              "ViewState": "AgIAAJkAAAAAAAAAAAAawKcAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-04T13:41:28.038Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Views\\Visita\\Index.cshtml",
+              "RelativeDocumentMoniker": "TecmeinAplicacionWeb\\Views\\Visita\\Index.cshtml",
+              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Views\\Visita\\Index.cshtml",
+              "RelativeToolTip": "TecmeinAplicacionWeb\\Views\\Visita\\Index.cshtml",
+              "ViewState": "AgIAACABAAAAAAAAAAAjwDMBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-01-03T16:13:13.687Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "IGenericRepository.cs",
+              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\DAL\\Interfaces\\IGenericRepository.cs",
+              "RelativeDocumentMoniker": "DAL\\Interfaces\\IGenericRepository.cs",
+              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\DAL\\Interfaces\\IGenericRepository.cs",
+              "RelativeToolTip": "DAL\\Interfaces\\IGenericRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-02T05:58:43.935Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "Contacto.cs",
               "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\Entity\\Contacto.cs",
               "RelativeDocumentMoniker": "Entity\\Contacto.cs",
@@ -164,20 +223,59 @@
               "RelativeToolTip": "Entity\\Contacto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-19T15:57:54.955Z",
+              "WhenOpened": "2025-03-02T05:22:54.905Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "CorreoServices.cs",
-              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Implementacion\\CorreoServices.cs",
-              "RelativeDocumentMoniker": "BLL\\Implementacion\\CorreoServices.cs",
-              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Implementacion\\CorreoServices.cs",
-              "RelativeToolTip": "BLL\\Implementacion\\CorreoServices.cs",
-              "ViewState": "AgIAAAoAAAAAAAAAAAAIwBYAAAApAAAAAAAAAA==",
+              "DocumentIndex": 8,
+              "Title": "GenericRepository.cs",
+              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\DAL\\Implementacion\\GenericRepository.cs",
+              "RelativeDocumentMoniker": "DAL\\Implementacion\\GenericRepository.cs",
+              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\DAL\\Implementacion\\GenericRepository.cs",
+              "RelativeToolTip": "DAL\\Implementacion\\GenericRepository.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAEwBoAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-16T23:59:36.995Z",
+              "WhenOpened": "2025-03-02T05:12:24.449Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Dependencia.cs",
+              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\IOC\\Dependencia.cs",
+              "RelativeDocumentMoniker": "IOC\\Dependencia.cs",
+              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\IOC\\Dependencia.cs",
+              "RelativeToolTip": "IOC\\Dependencia.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAQwBcAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-12T17:10:32.491Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "TecmeindbContext.cs",
+              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\DAL\\DBContext\\TecmeindbContext.cs",
+              "RelativeDocumentMoniker": "DAL\\DBContext\\TecmeindbContext.cs",
+              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\DAL\\DBContext\\TecmeindbContext.cs",
+              "RelativeToolTip": "DAL\\DBContext\\TecmeindbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIoAAABIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-27T15:08:01.161Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "AutoMapperProfile.cs",
+              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Utilidades\\AutoMapper\\AutoMapperProfile.cs",
+              "RelativeDocumentMoniker": "TecmeinAplicacionWeb\\Utilidades\\AutoMapper\\AutoMapperProfile.cs",
+              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Utilidades\\AutoMapper\\AutoMapperProfile.cs",
+              "RelativeToolTip": "TecmeinAplicacionWeb\\Utilidades\\AutoMapper\\AutoMapperProfile.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAMkAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-14T16:16:59.521Z",
               "EditorCaption": ""
             },
             {
@@ -188,199 +286,100 @@
               "RelativeDocumentMoniker": "BLL\\Implementacion\\ContactoServices.cs",
               "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Implementacion\\ContactoServices.cs",
               "RelativeToolTip": "BLL\\Implementacion\\ContactoServices.cs",
-              "ViewState": "AgIAAFIAAAAAAAAAAAAEwF4AAAAqAAAAAAAAAA==",
+              "ViewState": "AgIAAFAAAAAAAAAAAAAiwGAAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-16T22:29:32.4Z",
+              "WhenOpened": "2025-02-25T18:09:46.127Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "ICorreoServices.cs",
+              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Interfaces\\ICorreoServices.cs",
+              "RelativeDocumentMoniker": "BLL\\Interfaces\\ICorreoServices.cs",
+              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Interfaces\\ICorreoServices.cs",
+              "RelativeToolTip": "BLL\\Interfaces\\ICorreoServices.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-02T01:37:33.971Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 14,
-              "Title": "IContactoServices.cs",
-              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Interfaces\\IContactoServices.cs",
-              "RelativeDocumentMoniker": "BLL\\Interfaces\\IContactoServices.cs",
-              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Interfaces\\IContactoServices.cs",
-              "RelativeToolTip": "BLL\\Interfaces\\IContactoServices.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAoAAAAwAAAAAAAAAA==",
+              "Title": "EquiposVisitaVM.cs",
+              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Models\\ViewModel\\EquiposVisitaVM.cs",
+              "RelativeDocumentMoniker": "TecmeinAplicacionWeb\\Models\\ViewModel\\EquiposVisitaVM.cs",
+              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Models\\ViewModel\\EquiposVisitaVM.cs",
+              "RelativeToolTip": "TecmeinAplicacionWeb\\Models\\ViewModel\\EquiposVisitaVM.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAowAIAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-16T22:29:19.612Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "UsuarioServices.cs",
-              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Implementacion\\UsuarioServices.cs",
-              "RelativeDocumentMoniker": "BLL\\Implementacion\\UsuarioServices.cs",
-              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Implementacion\\UsuarioServices.cs",
-              "RelativeToolTip": "BLL\\Implementacion\\UsuarioServices.cs",
-              "ViewState": "AgIAAFAAAAAAAAAAAAAcwF4AAAAwAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-16T22:20:31.535Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "TecmeindbContext.cs",
-              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\DAL\\DBContext\\TecmeindbContext.cs",
-              "RelativeDocumentMoniker": "DAL\\DBContext\\TecmeindbContext.cs",
-              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\DAL\\DBContext\\TecmeindbContext.cs",
-              "RelativeToolTip": "DAL\\DBContext\\TecmeindbContext.cs",
-              "ViewState": "AgIAADICAAAAAAAAAAAEwD4CAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-28T16:00:42.588Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "AutoMapperProfile.cs",
-              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Utilidades\\AutoMapper\\AutoMapperProfile.cs",
-              "RelativeDocumentMoniker": "TecmeinAplicacionWeb\\Utilidades\\AutoMapper\\AutoMapperProfile.cs",
-              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Utilidades\\AutoMapper\\AutoMapperProfile.cs",
-              "RelativeToolTip": "TecmeinAplicacionWeb\\Utilidades\\AutoMapper\\AutoMapperProfile.cs",
-              "ViewState": "AgIAAD4AAAAAAAAAAAAYwFIAAAAjAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-28T16:00:11.231Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "VisitaServices.cs",
-              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Implementacion\\VisitaServices.cs",
-              "RelativeDocumentMoniker": "BLL\\Implementacion\\VisitaServices.cs",
-              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Implementacion\\VisitaServices.cs",
-              "RelativeToolTip": "BLL\\Implementacion\\VisitaServices.cs",
-              "ViewState": "AgIAAAoAAAAAAAAAAAA1wHgAAAAmAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-28T15:49:17.221Z",
+              "WhenOpened": "2025-02-14T16:13:43.48Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 16,
-              "Title": "IVisitaServices.cs",
-              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Interfaces\\IVisitaServices.cs",
-              "RelativeDocumentMoniker": "BLL\\Interfaces\\IVisitaServices.cs",
-              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Interfaces\\IVisitaServices.cs",
-              "RelativeToolTip": "BLL\\Interfaces\\IVisitaServices.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAgAAAAbAAAAAAAAAA==",
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Program.cs",
+              "RelativeDocumentMoniker": "TecmeinAplicacionWeb\\Program.cs",
+              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Program.cs",
+              "RelativeToolTip": "TecmeinAplicacionWeb\\Program.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-28T15:49:09.382Z"
+              "WhenOpened": "2025-02-13T16:03:07.508Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "GenericRepository.cs",
-              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\DAL\\Implementacion\\GenericRepository.cs",
-              "RelativeDocumentMoniker": "DAL\\Implementacion\\GenericRepository.cs",
-              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\DAL\\Implementacion\\GenericRepository.cs",
-              "RelativeToolTip": "DAL\\Implementacion\\GenericRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAXAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-28T15:13:40.692Z"
+              "DocumentIndex": 15,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\appsettings.json",
+              "RelativeDocumentMoniker": "TecmeinAplicacionWeb\\appsettings.json",
+              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\appsettings.json",
+              "RelativeToolTip": "TecmeinAplicacionWeb\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-12-27T23:50:23.627Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 17,
-              "Title": "IGenericRepository.cs",
-              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\DAL\\Interfaces\\IGenericRepository.cs",
-              "RelativeDocumentMoniker": "DAL\\Interfaces\\IGenericRepository.cs",
-              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\DAL\\Interfaces\\IGenericRepository.cs",
-              "RelativeToolTip": "DAL\\Interfaces\\IGenericRepository.cs",
-              "ViewState": "AgIAAAEAAAAAAAAAAAAewAoAAAAiAAAAAAAAAA==",
+              "Title": "Usuario.cs",
+              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\Entity\\Usuario.cs",
+              "RelativeDocumentMoniker": "Entity\\Usuario.cs",
+              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\Entity\\Usuario.cs",
+              "RelativeToolTip": "Entity\\Usuario.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAQwBYAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-28T15:13:32.996Z"
+              "WhenOpened": "2025-02-13T15:30:49.315Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "ParroquiaServices.cs",
+              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Implementacion\\ParroquiaServices.cs",
+              "RelativeDocumentMoniker": "BLL\\Implementacion\\ParroquiaServices.cs",
+              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Implementacion\\ParroquiaServices.cs",
+              "RelativeToolTip": "BLL\\Implementacion\\ParroquiaServices.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAgAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-06T17:09:45.917Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 19,
-              "Title": "GenericResponse.cs",
-              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Utilidades\\Response\\GenericResponse.cs",
-              "RelativeDocumentMoniker": "TecmeinAplicacionWeb\\Utilidades\\Response\\GenericResponse.cs",
-              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Utilidades\\Response\\GenericResponse.cs",
-              "RelativeToolTip": "TecmeinAplicacionWeb\\Utilidades\\Response\\GenericResponse.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAsAAAAAAAAAA==",
+              "Title": "UsuarioController.cs",
+              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Controllers\\UsuarioController.cs",
+              "RelativeDocumentMoniker": "TecmeinAplicacionWeb\\Controllers\\UsuarioController.cs",
+              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Controllers\\UsuarioController.cs",
+              "RelativeToolTip": "TecmeinAplicacionWeb\\Controllers\\UsuarioController.cs",
+              "ViewState": "AgIAADcAAAAAAAAAAAAcwEYAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-24T14:49:57.809Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "IContactoVisitaServices.cs",
-              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Interfaces\\IContactoVisitaServices.cs",
-              "RelativeDocumentMoniker": "BLL\\Interfaces\\IContactoVisitaServices.cs",
-              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\Interfaces\\IContactoVisitaServices.cs",
-              "RelativeToolTip": "BLL\\Interfaces\\IContactoVisitaServices.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAkAAAAeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-24T14:23:34.054Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "LoginUsuarioVM.cs",
-              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Models\\ViewModel\\LoginUsuarioVM.cs",
-              "RelativeDocumentMoniker": "TecmeinAplicacionWeb\\Models\\ViewModel\\LoginUsuarioVM.cs",
-              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Models\\ViewModel\\LoginUsuarioVM.cs",
-              "RelativeToolTip": "TecmeinAplicacionWeb\\Models\\ViewModel\\LoginUsuarioVM.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-24T13:23:35.198Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Contactovisita.cs",
-              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\Entity\\Contactovisita.cs",
-              "RelativeDocumentMoniker": "Entity\\Contactovisita.cs",
-              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\Entity\\Contactovisita.cs",
-              "RelativeToolTip": "Entity\\Contactovisita.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-24T13:18:56.703Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Visita_Index.js",
-              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Visita_Index.js",
-              "RelativeDocumentMoniker": "TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Visita_Index.js",
-              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Visita_Index.js",
-              "RelativeToolTip": "TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Visita_Index.js",
-              "ViewState": "AgIAAKMAAAAAAAAAAAAowKcAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2024-10-23T14:35:20.557Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Views\\Visita\\Index.cshtml",
-              "RelativeDocumentMoniker": "TecmeinAplicacionWeb\\Views\\Visita\\Index.cshtml",
-              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Views\\Visita\\Index.cshtml",
-              "RelativeToolTip": "TecmeinAplicacionWeb\\Views\\Visita\\Index.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIBAABGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-24T13:04:57.56Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Visita_Contacto_Index.js",
-              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Visita_Contacto_Index.js",
-              "RelativeDocumentMoniker": "TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Visita_Contacto_Index.js",
-              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Visita_Contacto_Index.js",
-              "RelativeToolTip": "TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Visita_Contacto_Index.js",
-              "ViewState": "AgIAAC4AAAAAAAAAAAAgwEUAAAALAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2024-10-23T14:35:11.775Z",
+              "WhenOpened": "2024-12-05T00:42:17.149Z",
               "EditorCaption": ""
             }
           ]

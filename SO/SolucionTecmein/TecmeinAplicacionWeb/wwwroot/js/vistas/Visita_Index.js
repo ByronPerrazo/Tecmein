@@ -16,17 +16,13 @@
     estaActivo: 1,
 }
 
-const MODELO_VISITA_CONTACTO = {
-    secuencial: 0,
-    secVisita:"",
-    secContacto: "",
-    estaActivo: 1,
-}
-
 let tablaData;
 let listaCompletaProvincias;
 let listaCompletaCanton;
 let listaCompletaParroquia;
+
+
+
 $(document).ready(function () {
     
    
@@ -149,54 +145,23 @@ $(document).ready(function () {
         )
         .then(
             respuestaJson => {
-                listaCompletaProvincias = respuestaJson;
                 respuestaJson
                     .forEach(item => {
                         $("#cboEmpresa")
                             .append(
                                 $("<option>")
-                                    .val(respuestaJson.secConstructora)
+                                    .val(item.secuencial)
+                                    .text(item.nombre)
                             );
-                      
                     })
-
             }
         )
         .catch(error => {
             console.error('Error al obtener la lista de Constructora:', error);
         });
 
-    fetch("Contactos")
-        .then(
-            respuesta => {
-                return respuesta.ok
-                    ? respuesta.json()
-                    : Promise.reject(respuesta);
-            }
-        )
-        .then(
-            respuestaJson => {
-                respuestaJson
-                    .forEach(item => {
-                        if (item.secConstructora == contrucSelect) {
 
-                            contactosLista.push(item);
-                            $("#cboContactos")
-                                .append(
-                                    $("<option>")
-                                        .val(item.secuencial)
-                                        .text(item.nombres + ' ' + item.apellidos)
-                                )
-                        }
-                    })
-                cboContactos.value = '-1';
-            }
-        )
-        .catch(error => {
-            console.error('Error al obtener la lista de Contactos:', error);
-        });
-
-    tablaData =
+     tablaData =
         $('#tbdata').DataTable({
             responsive: true,
             "ajax": {
@@ -229,10 +194,12 @@ $(document).ready(function () {
                 {
                     "defaultContent":
                         '<button class="btn btn-primary btn-editar btn-sm mr-2"><i class="fas fa-pencil-alt"></i></button>' +
+                        '<button class="btn btn-primary btn-default btn-sm mr-2"><i class="fas fa-file-alt"></i></button>' +
+                        '<button class="btn btn-primary btn-info btn-sm mr-2"><i class="fas fa-list-alt"></i></button>' +
                         '<button class="btn btn-danger btn-eliminar btn-sm mr-2"><i class="fas fa-trash-alt"></i></button>',
-                    "orderable": false,
+                    "orderable": true,
                     "searchable": false,
-                    "width": "120px"
+                    "width": "160px"
                 }
             ],
             order: [[0, "desc"]],
@@ -277,16 +244,14 @@ function mostrarDiv() {
     const contenedores = document.querySelectorAll('.DetalleVisita');
     contenedores.forEach(div => div.style.display = 'none');
 
- 
-
     const seleccion = document.getElementById('cboEtapaObra').value;
     document.getElementById('detalleVisita_Vista').style.display = 'none';
     document.getElementById('Datos_ContratoObra').style.display = 'none'
-    if (seleccion != 'VIS') {
-        document.getElementById('detalleVisita_Vista').style.display = 'block';
-        document.getElementById('Datos_ContratoObra').style.display = 'block'
+    //if (seleccion != 'VIS') {
+    //    document.getElementById('detalleVisita_Vista').style.display = 'block';
+    //    document.getElementById('Datos_ContratoObra').style.display = 'block'
        
-    }
+    //}
     estadoVisita = seleccion;
 
     document.getElementById('div_fechaContrato').style.display = 'none';
@@ -420,51 +385,14 @@ function mostrarModalVisita(modeloVisita = MODELO_BASEVISITA) {
     $("#txtDescripcion").val(modeloVisita.detalle)
     //ejecutra llamada adicionales basados en el secuencial de la visita
 
-    fetch(`VisitaContacto?secuencialVisita=${modeloVisita.secuencial}`, {
-        method: "GET"
-    })
-        .then(
-            respuesta => {
-                return respuesta.ok
-                    ? respuesta.json()
-                    : Promise.reject(respuesta);
-            }
-        )
-        .then(
-            respuestaJson => {
-                println(respuestaJson);
-     
-                        $("#cboEmpresa")
-                            .append(
-                                $("<option>")
-                                    .val(respuestaJson.secConstructora)
-                            );
-                        $("#cboContactos")
-                            .append(
-                                $("<option>")
-                                    .val(respuestaJson.secContacto)
-                            );
-                    
-            }
-        )
-        .catch(error => {
-            console.error('Error al obtener la lista de Operadores:', error);
-        });
-
 
     $("#modalData").modal("show")
 };
-function limpiarFormularioModalContacto() {
-    $("#cboEmpresa").val($("#cboEmpresa option:first").val());
-    $("#cboContactos").val($("#cboContactos option:first").val());
-    
-}
-function mostrarModalVisitaContacto(mdlVisitaContacto = MODELO_VISITA_CONTACTO) {
 
-    $("#cboEmpresa").val(mdlVisitaContacto.secConstructora == "" ? $("#cboEmpresa option:first").val() : mdlVisitaContacto.secConstructora)
-    $("#cboContactos").val(mdlVisitaContacto.secContacto == "" ? $("#cboContactos option:first").val() : mdlVisitaContacto.secContacto)
-    
-};
+function mostralModalDetalleProductos(){
+
+    $("#modalDataDetalleVisita").modal("show")
+}
 
 function loadDateFromString(dateString) {
     if( !(!dateString || dateString.trim() === "")) {
@@ -491,7 +419,6 @@ function loadDateFromString(dateString) {
     }
 }
 
-
 let esEdicion;
 $("#btnNuevo").click(function () {
     limpiarFormularioModal();
@@ -510,6 +437,7 @@ $("#btnNuevo").click(function () {
 
     mostrarModalVisita(MODELO_BASEVISITA)
 })
+
 $("#btnGuardarVisitas").click(function () {
 
     const inputs = $("input.input-validar").serializeArray();
@@ -631,49 +559,7 @@ $("#btnGuardarVisitas").click(function () {
             });
 
     }
-
-
-    limpiarFormularioModalContacto();
-    mostrarModalVisitaContacto(MODELO_VISITA_CONTACTO)
-
-    const modeloContactoVisita = structuredClone(MODELO_VISITA_CONTACTO);
-
-          modeloContactoVisita["secVisita"] = $("#txtId").val().trim() == "" ? "0" : $("#txtId").val().trim();
-          modeloContactoVisita["secContacto"] = parseInt($("#cboContactos").val());
-          modeloContactoVisita["estaActivo"] = $("#cboEstado").val();
-
-    const datosContactoVisita = new FormData();
-          datosContactoVisita.append("modelo", JSON.stringify(modeloContactoVisita));
-
-    //CrearContactoVisita
-    fetch("ProcesoGuardasContactoVisita", {
-        method: "POST",
-        body: datosContactoVisita
-    })
-        .then(response => {
-            $("#modalData")
-                .find("div.modal-content")
-                .LoadingOverlay("hide");
-            return response.ok
-                ? response.json()
-                : Promise.reject(response);
-        })
-        .then(responseJson => {
-            if (responseJson.estado) {
-                var respuestaObjeto = responseJson.objeto;
-                $("#cboEmpresa").val($(responseJson.objeto.secConstructora).val());
-                $("#cboContactos").val($(responseJson.objeto.secContacto).val());
-                $("#modalData").modal("hide");
-
-                swal("Listo!",
-                    "Contacto de Visita Agregada ",
-                    "success");
-            }
-            else {
-                swal("Fallo!", responseJson.mensajes, "error");
-            }
-        });
-
+       
 
 
 });
@@ -691,6 +577,7 @@ $("#tbdata tbody").on("click", ".btn-editar", function () {
 
     mostrarModalVisita(data);
 })
+
 $("#tbdata tbody").on("click", ".btn-eliminar", function () {
 
     let fila
@@ -738,6 +625,19 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
             }
         }
     )
+})
+
+$("#tbdata tbody").on("click", ".btn-info", function () {
+    esEdicion = true;
+    if ($(this).closest("tr").hasClass("child")) {
+        filaSeleccionada = $(this).closest("tr").prev();
+    } else {
+        filaSeleccionada = $(this).closest("tr");
+    }
+
+    const data = tablaData.row(filaSeleccionada).data();
+
+    mostralModalDetalleProductos();
 })
 
 $("#tbdata tbody").on("click", ".btn-mapa", function () {

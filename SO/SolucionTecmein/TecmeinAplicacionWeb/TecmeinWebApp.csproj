@@ -10,7 +10,9 @@
     <Content Remove="wwwroot\js\vistas\Contacto_Index.js" />
     <Content Remove="wwwroot\js\vistas\Home_Perfil.js" />
     <Content Remove="wwwroot\js\vistas\Visita_Contacto_Index.js" />
+    <Content Remove="wwwroot\js\vistas\Visita_Detalle_Index.js" />
     <Content Remove="wwwroot\js\vistas\Visita_Index.js" />
+    <Content Remove="wwwroot\js\vistas\Visita_Productos_Index.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +24,8 @@
   <ItemGroup>
     <None Include="wwwroot\js\vistas\Home_Perfil.js" />
     <None Include="wwwroot\js\vistas\Contacto_Index.js" />
+    <None Include="wwwroot\js\vistas\Visita_Detalle_Index.js" />
+    <None Include="wwwroot\js\vistas\Visita_Productos_Index.js" />
     <None Include="wwwroot\js\vistas\Visita_Contacto_Index.js" />
     <None Include="wwwroot\js\vistas\Visita_Index.js" />
   </ItemGroup>
@@ -51,6 +55,7 @@
   <ItemGroup>
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Properties\ServiceDependencies\" />
+    <Folder Include="Properties\ServiceDependencies\TecmeinSI - FTP\" />
   </ItemGroup>
 
 </Project>
