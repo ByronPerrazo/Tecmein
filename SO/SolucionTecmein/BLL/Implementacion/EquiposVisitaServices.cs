@@ -18,8 +18,8 @@ namespace BLL.Implementacion
             _repositorioEquiposVisita = repositorioEquiposVisita;
 
         }
-
-        public async Task<List<Equiposvisita>> Consultar(int secuencialVisita)
+        
+        public async Task<List<Equiposvisita>> ConsultaListaPorVisita(int secuencialVisita)
         {
             var query = await _repositorioEquiposVisita
                               .Consultar(x =>

@@ -55,5 +55,7 @@
         public int? Cantidad { get; set; }
 
         public short EstaActivo { get; set; }
+
+        public string? DetalleEspecifico { get; set; }
     }
 }

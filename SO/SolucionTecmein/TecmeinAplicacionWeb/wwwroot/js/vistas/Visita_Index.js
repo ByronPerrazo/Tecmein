@@ -21,8 +21,6 @@ let listaCompletaProvincias;
 let listaCompletaCanton;
 let listaCompletaParroquia;
 
-
-
 $(document).ready(function () {
     
    
@@ -211,7 +209,7 @@ $(document).ready(function () {
                     title: 'Productos',
                     filename: 'Reporte de Productos',
                     exportOptions: {
-                        columns: [0, 2, 3, 4, 5, 6]
+                        columns: [0, 1, 2, 3]
                     }
                 }, 'pageLength'
             ],
@@ -265,7 +263,6 @@ function mostrarDiv() {
 
     }
 }
-
 
 const cmboProvincia = document.getElementById('cboProvincia');
 const cmboCanton = document.getElementById('cboCanton');
@@ -356,7 +353,6 @@ function obtenerGeoubicacion() {
         return Promise.reject('Tu navegador no admite la geolocalización.');
     }
 }
-
 function limpiarFormularioModal() {
     $("#txtId").val('');
     $("#txtNombreObra").val('');
@@ -388,12 +384,6 @@ function mostrarModalVisita(modeloVisita = MODELO_BASEVISITA) {
 
     $("#modalData").modal("show")
 };
-
-function mostralModalDetalleProductos(){
-
-    $("#modalDataDetalleVisita").modal("show")
-}
-
 function loadDateFromString(dateString) {
     if( !(!dateString || dateString.trim() === "")) {
     
@@ -625,19 +615,6 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
             }
         }
     )
-})
-
-$("#tbdata tbody").on("click", ".btn-info", function () {
-    esEdicion = true;
-    if ($(this).closest("tr").hasClass("child")) {
-        filaSeleccionada = $(this).closest("tr").prev();
-    } else {
-        filaSeleccionada = $(this).closest("tr");
-    }
-
-    const data = tablaData.row(filaSeleccionada).data();
-
-    mostralModalDetalleProductos();
 })
 
 $("#tbdata tbody").on("click", ".btn-mapa", function () {

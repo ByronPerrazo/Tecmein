@@ -19,6 +19,7 @@ namespace TecmeinWebApp.Controllers
         private readonly IConstructoraServices _constructoraServices;
         private readonly IContactoServices _contactoServices;
         private readonly IContactoVisitaServices _contactoVistaServices;
+        private readonly IEquiposVisitaServices _equiposVisitaServices;
 
         private readonly IMapper _mapper;
         public VisitaController(IVisitaServices visitaServices,
@@ -29,7 +30,8 @@ namespace TecmeinWebApp.Controllers
                                 IMapper mapper,
                                 IConstructoraServices constructoraServices,
                                 IContactoServices contactoServices,
-                                IContactoVisitaServices contactoVistaServices
+                                IContactoVisitaServices contactoVistaServices,
+                                IEquiposVisitaServices equiposVisitaServices
             )
         {
             _visitaServices = visitaServices;
@@ -41,7 +43,7 @@ namespace TecmeinWebApp.Controllers
             _constructoraServices = constructoraServices;
             _contactoServices = contactoServices;
             _contactoVistaServices = contactoVistaServices;
-
+            _equiposVisitaServices = equiposVisitaServices;
         }
 
         [HttpGet]
@@ -234,6 +236,46 @@ namespace TecmeinWebApp.Controllers
 
             return (int)(string.IsNullOrEmpty(secUsuario) ? 0 : Convert.ToUInt32(secUsuario));
 
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EquiposDeVisita(int secuencialVisita)
+        {
+            var listaEquipoVistaVM
+                = _mapper.Map<List<EquiposVisitaVM>>(await _equiposVisitaServices.ConsultaListaPorVisita(secuencialVisita));
+            return StatusCode(StatusCodes.Status200OK, listaEquipoVistaVM);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProcesoGuardasEquipoVisita([FromForm] string modelo)
+        {
+            var genericResponse = new GenericResponse<EquiposVisitaVM>();
+            try
+            {
+                EquiposVisitaVM? equipoVisitaIngresadaVM
+                    = JsonConvert
+                      .DeserializeObject<EquiposVisitaVM>(modelo);
+
+                if (equipoVisitaIngresadaVM != null && equipoVisitaIngresadaVM.SecVisita != 0)
+                {
+                    var equipoGenerado
+                        = await _equiposVisitaServices
+                                .ProcesaGuardar(_mapper.Map<Equiposvisita>(equipoVisitaIngresadaVM));
+                        
+
+                    equipoVisitaIngresadaVM = _mapper.Map<EquiposVisitaVM>(equipoGenerado);
+
+                    genericResponse.Estado = true;
+                    genericResponse.Objeto = equipoVisitaIngresadaVM;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                genericResponse.Estado = false;
+                genericResponse.Mensajes = ex.Message;
+            }
+            return StatusCode(StatusCodes.Status200OK, genericResponse);
         }
 
         public IActionResult Index()
