@@ -277,6 +277,30 @@ namespace TecmeinWebApp.Controllers
             }
             return StatusCode(StatusCodes.Status200OK, genericResponse);
         }
+        
+        [HttpDelete]
+        public async Task<IActionResult> ProcesoEliminarEquipoVisita(int secuencialEquipoVisita)
+        {
+
+            var gResponse = new GenericResponse<string>();
+            try
+            {
+                var equipoVisita = await _equiposVisitaServices.Obtener(secuencialEquipoVisita);
+                var respuesta = false;
+
+                if (equipoVisita != null)
+                    respuesta = await _equiposVisitaServices.ProcesaEliminar(equipoVisita);
+
+                gResponse.Estado = respuesta;
+            }
+            catch (Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+                throw;
+            }
+            return StatusCode(StatusCodes.Status200OK, gResponse);
+        }
 
         public IActionResult Index()
         {

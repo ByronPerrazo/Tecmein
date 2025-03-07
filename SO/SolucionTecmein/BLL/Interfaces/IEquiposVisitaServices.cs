@@ -7,5 +7,6 @@ namespace BLL.Interfaces
         Task<Equiposvisita> Obtener(int secuencial);
         Task<List<Equiposvisita>> ConsultaListaPorVisita(int secuencialVisita);
         Task<Equiposvisita> ProcesaGuardar(Equiposvisita equiposvisita);
+        Task<bool> ProcesaEliminar(Equiposvisita equiposvisita);
     }
 }

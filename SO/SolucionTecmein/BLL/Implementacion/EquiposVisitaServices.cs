@@ -34,10 +34,11 @@ namespace BLL.Implementacion
             return query;
         }
 
-        public async Task<Equiposvisita> ProcesaGuardar(Equiposvisita equiposvisita)
-        {
-           return await _repositorioEquiposVisita.Crear(equiposvisita);
+        public async Task<Equiposvisita> ProcesaGuardar(Equiposvisita equiposvisita) 
+            => await _repositorioEquiposVisita.Crear(equiposvisita);
 
-        }
+        public async Task<bool> ProcesaEliminar(Equiposvisita equiposvisita) 
+            => await _repositorioEquiposVisita.Eliminar(equiposvisita);
+        
     }
 }

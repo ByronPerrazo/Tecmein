@@ -115,7 +115,7 @@ $("#btnAgregarItem").click(function () {
                     tablaDataPro.row.add(responseJson.objeto).draw(false);
                     $("#modalData").modal("hide");
                     swal("Listo!",
-                        "Visita a " + responseJson.objeto.nombre + " Creada ",
+                        "Equipo Agregado Con Exito ",
                         "success");
                 }
                 else {
@@ -149,7 +149,7 @@ async function ProcesoCargaLista(secuencialVisita) {
                     { data: "detalleEspecifico", searchable: true, width: "80%" },
                     {
                         "defaultContent":
-                            '<button class="btn btn-danger btn-eliminar btn-sm mr-2"><i class="fas fa-trash-alt"></i></button>',
+                            '<button class="btn btn-danger btn-eliminar-equipo btn-sm mr-2"><i class="fas fa-trash-alt"></i></button>',
                         "orderable": true,
                         "searchable": false,
                         "width": "10%"
@@ -185,3 +185,49 @@ async function ProcesoCargaLista(secuencialVisita) {
     }
 }
 
+$("#tbDataItems tbody").on("click", ".btn-eliminar-equipo", function () {
+    let fila;
+    const $this = $(this); 
+
+    if ($this.closest("tr").hasClass("child")) {
+        fila = $this.closest("tr").prev();
+    } else {
+        fila = $this.closest("tr");
+    }
+
+    const data = tablaDataPro.row(fila).data();
+
+    swal({
+        title: "Está Seguro de Eliminar?",
+        text: `Eliminar El Equipo "${data.marca} - ${data.sistema} - ${data.tipoEquipo}"`,
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonClass: "btn-danger",
+        confirmButtonText: "Si, eliminar",
+        cancelButtonText: "No, cancelar",
+        closeOnConfirm: false,
+        closeOnCancel: true
+    },
+        function (respuesta) {
+            if (respuesta) {
+                $(".showSweetAlert").LoadingOverlay("show");
+
+                fetch(`ProcesoEliminarEquipoVisita?secuencialEquipoVisita=${data.secuencial}`, {
+                    method: "DELETE"
+                })
+                    .then(response => {
+                        $(".showSweetAlert").LoadingOverlay("hide");
+                        return response.ok
+                            ? response.json()
+                            : Promise.reject(response);
+                    }).then(responseJson => {
+                        if (responseJson.estado) {
+                            tablaDataPro.row(fila).remove().draw(false);
+                            swal("Listo!", " Equipo Fue Eliminado", "success");
+                        } else {
+                            swal("Fallo!", responseJson.mensajes, "error");
+                        }
+                    });
+            }
+        });
+});
