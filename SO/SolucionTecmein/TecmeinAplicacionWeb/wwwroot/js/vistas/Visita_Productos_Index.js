@@ -30,7 +30,7 @@
 
 let secVisitaProducto = 0;
 $("#tbdata tbody").on("click", ".btn-info", function () {
-    //esEdicion = true;
+
     if ($(this).closest("tr").hasClass("child")) {
         filaSeleccionada = $(this).closest("tr").prev();
     } else {
@@ -39,26 +39,13 @@ $("#tbdata tbody").on("click", ".btn-info", function () {
 
     const data = tablaData.row(filaSeleccionada).data();
     secVisitaProducto = data.secuencial
-    mostralModalDetalleProductos();
+    
 
     if (secVisitaProducto!=0)
         ProcesoCargaLista(secVisitaProducto)
 
     $("#modalDataDetalleVisita").modal("show")
 })
-
-function mostralModalDetalleProductos() {
-
-    
-}
-
-
-//$(document).ready(function () {
-
-//    ProcesoCargaLista(secVisitaProducto)
-
-//});
-
 
 
 $("#btnAgregarItem").click(function () {
@@ -136,8 +123,6 @@ async function ProcesoCargaLista(secuencialVisita) {
             type: "GET",
             dataType: "json"
         });
-
-        console.log(response); // Verifica la respuesta aquí
 
         if (Array.isArray(response)) {
             tablaDataPro = $('#tbDataItems').DataTable({

@@ -17,7 +17,7 @@ namespace IOC
                 .AddDbContext<TecmeindbContext>(options =>
                 {
                     options
-                    .UseMySql(configuration.GetConnectionString("ConexionDB"),
+                    .UseMySql(configuration.GetConnectionString("ConexionDBAWS"),
                               Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.37-mysql"));
                 });
 
