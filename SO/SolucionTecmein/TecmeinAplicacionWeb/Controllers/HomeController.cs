@@ -16,17 +16,17 @@ namespace TecmeinWebApp.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        //private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<HomeController> _logger;
         private readonly IMapper _mapper;
         private readonly IUsuarioServices _usuarioServicio;
 
         public HomeController(IUsuarioServices usuarioServicio, IMapper mapper
-            //, ILogger<HomeController> logger
+            , ILogger<HomeController> logger
             )
         {
             _usuarioServicio = usuarioServicio;
             _mapper = mapper;
-            //_logger = logger;
+            _logger = logger;
 
         }
 

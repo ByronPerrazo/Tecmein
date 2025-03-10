@@ -43,6 +43,7 @@ namespace IOC
             services.AddScoped<IContactoServices, ContactoServices>();
             services.AddScoped<IContactoVisitaServices, ContactoVisitaServices>();
             services.AddScoped<IEquiposVisitaServices, EquiposVisitaServices>();
+            services.AddScoped<IDashBoardServices, DashBoardServices>();
 
 
 

@@ -205,13 +205,17 @@ $("#tbDataItems tbody").on("click", ".btn-eliminar-equipo", function () {
                         return response.ok
                             ? response.json()
                             : Promise.reject(response);
-                    }).then(responseJson => {
+                    })
+                    .then(responseJson => {
                         if (responseJson.estado) {
                             tablaDataPro.row(fila).remove().draw(false);
                             swal("Listo!", " Equipo Fue Eliminado", "success");
                         } else {
                             swal("Fallo!", responseJson.mensajes, "error");
                         }
+                    })
+                    .catch(error => {
+                        swal("Fallo!", error.message, "error");
                     });
             }
         });

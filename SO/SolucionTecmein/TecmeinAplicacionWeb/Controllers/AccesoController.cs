@@ -63,7 +63,7 @@ namespace TecmeinWebApp.Controllers
                                  new ClaimsPrincipal(claimsIdentity),
                                  properties);
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "DashBoard");
         }
 
         [HttpPost]

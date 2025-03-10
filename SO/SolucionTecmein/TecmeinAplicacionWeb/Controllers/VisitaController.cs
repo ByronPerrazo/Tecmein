@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System.Security.Claims;
 using TecmeinWebApp.Models.ViewModel;
 using TecmeinWebApp.Utilidades.Response;
+using TecmeinWebApp.Utilidades.ViewComponents;
 
 namespace TecmeinWebApp.Controllers
 {
@@ -279,6 +280,7 @@ namespace TecmeinWebApp.Controllers
         }
         
         [HttpDelete]
+        //[ValidateUser("DeleteUser")]
         public async Task<IActionResult> ProcesoEliminarEquipoVisita(int secuencialEquipoVisita)
         {
 
