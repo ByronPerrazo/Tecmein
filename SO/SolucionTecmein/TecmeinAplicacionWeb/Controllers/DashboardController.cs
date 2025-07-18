@@ -1,7 +1,9 @@
 ﻿using BLL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TecmeinWebApp.Models.ViewModel;
 using TecmeinWebApp.Utilidades.Response;
+using System.Text.Json;
 
 namespace TecmeinWebApp.Controllers
 {
@@ -18,6 +20,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "CanConsult")]
         public async Task<IActionResult> ObtenerResumen()
         {
 
@@ -65,7 +68,12 @@ namespace TecmeinWebApp.Controllers
                 gResponse.Estado = false;
                 gResponse.Mensajes = ex.Message;
             }
-            return StatusCode(StatusCodes.Status200OK, gResponse);
+            var jsonOptions = new JsonSerializerOptions
+            {
+                ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            return new JsonResult(gResponse, jsonOptions);
         }
     }
 }

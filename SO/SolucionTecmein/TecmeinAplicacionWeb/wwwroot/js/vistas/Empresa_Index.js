@@ -20,7 +20,10 @@ $(document).ready(function () {
             "ajax": {
                 "url": 'Lista',
                 "type": "GET",
-                "datatype": "json"
+                "datatype": "json",
+                 "dataSrc": function (json) {
+                    return json.data.$values;
+                }
             },
             "columns": [
                 { data: "secuencial", visible: false, searchable: true },
@@ -169,7 +172,7 @@ $("#btnGuardar").click(function () {
                         debugger;
                         tablaData.row(filaSeleccionada).data(responseJson.objeto).draw(false);
                         $("#modalData").modal("hide");
-                        $("#imgLogo").attr("src", d.urlLogo);
+                        $("#imgLogo").attr("src", responseJson.objeto.urlLogo);
                         swal("Listo!", "Empresa " + responseJson.objeto.nombre + " Editada ", "success");
                     }
                     else {

@@ -52,10 +52,10 @@ namespace BLL.Implementacion
                 registro.TelefonoAdministrador = entidad.TelefonoAdministrador;
                 registro.CorreoAdministrador = entidad.CorreoAdministrador;
                 registro.EstaActivo = entidad.EstaActivo;
-                var regitroGuardado = await _repositorio.Editar(entidad);
+                await _repositorio.Editar(registro);
 
             }
-            return await _repositorio.Obtener(x => x.Secuencial == entidad.Secuencial);
+            return registro;
         }
 
         public async Task<bool> Eliminar(int secuencial)

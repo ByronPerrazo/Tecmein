@@ -13,12 +13,19 @@ namespace DAL.Implementacion
         {
             this._dbContext = dbContext;
         }
-        public async Task<TEntity> Obtener(Expression<Func<TEntity, bool>> filtro)
+        public async Task<TEntity?> Obtener(Expression<Func<TEntity, bool>> filtro, string? incluirPropiedades = null)
         {
             try
             {
-                TEntity? entidad = await _dbContext.Set<TEntity>().FirstOrDefaultAsync(filtro);
-                return entidad;
+                IQueryable<TEntity> query = _dbContext.Set<TEntity>();
+                if (incluirPropiedades != null)
+                {
+                    foreach (var propiedad in incluirPropiedades.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        query = query.Include(propiedad);
+                    }
+                }
+                return await query.FirstOrDefaultAsync(filtro);
             }
             catch
             {
@@ -72,6 +79,8 @@ namespace DAL.Implementacion
 
         public async Task<IQueryable<TEntity>> Consultar(Expression<Func<TEntity, bool>> filtro = null)
         {
+            await Task.CompletedTask;
+
             IQueryable<TEntity> queryEntidad = filtro == null
                                               ? _dbContext.Set<TEntity>()
                                               : _dbContext.Set<TEntity>()

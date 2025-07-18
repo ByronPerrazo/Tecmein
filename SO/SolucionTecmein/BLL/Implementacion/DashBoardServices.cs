@@ -1,113 +1,79 @@
-﻿using BLL.Interfaces;
+using BLL.Interfaces;
 using DAL.Interfaces;
 using Entity;
+using System.Globalization;
 
 namespace BLL.Implementacion
 {
     public class DashBoardServices : IDashBoardServices
     {
-
         private readonly IGenericRepository<Visita> _visitaRepository;
         private readonly IGenericRepository<Equiposvisita> _equiposRepository;
-        private DateTime _fechaSistema;
-        private DateTime _fechaInicio;
+
         public DashBoardServices(
-                IGenericRepository<Visita> visitaRepository,
-                IGenericRepository<Equiposvisita> equiposRepository)
+            IGenericRepository<Visita> visitaRepository,
+            IGenericRepository<Equiposvisita> equiposRepository)
         {
             _visitaRepository = visitaRepository;
-            _fechaSistema = DateTime.Now.Date;
-            _fechaInicio = _fechaSistema.Date.AddDays(-360);
             _equiposRepository = equiposRepository;
         }
 
-        public Task<int> TotalVisitasUltimaSemana()
+        public async Task<int> TotalVisitasUltimaSemana()
         {
-            var numeroVisitasUltimaSemana =
-                    _visitaRepository
-                    .Consultar(x =>
-                           x.FechaRegistro.Value.Date >= _fechaInicio &&
-                           x.FechaRegistro.Value.Date <= _fechaSistema.Date)
-                    .Result
-                    .Count();
-
-            return Task.FromResult(numeroVisitasUltimaSemana);
+            DateTime fechaInicio = DateTime.Now.Date.AddDays(-360);
+            IQueryable<Visita> query = await _visitaRepository.Consultar(v => v.FechaRegistro.Value.Date >= fechaInicio);
+            int total = query.Count();
+            return total;
         }
-        public Task<int> TotalEquipos()
-        {
-            var totalEquipos =
-                    _equiposRepository
-                    .Consultar(x =>
-                               x.EstaActivo == 1)
-                    .Result
-                    .Sum(x => x.Cantidad).GetValueOrDefault();
 
-            return Task.FromResult(totalEquipos);
+        public async Task<int> TotalEquipos()
+        {
+            IQueryable<Equiposvisita> query = await _equiposRepository.Consultar(e => e.EstaActivo == 1);
+            int total = query.Sum(e => e.Cantidad).GetValueOrDefault();
+            return total;
         }
 
         public Task<string> TotalIngresosUltimaSemana()
         {
-            var contidadCero = "0.00";
-            
-            return Task.FromResult(contidadCero);
+            // TODO: Implementar la lógica para calcular los ingresos.
+            return Task.FromResult("0.00");
         }
 
-        public Task<int> TotalMarcas()
+        public async Task<int> TotalMarcas()
         {
-            var totalMarcas =
-                   _equiposRepository
-                   .Consultar(x =>
-                              x.EstaActivo == 1)
-                   .Result
-                   .GroupBy(x => x.Marca)
-                   .Count();
-
-            return Task.FromResult(totalMarcas);
+            IQueryable<Equiposvisita> query = await _equiposRepository.Consultar(e => e.EstaActivo == 1);
+            int total = query.Select(e => e.Marca).Distinct().Count();
+            return total;
         }
 
         public async Task<Dictionary<string, int>> MarcasMasVendidas()
         {
-            var visitasUltimaSemana = await
-                    _visitaRepository
-                    .Consultar(x => x.FechaRegistro.Value.Date >= _fechaInicio);
+            IQueryable<Equiposvisita> query = await _equiposRepository.Consultar();
 
-            var equipos =
-                await _equiposRepository.Consultar(x => x.EstaActivo == 1);
+            var resultado = query
+                .GroupBy(e => e.Marca)
+                .OrderByDescending(g => g.Sum(e => e.Cantidad).GetValueOrDefault())
+                .Select(m => new { Marca = m.Key, Total = m.Sum(e => e.Cantidad).GetValueOrDefault() })
+                .ToDictionary(keySelector: r => r.Marca, elementSelector: r => r.Total);
 
-            Dictionary<string, int> equiposPorVisita =
-                (from vus in visitasUltimaSemana
-                 join equi in equipos on vus.Secuencial equals equi.SecVisita
-                 group equi by equi.Marca into grupo
-                 select new
-                 {
-                     Marca = grupo.Key,
-                     TotalCantidad = grupo.Sum(e => e.Cantidad)
-                 }
-                ).ToDictionary(keySelector: r => r.Marca, elementSelector: r => r.TotalCantidad.GetValueOrDefault());
-
-
-            return equiposPorVisita;
+            return resultado;
         }
 
         public async Task<Dictionary<string, int>> VisitasUltimaSemana()
         {
-            var visitasUltimaSemana = await
-                    _visitaRepository
-                    .Consultar(x => x.FechaRegistro.Value.Date >= _fechaInicio);
+            DateTime fechaInicio = DateTime.Now.Date.AddDays(-360);
+            IQueryable<Visita> query = await _visitaRepository.Consultar(v => v.FechaRegistro.Value.Date >= fechaInicio);
 
-            Dictionary<string, int> consulta =
-            visitasUltimaSemana
-                .GroupBy(x => x.FechaRegistro.Value.Date)
+            // Se materializa la lista en memoria para evitar problemas de traducción de EF con GroupBy y ToString.
+            List<Visita> visitasEnMemoria = query.ToList();
+
+            Dictionary<string, int> resultado = visitasEnMemoria
+                .GroupBy(v => v.FechaRegistro.Value.Date)
                 .OrderByDescending(g => g.Key)
-                .Select(dv =>
-                    new
-                    {
-                        fecha = dv.Key.ToString("dd/MM/yyyy"),
-                        total = dv.Count()
-                    })
-                .ToDictionary(keySelector: r => r.fecha, elementSelector: r => r.total);
+                .Select(dv => new { Fecha = dv.Key.ToString("dd/MM/yyyy"), Total = dv.Count() })
+                .ToDictionary(keySelector: r => r.Fecha, elementSelector: r => r.Total);
 
-            return consulta;
+            return resultado;
         }
     }
 }

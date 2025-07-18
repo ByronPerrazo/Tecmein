@@ -47,47 +47,51 @@
 <div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h6>Detalle Catalogo</h6>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <input type="hidden" value="0" id="txtId">
-                    <input type="hidden" id="txtUrlCatalogo">
-                    <input type="hidden" value="" id="txtFechaRegistro">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="form-row">
-                                <div class="form-group col-sm-8">
-                                    <label for="txtNombre">Nombre</label>
-                                    <input type="text" class="form-control form-control-sm input-validar" id="txtNombre">
+            <div class="card shadow-sm">
+                <div class="card-header py-2 bg-second-primary">
+                    <h6 class="m-0 font-weight-bold text-white">
+                        <i class="fas fa-book"></i> Detalle Catalogo
+                        <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" class="text-white">×</span>
+                        </button>
+                    </h6>
+                </div>
+                <div class="card-body p-2">
+                    <form>
+                        <input type="hidden" value="0" id="txtId">
+                        <input type="hidden" id="txtUrlCatalogo">
+                        <input type="hidden" value="" id="txtFechaRegistro">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-row">
+                                    <div class="form-group col-sm-8">
+                                        <label for="txtNombre">Nombre</label>
+                                        <input type="text" class="form-control form-control-sm input-validar" id="txtNombre">
+                                    </div>
+                                    <div class="form-group col-sm-4">
+                                        <label for="cboEstado">Estado</label>
+                                        <select class="form-control form-control-sm" id="cboEstado">
+                                            <option value="1">Activo</option>
+                                            <option value="0">Inactivo</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="form-group col-sm-4">
-                                    <label for="cboEstado">Estado</label>
-                                    <select class="form-control form-control-sm" id="cboEstado">
-                                        <option value="1">Activo</option>
-                                        <option value="0">Inactivo</option>
-                                    </select>
-                                </div>
-                            </div>
 
-                            <div class="form-row">
-                               
-                                <div class="form-group col-sm-8">
-                                    <label for="txtDocumento">Documento</label>
-                                    <input class="form-control-file" type="file" id="txtDocumento" />
+                                <div class="form-row">
+                                   
+                                    <div class="form-group col-sm-8">
+                                        <label for="txtDocumento">Documento</label>
+                                        <input class="form-control-file" type="file" id="txtDocumento" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary btn-sm" type="button" id="btnGuardarCat">Guardar</button>
-                <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal">Cancel</button>
+                    </form>
+                </div>
+                <div class="card-body p-0 d-flex justify-content-end">
+                    <button class="btn btn-primary btn-sm m-1 mr-2" type="button" id="btnGuardarCat">Guardar</button>
+                    <button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal">Cancel</button>
+                </div>
             </div>
         </div>
     </div>

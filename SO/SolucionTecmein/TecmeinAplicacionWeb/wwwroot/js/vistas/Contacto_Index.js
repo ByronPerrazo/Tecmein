@@ -1,7 +1,6 @@
-﻿const MODELO_CONTACTO = {
-    secuencial: "",
+const MODELO_CONTACTO = {
+    secuencial: 0,
     secConstructora: "",
-    nombreConstructora: "",
     titulo: "",
     nombres: "",
     apellidos: "",
@@ -10,98 +9,66 @@
     estaActivo: 1,
 }
 
-$(document).ready( function () {
+let tablaData;
+let filaSeleccionada;
 
-    fetch("EmpresaConstructora")
-                .then(
-                    respuesta => {
-                        return respuesta.ok
-                            ? respuesta.json()
-                            : Promise.reject(respuesta);
-                    }
-                )
-                .then(
-                    respuestaJson => {
-                        listaCompletaCanton = respuestaJson;
-                        respuestaJson
-                            .forEach(item => {
-                                $("#cboEmpresa")
-                                    .append(
-                                        $("<option>")
-                                            .val(item.secuencial)
-                                            .text(item.nombre.trim())
-                                    )
-                            })
+$(document).ready(function () {
 
-                    }
-                )
-                .catch(error => {
-                    console.error('Error al obtener la lista de Empresas Contructoras:', error);
-                });
-
-
-    tablaData =
-        $('#tbdata').DataTable({
-            responsive: true,
-            "ajax": {
-                "url": 'Lista',
-                "type": "GET",
-                "datatype": "json"
-            },
-            "columns": [
-                { data: "secuencial", visible: false },
-                { data: "nombreConstructora", searchable: true },
-                { data: "titulo", searchable: true },
-                { data: "nombres", searchable: true },
-                { data: "apellidos", searchable: true, width: "100px" },
-                { data: "correo", searchable: true },
-                { data: "telefono", searchable: true, width: "80px" },
-                
-
-                {
-                    data: "estaActivo", render: function (data) {
-                        if (data == 1)
-                            return '<span class="badge badge-info">Activo</span>';
-                        else
-                            return '<span class="badge badge-danger">Inactivo</span>';
-                    }
-                },
-
-                {
-                    "defaultContent":
-                        '<button class="btn btn-primary btn-editar btn-sm mr-2"><i class="fas fa-pencil-alt"></i></button>' +
-                        '<button class="btn btn-danger btn-eliminar btn-sm mr-2"><i class="fas fa-trash-alt"></i></button>',
-                    "orderable": false,
-                    "searchable": false,
-                    "width": "120px"
+    tablaData = $('#tbdata').DataTable({
+        responsive: true,
+        "ajax": {
+            "url": 'Lista',
+            "type": "GET",
+            "datatype": "json",
+            "dataSrc": "data.$values"
+        },
+        "columns": [
+            { data: "secuencial", visible: false, searchable: false },
+            { data: "nombreConstructora", searchable: true },
+            { data: "titulo", searchable: true },
+            { data: "nombres", searchable: true },
+            { data: "apellidos", searchable: true, width: "100px" },
+            { data: "correo", searchable: true },
+            { data: "telefono", searchable: true, width: "80px" },
+            {
+                data: "estaActivo", render: function (data) {
+                    if (data == 1)
+                        return '<span class="badge badge-info">Activo</span>';
+                    else
+                        return '<span class="badge badge-danger">Inactivo</span>';
                 }
-            ],
-            order: [[0, "desc"]],
-            dom: "Bfrtip",
-            buttons: [
-                {
-                    text: 'Exportar Excel',
-                    extend: 'excelHtml5',
-                    title: 'Productos',
-                    filename: 'Reporte de Productos',
-                    exportOptions: {
-                        columns: [0, 2, 3, 4, 5, 6]
-                    }
-                }, 'pageLength'
-            ],
-            language: {
-                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
             },
-        });
-
+            {
+                "defaultContent":
+                    '<button class="btn btn-primary btn-editar btn-sm mr-2"><i class="fas fa-pencil-alt"></i></button>' +
+                    '<button class="btn btn-danger btn-eliminar btn-sm mr-2"><i class="fas fa-trash-alt"></i></button>',
+                "orderable": false,
+                "searchable": false,
+                "width": "120px"
+            }
+        ],
+        order: [[0, "desc"]],
+        dom: "Bfrtip",
+        buttons: [
+            {
+                text: 'Exportar Excel',
+                extend: 'excelHtml5',
+                title: 'Contactos',
+                filename: 'Reporte de Contactos',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                }
+            }, 'pageLength'
+        ],
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
+        },
+    });
 
 });
 
-
 function limpiarModal() {
-    $("#txtId").val('');
-    $("#secConstructora").val(0);
-    $("#nombreConstructora").val('');
+    $("#txtId").val(0);
     $("#cboEmpresa").val($("#cboEmpresa option:first").val());
     $("#titulo").val('');
     $("#txtNombres").val('');
@@ -111,45 +78,56 @@ function limpiarModal() {
     $("#cboEstado").val(1);
 }
 
-function mostrarModal(modelo = MODELO_CONTACTO) {
+function mostrarModal(modelo = MODELO_CONTACTO, listaConstructoras = []) {
     limpiarModal();
 
     $("#txtId").val(modelo.secuencial);
-   
-    
-    $("#cboEmpresa").val(modelo.secConstructora == "" ? $("#cboEmpresa option:first").val() : modelo.secConstructora)
-
-    $("#titulo").val(modelo.titulo );
-    $("#txtNombres").val(modelo.nombres );
+    $("#titulo").val(modelo.titulo);
+    $("#txtNombres").val(modelo.nombres);
     $("#txtApellidos").val(modelo.apellidos);
     $("#txTelefono").val(modelo.telefono);
     $("#txtCorreo").val(modelo.correo);
     $("#cboEstado").val(modelo.estaActivo);
 
+    const cboEmpresa = $("#cboEmpresa");
+    cboEmpresa.empty();
+    if (listaConstructoras.length > 0) {
+        listaConstructoras.forEach(item => {
+            cboEmpresa.append(
+                $("<option>").val(item.secuencial).text(item.nombre)
+            )
+        });
+    }
+    cboEmpresa.val(modelo.secConstructora);
+
     $("#modalData").modal("show")
 };
 
+let esEdicion = false;
 
-
-let esEdicion;
 $("#btnNuevoContacto").click(function () {
     limpiarModal();
     esEdicion = false;
 
-    mostrarModal(MODELO_CONTACTO)
-})
+    // Para un nuevo contacto, necesitamos la lista de constructoras
+    fetch("/Contacto/EmpresaConstructora")
+        .then(response => response.ok ? response.json() : Promise.reject(response))
+        .then(responseJson => {
+            mostrarModal(MODELO_CONTACTO, responseJson);
+        })
+        .catch(error => {
+            console.error('Error al obtener la lista de constructoras para nuevo contacto:', error);
+        });
+});
+
 $("#btnGuardarContacto").click(function () {
 
     const inputs = $("input.input-validar").serializeArray();
     const inputs_vacios = inputs.filter(item => item.value.trim() == "");
 
-    inputs_vacios.forEach(x => {
-        const mensaje = `Debe llenar el campo: "${x.name}"\n`;
-        toastr.warning("", mensaje);
-        return;
-    });
-
     if (inputs_vacios.length > 0) {
+        const mensaje = `Debe llenar el campo: "${inputs_vacios[0].name}"`;
+        toastr.warning("", mensaje);
         $(`input[name="${inputs_vacios[0].name}"]`).focus();
         return;
     }
@@ -161,94 +139,61 @@ $("#btnGuardarContacto").click(function () {
         return selectedOption.disabled && selectedOption.selected;
     });
 
-    selectsConValorDeshabilitado.map(select => {
-        const mensaje = `Debe seleccionar una opción valida en : "${select.name}"\n`;
+    if (selectsConValorDeshabilitado.length > 0) {
+        const mensaje = `Debe seleccionar una opción válida en : "${selectsConValorDeshabilitado[0].name}"`;
         toastr.warning("", mensaje);
         selectsConValorDeshabilitado[0].focus();
         return;
-    });
-    
-    let secuencialVisita = $("#txtId").val().trim() == "" ? "0" : $("#txtId").val().trim();
+    }
 
-    const modeloVisita = structuredClone(MODELO_CONTACTO);
-          modeloVisita["secuencial"] = secuencialVisita;
-          modeloVisita["nombres"] = $("#txtNombres").val().trim();
-          modeloVisita["apellidos"] = $("#txtApellidos").val();
-          modeloVisita["correo"] = $("#txtCorreo").val();
-          modeloVisita["telefono"] = $("#txTelefono").val();
-          modeloVisita["secConstructora"] = parseInt($("#cboEmpresa").val());
-          modeloVisita["titulo"] = $("#cboAbreviatura").val();
-          modeloVisita["estaActivo"] = $("#cboEstado").val();
+    const modeloContacto = structuredClone(MODELO_CONTACTO);
+    modeloContacto["secuencial"] = $("#txtId").val();
+    modeloContacto["nombres"] = $("#txtNombres").val();
+    modeloContacto["apellidos"] = $("#txtApellidos").val();
+    modeloContacto["correo"] = $("#txtCorreo").val();
+    modeloContacto["telefono"] = $("#txTelefono").val();
+    modeloContacto["secConstructora"] = parseInt($("#cboEmpresa").val());
+    modeloContacto["titulo"] = $("#titulo").val(); // Asumiendo que #titulo es el input para el título
+    modeloContacto["estaActivo"] = $("#cboEstado").val();
 
     const datosFormulario = new FormData();
-    datosFormulario.append("modelo", JSON.stringify(modeloVisita));
+    datosFormulario.append("modelo", JSON.stringify(modeloContacto));
 
+    const url = esEdicion ? "Editar" : "CrearContacto";
+    const method = esEdicion ? "PUT" : "POST";
 
     $("#modalData").find("div.modal-content").LoadingOverlay("show");
 
-    if (!esEdicion) {
-
-        fetch("CrearContacto", {
-            method: "POST",
-            body: datosFormulario
-        })
-            .then(response => {
-                $("#modalData")
-                    .find("div.modal-content")
-                    .LoadingOverlay("hide");
-                return response.ok
-                    ? response.json()
-                    : Promise.reject(response);
-            }).then(responseJson => {
-                if (responseJson.estado) {
-                    tablaData.row.add(responseJson.objeto).draw(false);
-                    $("#modalData").modal("hide");
-                    swal("Listo!",
-                        "Contacto " + responseJson.objeto.nombres + " Creado ",
-                        "success");
-                }
-                else {
-                    swal("Fallo!", responseJson.mensajes, "error");
-                }
-            });
-    }
-    else {
-
-        fetch("Editar", {
-            method: "PUT",
-            body: datosFormulario
-        })
-            .then(response => {
-                $("#modalData")
-                    .find("div.modal-content")
-                    .LoadingOverlay("hide");
-                return response.ok
-                    ? response.json()
-                    : Promise.reject(response);
-            }).then(responseJson => {
-                if (responseJson.estado) {
-
-                    tablaData
-                        .row(filaSeleccionada)
-                        .data(responseJson.objeto)
-                        .draw(false);
-                    $("#modalData").modal("hide");
-                    swal("Listo!",
-                        "Contacto " + responseJson.objeto.nombres + " Editado ",
-                        "success");
-                }
-                else {
-                    swal("Fallo!", responseJson.mensajes, "error");
-                }
-            });
-
-    }
-
+    fetch(url, {
+        method: method,
+        body: datosFormulario
+    })
+    .then(response => {
+        $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+        return response.ok ? response.json() : Promise.reject(response);
+    })
+    .then(responseJson => {
+        if (responseJson.estado) {
+            if (esEdicion) {
+                tablaData.row(filaSeleccionada).data(responseJson.objeto).draw(false);
+            } else {
+                tablaData.row.add(responseJson.objeto).draw(false);
+            }
+            $("#modalData").modal("hide");
+            swal("Listo!", `Contacto ${esEdicion ? 'editado' : 'creado'} correctamente`, "success");
+        } else {
+            swal("Fallo!", responseJson.mensajes, "error");
+        }
+    })
+    .catch(error => {
+        $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+        console.error("Error al guardar:", error);
+    });
 });
 
-let filaSeleccionada;
 $("#tbdata tbody").on("click", ".btn-editar", function () {
     esEdicion = true;
+
     if ($(this).closest("tr").hasClass("child")) {
         filaSeleccionada = $(this).closest("tr").prev();
     } else {
@@ -256,12 +201,31 @@ $("#tbdata tbody").on("click", ".btn-editar", function () {
     }
 
     const data = tablaData.row(filaSeleccionada).data();
+    const secuencialContacto = data.secuencial;
 
-    mostrarModal(data);
-})
+    $("#modalData").find("div.modal-content").LoadingOverlay("show");
+
+    fetch(`/Contacto/ObtenerParaEditar?secuencial=${secuencialContacto}`)
+        .then(response => {
+            $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+            return response.ok ? response.json() : Promise.reject(response);
+        })
+        .then(responseJson => {
+            if (responseJson.estado) {
+                mostrarModal(responseJson.objeto.contacto, responseJson.objeto.listaConstructoras);
+            } else {
+                swal("Fallo!", responseJson.mensajes, "error");
+            }
+        })
+        .catch(error => {
+            $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+            console.error("Error en la llamada fetch para editar:", error);
+        });
+});
+
 $("#tbdata tbody").on("click", ".btn-eliminar", function () {
 
-    let fila
+    let fila;
     if ($(this).closest("tr").hasClass("child")) {
         fila = $(this).closest("tr").prev();
     } else {
@@ -281,30 +245,25 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
         closeOnConfirm: false,
         closeOnCancel: true
     },
-        function (respuesta) {
-            if (respuesta) {
-                $(".showSweetAlert").LoadingOverlay("show");
+    function (respuesta) {
+        if (respuesta) {
+            $(".showSweetAlert").LoadingOverlay("show");
 
-                fetch(`Eliminar?secuencial=${data.secuencial}`, {
-                    method: "DELETE"
-                })
-                    .then(response => {
-                        $(".showSweetAlert").LoadingOverlay("hide");
-                        return response.ok
-                            ? response.json()
-                            : Promise.reject(response);
-                    }).then(responseJson => {
-                        if (responseJson.estado) {
-                            tablaData.row(fila).remove().draw(false);
-
-                            swal("Listo!", " El Contacto " + data.nombres + " fue Eliminado", "success");
-                        }
-                        else {
-                            swal("Fallo!", responseJson.mensajes, "error");
-                        }
-                    });
-            }
+            fetch(`Eliminar?secuencial=${data.secuencial}`, {
+                method: "DELETE"
+            })
+            .then(response => {
+                $(".showSweetAlert").LoadingOverlay("hide");
+                return response.ok ? response.json() : Promise.reject(response);
+            })
+            .then(responseJson => {
+                if (responseJson.estado) {
+                    tablaData.row(fila).remove().draw();
+                    swal("Listo!", "El Contacto fue eliminado", "success");
+                } else {
+                    swal("Fallo!", responseJson.mensajes, "error");
+                }
+            });
         }
-    )
-})
-
+    });
+});

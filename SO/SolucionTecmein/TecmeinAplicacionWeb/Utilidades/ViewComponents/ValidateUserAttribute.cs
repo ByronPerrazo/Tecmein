@@ -1,39 +1,48 @@
-﻿
+﻿using BLL.Implementacion;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Security.Claims;
 
 
 namespace TecmeinWebApp.Utilidades.ViewComponents
 {
 
-    public class ValidateUserAttribute : ActionFilterAttribute
+    public class ValidatePermissionAttribute : ActionFilterAttribute
     {
-        private readonly string _permission;
+        private readonly string _accion;
 
-        public ValidateUserAttribute(string permission = null)
+        public ValidatePermissionAttribute(string accion)
         {
-            _permission = permission;
+            _accion = accion;
         }
 
-        public override void OnActionExecuting(ActionExecutingContext context)
+        public override async void OnActionExecuting(ActionExecutingContext context)
         {
             var user = context.HttpContext.User;
+            var secuencialRol = user.FindFirst(ClaimTypes.Role)?.Value; // Obtener el rol del usuario
 
-            // Verificar si el usuario está autenticado
-            if (!user.Identity.IsAuthenticated)
-            {
-                context.Result = new UnauthorizedResult(); // Devuelve 401 Unauthorized
-                return;
-            }
-
-            // Verificar si el usuario tiene el permiso requerido
-            if (_permission != null && !user.HasClaim("Permission", _permission))
+            if (string.IsNullOrEmpty(secuencialRol))
             {
                 context.Result = new ForbidResult(); // Devuelve 403 Forbidden
                 return;
             }
 
-            base.OnActionExecuting(context);
+            var autorizacionService =
+                     (AutorizacionService)context
+                    .HttpContext
+                    .RequestServices
+                    .GetService(typeof(AutorizacionService));
+
+            if (await autorizacionService.TienePermiso(Convert.ToInt32(secuencialRol), _accion))
+            {
+                base.OnActionExecuting(context);
+            }
+            else
+            {
+                context.Result = new ForbidResult(); // Devuelve 403 Forbidden
+                return;
+            }
         }
     }
+
 }

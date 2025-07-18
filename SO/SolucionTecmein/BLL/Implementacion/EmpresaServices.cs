@@ -1,6 +1,10 @@
 ﻿using BLL.Interfaces;
 using DAL.Interfaces;
 using Entity;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace BLL.Implementacion
 {
@@ -9,6 +13,7 @@ namespace BLL.Implementacion
         private readonly IGenericRepository<Empresa> _repositorio;
         private readonly IStorageServices _storageService;
         private readonly IEmpresaStorageServices _empresaStorageServices;
+
         public EmpresaServices(IGenericRepository<Empresa> repositorio,
                                IStorageServices storageService,
                                IEmpresaStorageServices empresaStorageServices)
@@ -20,161 +25,96 @@ namespace BLL.Implementacion
 
         public async Task<List<Empresa>> Lista()
         {
-            var query = await _repositorio.Consultar();
-            return [.. query];
+            IQueryable<Empresa> query = await _repositorio.Consultar();
+            return query.ToList();
         }
+
         public async Task<Empresa> Obtener()
         {
-            try
-            {
-                var empresaEncontrada = await _repositorio.Obtener(x => x.Secuencial == 1);
-                return empresaEncontrada;
-            }
-            catch
-            {
-                throw;
-            }
+            return await _repositorio.Obtener(x => x.Secuencial == 1);
         }
 
-        public async Task<Empresa> GuardarCambios(Empresa entidad, Stream logo = null, string NombreLogo = "")
+        public async Task<Empresa> Crear(Empresa entidad, Stream logo = null, string nombreLogo = "")
         {
-            try
+            if (await _repositorio.Obtener(x => x.Identificacion == entidad.Identificacion) != null)
+                throw new TaskCanceledException("Ya existe una empresa con esa identificación.");
+
+            if (logo != null)
             {
-                if (await _repositorio.Obtener(x => x.Identificacion == entidad.Identificacion) != null)
-                {
-                    throw new TaskCanceledException($"Error Identificación Empresa Ya Registrada");
-                }
-                var empresaEncontrada
-                    = new Empresa
-                    {
-                        Secuencial = entidad.Secuencial,
-                        Identificacion = entidad.Identificacion,
-                        Nombre = entidad.Nombre,
-                        Correo = entidad.Correo,
-                        Direccion = entidad.Direccion,
-                        Telefono = entidad.Telefono,
-                        CodigoOperador = entidad.CodigoOperador,
-                        EstaActivo = entidad.EstaActivo,
-                    };
-
-                empresaEncontrada.NombreLogo
-                        = empresaEncontrada.NombreLogo == ""
-                        ? NombreLogo
-                        : empresaEncontrada.NombreLogo;
-
-                if (logo != null)
-                {
-
-                    var empresaStorage = await
-                                         _empresaStorageServices
-                                         .Consultar();
-
-                    var almacenamientoEmpresa
-                        = empresaStorage
-                          .FirstOrDefault(x => x.SecEmpresa == 1)
-                        ?? throw new TaskCanceledException($"Error Empresa No ha definido un FTP");
-
-                    var urlLogo = await
-                                  _storageService
-                                  .SubirStorage(logo,
-                                                almacenamientoEmpresa.CarpetaLogo,
-                                                empresaEncontrada.NombreLogo);
-
-                    empresaEncontrada.UrlLogo = urlLogo;
-
-                }
-
-                await _repositorio.Editar(empresaEncontrada);
-                return empresaEncontrada;
-
+                var (url, nombre) = await SubirLogo(logo, nombreLogo);
+                entidad.UrlLogo = url;
+                entidad.NombreLogo = nombre;
             }
-            catch
-            {
-                throw;
-            }
+
+            return await _repositorio.Crear(entidad);
         }
 
-        public async Task<Empresa> Editar(Empresa entidad, Stream logo = null, string NombreLogo = "")
+        public async Task<Empresa> Editar(Empresa entidad, Stream logo = null, string nombreLogo = "")
         {
-            try
+            var empresaExistente = await _repositorio.Obtener(x => x.Secuencial == entidad.Secuencial)
+                                   ?? throw new TaskCanceledException("La empresa no existe.");
+
+            empresaExistente.Identificacion = entidad.Identificacion;
+            empresaExistente.Nombre = entidad.Nombre;
+            empresaExistente.Correo = entidad.Correo;
+            empresaExistente.Direccion = entidad.Direccion;
+            empresaExistente.Telefono = entidad.Telefono;
+            empresaExistente.CodigoOperador = entidad.CodigoOperador;
+            empresaExistente.EstaActivo = entidad.EstaActivo;
+
+            if (logo != null)
             {
-                var registroDb = await _repositorio.Obtener(x => x.Secuencial == entidad.Secuencial)
-                    ?? throw new TaskCanceledException("Registro No Existe");
-
-                registroDb.Identificacion = entidad.Identificacion;
-                registroDb.Nombre = entidad.Nombre;
-                registroDb.Correo = entidad.Correo;
-                registroDb.Direccion = entidad.Direccion;
-                registroDb.Telefono = entidad.Telefono;
-                registroDb.CodigoOperador = entidad.CodigoOperador;
-                registroDb.EstaActivo = entidad.EstaActivo;
-
-                if (logo != null)
+                if (!string.IsNullOrEmpty(empresaExistente.NombreLogo))
                 {
-                    var nombreLogoAnterior = registroDb.NombreLogo;
-                    var urlLogoAnterior = registroDb.UrlLogo;
-
-                    var empresaStorage = await
-                                         _empresaStorageServices
-                                         .Consultar();
-
-                    var almacenamientoEmpresa
-                        = empresaStorage
-                          .FirstOrDefault(x => x.SecEmpresa == 1)
-                        ?? throw new TaskCanceledException($"Error Empresa No ha definido un FTP");
-
-                    var urlLogo = await
-                                  _storageService
-                                  .SubirStorage(logo,
-                                                almacenamientoEmpresa.CarpetaLogo,
-                                                registroDb.NombreLogo);
-
-                    registroDb.UrlLogo = urlLogo;
-
-                    await _storageService
-                            .EliminarStorage(almacenamientoEmpresa.CarpetaLogo,
-                                             nombreLogoAnterior);
-
+                    var config = await ObtenerConfiguracionStorage();
+                    await _storageService.EliminarStorage(config.CarpetaLogo, empresaExistente.NombreLogo);
                 }
-                var empresaEditada = await _repositorio.Editar(registroDb);
-                //return tipoProducto;
 
-                if (empresaEditada)
-                    registroDb = await _repositorio.Obtener(x => x.Secuencial == entidad.Secuencial);
-                else
-                    throw new TaskCanceledException("Error el Registrio no se puede guardar");
-
-                return registroDb;
-
+                var (url, nombre) = await SubirLogo(logo, nombreLogo, empresaExistente.NombreLogo);
+                empresaExistente.UrlLogo = url;
+                empresaExistente.NombreLogo = nombre;
             }
-            catch (Exception)
-            {
-                throw;
-            }
+
+            bool seEdito = await _repositorio.Editar(empresaExistente);
+            if (!seEdito)
+                throw new TaskCanceledException("No se pudo editar la empresa.");
+
+            return empresaExistente;
         }
+
         public async Task<bool> Eliminar(int secuencial)
         {
-            try
-            {
-                var seElimino = false;
-                var empresa
-                    = await _repositorio
-                             .Consultar(x => x.Secuencial == secuencial);
+            var empresa = await _repositorio.Obtener(x => x.Secuencial == secuencial);
+            if (empresa == null) return false;
 
-                var tipo = empresa.FirstOrDefault();
-                if (tipo != null)
-                {
-                    await _repositorio.Eliminar(tipo);
-                    seElimino = true;
-                }
-                return seElimino;
-            }
-            catch (Exception)
+            // Opcional: Eliminar logo del storage si existe
+            if (!string.IsNullOrEmpty(empresa.NombreLogo))
             {
-                throw;
+                try
+                {
+                    var config = await ObtenerConfiguracionStorage();
+                    await _storageService.EliminarStorage(config.CarpetaLogo, empresa.NombreLogo);
+                }
+                catch (TaskCanceledException) { /* Ignorar si el FTP no está configurado */ }
             }
+
+            return await _repositorio.Eliminar(empresa);
         }
 
+        private async Task<(string Url, string Nombre)> SubirLogo(Stream logo, string nombreLogo, string nombreAnterior = null)
+        {
+            var config = await ObtenerConfiguracionStorage();
+            string nombreParaGuardar = !string.IsNullOrEmpty(nombreLogo) ? nombreLogo : nombreAnterior ?? System.Guid.NewGuid().ToString("N");
+            string url = await _storageService.SubirStorage(logo, config.CarpetaLogo, nombreParaGuardar);
+            return (url, nombreParaGuardar);
+        }
 
+        private async Task<Empresastorage> ObtenerConfiguracionStorage()
+        {
+            var empresaStorage = await _empresaStorageServices.Consultar();
+            return empresaStorage.FirstOrDefault(x => x.SecEmpresa == 1)
+                   ?? throw new TaskCanceledException("La configuración de almacenamiento (FTP) para la empresa no está definida.");
+        }
     }
 }
+

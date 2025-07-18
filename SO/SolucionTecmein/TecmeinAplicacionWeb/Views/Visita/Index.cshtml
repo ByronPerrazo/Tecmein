@@ -1,13 +1,13 @@
 ﻿@{
-    ViewData["Title"] = "Visitas";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "Visitas";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @section Estilos {
-    <link rel="stylesheet" href="~/vendor/datatables/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/responsive.dataTables.min.css">
-    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="~/css/styleGenerales.css">
+	<link rel="stylesheet" href="~/vendor/datatables/dataTables.bootstrap4.min.css">
+	<link rel="stylesheet" href="~/vendor/datatables/extensiones/css/responsive.dataTables.min.css">
+	<link rel="stylesheet" href="~/vendor/datatables/extensiones/css/buttons.dataTables.min.css">
+	<link rel="stylesheet" href="~/css/styleGenerales.css">
 
 }
 
@@ -16,647 +16,675 @@
 
 <!-- Grilla inicial de proceso -->
 <div class="card shadow-sm mb-2">
-    <div class="card-header py-3 bg-second-primary">
-        <h6 class="m-0 font-weight-bold text-white">Lista de Visitas</h6>
-    </div>
-    <div class="card-body">
-        <div class="row">
-            <div class="col-sm-3">
-                <button class="btn btn-success" id="btnNuevo" data-toggle="modal" data-target="#modalData">
-                    <i class="fas fa-plus-circle"></i>
-                    Nueva Visita
-                </button>
-            </div>
-        </div>
-        <hr />
-        <div class="row">
-            <div class="col-sm-12">
-                <table class="table table-bordered" id="tbdata" cellspacing="0" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>Id</th>
-                            <th>Nombre Obra</th>
-                            <th>Provincia</th>
-                            <th>Canton</th>
-                            <th>Dirección</th>
-                            <th>Mapa</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+	<div class="card-header py-3 bg-second-primary">
+		<h6 class="m-0 font-weight-bold text-white">Lista de Visitas</h6>
+	</div>
+	<div class="card-body">
+		<div class="row">
+			<div class="col-sm-3">
+				<button class="btn btn-success" id="btnNuevo" data-toggle="modal" data-target="#modalData">
+					<i class="fas fa-plus-circle"></i>
+					Nueva Visita
+				</button>
+			</div>
+		</div>
+		<hr />
+		<div class="row">
+			<div class="col-sm-12">
+				<table class="table table-bordered" id="tbdata" cellspacing="0" style="width:100%">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Nombre Obra</th>
+							<th>Provincia</th>
+							<th>Canton</th>
+							<th>Dirección</th>
+							<th>Mapa</th>
+							<th>Estado</th>
+							<th>Acciones</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!-- Datatalle Visita -->
 <div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h6>Detalle Visita</h6>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="card shadow-sm">
+				<div class="card-header py-2 bg-second-primary">
+					<h6 class="m-0 font-weight-bold text-white">
+						<i class="fas fa-building"></i> Detalle Visita
+						<button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true" class="text-white">×</span>
+						</button>
+					</h6>
+				</div>
+				<div class="card-body p-2">
+					<form>
+						<div class="row">
+							<!--Seccion Superior -->
+							<div class="col-sm-12">
+								<div class="row">
+									<!--seccion Obra -->
+									<div class="col-sm-12">
+										<div class="card shadow-sm mb-6">
+											<div class="card-header py-2 bg-second-primary">
+												<h6 class="m-0 font-weight-bold text-white"><i class="fas fa-industry"></i> Obra </h6>
+											</div>
 
-                <form>
-                    <div class="row">
-                        <!--Seccion Superior -->
-                        <div class="col-sm-12">
-                            <div class="row">
-                                <!--seccion Obra -->
-                                <div class="col-sm-12">
-                                    <div class="card shadow-sm mb-6">
-                                        <div class="card-header py-2 bg-second-primary">
-                                            <h6 class="m-0 font-weight-bold text-white"><i class="fas fa-industry"></i> Obra </h6>
-                                        </div>
+											<div class="card-body">
+												<input type="hidden" value="0" id="txtId">
+												<input type="hidden" value="0" id="txtGeolocallizacion">
 
-                                        <div class="card-body">
-                                            <input type="hidden" value="0" id="txtId">
-                                            <input type="hidden" value="0" id="txtGeolocallizacion">
+												<div class="form-row">
+													<div class="form-group col-sm-10 text-xs">
+														<i class="cab_i_sm text-xs">Nombre Obra / Proyecto</i>
+														<input type="text" class="form-control form-control-sm text-xs"
+															   name="Nombre Proyecto"
+															   id="txtNombreObra">
+													</div>
+													<div class="form-group col-sm-2 text-xs">
+														<i class="cab_i_sm text-xs">Operador</i>
+														<select class="form-control form-control-sm text-xs" id="cboOperador" name="Operador">
+														</select>
+													</div>
+												</div>
+												<div class="form-row">
+													<div class="form-group col-sm-4 text-xs">
+														<i class="cab_i_sm text-xs">Provincia</i>
+														<select class="form-control form-control-sm text-xs" id="cboProvincia" name="Provincia">
+														</select>
+													</div>
+													<div class="form-group col-sm-4 text-xs">
+														<i class="cab_i_sm text-xs">Cantón</i>
+														<select class="form-control form-control-sm text-xs"
+																id="cboCanton"
+																name="Canton">
+														</select>
+													</div>
+													<div class="form-group col-sm-4 text-xs">
+														<i class="cab_i_sm text-xs">Parroquia</i>
+														<select class="form-control form-control-sm text-xs"
+																id="cboParroquia"
+																name="Parroquia">
+														</select>
+													</div>
+												</div>
 
-                                            <div class="form-row">
-                                                <div class="form-group col-sm-10 text-xs">
-                                                    <i class="cab_i_sm text-xs">Nombre Obra / Proyecto</i>
-                                                    <input type="text" class="form-control form-control-sm text-xs"
-                                                           name="Nombre Proyecto"
-                                                           id="txtNombreObra">
-                                                </div>
-                                                <div class="form-group col-sm-2 text-xs">
-                                                    <i class="cab_i_sm text-xs">Operador</i>
-                                                    <select class="form-control form-control-sm text-xs" id="cboOperador" name="Operador">
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="form-row">
-                                                <div class="form-group col-sm-4 text-xs">
-                                                    <i class="cab_i_sm text-xs">Provincia</i>
-                                                    <select class="form-control form-control-sm text-xs" id="cboProvincia" name="Provincia">
-                                                    </select>
-                                                </div>
-                                                <div class="form-group col-sm-4 text-xs">
-                                                    <i class="cab_i_sm text-xs">Cantón</i>
-                                                    <select class="form-control form-control-sm text-xs"
-                                                            id="cboCanton"
-                                                            name="Canton">
-                                                    </select>
-                                                </div>
-                                                <div class="form-group col-sm-4 text-xs">
-                                                    <i class="cab_i_sm text-xs">Parroquia</i>
-                                                    <select class="form-control form-control-sm text-xs"
-                                                            id="cboParroquia"
-                                                            name="Parroquia">
-                                                    </select>
-                                                </div>
-                                            </div>
+												<div class="form-row form-row-compact">
+													<div class="form-group col-sm-12 text-xs">
+														<i class="cab_i_sm">Dirección Obra / Proyecto</i>
+														<input type="text" class="form-control form-control-sm text-xs" id="txtDireccion" placeholder="Dirección" name="Dirección">
+													</div>
 
-                                            <div class="form-row">
-                                                <div class="form-group col-sm-12 text-xs">
-                                                    <i class="cab_i_sm">Dirección Obra / Proyecto</i>
-                                                    <input type="text" class="form-control form-control-sm text-xs" id="txtDireccion" placeholder="Dirección" name="Dirección">
-                                                </div>
+												</div>
 
-                                            </div>
+												<div class="form-row form-row-compact">
 
-                                            <div class="form-row">
+													<div class="form-group col-sm-4">
+														<i class="cab_i_sm">Etapa</i>
+														<select class="form-control form-control-sm  text-xs"
+																id="cboEtapaObra"
+																name="Etapa" onchange="mostrarDiv()">
+															<option value="VIS">Visita</option>
+															<option value="COT">Cotización</option>
+															<option value="SEG">Seguimiento</option>
+															<option value="PRE">Pre-Contrato</option>
+															<option value="CON">Contrato</option>
+															<option value="POR">Por Renovar</option>
+														</select>
+													</div>
 
-                                                <div class="form-group col-sm-4">
-                                                    <i class="cab_i_sm">Etapa</i>
-                                                    <select class="form-control form-control-sm  text-xs"
-                                                            id="cboEtapaObra"
-                                                            name="Etapa" onchange="mostrarDiv()">
-                                                        <option value="VIS">Visita</option>
-                                                        <option value="COT">Cotización</option>
-                                                        <option value="SEG">Seguimiento</option>
-                                                        <option value="PRE">Pre-Contrato</option>
-                                                        <option value="CON">Contrato</option>
-                                                        <option value="POR">Por Renovar</option>
-                                                    </select>
-                                                </div>
+													<div class="form-group col-sm-4">
+														<i class="cab_i_sm">Estado Obra</i>
+														<select class="form-control form-control-sm text-xs" id="cboEstado">
+															<option value="1">Activo</option>
+															<option value="0">Inactivo</option>
+														</select>
+													</div>
 
-                                                <div class="form-group col-sm-4">
-                                                    <i class="cab_i_sm">Estado Obra</i>
-                                                    <select class="form-control form-control-sm text-xs" id="cboEstado">
-                                                        <option value="1">Activo</option>
-                                                        <option value="0">Inactivo</option>
-                                                    </select>
-                                                </div>
+													<div class="form-group col-sm-4">
+														<i class="cab_i_sm">Próxima Visita</i>
+														<input type="checkbox" name="esSigVisita" id="chkEsSigVisita">
+														<input type="date"
+															   class="form-control form-control-sm validar-fecha-mayor text-xs"
+															   id="dtpkFechaSigVisita" style="display:none"
+															   name="Fecha Siguiente Visita">
+													</div>
+												</div>
+												<div class="form-row">
+													<div class="form-group col-sm-12 text-xs">
+														<i class="cab_i_sm">Detalle</i>
+														<textarea rows="2" cols="50" class="form-control form-control-sm input-validar text-xs" id="txtDescripcion" name="Detalle"></textarea>
+													</div>
+												</div>
 
-                                                <div class="form-group col-sm-4">
-                                                    <i class="cab_i_sm">Próxima Visita</i>
-                                                    <input type="checkbox" name="esSigVisita" id="chkEsSigVisita">
-                                                    <input type="date"
-                                                           class="form-control form-control-sm validar-fecha-mayor text-xs"
-                                                           id="dtpkFechaSigVisita" style="display:none"
-                                                           name="Fecha Siguiente Visita">
-                                                </div>
-                                            </div>
-                                            <div class="form-row">
-                                                <div class="form-group col-sm-12 text-xs">
-                                                    <i class="cab_i_sm">Detalle</i>
-                                                    <textarea rows="2" cols="50" class="form-control form-control-sm input-validar text-xs" id="txtDescripcion" name="Detalle"></textarea>
-                                                </div>
-                                            </div>
-
-                                            <!--seccion Contrato -->
-                                            <div class="form-row" id="Datos_ContratoObra" style="display:none">
-                                                <div class="form-row">
-                                                    <div class="form-group col-sm-4 text-xs">
-                                                        <i class="cab_i_sm">Poliza</i>
-                                                        <select class="form-control form-control-sm text-xs" id="cboPoliza">
-                                                            <option value="0">NO</option>
-                                                            <option value="0">LETRA DE CAMBIO</option>
-                                                            <option value="0">BUA</option>
-                                                            <option value="0">CC</option>
-                                                            <option value="0">AP</option>
-                                                            <option value="0">RC</option>
-                                                            <option value="0">BUA+CC</option>
-                                                            <option value="0">BUA+AP</option>
-                                                            <option value="0">BUA+RC</option>
-                                                            <option value="0">BUA+CC+AP</option>
-                                                            <option value="0">BUA+CC+RC</option>
-                                                            <option value="0">BUA+AP+RC</option>
-                                                            <option value="0">BUA+CC+AP+RC</option>
-
-
-
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group col-sm-4 text-xs">
-                                                        <i class="cab_i_sm">Valor</i>
-                                                        <input type="text"
-                                                               class="form-control form-control-sm text-xs"
-                                                               id="txtvalor"
-                                                               placeholder="Valor Contrato"
-                                                               name="Valor Contrato">
-                                                    </div>
-                                                    <div class="form-group col-sm-4 text-xs" style="display:none">
-                                                        <i class="cab_i_sm">Dias Entrega</i>
-                                                        <input type="number"
-                                                               class="form-control form-control-sm"
-                                                               id="txtDiasEntrega"
-                                                               name="Valor Contrato">
-                                                    </div>
-
-                                                </div>
-
-                                                <div class="form-row">
-                                                    <div class="form-group col-sm-4 text-xs" style="display:none">
-                                                        <i class="cab_i_sm">Tipo Obra</i>
-                                                        <select class="form-control form-control-sm text-xs"
-                                                                id="cboTipoObra"
-                                                                name="Tipo">
-                                                            <option value="MAN">Mantenimiento</option>
-                                                            <option value="MOD">Modernización</option>
-                                                            <option value="NEW">Nuevo Equipo</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="form-group col-sm-4" style="display:none" id="div_fechaContrato">
-                                                        <i class="cab_i_sm">Fecha Contrato</i>
-                                                        <input type="date"
-                                                               class="form-control form-control-sm validar-fecha-mayor text-xs"
-                                                               id="dtpkFechaContrato"
-                                                               name="Fecha Contrato">
-                                                    </div>
-                                                    <div class="form-group col-sm-4" style="display:none" id="div_fechaAnticipo">
-                                                        <i class="cab_i_sm">Anticipo Pagado:</i>
-                                                        <input type="checkbox" name="anticipoPagado" id="chkAnticipoPagado">
-                                                        <input type="date"
-                                                               class="form-control form-control-sm validar-fecha-mayor text-xs"
-                                                               id="dtpkFechaAnticipo"
-                                                               name="Fecha Anticipio">
-                                                    </div>
-
-                                                </div>
-
-                                            </div>
+												<!--seccion Contrato -->
+												<div class="form-row" id="Datos_ContratoObra" style="display:none">
+													<div class="form-row">
+														<div class="form-group col-sm-4 text-xs">
+															<i class="cab_i_sm">Poliza</i>
+															<select class="form-control form-control-sm text-xs" id="cboPoliza">
+																<option value="0">NO</option>
+																<option value="0">LETRA DE CAMBIO</option>
+																<option value="0">BUA</option>
+																<option value="0">CC</option>
+																<option value="0">AP</option>
+																<option value="0">RC</option>
+																<option value="0">BUA+CC</option>
+																<option value="0">BUA+AP</option>
+																<option value="0">BUA+RC</option>
+																<option value="0">BUA+CC+AP</option>
+																<option value="0">BUA+CC+RC</option>
+																<option value="0">BUA+AP+RC</option>
+																<option value="0">BUA+CC+AP+RC</option>
 
 
-                                        </div>
 
-                                    </div>
-                                </div>
+															</select>
+														</div>
+														<div class="form-group col-sm-4 text-xs">
+															<i class="cab_i_sm">Valor</i>
+															<input type="text"
+																   class="form-control form-control-sm text-xs"
+																   id="txtvalor"
+																   placeholder="Valor Contrato"
+																   name="Valor Contrato">
+														</div>
+														<div class="form-group col-sm-4 text-xs" style="display:none">
+															<i class="cab_i_sm">Dias Entrega</i>
+															<input type="number"
+																   class="form-control form-control-sm"
+																   id="txtDiasEntrega"
+																   name="Valor Contrato">
+														</div>
+
+													</div>
+
+													<div class="form-row">
+														<div class="form-group col-sm-4 text-xs" style="display:none">
+															<i class="cab_i_sm">Tipo Obra</i>
+															<select class="form-control form-control-sm text-xs"
+																	id="cboTipoObra"
+																	name="Tipo">
+																<option value="MAN">Mantenimiento</option>
+																<option value="MOD">Modernización</option>
+																<option value="NEW">Nuevo Equipo</option>
+															</select>
+														</div>
+
+														<div class="form-group col-sm-4" style="display:none" id="div_fechaContrato">
+															<i class="cab_i_sm">Fecha Contrato</i>
+															<input type="date"
+																   class="form-control form-control-sm validar-fecha-mayor text-xs"
+																   id="dtpkFechaContrato"
+																   name="Fecha Contrato">
+														</div>
+														<div class="form-group col-sm-4" style="display:none" id="div_fechaAnticipo">
+															<i class="cab_i_sm">Anticipo Pagado:</i>
+															<input type="checkbox" name="anticipoPagado" id="chkAnticipoPagado">
+															<input type="date"
+																   class="form-control form-control-sm validar-fecha-mayor text-xs"
+																   id="dtpkFechaAnticipo"
+																   name="Fecha Anticipio">
+														</div>
+
+													</div>
+
+												</div>
 
 
-                            </div>
-                        </div>
+											</div>
 
-                    </div>
+										</div>
+									</div>
 
-                </form>
 
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary btn-sm" type="button" id="btnGuardarVisitas">Guardar</button>
-                <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
+								</div>
+							</div>
+
+						</div>
+
+					</form>
+				</div>
+				<div class="card-body p-0 d-flex justify-content-end">
+					<button class="btn btn-primary btn-sm m-1 mr-2" type="button" id="btnGuardarVisitas">Guardar</button>
+					<button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!--Contacto-->
 <div class="modal fade" id="modalDataContacto" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="static">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h6>Contacto</h6>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="card shadow-sm">
+				<div class="card-header py-2 bg-second-primary">
+					<h6 class="m-0 font-weight-bold text-white">
+						<i class="fas fa-id-card"></i> Contacto
+						<button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true" class="text-white">×</span>
+						</button>
+					</h6>
+				</div>
+				<div class="card-body p-2">
+					<!--seccion Contacto -->
+					<div class="col-sm-12" id="Detalle_Contacto_vista">
+						<div class="card shadow-sm ml-1">
+							<div class="card-header py-2 bg-second-primary">
+								<h6 class="m-0 font-weight-bold text-white"><i class="fas fa-id-card"></i> Contacto</h6>
+							</div>
 
-                <!--seccion Contacto -->
-                <div class="col-sm-12" id="Detalle_Contacto_vista">
-                    <div class="card shadow-sm ml-1">
-                        <div class="card-header py-2 bg-second-primary">
-                            <h6 class="m-0 font-weight-bold text-white"><i class="fas fa-id-card"></i> Contacto</h6>
-                        </div>
+							<div class="card-body Contacto">
+								<div class="form-row">
+									<div class="form-group col-sm-12">
+										<i class="cab_i_sm">Constructora</i>
+										<select class="form-control form-control-sm text-xs"
+												id="cboEmpresa"
+												name="Constructora">
+										</select>
+									</div>
+								</div>
 
-                        <div class="card-body Contacto">
-                            <div class="form-row">
-                                <div class="form-group col-sm-12">
-                                    <i class="cab_i_sm">Constructora</i>
-                                    <select class="form-control form-control-sm text-xs"
-                                            id="cboEmpresa"
-                                            name="Constructora">
-                                    </select>
-                                </div>
-                            </div>
+								<div class="form-row">
+									<div class="form-group col-sm-12">
+										<i class="cab_i_sm">Contacto</i>
+										<select class="form-control form-control-sm text-xs"
+												id="cboContactos"
+												name="Contacto">
+										</select>
 
-                            <div class="form-row">
-                                <div class="form-group col-sm-12">
-                                    <i class="cab_i_sm">Contacto</i>
-                                    <select class="form-control form-control-sm text-xs"
-                                            id="cboContactos"
-                                            name="Contacto">
-                                    </select>
+									</div>
+								</div>
 
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <i class="cab_i_sm">Detalle Contacto</i>
-                                <textarea readonly="readonly"
-                                          style="height: 55px;"
-                                          class="form-control form-control-sm text-xs"
-                                          id="txtDescripcionContacto"
-                                          name="Detalle Contacto"></textarea>
-                            </div>
-                            <div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary btn-sm" type="button" id="btnGrdVisitaContacto">Guardar</button>
-                <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal" id="btnCancelVisitaContacto">Cancel</button>
-
-            </div>
-        </div>
-    </div>
+								<div class="form-row">
+									<i class="cab_i_sm">Detalle Contacto</i>
+									<textarea readonly="readonly"
+											  class="form-control form-control-sm text-xs"
+											  id="txtDescripcionContacto"
+											  name="Detalle Contacto"></textarea>
+								</div>
+								<div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card-body p-0 d-flex justify-content-end">
+					<button class="btn btn-primary btn-sm m-1 mr-2" type="button" id="btnGrdVisitaContacto">Guardar</button>
+					<button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal" id="btnCancelVisitaContacto">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!--Detalle de Productos Visita-->
 <div class="modal fade" id="modalDataDetalleVisita" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="static">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h6>Detalle Equipo(s)</h6>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">
+	<div class="modal-dialog modal-xl" role="document">
+		<div class="modal-content">
+			
+			<!--seccion Detalle lista -->
+			<div class="DetalleVisita" id="detalleVisita_Vista">
+				<div class="card shadow-sm">
+					<div class="card-header py-2 bg-second-primary">
+						<h6 class="m-0 font-weight-bold text-white"> <i class="fas fa-thumbtack"></i> Detalle Visita
+							<button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true" class="text-white">×</span>
+							</button>
+						</h6>
+					</div>
 
+					<div class="card-body p-2">
 
-                <div class="col-sm-12">
-                    <!--seccion Detalle lista -->
-                    <div class="DetalleVisita" id="detalleVisita_Vista">
-                        <div class="card shadow-sm mb-4">
-                            <div class="card-header py-2 bg-second-primary">
-                                <h6 class="m-0 font-weight-bold text-white"> <i class="fas fa-thumbtack"></i> Detalle Visita</h6>
-                            </div>
-                            <div class="card-body p-2">
+						<div class="card shadow-sm mb-4">
+									<div class="card-header py-2 bg-second-primary">
+										<a href="#collapseGeneralInfo" class="d-block card-header-link text-white" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseGeneralInfo">
+											<h6 class="m-0 font-weight-bold text-white">
+												<i class="fas fa-info-circle"></i> Información General del Equipo
+												<i class="fas fa-chevron-down float-right"></i>
+											</h6>
+										</a>
+									</div>
+									<div id="collapseGeneralInfo" class="collapse show">
+										<div class="card-body p-2">
+											<div class="form-row form-row-compact">
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">Tipo Equipo</i>
+													<select class="form-control form-control-sm text-xs"
+															id="cboTipoEquipo" name="Tipo Equipo">
+														<option value="COME">A. Comercial</option>
+														<option value="RESI">A. Residencial</option>
+														<option value="MPLA">A. Montaplatos</option>
+														<option value="HOSP">A. Para Hospital</option>
+														<option value="MCAR">A. Montacargas</option>
+														<option value="MCOC">A. Montacoches</option>
+														<option value="ESEL">E. Eléctricas</option>
+														<option value="PARO">Pas. Rodantes  </option>
+														<option value="P360">Panoramico 360</option>
+														<option value="P270">Panoramico 270</option>
+														<option value="P180">Panoramico 180</option>
+														<option value="PA90">Panoramico 90</option>
+													</select>
+												</div>
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">Sistema</i>
+													<select class="form-control form-control-sm text-xs"
+															id="cboSistema" name="Sistema">
+														<option value="Sim">Simplex</option>
+														<option value="Dup">Duplex</option>
+														<option value="Tri">Triplex</option>
+														<option value="Cua">Cuadruplex</option>
+														<option value="Qui">Quintuplex</option>
+													</select>
+												</div>
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">Marca</i>
+													<select class="form-control form-control-sm text-xs"
+															id="cboMarca" name="Marca">
+														<option value="ANDI">ANDINO</option>
+														<option value="AUTO">AUTOMAC</option>
+														<option value="COUR">CONTROLES S.A. (URU)</option>
+														<option value="DOPP">DOPPLER</option>
+														<option value="FUJI">FUJI</option>
+														<option value="FUYI">FUJI-YIDA</option>
+														<option value="HYUN">HYUNDAI</option>
+														<option value="IDE">IDE</option>
+														<option value="KONE">KONE</option>
+														<option value="LG">LG</option>
+														<option value="MITS">MITSUBISHI</option>
+														<option value="MOVI">MOVILIFT</option>
+														<option value="ORON">ORONA</option>
+														<option value="OTIS">OTIS</option>
+														<option value="SCHI">SCHINDLER</option>
+														<option value="SIGM">SIGMA</option>
+														<option value="TECM">TECMEIN</option>
+														<option value="TKET">TKE-THYSSENKRUPP</option>
+														<option value="OTRO">OTROS</option>
+													</select>
+												</div>
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">Capacidad de Carga</i>
+													<input type="text" class="form-control form-control-sm text-xs"
+														   id="txtCapacidad"
+														   name="Capacidad">
+												</div>
+											</div>
 
-                                <div class="form-row">
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">Tipo Equipo</i>
-                                        <select class="form-control form-control-sm text-xs"
-                                                id="cboTipoEquipo" name="Tipo Equipo">
-                                            <option value="COME">A. Comercial</option>
-                                            <option value="RESI">A. Residencial</option>
-                                            <option value="MPLA">A. Montaplatos</option>
-                                            <option value="HOSP">A. Para Hospital</option>
-                                            <option value="MCAR">A. Montacargas</option>
-                                            <option value="MCOC">A. Montacoches</option>
-                                            <option value="ESEL">E. Eléctricas</option>
-                                            <option value="PARO">Pas. Rodantes  </option>
-                                            <option value="P360">Panoramico 360</option>
-                                            <option value="P270">Panoramico 270</option>
-                                            <option value="P180">Panoramico 180</option>
-                                            <option value="PA90">Panoramico 90</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">Sistema</i>
-                                        <select class="form-control form-control-sm text-xs"
-                                                id="cboSistema" name="Sistema">
-                                            <option value="Sim">Simplex</option>
-                                            <option value="Dup">Duplex</option>
-                                            <option value="Tri">Triplex</option>
-                                            <option value="Cua">Cuadruplex</option>
-                                            <option value="Qui">Quintuplex</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">Marca</i>
-                                        <select class="form-control form-control-sm text-xs"
-                                                id="cboMarca" name="Marca">
-                                            <option value="ANDI">ANDINO</option>
-                                            <option value="AUTO">AUTOMAC</option>
-                                            <option value="COUR">CONTROLES S.A. (URU)</option>
-                                            <option value="DOPP">DOPPLER</option>
-                                            <option value="FUJI">FUJI</option>
-                                            <option value="FUYI">FUJI-YIDA</option>
-                                            <option value="HYUN">HYUNDAI</option>
-                                            <option value="IDE">IDE</option>
-                                            <option value="KONE">KONE</option>
-                                            <option value="LG">LG</option>
-                                            <option value="MITS">MITSUBISHI</option>
-                                            <option value="MOVI">MOVILIFT</option>
-                                            <option value="ORON">ORONA</option>
-                                            <option value="OTIS">OTIS</option>
-                                            <option value="SCHI">SCHINDLER</option>
-                                            <option value="SIGM">SIGMA</option>
-                                            <option value="TECM">TECMEIN</option>
-                                            <option value="TKET">TKE-THYSSENKRUPP</option>
-                                            <option value="OTRO">OTROS</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">Capacidad de Carga</i>
-                                        <input type="text" class="form-control form-control-sm text-xs"
-                                               id="txtCapacidad"
-                                               name="Capacidad">
-                                    </div>
-                                </div>
+											<div class="form-row form-row-compact">
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">Sala Maquinas</i>
+													<select class="form-control form-control-sm text-xs"
+															id="cboSalaMaquinas" name="Sala Maquinas">
+														<option value="MR">MR</option>
+														<option value="MRL">MRL</option>
+													</select>
+												</div>
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">Velocidad m/s</i>
+													<select class="form-control form-control-sm text-xs"
+															id="cboVelocidad" name="Velocidad">
+														<option value="0.50">0.50</option>
+														<option value="0.75">0.75</option>
+														<option value="1.00">1.00</option>
+														<option value="1.50">1.50</option>
+														<option value="1.75">1.75</option>
+														<option value="2.00">2.00</option>
+														<option value="2.50">2.50</option>
+														<option value="3.00">3.00</option>
+													</select>
+												</div>
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">Tipo Motor</i>
+													<select class="form-control form-control-sm text-xs"
+															id="cboTipoMotor" name="Sala Maquinas">
+														<option value="GEARLESS">GEARLESS</option>
+														<option value="GEARED">GEARED</option>
+													</select>
+												</div>
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">N° Personas</i>
+													<input type="text" class="form-control form-control-sm  text-xs"
+														   id="txtNumPersonas" name="Personas">
+												</div>
+											</div>
+											<div class="form-row">
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">Cantidad</i>
+													<input type="text"
+														   class="form-control form-control-sm text-xs"
+														   id="txtCantidad"
+														   name="Numero Paradas">
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
 
-                                <div class="form-row">
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">Sala Maquinas</i>
-                                        <select class="form-control form-control-sm text-xs"
-                                                id="cboSalaMaquinas" name="Sala Maquinas">
-                                            <option value="MR">MR</option>
-                                            <option value="MRL">MRL</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">Velocidad m/s</i>
-                                        <select class="form-control form-control-sm text-xs"
-                                                id="cboVelocidad" name="Velocidad">
-                                            <option value="0.50">0.50</option>
-                                            <option value="0.75">0.75</option>
-                                            <option value="1.00">1.00</option>
-                                            <option value="1.50">1.50</option>
-                                            <option value="1.75">1.75</option>
-                                            <option value="2.00">2.00</option>
-                                            <option value="2.50">2.50</option>
-                                            <option value="3.00">3.00</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">Tipo Motor</i>
-                                        <select class="form-control form-control-sm text-xs"
-                                                id="cboTipoMotor" name="Sala Maquinas">
-                                            <option value="GEARLESS">GEARLESS</option>
-                                            <option value="GEARED">GEARED</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">N° Personas</i>
-                                        <input type="text" class="form-control form-control-sm  text-xs"
-                                               id="txtNumPersonas" name="Personas">
+						<div class="card shadow-sm mb-4">
+									<div class="card-header py-2 bg-second-primary">
+										<a href="#collapseInstallationDetails" class="d-block card-header-link text-white" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseInstallationDetails">
+											<h6 class="m-0 font-weight-bold text-white">
+												<i class="fas fa-tools"></i> Detalles de Instalación y Ducto
+												<i class="fas fa-chevron-down float-right"></i>
+											</h6>
+										</a>
+									</div>
+									<div id="collapseInstallationDetails" class="collapse show">
+										<div class="card-body p-2">
+											<div class="form-row form-row-compact">
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">Número Paradas</i>
+													<input type="text" class="form-control form-control-sm  text-xs"
+														   id="txtNumParadas" name="Paradas">
+												</div>
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">Nombre Paradas</i>
+													<input type="text"
+														   class="form-control form-control-sm text-xs"
+														   id="txtNombresParadas"
+														   name="Nombre Paradas">
+													<div class="invalid-feedback">El número de nombres debe coincidir con el número de paradas (separados por guiones).</div>
+												</div>
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">Tipo de Embarque</i>
+													<select class="form-control form-control-sm text-xs"
+															id="cboTipoEmbarque" name="Tipo Equipo">
+														<option value="Sim">Simple</option>
+														<option value="Dob">Doble</option>
+													</select>
+												</div>
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">Ducto De</i>
+													<select class="form-control form-control-sm text-xs"
+															id="cboTipoDucto" name="Tipo Equipo">
+														<option value="Sim">Concreto</option>
+														<option value="Dob">Bloque</option>
+														<option value="Dob">Estructura</option>
+													</select>
+												</div>
+											</div>
 
-                                    </div>
-                                </div>
+											<div class="form-row form-row-compact">
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">Medidas Ducto A-F</i>
+													<input type="text" class="form-control form-control-sm  text-xs"
+														   id="txtMedidasDuctoAF" name="Medidas Dcuto AF">
+													<div class="invalid-feedback">El formato debe ser NÚMERO * NÚMERO</div>
+												</div>
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">Foso</i>
+													<input type="text"
+														   class="form-control form-control-sm  text-xs"
+														   id="txtFoso" name="Foso">
+												</div>
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">Recorrido</i>
+													<input type="text"
+														   class="form-control form-control-sm  text-xs"
+														   id="txtRecorrido"
+														   name="Recorrido">
+												</div>
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">Entradas Frontales</i>
+													<input type="text"
+														   class="form-control form-control-sm text-xs"
+														   id="txtEntradasFrontales"
+														   name="Entradas Frontales">
+											<div class="invalid-feedback">El número de Entradas no coicide con las Entradas.</div>
+												</div>
+											</div>
 
-                                <div class="form-row">
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">Número Paradas</i>
-                                        <input type="text" class="form-control form-control-sm  text-xs"
-                                               id="txtNumParadas" name="Paradas">
+											<div class="form-row form-row-compact">
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">Entradas Posteriores</i>
+													<input type="text"
+														   class="form-control form-control-sm text-xs"
+														   id="txtEntradasPosterior"
+														   name="Entradas Posteriores">
+												<div class="invalid-feedback">El número de Entradas no coicide con las Entradas.</div>
+												</div>
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">Sobre Recorrido</i>
+													<input type="text"
+														   class="form-control form-control-sm text-xs"
+														   id="txtSobreRecorrido"
+														   name="SobreRecorrido">
+												</div>
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">Tipo Energía</i>
+													<select class="form-control form-control-sm text-xs"
+															id="cboTipoEnergia" name="Tipo Equipo">
+														<option value="Bi220">Bifasico 220</option>
+														<option value="Tr220">Trifasico 220</option>
+													</select>
+												</div>
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">Altura Entre Pisos</i>
+													<input type="text"
+														   class="form-control form-control-sm text-xs"
+														   id="txtAlturaEntrePisos"
+														   name="Altura Entre Pisos">
+												</div>
+											</div>
 
-                                    </div>
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">Tipo de Embarque</i>
-                                        <select class="form-control form-control-sm text-xs"
-                                                id="cboTipoEmbarque" name="Tipo Equipo">
-                                            <option value="Sim">Simple</option>
-                                            <option value="Dob">Doble</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">Ducto De</i>
-                                        <select class="form-control form-control-sm text-xs"
-                                                id="cboTipoDucto" name="Tipo Equipo">
-                                            <option value="Sim">Concreto</option>
-                                            <option value="Dob">Bloque</option>
-                                            <option value="Dob">Estructura</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">Medidas Ducto A-F</i>
-                                        <input type="text" class="form-control form-control-sm  text-xs"
-                                               id="txtMedidasDuctoAF" name="Medidas Dcuto AF">
+											<div class="form-row form-row-compact">
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">Dimención Entrada</i>
+													<input type="text"
+														   class="form-control form-control-sm text-xs"
+														   id="txtDimencionEntrada"
+														   name="Dimención Entradas">
+													<div class="invalid-feedback">El formato debe ser NÚMERO * NÚMERO</div>
+												</div>
+												<div class="form-group col-sm-3">
+													<i class="cab_i_sm">Material de Puertas</i>
+													<select class="form-control form-control-sm text-xs"
+															id="cboTipoMaterial" name="Tipo Equipo">
+														<option value="AceIno">Acero Inoxidable</option>
+														<option value="AcePint">Acero Pintado</option>
+														<option value="InoxVid">Acero Inox-Vidrio</option>
 
-                                    </div>
-                                </div>
+													</select>
+												</div>
+											</div>
+											<div class="p-2 d-flex justify-content-end">
+												<button class="btn btn-success btn-sm" id="btnAgregarItem" contextmenu="Agregar">
+													<i class="fas fa-plus-circle"></i> Agregar
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
 
-                                <div class="form-row">
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">Foso</i>
-                                        <input type="text"
-                                               class="form-control form-control-sm  text-xs"
-                                               id="txtFoso" name="Foso">
+						<div class="card shadow-sm mb-4">
 
-                                    </div>
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">Recorrido</i>
-                                        <input type="text"
-                                               class="form-control form-control-sm  text-xs"
-                                               id="txtRecorrido"
-                                               name="Recorrido">
+									<div class="card-header py-2 bg-second-primary">
+										<h6 class="m-0 font-weight-bold text-white"><i class="fas fa-list"></i> Equipos Agregados</h6>
+									</div>
+									<div class="card-body p-2">
+										<div class="form-group form-row">
+											<div class="col">
+												<table class="table table-sm text-xs" id="tbDataItems" style="width:100%">
+													<thead>
+														<tr>
+															<th class="col-sm text-xs">Secuencial</th>
+															<th class="col-sm text-xs">Cantidad</th>
+															<th class="col-sm text-xs">Detalle</th>
+															<th class="col-sm text-xs">Acciones</th>
+														</tr>
+													</thead>
+													<tbody>
+													</tbody>
 
-                                    </div>
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">Entradas Frontales</i>
-                                        <input type="text"
-                                               class="form-control form-control-sm text-xs"
-                                               id="txtEntradasFrontales"
-                                               name="Entradas Frontales">
+												</table>
+											</div>
+										</div>
+									</div>
+									
+								</div>
 
-                                    </div>
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">Entradas Posteriores</i>
-                                        <input type="text"
-                                               class="form-control form-control-sm text-xs"
-                                               id="txtEntradasPosterior"
-                                               name="Entradas Posteriores">
+					</div>
 
-                                    </div>
-                                </div>
-
-                                <div class="form-row">
-
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">Sobre Recorrido</i>
-                                        <input type="text"
-                                               class="form-control form-control-sm text-xs"
-                                               id="txtSobreRecorrido"
-                                               name="SobreRecorrido">
-
-                                    </div>
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">Nombre Paradas</i>
-                                        <input type="text"
-                                               class="form-control form-control-sm text-xs"
-                                               id="txtNombresParadas"
-                                               name="Nombre Paradas">
-
-                                    </div>
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">Tipo Energía</i>
-                                        <select class="form-control form-control-sm text-xs"
-                                                id="cboTipoEnergia" name="Tipo Equipo">
-                                            <option value="Bi220">Bifasico 220</option>
-                                            <option value="Tr220">Trifasico 220</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">Altura Entre Pisos</i>
-                                        <input type="text"
-                                               class="form-control form-control-sm text-xs"
-                                               id="txtAlturaEntrePisos"
-                                               name="Altura Entre Pisos">
-
-                                    </div>
-
-                                </div>
-
-                                <div class="form-row">
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">Dimención Entrada</i>
-                                        <input type="text"
-                                               class="form-control form-control-sm text-xs"
-                                               id="txtDimencionEntrada"
-                                               name="Dimención Entradas">
-
-                                    </div>
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">Material de Puertas</i>
-                                        <select class="form-control form-control-sm text-xs"
-                                                id="cboTipoMaterial" name="Tipo Equipo">
-                                            <option value="AceIno">Acero Inoxidable</option>
-                                            <option value="AcePint">Acero Pintado</option>
-                                            <option value="InoxVid">Acero Inox-Vidrio</option>
-
-                                        </select>
-                                    </div>
-                                    <div class="form-row col-sm-3">
-                                        <i class="cab_i_sm">Cantidad</i>
-                                        <input type="text"
-                                               class="form-control form-control-sm text-xs"
-                                               id="txtCantidad"
-                                               name="Numero Paradas">
-
-                                    </div>
-                                    <div class="form-row col-sm">
-                                        <button class="btn btn-success"
-                                                id="btnAgregarItem" contextmenu="Agregar">
-                                            <i class="fas fa-plus-circle"></i> Agregar
-                                        </button>
-
-                                    </div>
-                                </div>
-
-
-
-                                <div class="form-group form-row">
-                                    <div class="col">
-                                        <table class="table table-sm text-xs" id="tbDataItems" style="width:100%">
-                                            <thead>
-                                                <tr>
-                                                    <th class="col-sm text-xs">Secuencial</th>
-                                                    <th class="col-sm text-xs">Cantidad</th>
-                                                    <th class="col-sm text-xs">Detalle</th>
-                                                    <th class="col-sm text-xs">Acciones</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-
-                                        </table>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
+					<div class="card-body p-1">
+						<button class="btn btn-danger btn-sm float-right" type="button" data-dismiss="modal">Cancel</button>
+					</div>
+				</div>
+			
+			</div>
+			
+		</div>
+	</div>
 </div>
 
 <!--Mapa ubicacion -->
 <div class="modal fade" id="modalDataMapa" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="static">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h6>Ubicación</h6>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body" id="map"></div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="card shadow-sm">
+				<div class="card-header py-2 bg-second-primary">
+					<h6 class="m-0 font-weight-bold text-white">
+						<i class="fas fa-map-marker-alt"></i> Ubicación
+						<button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true" class="text-white">×</span>
+						</button>
+					</h6>
+				</div>
+				<div class="card-body p-0" id="map"></div>
+			</div>
+		</div>
+	</div>
 </div>
 
 
 @section Scripts {
 
-    <script src="~/vendor/datatables/jquery.dataTables.min.js"></script>
-    <script src="~/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-    <script src="~/vendor/datatables/extensiones/js/dataTables.responsive.min.js"></script>
-    <script src="~/vendor/datatables/extensiones/js/dataTables.buttons.min.js"></script>
-    <script src="~/vendor/datatables/extensiones/js/jszip.min.js"></script>
-    <script src="~/vendor/datatables/extensiones/js/buttons.html5.min.js"></script>
-    <script src="~/vendor/datatables/extensiones/js/buttons.print.min.js"></script>
-    <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- Agregar el siguiente script en el head de tu página -->
+	<script src="~/vendor/datatables/jquery.dataTables.min.js"></script>
+	<script src="~/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+	<script src="~/vendor/datatables/extensiones/js/dataTables.responsive.min.js"></script>
+	<script src="~/vendor/datatables/extensiones/js/dataTables.buttons.min.js"></script>
+	<script src="~/vendor/datatables/extensiones/js/jszip.min.js"></script>
+	<script src="~/vendor/datatables/extensiones/js/pdfmake.min.js"></script>
+	<script src="~/vendor/datatables/extensiones/js/vfs_fonts.js"></script>
+	<script src="~/vendor/datatables/extensiones/js/buttons.html5.min.js"></script>
+	<script src="~/vendor/datatables/extensiones/js/buttons.print.min.js"></script>
+	<script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<!-- Agregar el siguiente script en el head de tu página -->
 
 
-    <script src="~/js/vistas/Visita_Index.js"></script>
-    <script src="~/js/vistas/Visita_Contacto_Index.js"></script>
-    <script src="~/js/vistas/Visita_Productos_Index.js"></script>
-    <script src="~/js/vistas/Controles_Generales.js"></script>
-    <script src="~/js/mapa.js"></script>
+	<script src="~/js/vistas/Visita_Index.js"></script>
+	<script src="~/js/vistas/Visita_Contacto_Index.js"></script>
+	<script src="~/js/vistas/Visita_Productos_Index.js"></script>
+	<script src="~/js/vistas/Controles_Generales.js"></script>
+	<script src="~/js/mapa.js"></script>
 
 
 }

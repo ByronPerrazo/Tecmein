@@ -28,7 +28,7 @@ namespace BLL.Implementacion
             var query =
                 await _repositorio
                       .Consultar(x => x.Secuencial == secuencialCatalogo);
-            return (Catalogo)query;
+            return query.FirstOrDefault();
         }
 
         public Task<List<Catalogo>> CatalogosPorRol(int secuencialRol)
@@ -103,23 +103,37 @@ namespace BLL.Implementacion
                   .FirstOrDefault(x => x.SecEmpresa == _datosGlobalesServices.SecuencialEmpresaPrincipal)
                   ?? throw new TaskCanceledException($"Error Empresa No ha definido un FTP");
 
-            await _storageServies.SubirStorage(archivo, almacenamientoEmpresa.CarpetaUsuario, nombreArchivo);
+            // Actualizar propiedades
+            catalogoDb.Nombre = entidad.Nombre;
+            catalogoDb.EstaActivo = entidad.EstaActivo;
 
+            if (archivo != null)
+            {
+                string rutaGuardada =
+                await _storageServies
+                        .SubirStorage(archivo,
+                                      _datosGlobalesServices.PathCatalogos,
+                                      nombreArchivo);
 
-            var catalogoGenerado = await _repositorio.Crear(entidad);
+                if (rutaGuardada != null)
+                {
+                    catalogoDb.UrlCatalogo = rutaGuardada;
+                    catalogoDb.NombreArchivo = nombreArchivo;
+                }
+                else
+                {
+                    throw new TaskCanceledException($"Error No se genera una url para el Archivo");
+                }
+            }
 
-            if (catalogoGenerado.Secuencial == 0)
-                throw new TaskCanceledException($"Error el Catalogo {entidad.Nombre} No se pudo Generar");
+            bool editado = await _repositorio.Editar(catalogoDb); // Llamar a Editar, no a Crear
 
-            var catalgoAdquirido = await _repositorio.Consultar(x => x.Secuencial == catalogoGenerado.Secuencial);
+            if (!editado)
+                throw new TaskCanceledException($"Error el Catalogo {entidad.Nombre} No se pudo Editar");
 
-            catalogoGenerado
-                = catalgoAdquirido
-                  .First();
-
-            return catalogoGenerado;
-
-
+            // Volver a obtener la entidad actualizada con propiedades de navegación si es necesario, similar a Crear
+            var catalogoAdquirido = await _repositorio.Consultar(x => x.Secuencial == catalogoDb.Secuencial);
+            return catalogoAdquirido.First();
         }
 
         public async Task<bool> Eliminar(int secuencial)

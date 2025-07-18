@@ -194,12 +194,12 @@ namespace BLL.Implementacion
 
                 await _repositorio.Editar(usuario);
 
-                var usuarioModificado
+                var usuarioQuery
                             = await _repositorio
                              .Consultar(x => x.Secuencial == usuario.Secuencial);
-                usuarioModificado.Include(x => x.SecRolNavigation).First();
+                var usuarioModificado = usuarioQuery.Include(x => x.SecRolNavigation).First();
 
-                return (Usuario)usuarioModificado;
+                return usuarioModificado;
             }
             catch (Exception)
             {
@@ -262,7 +262,12 @@ namespace BLL.Implementacion
 
             return usuario;
         }
-        public async Task<Usuario> OtenerPorCredenciales(string correo, string clave)
+        public async Task<Usuario> ObtenerPorId(int secuencialUsuario)
+        {
+            return await _repositorio.Obtener(u => u.Secuencial == secuencialUsuario, "SecRolNavigation");
+        }
+
+        public async Task<Usuario> ObtenerPorCredenciales(string correo, string clave)
         {
             return await _repositorio.Obtener(x =>
                                                x.Correo.Equals(correo) &&

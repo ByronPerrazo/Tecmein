@@ -20,9 +20,10 @@ $(document).ready(function () {
         )
         .then(
             respuestaJson => {
-
-                contactosCombo = respuestaJson;
-                respuestaJson
+                // Acceder a la propiedad $values debido a ReferenceHandler.Preserve
+                const data = respuestaJson.$values || respuestaJson;
+                contactosCombo = data; // Asignar la data correcta
+                data
                     .forEach(item => {
                         $("#cboContactos")
                             .append(
@@ -38,6 +39,12 @@ $(document).ready(function () {
         });
 
 
+    $('#modalDataContacto').on('shown.bs.modal', function () {
+        let textarea = document.getElementById('txtDescripcionContacto');
+        if (textarea) {
+            ajustarAlturaTextarea(textarea);
+        }
+    });
 
 });
 
@@ -149,7 +156,7 @@ function CargaDetalleContacto(secuencialContacto) {
 
 function ajustarAlturaTextarea(textarea) {
     try {
-
+        textarea.style.height = 'auto'; // Resetear la altura
         textarea.style.height = textarea.scrollHeight + 'px';
     } catch (error) {
         console.error("Error al Extender Detalle:", error);

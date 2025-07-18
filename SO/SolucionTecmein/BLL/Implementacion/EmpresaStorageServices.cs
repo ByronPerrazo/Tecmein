@@ -2,6 +2,9 @@
 using DAL.Interfaces;
 using Entity;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BLL.Implementacion
 {
@@ -15,27 +18,33 @@ namespace BLL.Implementacion
         public async Task<List<Empresastorage>> Consultar()
         {
             var query = await _repositorio.Consultar();
-            return [.. query.Include(x => x.SecEmpresaNavigation)];
+            return await query.Include(x => x.SecEmpresaNavigation).ToListAsync();
         }
+
         public async Task<Empresastorage> ProcesaGuardar(Empresastorage empresaStorage)
         {
-            try
+            var registroExistente = await _repositorio.Obtener(x => x.SecEmpresa == empresaStorage.SecEmpresa);
+
+            if (registroExistente != null)
             {
-                var empresaRegistro
-                    = _repositorio
-                        .Obtener(x => x.SecEmpresa == empresaStorage.SecEmpresa)
-                        .Result;
-
-                if (empresaRegistro != null)
-                    await _repositorio.Editar(empresaRegistro);
-                else
-                    empresaRegistro = _repositorio.Crear(empresaStorage).Result;
-
-                return empresaRegistro;
+                // Editar
+                registroExistente.CarpetaLogo = empresaStorage.CarpetaLogo;
+                registroExistente.Email = empresaStorage.Email;
+                registroExistente.Clave = empresaStorage.Clave;
+                registroExistente.Ruta = empresaStorage.Ruta;
+                registroExistente.ApiKey = empresaStorage.ApiKey;
+                registroExistente.CarpetaUsuario = empresaStorage.CarpetaUsuario;
+                registroExistente.CarpetaProducto = empresaStorage.CarpetaProducto;
+                bool seEdito = await _repositorio.Editar(registroExistente);
+                if (!seEdito)
+                    throw new TaskCanceledException("No se pudo actualizar la configuración de almacenamiento.");
+                
+                return registroExistente;
             }
-            catch (Exception)
+            else
             {
-                throw;
+                // Crear
+                return await _repositorio.Crear(empresaStorage);
             }
         }
     }

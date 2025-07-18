@@ -10,10 +10,12 @@ namespace TecmeinWebApp.Controllers
     public class AccesoController : Controller
     {
         private readonly IUsuarioServices _usuarioServices;
+        private readonly IPermisosRolServices _permisosRolServices;
 
-        public AccesoController(IUsuarioServices usuarioServices)
+        public AccesoController(IUsuarioServices usuarioServices, IPermisosRolServices permisosRolServices)
         {
             _usuarioServices = usuarioServices;
+            _permisosRolServices = permisosRolServices;
         }
 
 
@@ -36,7 +38,7 @@ namespace TecmeinWebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginUsuarioVM modelo)
         {
-            var usuarioDetectado = await _usuarioServices.OtenerPorCredenciales(modelo.Correo, modelo.Clave);
+            var usuarioDetectado = await _usuarioServices.ObtenerPorCredenciales(modelo.Correo, modelo.Clave);
             if (usuarioDetectado == null)
             {
                 ViewData["Mensaje"] = "Credenciales no registradas";
@@ -50,6 +52,15 @@ namespace TecmeinWebApp.Controllers
             new(ClaimTypes.Role, usuarioDetectado.SecRol.ToString()),
             new("UrlFoto", usuarioDetectado.UrlFoto)
             };
+
+            var permisosRol = await _permisosRolServices.PermisosRolActivo(usuarioDetectado.SecRol);
+
+            if (permisosRol != null)
+            {
+                claims.Add(new Claim("CanConsult", (permisosRol.Consultar == 1).ToString()));
+                claims.Add(new Claim("CanModify", (permisosRol.Modificar == 1).ToString()));
+                claims.Add(new Claim("CanDelete", (permisosRol.Eliminar == 1).ToString()));
+            }
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var properties = new AuthenticationProperties()

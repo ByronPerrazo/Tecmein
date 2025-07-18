@@ -52,97 +52,98 @@
 <div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h6>Detalle Contacto</h6>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">
+            <div class="card shadow-sm">
+                <div class="card-header py-2 bg-second-primary">
+                    <h6 class="m-0 font-weight-bold text-white">
+                        <i class="fas fa-id-card"></i> Detalle Contacto
+                        <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" class="text-white">×</span>
+                        </button>
+                    </h6>
+                </div>
+                <div class="card-body p-2">
+                    <form>
+                        <input type="hidden" value="0" id="txtId">
+                        <div class="row">
+                            <div class="col-sm-12 text-xs">
 
-                <form>
-                    <input type="hidden" value="0" id="txtId">
-                    <div class="row">
-                        <div class="col-sm-12 text-xs">
-
-                            <div class="form-row">
-                                <div class="form-group col-sm-12">
-                                    <i class="cab_i_sm">Constructora</i>
-                                    <select class="form-control form-control-sm " 
-                                            id="cboEmpresa"
-                                            name="Constructora">
-                                    </select>
+                                <div class="form-row">
+                                    <div class="form-group col-sm-12">
+                                        <i class="cab_i_sm">Constructora</i>
+                                        <select class="form-control form-control-sm " 
+                                                id="cboEmpresa"
+                                                name="Constructora">
+                                        </select>
+                                    </div>
                                 </div>
+
+                                <div class="form-row">
+
+                                    <div class="form-group col-sm-2 ">
+                                        <label for="cboAbreviatura">Profesión</label>
+                                        <select class="form-control form-control-sm " 
+                                                id="cboAbreviatura"
+                                                name="Abreviatura">
+                                            <option value="Sr">Sr/a.</option>
+                                            <option value="Ing">Ing</option>
+                                            <option value="Arq">Arq</option>
+                                            <option value="Dr">Dr/a</option>
+                                            <option value="ND">ND</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group col-sm-5 text-xs">
+                                        <label for="txtNombres">Nombres</label>
+                                        <input type="text" 
+                                            class="form-control form-control-sm input-validar" 
+                                            id="txtNombres" name="Numero Documento">
+                                    </div>
+
+
+                                    <div class="form-group col-sm-5 text-xs">
+                                        <label for="txtApellidos">Apellidos</label>
+                                        <input type="text" 
+                                               class="form-control form-control-sm input-validar" 
+                                               id="txtApellidos" 
+                                               name="Apellidos">
+                                    </div>
+                                </div>
+                               
+                                <div class="form-row">
+                                    <div class="form-group col-sm-7">
+                                        <label for="txtCorreo">Correo</label>
+                                        <input type="email" 
+                                            class="form-control form-control-sm input-validar" 
+                                            id="txtCorreo" name="Correo">
+                                    </div>
+                                    <div class="form-group col-sm-5">
+                                        <label for="txTelefono">Telefono</label>
+                                        <input type="text" 
+                                            class="form-control form-control-sm input-validar" 
+                                            id="txTelefono" name="Telefono">
+                                    </div>
+
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-sm-6">
+                                        <label for="cboEstado">Estado</label>
+                                        <select class="form-control form-control-sm text-xs" 
+                                                id="cboEstado">
+                                            <option value="1">Activo</option>
+                                            <option value="0">Inactivo</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                               
                             </div>
-
-                            <div class="form-row">
-
-                                <div class="form-group col-sm-2 ">
-                                    <label for="cboAbreviatura">Profesión</label>
-                                    <select class="form-control form-control-sm " 
-                                            id="cboAbreviatura"
-                                            name="Abreviatura">
-                                        <option value="Sr">Sr/a.</option>
-                                        <option value="Ing">Ing</option>
-                                        <option value="Arq">Arq</option>
-                                        <option value="Dr">Dr/a</option>
-                                        <option value="ND">ND</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group col-sm-5 text-xs">
-                                    <label for="txtNombres">Nombres</label>
-                                    <input type="text" 
-                                        class="form-control form-control-sm input-validar" 
-                                        id="txtNombres" name="Numero Documento">
-                                </div>
-
-
-                                <div class="form-group col-sm-5 text-xs">
-                                    <label for="txtApellidos">Apellidos</label>
-                                    <input type="text" 
-                                           class="form-control form-control-sm input-validar" 
-                                           id="txtApellidos" 
-                                           name="Apellidos">
-                                </div>
-                            </div>
-                           
-                            <div class="form-row">
-                                <div class="form-group col-sm-7">
-                                    <label for="txtCorreo">Correo</label>
-                                    <input type="email" 
-                                        class="form-control form-control-sm input-validar" 
-                                        id="txtCorreo" name="Correo">
-                                </div>
-                                <div class="form-group col-sm-5">
-                                    <label for="txTelefono">Telefono</label>
-                                    <input type="text" 
-                                        class="form-control form-control-sm input-validar" 
-                                        id="txTelefono" name="Telefono">
-                                </div>
-
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-sm-6">
-                                    <label for="cboEstado">Estado</label>
-                                    <select class="form-control form-control-sm text-xs" 
-                                            id="cboEstado">
-                                        <option value="1">Activo</option>
-                                        <option value="0">Inactivo</option>
-                                    </select>
-                                </div>
-
-                            </div>
-                           
                         </div>
-                    </div>
-                </form>
-
-
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary btn-sm" type="button" id="btnGuardarContacto">Guardar</button>
-                <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal">Cancel</button>
+                    </form>
+                </div>
+                <div class="card-body p-0 d-flex justify-content-end">
+                    <button class="btn btn-primary btn-sm m-1 mr-2" type="button" id="btnGuardarContacto">Guardar</button>
+                    <button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal">Cancel</button>
+                </div>
             </div>
         </div>
     </div>

@@ -1,6 +1,7 @@
 ﻿using BLL.Interfaces;
 using DAL.Interfaces;
 using Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Implementacion
 {
@@ -15,13 +16,13 @@ namespace BLL.Implementacion
 
         public async Task<List<Provincia>> Lista()
         {
-            var query = await _repositorio.Consultar();
-            return query.ToList();
+            var query = _repositorio.Consultar();
+            return await query.Result.ToListAsync();
         }
 
-        public Task<Provincia> ProvinciaPorSecuencial(int secuencial)
+        public async Task<Provincia?> ProvinciaPorSecuencial(int secuencial)
         {
-            return _repositorio.Obtener(x => x.Secuencial == secuencial);
+            return await _repositorio.Obtener(x => x.Secuencial == secuencial);
         }
 
 

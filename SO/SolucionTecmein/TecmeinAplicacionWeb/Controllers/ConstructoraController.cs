@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BLL.Interfaces;
 using Entity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using TecmeinWebApp.Models.ViewModel;
@@ -53,65 +54,60 @@ namespace TecmeinWebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Crear([FromForm] string modelo)
         {
-            var gResponse = new GenericResponse<ConstructoraVM>();
             try
             {
                 var constructoraVM = JsonConvert.DeserializeObject<ConstructoraVM>(modelo);
-
-
-
-                Constructora empresaEcontrada = await _constructoraServices.GuardarCambios(_mapper.Map<Constructora>(constructoraVM));
-
-                constructoraVM = _mapper.Map<ConstructoraVM>(empresaEcontrada);
-
-                gResponse.Estado = true;
-                gResponse.Objeto = constructoraVM;
+                Constructora constructoraCreada = await _constructoraServices.GuardarCambios(_mapper.Map<Constructora>(constructoraVM));
+                var gResponse = new GenericResponse<ConstructoraVM>
+                {
+                    Estado = true,
+                    Objeto = _mapper.Map<ConstructoraVM>(constructoraCreada)
+                };
+                return StatusCode(StatusCodes.Status201Created, gResponse);
             }
             catch (Exception ex)
             {
-                gResponse.Estado = false;
-                gResponse.Mensajes = ex.Message;
+                var gResponse = new GenericResponse<ConstructoraVM> { Estado = false, Mensajes = ex.Message };
+                return StatusCode(StatusCodes.Status400BadRequest, gResponse);
             }
-            return StatusCode(StatusCodes.Status200OK, gResponse);
         }
 
         [HttpPut]
         public async Task<IActionResult> Editar([FromForm] string modelo)
         {
-            var genericResponse = new GenericResponse<ConstructoraVM>();
             try
             {
                 ConstructoraVM? constructoraVM = JsonConvert.DeserializeObject<ConstructoraVM>(modelo);
-
-                var tipoProdEdit = await _constructoraServices.Editar(_mapper.Map<Constructora>(constructoraVM));
-                constructoraVM = _mapper.Map<ConstructoraVM>(tipoProdEdit);
-
-                genericResponse.Estado = true;
-                genericResponse.Objeto = constructoraVM;
+                var constructoraEditada = await _constructoraServices.Editar(_mapper.Map<Constructora>(constructoraVM));
+                var gResponse = new GenericResponse<ConstructoraVM>
+                {
+                    Estado = true,
+                    Objeto = _mapper.Map<ConstructoraVM>(constructoraEditada)
+                };
+                return StatusCode(StatusCodes.Status200OK, gResponse);
             }
             catch (Exception ex)
             {
-                genericResponse.Estado = false;
-                genericResponse.Mensajes = ex.Message;
+                var gResponse = new GenericResponse<ConstructoraVM> { Estado = false, Mensajes = ex.Message };
+                return StatusCode(StatusCodes.Status400BadRequest, gResponse);
             }
-            return StatusCode(StatusCodes.Status200OK, genericResponse);
         }
 
         [HttpDelete]
+        [Authorize(Policy = "CanDelete")]
         public async Task<IActionResult> Eliminar(int secuencial)
         {
-            var gResponse = new GenericResponse<string>();
             try
             {
-                gResponse.Estado = await _constructoraServices.Eliminar(secuencial);
+                bool eliminado = await _constructoraServices.Eliminar(secuencial);
+                var gResponse = new GenericResponse<string> { Estado = eliminado };
+                return StatusCode(StatusCodes.Status200OK, gResponse);
             }
             catch (Exception ex)
             {
-                gResponse.Estado = false;
-                gResponse.Mensajes = ex.Message;
-                throw;
+                var gResponse = new GenericResponse<string> { Estado = false, Mensajes = ex.Message };
+                return StatusCode(StatusCodes.Status400BadRequest, gResponse);
             }
-            return StatusCode(StatusCodes.Status200OK, gResponse);
         }
 
     }

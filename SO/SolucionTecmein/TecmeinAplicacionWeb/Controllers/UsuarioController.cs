@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using TecmeinWebApp.Models.ViewModel;
 using TecmeinWebApp.Utilidades.Response;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace TecmeinWebApp.Controllers
 {
@@ -58,7 +60,40 @@ namespace TecmeinWebApp.Controllers
         }
 
 
+        [HttpGet]
+        public async Task<IActionResult> ObtenerParaEditar(int secuencialUsuario)
+        {
+            var gResponse = new GenericResponse<UsuarioEditarVM>();
+            try
+            {
+                var usuario = await _usuarioServices.ObtenerPorId(secuencialUsuario);
+                var roles = await _rolServices.Lista();
+
+                var viewModel = new UsuarioEditarVM
+                {
+                    Usuario = _mapper.Map<UsuarioVM>(usuario),
+                    ListaRoles = _mapper.Map<List<RolVM>>(roles)
+                };
+
+                gResponse.Estado = true;
+                gResponse.Objeto = viewModel;
+            }
+            catch (Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+            }
+            var jsonOptions = new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            return new JsonResult(gResponse, jsonOptions);
+        }
+
+
         [HttpPost]
+        [Authorize(Policy = "CanModify")]
         public async Task<IActionResult> Crear([FromForm] IFormFile imagen, [FromForm] string modelo)
         {
 

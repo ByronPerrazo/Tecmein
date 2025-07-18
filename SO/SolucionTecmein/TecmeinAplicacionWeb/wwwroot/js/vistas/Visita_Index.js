@@ -34,8 +34,10 @@ $(document).ready(function () {
         )
         .then(
             respuestaJson => {
-                listaCompletaCanton = respuestaJson;
-                respuestaJson
+                // Acceder a la propiedad $values debido a ReferenceHandler.Preserve
+                const data = respuestaJson.$values || respuestaJson;
+                listaCompletaCanton = data; // Asignar la data correcta
+                data
                     .forEach(item => {
                         $("#cboOperador")
                             .append(
@@ -61,8 +63,10 @@ $(document).ready(function () {
         )
         .then(
             respuestaJson => {
-                listaCompletaCanton = respuestaJson;
-                respuestaJson
+                // Acceder a la propiedad $values debido a ReferenceHandler.Preserve
+                const data = respuestaJson.$values || respuestaJson;
+                listaCompletaParroquia = data; // Asignar la data correcta
+                data
                     .forEach(item => {
                         $("#cboParroquia")
                             .append(
@@ -88,8 +92,10 @@ $(document).ready(function () {
         )
         .then(
             respuestaJson => {
-                listaCompletaCanton = respuestaJson;
-                respuestaJson
+                // Acceder a la propiedad $values debido a ReferenceHandler.Preserve
+                const data = respuestaJson.$values || respuestaJson;
+                listaCompletaCanton = data; // Asignar la data correcta
+                data
                     .forEach(item => {
 
                         $("#cboCanton")
@@ -116,8 +122,10 @@ $(document).ready(function () {
         )
         .then(
             respuestaJson => {
-                listaCompletaProvincias = respuestaJson;
-                respuestaJson
+                // Acceder a la propiedad $values debido a ReferenceHandler.Preserve
+                const data = respuestaJson.$values || respuestaJson;
+                listaCompletaProvincias = data; // Asignar la data correcta
+                data
                     .forEach(item => {
                         $("#cboProvincia")
                             .append(
@@ -143,7 +151,9 @@ $(document).ready(function () {
         )
         .then(
             respuestaJson => {
-                respuestaJson
+                // Acceder a la propiedad $values debido a ReferenceHandler.Preserve
+                const data = respuestaJson.$values || respuestaJson;
+                data
                     .forEach(item => {
                         $("#cboEmpresa")
                             .append(
@@ -165,7 +175,8 @@ $(document).ready(function () {
             "ajax": {
                 "url": 'Lista',
                 "type": "GET",
-                "datatype": "json"
+                "datatype": "json",
+                "dataSrc": "data.$values",
             },
             "columns": [
                 { data: "secuencial", visible: false },
@@ -206,12 +217,22 @@ $(document).ready(function () {
                 {
                     text: 'Exportar Excel',
                     extend: 'excelHtml5',
-                    title: 'Productos',
-                    filename: 'Reporte de Productos',
+                    title: 'Reporte de Visitas',
+                    filename: 'Reporte de Visitas',
                     exportOptions: {
-                        columns: [0, 1, 2, 3]
+                        columns: [1, 2, 3, 4]
                     }
-                }, 'pageLength'
+                },
+                {
+                    text: 'Exportar PDF',
+                    extend: 'pdfHtml5',
+                    title: 'Reporte de Visitas',
+                    filename: 'Reporte de Visitas',
+                    exportOptions: {
+                        columns: [1, 2, 3, 4]
+                    }
+                },
+                'pageLength'
             ],
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
@@ -267,74 +288,32 @@ function mostrarDiv() {
 const cmboProvincia = document.getElementById('cboProvincia');
 const cmboCanton = document.getElementById('cboCanton');
 const cmboParroquia = document.getElementById('cboParroquia');
+
+function cargarCantones(secProvincia) {
+    cmboCanton.innerHTML = '<option value="" disabled selected>Seleccione Cantón</option>';
+    cmboParroquia.innerHTML = '<option value="" disabled selected>Seleccione Parroquia</option>';
+
+    const cantonesFiltrados = listaCompletaCanton.filter(c => c.secProvincia == secProvincia);
+    cantonesFiltrados.forEach(item => {
+        $("#cboCanton").append($("<option>").val(item.secuencial).text(item.nombre));
+    });
+}
+
+function cargarParroquias(secCanton) {
+    cmboParroquia.innerHTML = '<option value="" disabled selected>Seleccione Parroquia</option>';
+
+    const parroquiasFiltradas = listaCompletaParroquia.filter(p => p.secCanton == secCanton);
+    parroquiasFiltradas.forEach(item => {
+        $("#cboParroquia").append($("<option>").val(item.secuencial).text(item.nombre));
+    });
+}
+
 cmboProvincia.onchange = function () {
-
-    cmboCanton.innerHTML = '';
-    cmboParroquia.innerHTML = '';
-
-    var provSelect = cmboProvincia.value;
-
-    fetch("Cantones")
-        .then(
-            respuesta => {
-                return respuesta.ok
-                    ? respuesta.json()
-                    : Promise.reject(respuesta);
-            }
-        )
-        .then(
-            respuestaJson => {
-                respuestaJson
-                    .forEach(item => {
-                        if (item.secProvincia == provSelect)
-                            $("#cboCanton")
-                                .append(
-                                    $("<option>")
-                                        .val(item.secuencial)
-                                        .text(item.nombre)
-                                )
-                    })
-
-            }
-        )
-        .catch(error => {
-            console.error('Error al obtener la lista de Provincias:', error);
-        });
+    cargarCantones(this.value);
 };
+
 cmboCanton.onchange = function () {
-
-    cmboParroquia.innerHTML = '';
-
-    var cantonSelect = cmboCanton.value;
-
-    fetch("Parroquias")
-        .then(
-            respuesta => {
-                return respuesta.ok
-                    ? respuesta.json()
-                    : Promise.reject(respuesta);
-            }
-        )
-        .then(
-            respuestaJson => {
-                respuestaJson
-                    .forEach(item => {
-                        if (item.secCanton == cantonSelect)
-                            $("#cboParroquia")
-                                .append(
-                                    $("<option>")
-                                        .val(item.secuencial)
-                                        .text(item.nombre)
-                                )
-                    })
-
-            }
-        )
-        .catch(error => {
-            console.error('Error al obtener la lista de Provincias:', error);
-        });
-
-
+    cargarParroquias(this.value);
 };
 
 function obtenerGeoubicacion() {
@@ -369,9 +348,23 @@ function mostrarModalVisita(modeloVisita = MODELO_BASEVISITA) {
     limpiarFormularioModal();
     $("#txtId").val(modeloVisita.secuencial)
     $("#txtNombreObra").val(modeloVisita.nombre)
-    $("#cboProvincia").val(modeloVisita.secProvincia == "" ? $("#cboProvincia option:first").val() : modeloVisita.secProvincia)
-    $("#cboCanton").val(modeloVisita.secCanton == "" ? $("#cboCanton option:first").val() : modeloVisita.secCanton)
-    $("#cboParroquia").val(modeloVisita.secParroquia == "" ? $("#cboParroquia option:first").val() : modeloVisita.secParroquia)
+    
+    // Carga y selección de combos en cascada
+    if (modeloVisita.secProvincia) {
+        $("#cboProvincia").val(modeloVisita.secProvincia);
+        cargarCantones(modeloVisita.secProvincia);
+        if (modeloVisita.secCanton) {
+            $("#cboCanton").val(modeloVisita.secCanton);
+            cargarParroquias(modeloVisita.secCanton);
+            if (modeloVisita.secParroquia) {
+                $("#cboParroquia").val(modeloVisita.secParroquia);
+            }
+        }
+    } else {
+        $("#cboProvincia").val($("#cboProvincia option:first").val());
+        cargarCantones($("#cboProvincia option:first").val());
+    }
+
     $("#txtDireccion").val(modeloVisita.direccion)
     $("#txtGeolocallizacion").val(modeloVisita.geoUbicacion)
     $("#cboEstado").val(modeloVisita.estaActivo)
@@ -520,7 +513,7 @@ $("#btnGuardarVisitas").click(function () {
     else {
 
         fetch("EditarVisita", {
-            method: "PUT",
+            method: "POST",
             body: datosFormulario
         })
             .then(response => {
@@ -534,11 +527,18 @@ $("#btnGuardarVisitas").click(function () {
             .then(responseJson => {
                 if (responseJson.estado) {
 
+                    // Obtener los nombres desde los combos para actualizar la tabla
+                    responseJson.objeto.nombreProvincia = $("#cboProvincia option:selected").text();
+                    responseJson.objeto.nombreCanton = $("#cboCanton option:selected").text();
+
                     tablaData
                         .row(filaSeleccionada)
                         .data(responseJson.objeto)
                         .draw(false);
                     $("#modalData").modal("hide");
+                    swal("Listo!",
+                        "Visita a " + responseJson.objeto.nombre + " Editada ",
+                        "success");
                     swal("Listo!",
                         "Visita a " + responseJson.objeto.nombre + " Editada ",
                         "success");

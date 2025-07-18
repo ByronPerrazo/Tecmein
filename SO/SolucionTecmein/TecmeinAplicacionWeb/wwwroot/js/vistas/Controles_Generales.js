@@ -1,4 +1,4 @@
-﻿// Función para validar y mostrar notificaciones de error
+// Función para validar y mostrar notificaciones de error
 function validarInput(control, input, tipo) {
     // Expresiones regulares para validación
     const regexTexto = /^[a-zA-Z\s]*$/;
@@ -9,44 +9,46 @@ function validarInput(control, input, tipo) {
     const fechaMaquina = new Date();
 
     let inicioMensaje = 'Error: En ' + control.name ;
-    let estaVacio = input == '';
+    let estaVacio = input == '' || input == null;
     // Validar el input según el tipo
     let mensajeError = '';
-    switch (tipo) {
-        case 'texto':
-            if (!regexTexto.test(input) || input == '') {
-                mensajeError = inicioMensaje + (estaVacio ?  ' esta vacio \n' : ' solo se permiten letras y espacios \n');
-            }
-            break;
-        case 'email':
-            if (!regexEmail.test(input) || input == '') {
-                mensajeError = inicioMensaje + (estaVacio ? ' esta vacio \n' : ' el formato de email inválido \n');
-            }
-            break;
-        case 'telefono':
-            if (!regexTelefono.test(input) || input == '') {
-                mensajeError = inicioMensaje + (estaVacio ?  ' esta vacio \n' : ' número de teléfono inválido \n');
-            }
-            break;
-        case 'decimal':
-            if (!regexNumeroDecimal.test(input) || input == '') {
-                mensajeError = inicioMensaje + (estaVacio ?  ' esta vacio \n' : ' formato de número decimal inválido \n');
-            }
-            break;
-        case 'entero':
-            if (!regexEntero.test(input) || input == '') {
-                mensajeError = inicioMensaje + (estaVacio ?  ' esta vacio \n' :  'formato de número entero inválido \n');
-            }
-            break;
-        case 'fechamayor':
-            if (fechaMaquina.getTime() >= new Date(input).getTime()) {
-                mensajeError = 'Error: Fecha inferior o igual a la Fecha Actual; \n';
-            }
-            break;
-        default:
-            mensajeError = 'Error: tipo de validación no reconocido; \n';
-
-
+    if (estaVacio) {
+        mensajeError = inicioMensaje + ' está vacío.\n';
+    } else {
+        switch (tipo) {
+            case 'texto':
+                if (!regexTexto.test(input)) {
+                    mensajeError = inicioMensaje + ' solo se permiten letras y espacios.\n';
+                }
+                break;
+            case 'email':
+                if (!regexEmail.test(input)) {
+                    mensajeError = inicioMensaje + ' el formato de email es inválido.\n';
+                }
+                break;
+            case 'telefono':
+                if (!regexTelefono.test(input)) {
+                    mensajeError = inicioMensaje + ' el número de teléfono es inválido.\n';
+                }
+                break;
+            case 'decimal':
+                if (!regexNumeroDecimal.test(input)) {
+                    mensajeError = inicioMensaje + ' el formato de número decimal es inválido.\n';
+                }
+                break;
+            case 'entero':
+                if (!regexEntero.test(input)) {
+                    mensajeError = inicioMensaje + ' el formato de número entero es inválido.\n';
+                }
+                break;
+            case 'fechamayor':
+                if (fechaMaquina.getTime() >= new Date(input).getTime()) {
+                    mensajeError = 'Error: Fecha inferior o igual a la Fecha Actual.\n';
+                }
+                break;
+            default:
+                mensajeError = 'Error: tipo de validación no reconocido.\n';
+        }
     }
     return mensajeError;
 }
@@ -60,23 +62,22 @@ function validarFormulario() {
 
     controles.forEach(control => {
 
-        //if ((controles.style.display ==='block'))
-        if (control.classList.contains('validar-texto')) {
-            mensajeRespuesta += validarInput(control, control.value, 'texto') 
-        } else if (control.classList.contains('validar-email')) {
-            mensajeRespuesta += validarInput(control, control.value, 'email')
-        } else if (control.classList.contains('validar-telefono')) {
-            mensajeRespuesta += validarInput(control, control.value, 'telefono')
-        } else if (control.classList.contains('validar-decimal')) {
-            mensajeRespuesta += validarInput(control, control.value, 'decimal')
-        } else if (control.classList.contains('validar-entero')) {
-            mensajeRespuesta += validarInput(control, control.value, 'entero')
-        }         
+        if (control.offsetParent !== null) {
+            if (control.classList.contains('validar-texto')) {
+                mensajeRespuesta += validarInput(control, control.value, 'texto') 
+            } else if (control.classList.contains('validar-email')) {
+                mensajeRespuesta += validarInput(control, control.value, 'email')
+            } else if (control.classList.contains('validar-telefono')) {
+                mensajeRespuesta += validarInput(control, control.value, 'telefono')
+            } else if (control.classList.contains('validar-decimal')) {
+                mensajeRespuesta += validarInput(control, control.value, 'decimal')
+            } else if (control.classList.contains('validar-entero')) {
+                mensajeRespuesta += validarInput(control, control.value, 'entero')
+            }         
+        }
     });
 
     return mensajeRespuesta;
-
-
 }
 
 //card - body Contacto
@@ -111,4 +112,3 @@ function abrirModal() {
     };
     var map = new google.maps.Map(document.getElementById('mapa'), mapOptions);
 }
-

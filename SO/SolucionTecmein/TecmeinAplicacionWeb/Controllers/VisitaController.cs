@@ -2,6 +2,7 @@
 using BLL.Interfaces;
 using Entity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using TecmeinWebApp.Models.ViewModel;
@@ -21,6 +22,7 @@ namespace TecmeinWebApp.Controllers
         private readonly IContactoServices _contactoServices;
         private readonly IContactoVisitaServices _contactoVistaServices;
         private readonly IEquiposVisitaServices _equiposVisitaServices;
+        private readonly ILogger<VisitaController> _logger;
 
         private readonly IMapper _mapper;
         public VisitaController(IVisitaServices visitaServices,
@@ -32,7 +34,8 @@ namespace TecmeinWebApp.Controllers
                                 IConstructoraServices constructoraServices,
                                 IContactoServices contactoServices,
                                 IContactoVisitaServices contactoVistaServices,
-                                IEquiposVisitaServices equiposVisitaServices
+                                IEquiposVisitaServices equiposVisitaServices,
+                                ILogger<VisitaController> logger
             )
         {
             _visitaServices = visitaServices;
@@ -45,6 +48,7 @@ namespace TecmeinWebApp.Controllers
             _contactoServices = contactoServices;
             _contactoVistaServices = contactoVistaServices;
             _equiposVisitaServices = equiposVisitaServices;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -112,6 +116,8 @@ namespace TecmeinWebApp.Controllers
                 VisitaVM? visitaIngresadaVM
                     = JsonConvert
                       .DeserializeObject<VisitaVM>(modelo);
+
+                _logger.LogInformation("Creando visita: {@Visita}", visitaIngresadaVM);
 
                 ClaimsPrincipal claimsUser = HttpContext.User;
                 string? secUsuario
@@ -280,7 +286,7 @@ namespace TecmeinWebApp.Controllers
         }
         
         [HttpDelete]
-        //[ValidateUser("DeleteUser")]
+        [ValidatePermission("Eliminar")]
         public async Task<IActionResult> ProcesoEliminarEquipoVisita(int secuencialEquipoVisita)
         {
 

@@ -52,11 +52,15 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
             #region Menu
 
             CreateMap<Menu, MenuVM>()
+                           .ForMember(destino => destino.SubMenu,
+                                      opt => opt.MapFrom(origen => origen.InverseSecMenuPadreNavigation))
+                           ;
+
+            CreateMap<MenuVM, Menu>()
                 .ForMember(destino =>
-                           destino.SubMenu,
-                                opt =>
-                                opt.MapFrom(origen =>
-                                            origen.InverseSecMenuPadreNavigation));
+                    destino.InverseSecMenuPadreNavigation,
+                    opt => opt.Ignore()
+                );
             #endregion
 
             CreateMap<Provincia, ProvinciaVM>().ReverseMap();
@@ -108,53 +112,7 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
 
             #endregion
 
-            #region TipoProducto
-            CreateMap<TipoProducto, TipoProductoVM>().ForMember(destino =>
-                          destino.EstaActivo,
-                                  opt =>
-                                  opt.MapFrom(origen =>
-                                              origen.EstaActivo));
-
-            CreateMap<TipoProductoVM, TipoProducto>().ForMember(destino =>
-                          destino.EstaActivo,
-                                  opt =>
-                                  opt.MapFrom(origen =>
-                                                     origen.EstaActivo == 1));
-            #endregion
-
-            #region Producto
-            CreateMap<Producto, ProductoVM>()
-                 .ForMember(destino =>
-                            destino.Precio, opt =>
-                                           opt.MapFrom(origen =>
-                                                      Math.Round(Convert.ToDecimal(origen.Precio), 2)))
-                .ForMember(destino =>
-                           destino.EstaActivo,
-                                   opt =>
-                                   opt.MapFrom(origen =>
-                                               origen.EstaActivo))
-                .ForMember(destino =>
-                           destino.NombreTipoProducto,
-                                    opt =>
-                                    opt.MapFrom(origen =>
-                                                origen.SecTipoProductoNavigation.Nombre));
-
-            CreateMap<ProductoVM, Producto>()
-                .ForMember(destino =>
-                           destino.EstaActivo,
-                                   opt =>
-                                   opt.MapFrom(origen =>
-                                                      origen.EstaActivo == 1))
-                .ForMember(destino =>
-                           destino.Precio, opt =>
-                                           opt.MapFrom(origen =>
-                                                      Math.Round(Convert.ToDecimal(origen.Precio), 2)))
-
-                .ForMember(destino =>
-                           destino.SecTipoProductoNavigation,
-                                   opt =>
-                                   opt.Ignore());
-            #endregion Producto
+           
 
             CreateMap<Catalogo, CatalogoVM>()
                 .ForMember(destino =>
@@ -209,7 +167,7 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
                            destino.SecConstructoraNavigation,
                                    opt =>
                                    opt.Ignore());
-            #endregion usuar
+            #endregion 
 
             CreateMap<Contactovisita, ContactoVisitaVM>()
                .ForMember(destino =>
@@ -275,10 +233,32 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
                                    opt =>
                                    opt.MapFrom(origen =>
                                                       origen.EstaActivo == 1));
-                
+
             #endregion
 
+            CreateMap<Permisosrol, PermisosrolVM>().ReverseMap();
 
+            CreateMap<RolMenu, RolMenuVM>()
+                .ForMember(destino =>
+                           destino.DescripcionRol,
+                                   opt =>
+                                   opt.MapFrom(origen =>
+                                               origen.SecRolNavigation.Descripcion))
+                .ForMember(destino =>
+                           destino.DescripcionMenu,
+                                   opt =>
+                                   opt.MapFrom(origen =>
+                                               origen.SecMenuNavigation.Descripcion));
+
+            CreateMap<RolMenuVM, RolMenu>()
+                .ForMember(destino =>
+                           destino.SecRolNavigation,
+                                   opt =>
+                                   opt.Ignore())
+                .ForMember(destino =>
+                           destino.SecMenuNavigation,
+                                   opt =>
+                                   opt.Ignore());
         }
     }
 }

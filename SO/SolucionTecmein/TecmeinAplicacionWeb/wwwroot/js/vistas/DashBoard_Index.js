@@ -23,8 +23,6 @@ $(document).ready(function () {
                     $("#totalProductos").text(d.totalMarcas)
                     $("#totalCategorias").text(d.totalEquipos)
 
-                    //ppppppppppppppppppp
-
                     let barchart_labeles;
                     let barchart_data;
 

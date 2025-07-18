@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BLL.Interfaces;
 using Entity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Security.Claims;
@@ -14,15 +15,18 @@ namespace TecmeinWebApp.Controllers
         private readonly IContactoServices _contactoServices;
         private readonly IConstructoraServices _constructoraServices;
         private readonly IMapper _mapper;
+        private readonly ILogger<ContactoController> _logger;
 
         public ContactoController(IMapper mapper,
                                   IContactoServices contactoServices,
-                                  IConstructoraServices constructoraServices)
+                                  IConstructoraServices constructoraServices,
+                                  ILogger<ContactoController> logger)
         {
 
             _mapper = mapper;
             _contactoServices = contactoServices;
             _constructoraServices = constructoraServices;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -38,7 +42,45 @@ namespace TecmeinWebApp.Controllers
         {
             var listaConstructorasVM
                    = _mapper.Map<List<ConstructoraVM>>(await _constructoraServices.Lista());
-            return StatusCode(StatusCodes.Status200OK, listaConstructorasVM);
+
+            var jsonOptions = new System.Text.Json.JsonSerializerOptions
+            {
+                ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles,
+                PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
+            };
+            return new JsonResult(listaConstructorasVM, jsonOptions);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ObtenerParaEditar(int secuencial)
+        {
+            var gResponse = new GenericResponse<ContactoEditarVM>();
+            try
+            {
+                var contacto = await _contactoServices.ObtenerPorId(secuencial);
+                var constructoras = await _constructoraServices.Lista();
+
+                var viewModel = new ContactoEditarVM
+                {
+                    Contacto = _mapper.Map<ContactoVM>(contacto),
+                    ListaConstructoras = _mapper.Map<List<ConstructoraVM>>(constructoras)
+                };
+
+                gResponse.Estado = true;
+                gResponse.Objeto = viewModel;
+            }
+            catch (Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+            }
+
+            var jsonOptions = new System.Text.Json.JsonSerializerOptions
+            {
+                ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles,
+                PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
+            };
+            return new JsonResult(gResponse, jsonOptions);
         }
 
         [HttpPost]
@@ -118,9 +160,29 @@ namespace TecmeinWebApp.Controllers
             return StatusCode(StatusCodes.Status200OK, gResponse);
         }
 
+        [Authorize(Policy = "CanConsult")]
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ObtenerContactoPrincipal(int secuencialVisita)
+        {
+            GenericResponse<ContactoVM> gResponse = new GenericResponse<ContactoVM>();
+            try
+            {
+                ContactoVM vmContacto = _mapper.Map<ContactoVM>(await _contactoServices.ObtenerContactoPrincipal(secuencialVisita));
+                _logger.LogInformation($"Contacto Principal obtenido: {Newtonsoft.Json.JsonConvert.SerializeObject(vmContacto)}");
+                gResponse.Estado = true;
+                gResponse.Objeto = vmContacto;
+            }
+            catch (Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+            }
+            return StatusCode(StatusCodes.Status200OK, gResponse);
         }
     }
 }

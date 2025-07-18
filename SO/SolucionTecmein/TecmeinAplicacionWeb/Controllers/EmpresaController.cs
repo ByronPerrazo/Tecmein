@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BLL.Interfaces;
 using Entity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using TecmeinWebApp.Models.ViewModel;
@@ -70,7 +71,7 @@ namespace TecmeinWebApp.Controllers
 
                 }
                 empresaVM.EstaActivo = 1;
-                Empresa empresaEcontrada = await _empresaServices.GuardarCambios(_mapper.Map<Empresa>(empresaVM), logoStream, nombreLogo);
+                Empresa empresaEcontrada = await _empresaServices.Crear(_mapper.Map<Empresa>(empresaVM), logoStream, nombreLogo);
 
                 empresaVM = _mapper.Map<EmpresaVM>(empresaEcontrada);
 
@@ -108,6 +109,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Policy = "CanDelete")]
         public async Task<IActionResult> Eliminar(int secuencial)
         {
             var gResponse = new GenericResponse<string>();

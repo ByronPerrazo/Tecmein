@@ -17,7 +17,7 @@ namespace IOC
                 .AddDbContext<TecmeindbContext>(options =>
                 {
                     options
-                    .UseMySql(configuration.GetConnectionString("ConexionDBAWS"),
+                    .UseMySql(configuration.GetConnectionString("ConexionDB"),
                               Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.37-mysql"));
                 });
 
@@ -29,14 +29,13 @@ namespace IOC
             services.AddScoped<IStorageServices, StorageServices>();
             services.AddScoped<IUtilidadesServices, UtilidadesServices>();
             services.AddScoped<ICorreoServices, CorreoServices>();
+            services.AddScoped<ISmtpClientWrapper, SmtpClientWrapper>();
             services.AddScoped<IEmpresaStorageServices, EmpresaStorageServices>();
             services.AddScoped<IEmpresaServices, EmpresaServices>();
             services.AddScoped<IMenuServices, MenuServices>();
             services.AddScoped<IProvinciaServices, ProvinciaServices>();
             services.AddScoped<ICantonServices, CantonServices>();
             services.AddScoped<IParroquiaServices, ParroquiaServices>();
-            services.AddScoped<ITipoProductoServices, TipoProductoServices>();
-            services.AddScoped<IProductoServices, ProductoServices>();
             services.AddScoped<IVisitaServices, VisitaServices>();
             services.AddScoped<ICatalogoServices, CatalogoServices>();
             services.AddScoped<IConstructoraServices, ConstructoraServices>();
@@ -44,6 +43,11 @@ namespace IOC
             services.AddScoped<IContactoVisitaServices, ContactoVisitaServices>();
             services.AddScoped<IEquiposVisitaServices, EquiposVisitaServices>();
             services.AddScoped<IDashBoardServices, DashBoardServices>();
+            services.AddScoped<IPermisosRolServices, PermisosRolServices>();
+            services.AddScoped<IRolMenuServices, RolMenuServices>();
+            services.AddScoped<IValidacionServices, ValidacionServices>();
+            services.AddScoped<IMenusHijosDesplegables, MenusHijosDesplegables>();
+            services.AddScoped<AutorizacionService>();
 
 
 

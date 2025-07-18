@@ -32,21 +32,18 @@ public partial class TecmeindbContext : DbContext
 
     public virtual DbSet<Parroquia> Parroquia { get; set; }
 
-    public virtual DbSet<Producto> Productos { get; set; }
-
     public virtual DbSet<Provincia> Provincia { get; set; }
 
     public virtual DbSet<Rol> Roles { get; set; }
 
     public virtual DbSet<RolMenu> RolMenus { get; set; }
 
-    public virtual DbSet<TipoProducto> TipoProductos { get; set; }
-
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
     public virtual DbSet<Visita> Visita { get; set; }
 
     public virtual DbSet<Equiposvisita> Equiposvisita { get; set; }
+    public virtual DbSet<Permisosrol> Permisosrols { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -345,55 +342,6 @@ public partial class TecmeindbContext : DbContext
                 .HasConstraintName("Fk_Canton_Parroquia");
         });
 
-        modelBuilder.Entity<Producto>(entity =>
-        {
-            entity.HasKey(e => e.Secuencial).HasName("PRIMARY");
-
-            entity.ToTable("producto");
-
-            entity.HasIndex(e => e.SecTipoProducto, "Fk_TipoProducto_Producto_idx");
-
-            entity.Property(e => e.Secuencial).HasColumnName("secuencial");
-            entity.Property(e => e.Capacidad)
-                .HasMaxLength(50)
-                .HasColumnName("capacidad");
-            entity.Property(e => e.Descripcion)
-                .HasMaxLength(150)
-                .HasColumnName("descripcion");
-            entity.Property(e => e.EstaActivo).HasColumnName("estaActivo");
-            entity.Property(e => e.FechaRegistro)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime")
-                .HasColumnName("fechaRegistro");
-            entity.Property(e => e.Marca)
-                .HasMaxLength(50)
-                .HasColumnName("marca");
-            entity.Property(e => e.Motor)
-                .HasMaxLength(50)
-                .HasColumnName("motor");
-            entity.Property(e => e.Nombre)
-                .HasMaxLength(50)
-                .HasColumnName("nombre");
-            entity.Property(e => e.NombreImagen)
-                .HasMaxLength(100)
-                .HasColumnName("nombreImagen");
-            entity.Property(e => e.Precio)
-                .HasPrecision(10, 2)
-                .HasColumnName("precio");
-            entity.Property(e => e.SecTipoProducto).HasColumnName("secTipoProducto");
-            entity.Property(e => e.Sistema)
-                .HasMaxLength(50)
-                .HasColumnName("sistema");
-            entity.Property(e => e.Stock).HasColumnName("stock");
-            entity.Property(e => e.UrlImagen)
-                .HasMaxLength(500)
-                .HasColumnName("urlImagen");
-
-            entity.HasOne(d => d.SecTipoProductoNavigation).WithMany(p => p.Productos)
-                .HasForeignKey(d => d.SecTipoProducto)
-                .HasConstraintName("Fk_TipoProducto_Producto");
-        });
-
         modelBuilder.Entity<Provincia>(entity =>
         {
             entity.HasKey(e => e.Secuencial).HasName("PRIMARY");
@@ -430,7 +378,6 @@ public partial class TecmeindbContext : DbContext
         modelBuilder.Entity<RolMenu>(entity =>
         {
             entity.HasKey(e => e.Secuencial).HasName("PRIMARY");
-
             entity.ToTable("rolmenu");
 
             entity.HasIndex(e => e.SecMenu, "FK_Menu_Rol_idx");
@@ -455,29 +402,12 @@ public partial class TecmeindbContext : DbContext
                 .HasConstraintName("FK_Rol_Menu");
         });
 
-        modelBuilder.Entity<TipoProducto>(entity =>
-        {
-            entity.HasKey(e => e.Secuencial).HasName("PRIMARY");
-
-            entity.ToTable("tipoproducto");
-
-            entity.Property(e => e.Secuencial).HasColumnName("secuencial");
-            entity.Property(e => e.Descripcion)
-                .HasMaxLength(150)
-                .HasColumnName("descripcion");
-            entity.Property(e => e.EstaActivo).HasColumnName("estaActivo");
-            entity.Property(e => e.FechaRegistro)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime")
-                .HasColumnName("fechaRegistro");
-            entity.Property(e => e.Nombre)
-                .HasMaxLength(150)
-                .HasColumnName("nombre");
-        });
+        
 
         modelBuilder.Entity<Usuario>(entity =>
         {
             entity.HasKey(e => e.Secuencial).HasName("PRIMARY");
+
 
             entity.ToTable("usuario");
 
@@ -638,6 +568,24 @@ public partial class TecmeindbContext : DbContext
             entity.Property(e => e.Velocidad)
                 .HasPrecision(18, 2)
                 .HasColumnName("velocidad");
+        });
+
+        modelBuilder.Entity<Permisosrol>(entity =>
+        {
+            entity.HasKey(e => e.Secuencial).HasName("PRIMARY");
+
+            entity.ToTable("permisosrol");
+
+            entity.Property(e => e.Secuencial).HasColumnName("secuencial");
+            entity.Property(e => e.Activo).HasColumnName("activo");
+            entity.Property(e => e.Consultar).HasColumnName("consultar");
+            entity.Property(e => e.Eliminar).HasColumnName("eliminar");
+            entity.Property(e => e.FechaRegistro)
+                .HasColumnType("datetime")
+                .HasColumnName("fechaRegistro");
+            entity.Property(e => e.Modificar).HasColumnName("modificar");
+            entity.Property(e => e.SecRol).HasColumnName("secRol");
+            entity.Property(e => e.SecUsuarioModifica).HasColumnName("secUsuarioModifica");
         });
 
         OnModelCreatingPartial(modelBuilder);

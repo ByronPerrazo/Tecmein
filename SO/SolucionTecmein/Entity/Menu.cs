@@ -18,7 +18,7 @@ public partial class Menu
 
     public DateTime? FechaRegistro { get; set; }
 
-    public virtual ICollection<Menu> InverseSecMenuPadreNavigation { get; set; } = new List<Menu>();
+    public virtual ICollection<Menu?> InverseSecMenuPadreNavigation { get; set; } = new List<Menu?>();
 
     public virtual ICollection<RolMenu> Rolmenus { get; set; } = new List<RolMenu>();
 

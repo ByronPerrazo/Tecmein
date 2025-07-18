@@ -8,6 +8,6 @@ namespace BLL.Interfaces
 
         Task<List<Canton>> ListaPorProvincia(int secuencial);
 
-        Task<Canton> CantonPorSecuencial(int secuencial);
+        Task<Canton?> CantonPorSecuencial(int secuencial);
     }
 }

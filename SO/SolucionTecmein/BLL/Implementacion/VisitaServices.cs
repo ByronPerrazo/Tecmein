@@ -15,73 +15,68 @@ namespace BLL.Implementacion
 
         public async Task<Visita> ConsultaVisita(int secuencial)
         {
-            var visita = await _repositorio.Consultar(x => x.Secuencial == secuencial);
-            visita
-                  .Include(x => x.SecProvinciaNavigation)
-                  .Include(x => x.SecCantonNavigation)
-                  .Include(x => x.SecParroquiaNavigation)
-                  .Include(u => u.SecUsuarioNavigation)
-                  .FirstOrDefault();
+            // La consulta debe construirse sobre el IQueryable antes de la ejecución.
+            IQueryable<Visita> query = await _repositorio.Consultar(x => x.Secuencial == secuencial);
+            
+            // Aplicar Includes para carga ansiosa (Eager Loading) y AsNoTracking para eficiencia.
+            Visita visitaEncontrada = await query.Include(x => x.SecProvinciaNavigation)
+                                                 .Include(x => x.SecCantonNavigation)
+                                                 .Include(x => x.SecParroquiaNavigation)
+                                                 .Include(u => u.SecUsuarioNavigation)
+                                                 .AsNoTracking()
+                                                 .FirstOrDefaultAsync();
 
-            return visita.First();
+            return visitaEncontrada;
         }
 
         public async Task<Visita> CreaVisita(Visita entidad)
         {
-            Visita visitaProceso;
             try
             {
-                visitaProceso = new Visita();
-                visitaProceso = await _repositorio.Crear(entidad);
+                Visita visitaCreada = await _repositorio.Crear(entidad);
 
-                if (visitaProceso.Secuencial == 0)
-                    throw new TaskCanceledException($"Error Visita{entidad.Nombre} No se Guarda");
+                if (visitaCreada.Secuencial == 0)
+                    throw new TaskCanceledException("No se pudo crear la visita.");
 
-                var vistaCreada = await ConsultaVisita(visitaProceso.Secuencial);
+                // No es necesario volver a consultar, la entidad creada ya tiene los datos.
+                return visitaCreada;
             }
             catch (Exception)
             {
                 throw;
             }
-            return visitaProceso;
         }
 
         public async Task<Visita> EditaVisita(Visita entidad)
         {
-            var resultado = new Visita();
             try
             {
-                var visitaProceso
-                        = await ConsultaVisita(entidad.Secuencial);
+                // Obtenemos la visita original del repositorio. El DbContext la rastreará.
+                var visitaOriginal = await _repositorio.Obtener(v => v.Secuencial == entidad.Secuencial);
+                if (visitaOriginal == null)
+                {
+                    throw new KeyNotFoundException($"No se encontró la visita con el secuencial {entidad.Secuencial}");
+                }
 
-                visitaProceso.Nombre = entidad.Nombre;
-                visitaProceso.SecProvincia = entidad.SecProvincia;
-                visitaProceso.SecCanton = entidad.SecCanton;
-                visitaProceso.SecParroquia = entidad.SecParroquia;
-                visitaProceso.Direccion = entidad.Direccion;
-                visitaProceso.GeoUbicacion = string.IsNullOrEmpty(entidad.GeoUbicacion) ? "0,0" : entidad.GeoUbicacion.ToString();
-                visitaProceso.EstaActivo = entidad.EstaActivo;
-                visitaProceso.FechaRegistro = DateTime.Now;
-                visitaProceso.FechaSiguienteVisita = entidad.FechaSiguienteVisita;
-                visitaProceso.Detalle = entidad.Detalle;
+                // Actualizamos solo las propiedades necesarias.
+                visitaOriginal.Nombre = entidad.Nombre;
+                visitaOriginal.SecProvincia = entidad.SecProvincia;
+                visitaOriginal.SecCanton = entidad.SecCanton;
+                visitaOriginal.SecParroquia = entidad.SecParroquia;
+                visitaOriginal.Direccion = entidad.Direccion;
+                visitaOriginal.GeoUbicacion = string.IsNullOrEmpty(entidad.GeoUbicacion) ? "0,0" : entidad.GeoUbicacion.ToString();
+                visitaOriginal.EstaActivo = entidad.EstaActivo;
+                visitaOriginal.FechaSiguienteVisita = entidad.FechaSiguienteVisita;
+                visitaOriginal.Detalle = entidad.Detalle;
 
-                await _repositorio.Editar(visitaProceso);
+                // Guardamos los cambios. EF Core se encarga de generar el UPDATE solo con los campos modificados.
+                bool seEdito = await _repositorio.Editar(visitaOriginal);
+                if (!seEdito)
+                {
+                    throw new Exception("No se pudo editar la visita.");
+                }
 
-
-                var visitaModificada
-                      = await _repositorio
-                             .Consultar(x => x.Secuencial == entidad.Secuencial);
-
-                var visitaProcesada
-                    = visitaModificada
-                    .Include(x => x.SecProvinciaNavigation)
-                    .Include(y => y.SecCantonNavigation)
-                    .Include(z => z.SecParroquiaNavigation)
-                    .Include(u => u.SecUsuarioNavigation)
-                    .First();
-
-                return visitaProcesada;
-
+                return visitaOriginal;
             }
             catch
             {
@@ -114,13 +109,14 @@ namespace BLL.Implementacion
         public async Task<List<Visita>> ListaVisitas()
         {
             var query = await _repositorio.Consultar();
+            // Aplicar AsNoTracking para consultas de solo lectura mejora el rendimiento.
             var queryIncludes = query.Include(x => x.SecProvinciaNavigation)
                                       .Include(y => y.SecCantonNavigation)
                                       .Include(z => z.SecParroquiaNavigation)
                                       .Include(u => u.SecUsuarioNavigation)
-                                      .ToList();
+                                      .AsNoTracking();
 
-            return queryIncludes;
+            return await queryIncludes.ToListAsync();
         }
     }
 }

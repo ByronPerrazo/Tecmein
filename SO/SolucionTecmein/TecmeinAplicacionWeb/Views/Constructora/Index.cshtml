@@ -51,78 +51,92 @@
 <div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
    <div class="modal-dialog" role="document">
       <div class="modal-content">
-         <div class="modal-header">
-            <h6>Detalle Constructora</h6>
-            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-            </button>
-         </div>
-         <div class="modal-body">
-            <form>
-               <input type="hidden" value="0" id="txtId">
-               <div class="row">
-                  <div class="col-sm-12">
-                     <div class="form-row">
-                        <div class="form-group col-sm-12">
-                           <label for="txtNombre">Nombre</label>
-                           <input type="text" class="form-control form-control-sm" id="txtNombre">
-                        </div>
-                     </div>
-                     <div class="form-row">
-                        <div class="form-group col-sm-12">
-                           <label for="txtDireccion">Dirección</label>
-                           <input type="text" class="form-control form-control-sm" id="txtDireccion">
-                        </div>
-                     </div>
-                     <div class="form-row">
-                        <div class="form-group col-sm-6">
-                           <label for="txtAtencion">Atención</label>
-                           <input type="text" class="form-control form-control-sm" id="txtAtencion">
-                        </div>
-                        <div class="form-group col-sm-6">
-                           <label for="txtTelefono">Teléfono</label>
-                           <input type="tel" class="form-control form-control-sm" id="txtTelefono">
-                        </div>
-                     </div>
-                     <div class="form-row">
-                        <div class="form-group col-sm-6">
-                           <label for="txtCorreo">Correo</label>
-                           <input type="email" class="form-control form-control-sm" id="txtCorreo">
-                        </div>
-                        <div class="form-group col-sm-6">
-                           <label for="cboEstado">Estado</label>
-                           <select class="form-control form-control-sm" id="cboEstado">
-                              <option value="1">Activo</option>
-                              <option value="0">Inactivo</option>
-                           </select>
-                        </div>
-                     </div>
-                     <fieldset>
-                        <legend>Información del Administrador</legend>
+         <div class="card shadow-sm">
+            <div class="card-header py-2 bg-second-primary">
+               <h6 class="m-0 font-weight-bold text-white">
+                  <i class="fas fa-building"></i> Detalle Constructora
+                  <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
+                     <span aria-hidden="true" class="text-white">×</span>
+                  </button>
+               </h6>
+            </div>
+            <div class="card-body p-2">
+               <form>
+                  <input type="hidden" value="0" id="txtId">
+                  <div class="row">
+                     <div class="col-sm-12">
                         <div class="form-row">
                            <div class="form-group col-sm-12">
-                              <label for="txtAdministrador">Administrador</label>
-                              <input type="text" class="form-control form-control-sm" id="txtAdministrador">
+                              <label for="txtNombre">Nombre</label>
+                              <input type="text" class="form-control form-control-sm" id="txtNombre">
+                           </div>
+                        </div>
+                        <div class="form-row">
+                           <div class="form-group col-sm-12">
+                              <label for="txtDireccion">Dirección</label>
+                              <input type="text" class="form-control form-control-sm" id="txtDireccion">
                            </div>
                         </div>
                         <div class="form-row">
                            <div class="form-group col-sm-6">
-                              <label for="txtTelefonoAdmin">Teléf Administrador</label>
-                              <input type="tel" class="form-control form-control-sm" id="txtTelefonoAdmin">
+                              <label for="txtAtencion">Atención</label>
+                              <input type="text" class="form-control form-control-sm" id="txtAtencion">
                            </div>
                            <div class="form-group col-sm-6">
-                              <label for="txtCorreoAdmin">Correo Administrador</label>
-                              <input type="email" class="form-control form-control-sm" id="txtCorreoAdmin">
+                              <label for="txtTelefono">Teléfono</label>
+                              <input type="tel" class="form-control form-control-sm" id="txtTelefono">
                            </div>
                         </div>
-                     </fieldset>
+                        <div class="form-row">
+                           <div class="form-group col-sm-6">
+                              <label for="txtCorreo">Correo</label>
+                              <input type="email" class="form-control form-control-sm" id="txtCorreo">
+                           </div>
+                           <div class="form-group col-sm-6">
+                              <label for="cboEstado">Estado</label>
+                              <select class="form-control form-control-sm" id="cboEstado">
+                                 <option value="1">Activo</option>
+                                 <option value="0">Inactivo</option>
+                              </select>
+                           </div>
+                        </div>
+                        <div class="card shadow-sm mt-3">
+                           <div class="card-header py-2 bg-light">
+                              <h6 class="m-0 font-weight-bold text-primary">
+                                 <a href="#" data-toggle="collapse" data-target="#collapseAdmin" aria-expanded="true" aria-controls="collapseAdmin">
+                                    <i class="fas fa-user-shield"></i> Información del Administrador
+                                 </a>
+                              </h6>
+                           </div>
+                           <div id="collapseAdmin" class="collapse show">
+                              <div class="card-body p-2">
+                                 <div class="form-row">
+                                    <div class="form-group col-sm-12">
+                                       <label for="txtAdministrador">Administrador</label>
+                                       <input type="text" class="form-control form-control-sm" id="txtAdministrador">
+                                    </div>
+                                 </div>
+                                 <div class="form-row">
+                                    <div class="form-group col-sm-6">
+                                       <label for="txtTelefonoAdmin">Teléf Administrador</label>
+                                       <input type="tel" class="form-control form-control-sm" id="txtTelefonoAdmin">
+                                    </div>
+                                    <div class="form-group col-sm-6">
+                                       <label for="txtCorreoAdmin">Correo Administrador</label>
+                                       <input type="email" class="form-control form-control-sm" id="txtCorreoAdmin">
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
                   </div>
-               </div>
-            </form>
-         </div>
-         <div class="modal-footer">
-            <button class="btn btn-primary btn-sm" type="button" id="btnGuardar">Guardar</button>
-            <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal">Cancel</button>
+               </form>
+            </div>
+            <div class="card-body p-0 d-flex justify-content-end">
+               <button class="btn btn-primary btn-sm m-1 mr-2" type="button" id="btnGuardar">Guardar</button>
+               <button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal">Cancel</button>
+            </div>
          </div>
       </div>
    </div>

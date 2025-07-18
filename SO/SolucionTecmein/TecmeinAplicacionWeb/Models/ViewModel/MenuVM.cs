@@ -4,6 +4,10 @@
     {
         public string? Descripcion { get; set; }
 
+        public int Secuencial { get; set; }
+
+        public string? DescripcionMenuPadre { get; set; }
+
         public int? SecMenuPadre { get; set; }
 
         public string? Icono { get; set; }

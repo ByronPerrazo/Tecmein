@@ -7,157 +7,97 @@ namespace BLL.Implementacion
 {
     public class ContactoVisitaServices : IContactoVisitaServices
     {
+        private readonly IGenericRepository<Contactovisita> _repositorio;
+        private readonly IContactoServices _contactoServices;
 
-        public readonly IGenericRepository<Contactovisita> _repositorio;
-        public readonly IContactoServices _contactoServices;
-        public readonly IVisitaServices _visitaServices;
-
-        public ContactoVisitaServices(IGenericRepository<Contactovisita> repositorio
-            , IContactoServices contactoServices
-            , IVisitaServices visitaServices)
+        public ContactoVisitaServices(IGenericRepository<Contactovisita> repositorio, IContactoServices contactoServices)
         {
             _repositorio = repositorio;
             _contactoServices = contactoServices;
-            _visitaServices = visitaServices;
         }
 
         public async Task<Contactovisita?> ContactoVisitaPorVisita(int secVisita)
         {
-            var query = await _repositorio
-                              .Obtener(x => x.SecVisita == secVisita);
-            if (query != null)
+            var contactoVisita = await _repositorio.Obtener(x => x.SecVisita == secVisita);
+            if (contactoVisita != null)
             {
-                query.SecContactoNavigation =
-                    await _contactoServices
-                          .ContactoPorSecuencial(query.SecContacto);
+                contactoVisita.SecContactoNavigation = await _contactoServices.ContactoPorSecuencial(contactoVisita.SecContacto);
             }
-            return query;
+            return contactoVisita;
         }
 
         public async Task<Contactovisita?> ProcesaGuardarContactoVisita(Contactovisita entidad)
         {
-            Contactovisita? registroGuardado = null;
+            var contactoAsociado = await _contactoServices.ContactoPorSecuencial(entidad.SecContacto)
+                                   ?? throw new TaskCanceledException($"El contacto con Secuencial {entidad.SecContacto} no existe.");
 
-            if (await _repositorio.Obtener(x => x.SecVisita == entidad.SecVisita) == null)
+            var registroExistente = await _repositorio.Obtener(x => x.SecVisita == entidad.SecVisita);
+
+            if (registroExistente == null)
             {
-                registroGuardado = await _repositorio.Crear(entidad);
-
-                registroGuardado
-                    .SecContactoNavigation
-                     = await _contactoServices
-                     .ContactoPorSecuencial(entidad.SecContacto);
+                // Crear
+                entidad.EstaActivo = 1;
+                var nuevoRegistro = await _repositorio.Crear(entidad);
+                nuevoRegistro.SecContactoNavigation = contactoAsociado;
+                return nuevoRegistro;
             }
-
-            if (registroGuardado == null)
+            else
             {
-                var registro
-                    = _repositorio
-                    .Consultar(x =>
-                               x.SecVisita == entidad.SecVisita)
-                    .Result
-                    .Include(x => x.SecContactoNavigation)
-                    .FirstOrDefault();
-
-                if (registro != null)
-                {    
-                    var contactoSeleccionado = 
-                    _contactoServices.ContactoPorSecuencial(entidad.SecContacto)
-                    ?? throw new TaskCanceledException($"Registro Secuencial Contacto {entidad.SecContacto} No Existe");
-
-                    registro.SecContacto = entidad.SecContacto;
-                    registro.SecContactoNavigation = await contactoSeleccionado;
-
-                    if (await _repositorio.Editar(registro))
-                        registroGuardado = registro;
+                // Editar
+                registroExistente.SecContacto = entidad.SecContacto;
+                bool seEdito = await _repositorio.Editar(registroExistente);
+                if (seEdito)
+                {
+                    registroExistente.SecContactoNavigation = contactoAsociado;
+                    return registroExistente;
                 }
             }
-
-            return registroGuardado;
+            return null;
         }
 
         public async Task<Contactovisita> CrearContactoVisita(Contactovisita entidad)
         {
             if (await _repositorio.Obtener(x => x.SecVisita == entidad.SecVisita && x.SecContacto == entidad.SecContacto) != null)
-                throw new TaskCanceledException($"Error Nombre Contacto Ya Registrado");
+                throw new TaskCanceledException("El contacto ya está registrado para esta visita.");
 
             entidad.EstaActivo = 1;
-
-            var regitroGuardado = await _repositorio.Crear(entidad);
-
-
-            regitroGuardado
-                .SecContactoNavigation
-                 = await _contactoServices
-                 .ContactoPorSecuencial(entidad.SecContacto);
-
-
-            return regitroGuardado;
+            var registroGuardado = await _repositorio.Crear(entidad);
+            registroGuardado.SecContactoNavigation = await _contactoServices.ContactoPorSecuencial(entidad.SecContacto);
+            return registroGuardado;
         }
 
         public async Task<Contactovisita> EditarContactoVisita(Contactovisita entidad)
         {
-            var registro
-                = await _repositorio.Obtener(x =>
-                                             x.SecVisita == entidad.SecVisita &&
-                                             x.SecContacto == entidad.SecContacto)
-                  ?? throw new TaskCanceledException("Registro No Existe");
+            var registro = await _repositorio.Obtener(x => x.Secuencial == entidad.Secuencial)
+                           ?? throw new TaskCanceledException("El registro de ContactoVisita no existe.");
 
-            if (registro != null)
-            {
-                registro.SecContacto = entidad.SecContacto;
-                var regitroGuardado = await _repositorio.Editar(registro);
-            }
+            registro.SecContacto = entidad.SecContacto;
+            await _repositorio.Editar(registro);
 
-            var obtenido
-                = await _repositorio
-                        .Obtener(x => x.Secuencial == entidad.Secuencial);
-
-            obtenido.SecContactoNavigation
-                = await _contactoServices
-                        .ContactoPorSecuencial(entidad.SecContacto);
-
-            return obtenido;
+            registro.SecContactoNavigation = await _contactoServices.ContactoPorSecuencial(entidad.SecContacto);
+            return registro;
         }
 
         public async Task<bool> EliminarContactoVisita(int secuencial)
         {
-            try
+            var registro = await _repositorio.Obtener(x => x.Secuencial == secuencial);
+            if (registro == null)
             {
-                var seElimino = false;
-                var registro
-                    = await _repositorio
-                             .Consultar(x => x.Secuencial == secuencial);
-
-                var constructora = registro.FirstOrDefault();
-                if (constructora != null)
-                {
-                    await _repositorio.Eliminar(constructora);
-                    seElimino = true;
-                }
-                return seElimino;
+                return false;
             }
-            catch (Exception)
-            {
-                throw;
-            }
+            return await _repositorio.Eliminar(registro);
         }
 
         public async Task<List<Contactovisita>> ListaContactoVisita()
         {
             var query = await _repositorio.Consultar();
-            var queryIncludes = query.Include(x => x.SecContactoNavigation)
-                                     .ToList();
-            return [.. queryIncludes];
+            return await query.Include(x => x.SecContactoNavigation).ToListAsync();
         }
 
         public async Task<List<Contactovisita>> ListaPorContacto(int secContacto)
         {
-            var query = await _repositorio.Consultar();
-            var queryIncludes = query
-                                .Where(a => a.SecContacto == secContacto)
-                                .Include(x => x.SecContactoNavigation)
-                                .ToList();
-            return queryIncludes;
+            var query = await _repositorio.Consultar(x => x.SecContacto == secContacto);
+            return await query.Include(x => x.SecContactoNavigation).ToListAsync();
         }
     }
 }

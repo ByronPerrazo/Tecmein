@@ -53,7 +53,7 @@ namespace BLL.Implementacion
 
             return UrlImagen;
         }
-        public async Task<bool> EliminarStorage(string CarpetaDestino, string NombreArchivo)
+        public async Task<bool> EliminarStorage(string? CarpetaDestino, string? NombreArchivo)
         {
             var seProceso = false;
             try

@@ -50,6 +50,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "CanModify")]
         public async Task<IActionResult> CrearCatalogo([FromForm] IFormFile archivoPDF, [FromForm] string modelo)
         {
             var genericResponse = new GenericResponse<CatalogoVM>();
@@ -86,6 +87,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Policy = "CanDelete")]
         public async Task<IActionResult> Eliminar(int secuencial)
         {
             var gResponse = new GenericResponse<string>();

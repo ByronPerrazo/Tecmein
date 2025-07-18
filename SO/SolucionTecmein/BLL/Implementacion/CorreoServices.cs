@@ -8,58 +8,42 @@ namespace BLL.Implementacion
 {
     public class CorreoServices : ICorreoServices
     {
-        private IGenericRepository<Empresacorreo> _repositorio;
-        public CorreoServices(IGenericRepository<Empresacorreo> repositorio)
+        private readonly IGenericRepository<Empresacorreo> _repositorio;
+        private readonly ISmtpClientWrapper _smtpClientWrapper;
+
+        public CorreoServices(IGenericRepository<Empresacorreo> repositorio, ISmtpClientWrapper smtpClientWrapper)
         {
             _repositorio = repositorio;
+            _smtpClientWrapper = smtpClientWrapper;
         }
+
         public async Task<bool> EnvioCorreo(string Destino, string Asunto, string Mensaje)
         {
-            var respuesta = false;
-            try
+            var empresaCorreo = await _repositorio.Obtener(x => x.SecEmpresa == 1)
+                                ?? throw new InvalidOperationException("Configuración de correo empresarial no encontrada.");
+
+            var correoEmpresarial = empresaCorreo.Email;
+
+            var mailMessage = new MailMessage()
             {
-                var empresaCorreo =
-                    await _repositorio
-                            .Obtener(x =>
-                                     x.SecEmpresa == 1);
+                From = new MailAddress(address: correoEmpresarial),
+                Subject = Asunto,
+                Body = Mensaje,
+                IsBodyHtml = true
+            };
 
-                var correoEmpresarial = empresaCorreo.Email;
-                var credenciales = 
-                    new NetworkCredential(correoEmpresarial,
-                                          empresaCorreo.Clave);
+            mailMessage.To.Add(Destino);
 
-                var correo = new MailMessage()
-                {
-                    From = new MailAddress(address: correoEmpresarial), // correo de Origen
-                    Subject = Asunto,
-                    Body = Mensaje,
-                    IsBodyHtml = true
-                };
+            await _smtpClientWrapper.SendMailAsync(
+                mailMessage,
+                empresaCorreo.Host,
+                Convert.ToInt32(empresaCorreo.Puerto),
+                correoEmpresarial,
+                empresaCorreo.Clave,
+                true // EnableSsl
+            );
 
-                correo.To.Add(Destino);
-
-                var servidorCorreo
-                    = new SmtpClient()
-                    {
-                        Host = empresaCorreo.Host,
-                        Port = Convert.ToInt32(empresaCorreo.Puerto),
-                        Credentials = credenciales,
-                        DeliveryMethod = SmtpDeliveryMethod.Network,
-                        UseDefaultCredentials = false,
-                        EnableSsl = true
-                    };
-
-                servidorCorreo.Send(correo);
-
-                respuesta = true;
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
-            return respuesta;
+            return true;
         }
     }
 }

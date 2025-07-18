@@ -1,0 +1,69 @@
+@model TecmeinWebApp.Models.ViewModel.MenuEditarVM
+
+@{
+    ViewData["Title"] = "Crear Menú";
+}
+
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Crear Menú</h1>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <form asp-action="Crear">
+                <div class="form-group">
+                    <label asp-for="Menu.Descripcion" class="control-label"></label>
+                    <input asp-for="Menu.Descripcion" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Menu.SecMenuPadre" class="control-label"></label>
+                    <select asp-for="Menu.SecMenuPadre" class="form-control" asp-items="ViewBag.ListaMenusPadre">
+                        <option value="">-- Seleccione un Menú Padre --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Menu.Icono" class="control-label"></label>
+                    <select asp-for="Menu.Icono" class="form-control" id="iconoDropdown">
+                        <option value="">-- Seleccione un Icono --</option>
+                        @foreach (var icono in Model.IconosDisponibles)
+                        {
+                            <option value="@icono">@icono</option>
+                        }
+                    </select>
+                    <div class="mt-2">
+                        <i id="iconoPreview" class="@Model.Menu.Icono"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Menu.Controlador" class="control-label"></label>
+                    <input asp-for="Menu.Controlador" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Menu.PaginaAccion" class="control-label"></label>
+                    <input asp-for="Menu.PaginaAccion" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Menu.EsActivo" class="control-label"></label>
+                    <select asp-for="Menu.EsActivo" class="form-control">
+                        <option value="1">Activo</option>
+                        <option value="0">Inactivo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Crear" class="btn btn-primary" />
+                    <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#iconoDropdown').change(function () {
+                var selectedIcon = $(this).val();
+                $('#iconoPreview').attr('class', selectedIcon);
+            });
+        });
+    </script>
+}

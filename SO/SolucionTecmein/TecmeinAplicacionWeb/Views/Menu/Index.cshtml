@@ -1,0 +1,109 @@
+@{
+    ViewData["Title"] = "Menús";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 bg-second-primary">
+        <h6 class="m-0 font-weight-bold text-white">Lista de Menús</h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-3">
+                <button class="btn btn-success" id="btnNuevo" data-toggle="modal" data-target="#modalData">
+                    <i class="fas fa-plus-circle"></i> Nuevo Menú
+                </button>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-sm-12">
+                <table id="tbdata" class="table table-bordered" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Descripción</th>
+                            <th>Menú Padre</th>
+                            <th>Icono</th>
+                            <th>Controlador</th>
+                            <th>Página Acción</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="card shadow-sm">
+                <div class="card-header py-2 bg-second-primary">
+                    <h6 class="m-0 font-weight-bold text-white">
+                        <i class="fas fa-bars"></i> Detalle Menú
+                        <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" class="text-white">×</span>
+                        </button>
+                    </h6>
+                </div>
+                <div class="card-body p-2">
+                    <form>
+                        <input type="hidden" id="txtId" value="0">
+                        <div class="form-group">
+                            <label for="txtDescripcion">Descripción</label>
+                            <input type="text" class="form-control form-control-sm" id="txtDescripcion">
+                        </div>
+                        <div class="form-group">
+                            <label for="cboMenuPadre">Menú Padre</label>
+                            <select class="form-control form-control-sm" id="cboMenuPadre">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="txtIcono">Icono</label>
+                            <select class="form-control form-control-sm" id="txtIcono">
+                                <option value="">-- Seleccione un Icono --</option>
+                            </select>
+                            <div class="mt-2">
+                                <i id="iconoPreviewModal" class=""></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="txtControlador">Controlador</label>
+                            <input type="text" class="form-control form-control-sm" id="txtControlador">
+                        </div>
+                        <div class="form-group">
+                            <label for="txtPaginaAccion">Página Acción</label>
+                            <input type="text" class="form-control form-control-sm" id="txtPaginaAccion">
+                        </div>
+                        <div class="form-group">
+                            <label for="cboEstado">Estado</label>
+                            <select class="form-control form-control-sm" id="cboEstado">
+                                <option value="1">Activo</option>
+                                <option value="0">Inactivo</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-body p-0 d-flex justify-content-end">
+                    <button class="btn btn-primary btn-sm m-1 mr-2" type="button" id="btnGuardar">Guardar</button>
+                    <button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Estilos{
+    <link href="~/vendor/select2/select2.min.css" rel="stylesheet">
+}
+
+@section Scripts{
+    <script src="~/vendor/select2/select2.min.js"></script>
+    <script src="~/vendor/select2/es.min.js"></script>
+    <script src="~/js/vistas/Menu_Index.js"></script>
+}

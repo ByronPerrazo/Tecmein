@@ -68,3 +68,11 @@ div {
     background-color: #1cc88a;
     border-color: #1cc88a;
 }
+
+.form-row-compact {
+    margin-bottom: 5px !important;
+}
+
+.th-celeste {
+    background-color: #e0f7fa !important;
+}

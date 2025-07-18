@@ -8,13 +8,24 @@ namespace BLL.Implementacion
     public class ContactoServices : IContactoServices
     {
         public readonly IGenericRepository<Contacto> _repositorio;
+        public readonly IGenericRepository<Contactovisita> _repositorioContactoVisita;
         public readonly IConstructoraServices _constructoraServices;
+        public readonly IValidacionServices _validacionServices;
 
         public ContactoServices(IGenericRepository<Contacto> repositorio,
-                                IConstructoraServices constructoraServices)
+                                IGenericRepository<Contactovisita> repositorioContactoVisita,
+                                IConstructoraServices constructoraServices,
+                                IValidacionServices validacionServices)
         {
             _repositorio = repositorio;
+            _repositorioContactoVisita = repositorioContactoVisita;
             _constructoraServices = constructoraServices;
+            _validacionServices = validacionServices;
+        }
+
+        public async Task<Contacto> ObtenerPorId(int secuencial)
+        {
+            return await _repositorio.Obtener(c => c.Secuencial == secuencial, "SecConstructoraNavigation");
         }
 
         public async Task<Contacto> ContactoPorSecuencial(int secuencial)
@@ -26,6 +37,23 @@ namespace BLL.Implementacion
 
         public async Task<Contacto> Crear(Contacto entidad)
         {
+            // Validaciones comunes
+            _validacionServices.ValidarNombre(entidad.Nombres, "nombre");
+            _validacionServices.ValidarNombre(entidad.Apellidos, "apellido");
+            _validacionServices.ValidarCorreo(entidad.Correo);
+            _validacionServices.ValidarTelefonoEcuador(entidad.Telefono);
+
+            // Validaciones específicas de Contacto
+            if (entidad.SecConstructora <= 0)
+            {
+                throw new TaskCanceledException("La constructora es obligatoria.");
+            }
+            var constructoraExistente = await _constructoraServices.ConstructoraPorSecuencial(entidad.SecConstructora);
+            if (constructoraExistente == null)
+            {
+                throw new TaskCanceledException($"La constructora con secuencial {entidad.SecConstructora} no existe.");
+            }
+
             if (await _repositorio.Obtener(x => x.Nombres == entidad.Nombres && x.Apellidos == entidad.Apellidos) != null)
                 throw new TaskCanceledException($"Error Nombre Contacto Ya Registrado");
 
@@ -41,63 +69,58 @@ namespace BLL.Implementacion
 
         public async Task<Contacto> Editar(Contacto entidad)
         {
+            // Validaciones comunes
+            _validacionServices.ValidarNombre(entidad.Nombres, "nombre");
+            _validacionServices.ValidarNombre(entidad.Apellidos, "apellido");
+            _validacionServices.ValidarCorreo(entidad.Correo);
+            _validacionServices.ValidarTelefonoEcuador(entidad.Telefono);
+
+            // Validaciones específicas de Contacto
+            if (entidad.SecConstructora <= 0)
+            {
+                throw new TaskCanceledException("La constructora es obligatoria.");
+            }
+            var constructoraExistente = await _constructoraServices.ConstructoraPorSecuencial(entidad.SecConstructora);
+            if (constructoraExistente == null)
+            {
+                throw new TaskCanceledException($"La constructora con secuencial {entidad.SecConstructora} no existe.");
+            }
+
             var registro
                 = await _repositorio
                         .Obtener(x => x.Secuencial == entidad.Secuencial)
                   ?? throw new TaskCanceledException("Registro No Existe");
 
-            if (registro != null)
-            {
-                registro.SecConstructora = entidad.SecConstructora;
-                registro.Titulo = entidad.Titulo;
-                registro.Nombres = entidad.Nombres;
-                registro.Apellidos = entidad.Apellidos;
-                registro.Telefono = entidad.Telefono;
-                registro.Correo = entidad.Correo;
-                registro.EstaActivo = entidad.EstaActivo;
-                var regitroGuardado = await _repositorio.Editar(registro);
-            }
+            registro.SecConstructora = entidad.SecConstructora;
+            registro.Titulo = entidad.Titulo;
+            registro.Nombres = entidad.Nombres;
+            registro.Apellidos = entidad.Apellidos;
+            registro.Telefono = entidad.Telefono;
+            registro.Correo = entidad.Correo;
+            registro.EstaActivo = entidad.EstaActivo;
 
-            var obtenido
-                = await _repositorio
-                        .Obtener(x => x.Secuencial == entidad.Secuencial);
+            bool seEdito = await _repositorio.Editar(registro);
+            if (!seEdito)
+                throw new TaskCanceledException("No se pudo editar el contacto.");
 
-            obtenido.SecConstructoraNavigation
+            registro.SecConstructoraNavigation
                 = await _constructoraServices
-                        .ConstructoraPorSecuencial(obtenido.SecConstructora);
+                        .ConstructoraPorSecuencial(registro.SecConstructora);
 
-            return obtenido;
+            return registro;
         }
 
         public async Task<bool> Eliminar(int secuencial)
         {
-            try
-            {
-                var seElimino = false;
-                var registro
-                    = await _repositorio
-                             .Consultar(x => x.Secuencial == secuencial);
+            var registro
+                = await _repositorio
+                         .Obtener(x => x.Secuencial == secuencial);
 
-                var constructora = registro.FirstOrDefault();
-                if (constructora != null)
-                {
-                    await _repositorio.Eliminar(constructora);
-                    seElimino = true;
-                }
-                return seElimino;
-            }
-            catch (Exception)
+            if (registro == null)
             {
-                throw;
+                return false;
             }
-        }
-
-        public async Task<List<Contacto>> Lista()
-        {
-            var query = await _repositorio.Consultar();
-            var queryIncludes = query.Include(x => x.SecConstructoraNavigation)
-                                     .ToList();
-            return [.. queryIncludes];
+            return await _repositorio.Eliminar(registro);
         }
 
         public async Task<List<Contacto>> ListaPorConstructora(int secConstructora)
@@ -108,6 +131,25 @@ namespace BLL.Implementacion
                                 .Include(x => x.SecConstructoraNavigation)
                                 .ToList();
             return queryIncludes;
+        }
+
+        public async Task<List<Contacto>> Lista()
+        {
+            var query = await _repositorio.Consultar();
+            var queryIncludes = query.Include(x => x.SecConstructoraNavigation)
+                                     .ToList();
+            return [.. queryIncludes];
+        }
+
+        public async Task<Contacto> ObtenerContactoPrincipal(int secuencialVisita)
+        {
+            var contactoVisita = await _repositorioContactoVisita.Obtener(cv => cv.SecVisita == secuencialVisita && cv.EstaActivo == 1);
+
+            if (contactoVisita != null)
+            {
+                return await _repositorio.Obtener(c => c.Secuencial == contactoVisita.SecContacto);
+            }
+            return null;
         }
     }
 }

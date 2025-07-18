@@ -1,4 +1,7 @@
 ﻿using Entity;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace BLL.Interfaces
 {
@@ -6,8 +9,8 @@ namespace BLL.Interfaces
     {
         Task<List<Empresa>> Lista();
         Task<Empresa> Obtener();
-        Task<Empresa> GuardarCambios(Empresa entidad, Stream logo = null, string NombreLogo = "");
-        Task<Empresa> Editar(Empresa entidad, Stream logo = null, string NombreLogo = "");
+        Task<Empresa> Crear(Empresa entidad, Stream logo = null, string nombreLogo = "");
+        Task<Empresa> Editar(Empresa entidad, Stream logo = null, string nombreLogo = "");
         Task<bool> Eliminar(int secuencial);
     }
 }

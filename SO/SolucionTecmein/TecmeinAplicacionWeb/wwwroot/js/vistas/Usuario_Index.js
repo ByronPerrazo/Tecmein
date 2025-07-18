@@ -1,60 +1,38 @@
-﻿
 const MODELO_BASE = {
     secuencial: "",
     nombre: "",
     correo: "",
     telefono: "",
     secRol: 0,
-    nombreRol: "",
-    urlFoto: "",
-    nombreFoto: "",
     esActivo: 1,
+    urlFoto: ""
 }
 
+let tablaData;
+let filaSeleccionada;
+
 $(document).ready(function () {
-    fetch("ListaRol")
-        .then(
-            respuesta => {
-                return respuesta.ok
-                    ? respuesta.json()
-                    : Promise.reject(respuesta);
-            }
-        ).then(
-            respuestaJson => {
-                respuestaJson
-                    .forEach(item => {
-                        $("#cboRol")
-                            .append(
-                                $("<option>")
-                                    .val(item.secuencial)
-                                    .text(item.descripcion)
-                            )
-                    })
 
-            }
-        ).catch(error => {
-            console.error('Error al obtener la lista de perfiles:', error);
-        });
-
-    tablaData =
-    $('#tbdata').DataTable({
+    tablaData = $('#tbdata').DataTable({
         responsive: true,
         "ajax": {
             "url": 'Lista',
             "type": "GET",
-            "datatype": "json"
+            "datatype": "json",
+            "dataSrc": function (json) {
+                // Asegurarse de que el serializador no cause problemas
+                return json.data && json.data.$values ? json.data.$values : json.data;
+            }
         },
         "columns": [
-            { data: "secuencial", visible: false, searchable: true },
-
+            { data: "secuencial", visible: false, searchable: false },
             {
-                data: "urlFoto", render: function (data) {
+                data: 'urlFoto', render: function (data) {
                     return `<img style="height:60px" src=${data} class="rounded mx-auto d-block"/>`;
                 }
-
             },
-            { data: "nombre", searchable: true },
-            { data: "correo", searchable: true },
+            { data: "nombre" },
+            { data: "correo" },
             { data: "telefono" },
             { data: "nombreRol" },
             {
@@ -65,13 +43,12 @@ $(document).ready(function () {
                         return '<span class="badge badge-danger">Inactivo</span>';
                 }
             },
-
             {
                 "defaultContent": '<button class="btn btn-primary btn-editar btn-sm mr-2"><i class="fas fa-pencil-alt"></i></button>' +
-                                  '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button>',
-                         "orderable": false,
-                         "searchable": false,
-                         "width": "80px"
+                    '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button>',
+                "orderable": false,
+                "searchable": false,
+                "width": "80px"
             }
         ],
         order: [[0, "desc"]],
@@ -83,7 +60,7 @@ $(document).ready(function () {
                 title: 'Usuarios',
                 filename: 'Reporte Usuarios',
                 exportOptions: {
-                    columns: [0, 2,3,4,5,6]
+                    columns: [0, 2, 3, 4, 5, 6]
                 }
             }, 'pageLength'
         ],
@@ -92,108 +69,49 @@ $(document).ready(function () {
         },
     });
 
-
-
 });
 
-function mostrarModal(modelo = MODELO_BASE) {
+function mostrarModal(modelo = MODELO_BASE, listaRoles = []) {
     $("#txtId").val(modelo.secuencial)
     $("#txtNombre").val(modelo.nombre)
     $("#txtCorreo").val(modelo.correo)
     $("#txtTelefono").val(modelo.telefono)
-    $("#cboRol").val(modelo.secRol == "" ? $("#cboRol option:first").val() : modelo.secRol)
     $("#cboEstado").val(modelo.esActivo)
     $("#txtFoto").val("")
-    debugger
     $("#imgUsuario").attr("src", modelo.urlFoto)
+
+    const cboRol = $("#cboRol");
+    cboRol.empty();
+    if (listaRoles.length > 0) {
+        listaRoles.forEach(item => {
+            cboRol.append(
+                $("<option>").val(item.secuencial).text(item.descripcion)
+            )
+        });
+    }
+    cboRol.val(modelo.secRol);
+
     $("#modalData").modal("show")
 };
 
-let esEdicion;
+let esEdicion = false;
+
 $("#btnNuevo").click(function () {
     esEdicion = false;
-    mostrarModal()
+    // Para un nuevo usuario, necesitamos la lista de roles
+    fetch("/Usuario/ListaRol")
+        .then(response => response.ok ? response.json() : Promise.reject(response))
+        .then(responseJson => {
+            mostrarModal(MODELO_BASE, responseJson);
+        })
+        .catch(error => {
+            console.error('Error al obtener la lista de perfiles para nuevo usuario:', error);
+        });
 })
 
-$("#btnGuardar").click(function () {
-
-    const inputs = $("input.input-validar").serializeArray();
-    const inputs_vacios = inputs.filter(item => item.value.trim() == "");
-
-    inputs_vacios.forEach(x => {
-        const mensaje = `Debe llenar el campo: "${x.name}"`;
-        toastr.warning("", mensaje);
-    });
-
-    if (inputs_vacios.length > 0) {
-        $(`input[name="${inputs_vacios[0].name}"]`).focus();
-        return;
-    }
-
-    const modelo = structuredClone(MODELO_BASE);
-    modelo["secuencial"] = $("#txtId").val().trim();
-    modelo["nombre"] = $("#txtNombre").val().trim();
-    modelo["telefono"] = $("#txtTelefono").val().trim();
-    modelo["secRol"] = parseInt($("#cboRol").val());
-    modelo["esActivo"] = $("#cboEstado").val();
-    modelo["correo"] = $("#txtCorreo").val().trim();
-
-    const inputImagen = document.getElementById("txtFoto");
-    const datosFormulario = new FormData();
-    datosFormulario.append("imagen", inputImagen.files[0]);
-    datosFormulario.append("modelo", JSON.stringify(modelo));
-
-    $("#modalData").find("div.modal-content").LoadingOverlay("show");
-
-    if (!esEdicion) {
-
-        fetch("Crear", {
-            method: "POST",
-            body: datosFormulario
-        })
-            .then(response => {
-                $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-                return response.ok
-                    ? response.json()
-                    : Promise.reject(response);
-            }).then(responseJson => {
-                if (responseJson.estado) {
-                    tablaData.row.add(responseJson.objeto).draw(false);
-                    $("#modalData").modal("hide");
-                    swal("Listo!", "Usuario " + responseJson.objeto.nombre + " Creado ", "success");
-                }
-                else {
-                    swal("Fallo!", responseJson.mensajes, "error");
-                }
-            });
-    } else {
-
-        fetch("Editar", {
-            method: "PUT",
-            body: datosFormulario
-        })
-            .then(response => {
-                $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-                return response.ok
-                    ? response.json()
-                    : Promise.reject(response);
-            }).then(responseJson => {
-                if (responseJson.estado) {
-                    debugger;
-                    tablaData.row(filaSeleccionada).data(responseJson.objeto).draw(false);
-                    $("#modalData").modal("hide");
-                    swal("Listo!", "Usuario " + responseJson.objeto.nombre + " Editado ", "success");
-                }
-                else {
-                    swal("Fallo!", responseJson.mensajes, "error");
-                }
-            });
-
-    }
-
-});
 $("#tbdata tbody").on("click", ".btn-editar", function () {
     esEdicion = true;
+
     if ($(this).closest("tr").hasClass("child")) {
         filaSeleccionada = $(this).closest("tr").prev();
     } else {
@@ -201,14 +119,88 @@ $("#tbdata tbody").on("click", ".btn-editar", function () {
     }
 
     const data = tablaData.row(filaSeleccionada).data();
-    data.nombreImagen
-    mostrarModal(data);
+    const secuencialUsuario = data.secuencial;
 
-})
+    $("#modalData").find("div.modal-content").LoadingOverlay("show");
+
+    fetch(`/Usuario/ObtenerParaEditar?secuencialUsuario=${secuencialUsuario}`)
+        .then(response => {
+            $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+            return response.ok ? response.json() : Promise.reject(response);
+        })
+        .then(responseJson => {
+            if (responseJson.estado) {
+                mostrarModal(responseJson.objeto.usuario, responseJson.objeto.listaRoles);
+            } else {
+                swal("Fallo!", responseJson.mensajes, "error");
+            }
+        })
+        .catch(error => {
+            $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+            console.error("Error en la llamada fetch para editar:", error);
+        });
+});
+
+$("#btnGuardar").click(function () {
+
+    const inputs = $("input.input-validar").serializeArray();
+    const inputs_vacios = inputs.filter(item => item.value.trim() == "");
+
+    if (inputs_vacios.length > 0) {
+        const mensaje = `Debe llenar el campo: "${inputs_vacios[0].name}"`;
+        toastr.warning("", mensaje);
+        $(`input[name="${inputs_vacios[0].name}"]`).focus();
+        return;
+    }
+
+    const modelo = structuredClone(MODELO_BASE);
+    modelo["secuencial"] = $("#txtId").val();
+    modelo["nombre"] = $("#txtNombre").val();
+    modelo["correo"] = $("#txtCorreo").val();
+    modelo["telefono"] = $("#txtTelefono").val();
+    modelo["secRol"] = $("#cboRol").val();
+    modelo["esActivo"] = $("#cboEstado").val();
+
+    const inputImagen = document.getElementById("txtFoto");
+    const datosFormulario = new FormData();
+    datosFormulario.append("imagen", inputImagen.files[0]);
+    datosFormulario.append("modelo", JSON.stringify(modelo));
+
+    const url = esEdicion ? "Editar" : "Crear";
+    const method = esEdicion ? "PUT" : "POST";
+
+    $("#modalData").find("div.modal-content").LoadingOverlay("show");
+
+    fetch(url, {
+        method: method,
+        body: datosFormulario
+    })
+    .then(response => {
+        $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+        return response.ok ? response.json() : Promise.reject(response);
+    })
+    .then(responseJson => {
+        if (responseJson.estado) {
+            if(esEdicion) {
+                tablaData.row(filaSeleccionada).data(responseJson.objeto).draw(false);
+            } else {
+                tablaData.row.add(responseJson.objeto).draw(false);
+            }
+            $("#modalData").modal("hide");
+            swal("Listo!", `Usuario ${esEdicion ? 'editado' : 'creado'} correctamente`, "success");
+        } else {
+            swal("Fallo!", responseJson.mensajes, "error");
+        }
+    })
+    .catch(error => {
+        $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+        console.error("Error al guardar:", error);
+    });
+});
 
 $("#tbdata tbody").on("click", ".btn-eliminar", function () {
 
-    let fila
+    let fila;
     if ($(this).closest("tr").hasClass("child")) {
         fila = $(this).closest("tr").prev();
     } else {
@@ -228,33 +220,25 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
         closeOnConfirm: false,
         closeOnCancel: true
     },
-        function (respuesta) {
-            if (respuesta) {
-                $(".showSweetAlert").LoadingOverlay("show");
+    function (respuesta) {
+        if (respuesta) {
+            $(".showSweetAlert").LoadingOverlay("show");
 
-                fetch(`Eliminar?secuencialUsuario=${data.secuencial}`, {
-                    method: "DELETE"
-                })
-                    .then(response => {
-                        $(".showSweetAlert").LoadingOverlay("hide");
-                        return response.ok
-                            ? response.json()
-                            : Promise.reject(response);
-                    }).then(responseJson => {
-                        debugger;
-                        if (responseJson.estado) {
-                            tablaData.row(fila).remove().draw(false);
-
-                            swal("Listo!", " El Usuario " + data.nombre + " fue Eliminado", "success");
-                        }
-                        else {
-                            swal("Fallo!", responseJson.mensajes, "error");
-                        }
-                    });
-
-            }
+            fetch(`Eliminar?secuencialUsuario=${data.secuencial}`, {
+                method: "DELETE"
+            })
+            .then(response => {
+                $(".showSweetAlert").LoadingOverlay("hide");
+                return response.ok ? response.json() : Promise.reject(response);
+            })
+            .then(responseJson => {
+                if (responseJson.estado) {
+                    tablaData.row(fila).remove().draw();
+                    swal("Listo!", "El Usuario fue eliminado", "success");
+                } else {
+                    swal("Fallo!", responseJson.mensajes, "error");
+                }
+            });
         }
-
-    )
-
-})
+    });
+});

@@ -25,7 +25,7 @@ namespace BLL.Implementacion
             return query.Include(x => x.SecProvinciaNavigation).ToList();
         }
 
-        public Task<Canton> CantonPorSecuencial(int secuencial)
+        public Task<Canton?> CantonPorSecuencial(int secuencial)
         {
             return _repositorio.Obtener(x => x.Secuencial == secuencial);
         }
