@@ -50,7 +50,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 245,
-          "SelectedChildIndex": 41,
+          "SelectedChildIndex": 40,
           "Children": [
             {
               "$type": "Bookmark",
@@ -214,19 +214,6 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Views\\Visita\\Index.cshtml",
-              "RelativeDocumentMoniker": "TecmeinAplicacionWeb\\Views\\Visita\\Index.cshtml",
-              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Views\\Visita\\Index.cshtml",
-              "RelativeToolTip": "TecmeinAplicacionWeb\\Views\\Visita\\Index.cshtml",
-              "ViewState": "AgIAABACAAAAAAAAAAAAAB0CAABhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-07-18T04:07:09.665Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Visita_Productos_Index.js",
               "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\wwwroot\\js\\vistas\\Visita_Productos_Index.js",
@@ -236,6 +223,19 @@
               "ViewState": "AgIAAG4BAAAAAAAAAAAqwIgBAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
               "WhenOpened": "2025-07-18T02:39:42.127Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Views\\Visita\\Index.cshtml",
+              "RelativeDocumentMoniker": "TecmeinAplicacionWeb\\Views\\Visita\\Index.cshtml",
+              "ToolTip": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\TecmeinAplicacionWeb\\Views\\Visita\\Index.cshtml",
+              "RelativeToolTip": "TecmeinAplicacionWeb\\Views\\Visita\\Index.cshtml",
+              "ViewState": "AgIAABACAAAAAAAAAAAAAB0CAABhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-18T04:07:09.665Z",
               "EditorCaption": ""
             },
             {
