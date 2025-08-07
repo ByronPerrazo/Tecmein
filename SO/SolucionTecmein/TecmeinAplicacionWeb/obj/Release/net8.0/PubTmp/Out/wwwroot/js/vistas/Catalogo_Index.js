@@ -16,7 +16,8 @@ $(document).ready(function () {
             "ajax": {
                 "url": 'Lista',
                 "type": "GET",
-                "datatype": "json"
+                "datatype": "json",
+                "dataSrc": "data.$values",
             },
             "columns": [
                 { data: "secuencial", visible: false, searchable: true },

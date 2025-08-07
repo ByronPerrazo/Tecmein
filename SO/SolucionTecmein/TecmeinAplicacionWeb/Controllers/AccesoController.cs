@@ -74,7 +74,14 @@ namespace TecmeinWebApp.Controllers
                                  new ClaimsPrincipal(claimsIdentity),
                                  properties);
 
-            return RedirectToAction("Index", "DashBoard");
+            if (permisosRol == null || permisosRol.Consultar == 0)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                return RedirectToAction("Index", "DashBoard");
+            }
         }
 
         [HttpPost]

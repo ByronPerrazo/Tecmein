@@ -1,4 +1,4 @@
-const MODELO_VISITA_PRODUCTOS = {
+﻿const MODELO_VISITA_PRODUCTOS = {
     secuencial: 0,
     secuencialVisita: 0,
     tipoEquipo: "",
@@ -53,9 +53,9 @@ $("#tbdata tbody").on("click", ".btn-info", function () {
     nombreProvincia = data.nombreProvincia;
     nombreCanton = data.nombreCanton;
     nombreParroquia = data.nombreParroquia;
-    
 
-    if (secVisitaProducto!=0)
+
+    if (secVisitaProducto != 0)
         ProcesoCargaLista(secVisitaProducto)
 
     $("#modalDataDetalleVisita").modal("show")
@@ -109,11 +109,11 @@ $("#btnAgregarItem").click(function () {
     modeloVisitaProductos["marca"] = $("#cboMarca").val().trim();
     modeloVisitaProductos["capacidad"] = parseInt($("#txtCapacidad").val() || "0");
     modeloVisitaProductos["velocidad"] = parseFloat($("#cboVelocidad").val().trim());
-    modeloVisitaProductos["salaMaquinas"] =  $("#cboSalaMaquinas").val().trim();
+    modeloVisitaProductos["salaMaquinas"] = $("#cboSalaMaquinas").val().trim();
     modeloVisitaProductos["salaControl"] = $("#cboSalaMaquinas").val().trim();
     modeloVisitaProductos["numeroPersonas"] = parseInt($("#txtNumPersonas").val());
-    modeloVisitaProductos["numeroParadas"] =  parseInt($("#txtNumParadas").val());
-    modeloVisitaProductos["nombreParadas"] =  $("#txtNombresParadas").val().trim();
+    modeloVisitaProductos["numeroParadas"] = parseInt($("#txtNumParadas").val());
+    modeloVisitaProductos["nombreParadas"] = $("#txtNombresParadas").val().trim();
     modeloVisitaProductos["embarque"] = $("#cboTipoEmbarque").val();
     modeloVisitaProductos["tipoDucto"] = $("#cboTipoDucto").val();
     modeloVisitaProductos["medidasDuctoAF"] = $("#txtMedidasDuctoAF").val().trim();
@@ -122,7 +122,7 @@ $("#btnAgregarItem").click(function () {
     modeloVisitaProductos["recorrido"] = parseInt($("#txtRecorrido").val());
     modeloVisitaProductos["ingresosFrontales"] = parseInt($("#txtEntradasFrontales").val());
     modeloVisitaProductos["ingresosPosteriores"] = parseInt($("#txtEntradasPosterior").val());
-    modeloVisitaProductos["sobrerecorrido"]   = parseInt($("#txtSobreRecorrido").val());
+    modeloVisitaProductos["sobrerecorrido"] = parseInt($("#txtSobreRecorrido").val());
     modeloVisitaProductos["dimensionEntrada"] = parseInt($("#txtDimencionEntrada").val());
     modeloVisitaProductos["alturaEntrePisos"] = parseInt($("#txtAlturaEntrePisos").val());
     modeloVisitaProductos["materialPuertas"] = $("#cboTipoMaterial").val();
@@ -136,30 +136,30 @@ $("#btnAgregarItem").click(function () {
 
     $("#modalData").find("div.modal-content").LoadingOverlay("show");
 
-        fetch("ProcesoGuardasEquipoVisita", {
-            method: "POST",
-            body: datoProductoItem
+    fetch("ProcesoGuardasEquipoVisita", {
+        method: "POST",
+        body: datoProductoItem
+    })
+        .then(response => {
+            $("#modalData")
+                .find("div.modal-content")
+                .LoadingOverlay("hide");
+            return response.ok
+                ? response.json()
+                : Promise.reject(response);
         })
-            .then(response => {
-                $("#modalData")
-                    .find("div.modal-content")
-                    .LoadingOverlay("hide");
-                return response.ok
-                    ? response.json()
-                    : Promise.reject(response);
-            })
-            .then(responseJson => {
-                if (responseJson.estado) {
-                    tablaDataPro.row.add(responseJson.objeto).draw(false);
-                    $("#modalData").modal("hide");
-                    swal("Listo!",
-                        "Equipo Agregado Con Exito ",
-                        "success");
-                }
-                else {
-                    swal("Fallo!", responseJson.mensajes, "error");
-                }
-            });
+        .then(responseJson => {
+            if (responseJson.estado) {
+                tablaDataPro.row.add(responseJson.objeto).draw(false);
+                $("#modalData").modal("hide");
+                swal("Listo!",
+                    "Equipo Agregado Con Exito ",
+                    "success");
+            }
+            else {
+                swal("Fallo!", responseJson.mensajes, "error");
+            }
+        });
 
 });
 
@@ -195,7 +195,7 @@ async function ProcesoCargaLista(secuencialVisita) {
                         "className": "text-center"
                     }
                 ],
-                "createdRow": function( row, data, dataIndex ){
+                "createdRow": function (row, data, dataIndex) {
                     $(row).find('th').addClass('th-celeste');
                 },
                 order: [[0, "desc"]],
@@ -370,7 +370,7 @@ function validarSumaEntradas() {
     let errorMessage = "";
     let esFrontal = false;
     let esPosteror = false;
-   
+
 
     if (entradasFrontales > numParadas) {
         errorMessage = "Entradas Frontales no puede ser superior al Número de Paradas.";
@@ -395,7 +395,7 @@ function validarSumaEntradas() {
         errorMessage = "La suma de Entradas Frontales y Posteriores debe ser menor o igual al Número de Paradas.";
         isValid = false;
     }
-        
+
 
     if (isValid) {
 
