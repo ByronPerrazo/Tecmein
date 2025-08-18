@@ -1,0 +1,69 @@
+using BLL.Interfaces;
+using DAL.Interfaces;
+using Entity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace BLL.Implementacion
+{
+    public class PlantillaPreContratoParrafoServices : IPlantillaPreContratoParrafoServices
+    {
+        private readonly IGenericRepository<PlantillaPreContratoParrafo> _repositorio;
+
+        public PlantillaPreContratoParrafoServices(IGenericRepository<PlantillaPreContratoParrafo> repositorio)
+        {
+            _repositorio = repositorio;
+        }
+
+        public async Task<List<PlantillaPreContratoParrafo>> Lista(int secPlantillaPreContrato)
+        {
+            IQueryable<PlantillaPreContratoParrafo> query = await _repositorio.Consultar(p => p.SecPlantillaPreContrato == secPlantillaPreContrato);
+            return query.ToList();
+        }
+
+        public async Task<PlantillaPreContratoParrafo> Obtener(int secPlantillaPreContratoParrafo)
+        {
+            return await _repositorio.Obtener(p => p.SecPlantillaPreContratoParrafo == secPlantillaPreContratoParrafo);
+        }
+
+        public async Task<PlantillaPreContratoParrafo> Crear(PlantillaPreContratoParrafo entidad)
+        {
+            if (entidad == null) throw new ArgumentNullException(nameof(entidad));
+            entidad.EstaActivo = 1;
+            var parrafoCreado = await _repositorio.Crear(entidad);
+            return parrafoCreado;
+        }
+
+        public async Task<PlantillaPreContratoParrafo> Editar(PlantillaPreContratoParrafo entidad)
+        {
+            if (entidad == null) throw new ArgumentNullException(nameof(entidad));
+
+            var parrafoExistente = await _repositorio.Obtener(p => p.SecPlantillaPreContratoParrafo == entidad.SecPlantillaPreContratoParrafo);
+            if (parrafoExistente == null)
+            {
+                throw new Exception("El párrafo de plantilla de pre-contrato no existe.");
+            }
+
+            parrafoExistente.SecPlantillaPreContrato = entidad.SecPlantillaPreContrato;
+            parrafoExistente.Orden = entidad.Orden;
+            parrafoExistente.Contenido = entidad.Contenido;
+            parrafoExistente.EstaActivo = entidad.EstaActivo;
+
+            await _repositorio.Editar(parrafoExistente);
+            return parrafoExistente;
+        }
+
+        public async Task<bool> Eliminar(int secPlantillaPreContratoParrafo)
+        {
+            var parrafo = await _repositorio.Obtener(p => p.SecPlantillaPreContratoParrafo == secPlantillaPreContratoParrafo);
+            if (parrafo == null)
+            {
+                throw new Exception("El párrafo de plantilla de pre-contrato no existe.");
+            }
+
+            return await _repositorio.Eliminar(parrafo);
+        }
+    }
+}

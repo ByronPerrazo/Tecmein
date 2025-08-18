@@ -1,0 +1,43 @@
+@model TecmeinWebApp.Models.ViewModel.PlantillaPreContratoParrafoVM
+
+@{ 
+    ViewData["Title"] = "Párrafos de Plantilla de Pre-Contrato";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h5>Gestión de Párrafos para Plantilla de Pre-Contrato</h5>
+    </div>
+    <div class="card-body">
+        <form id="parrafoForm">
+            <input type="hidden" asp-for="SecPlantillaPreContratoParrafo" />
+            <input type="hidden" asp-for="SecPlantillaPreContrato" />
+
+            <div class="form-group">
+                <label for="Orden">Orden</label>
+                <input type="number" class="form-control" asp-for="Orden">
+            </div>
+
+            <div class="form-group">
+                <label for="Contenido">Contenido</label>
+                <textarea class="form-control" asp-for="Contenido" rows="5"></textarea>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" asp-for="EstaActivo">
+                    <label class="form-check-label" for="EstaActivo">
+                        Está Activo
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Guardar Párrafo</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/vistas/PlantillaPreContratoParrafo_Index.js"></script>
+}

@@ -1,0 +1,7 @@
+CREATE TABLE PlantillaPreContrato (
+    SecPlantillaPreContrato INT PRIMARY KEY AUTO_INCREMENT,
+    Nombre VARCHAR(255) NOT NULL,
+    NumeracionInicial VARCHAR(50) NOT NULL,
+    EstaActivo SMALLINT NOT NULL DEFAULT 1,
+    FechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP
+);

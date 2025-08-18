@@ -1,7 +1,10 @@
-﻿namespace Entity;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Entity;
 
 public partial class Contacto
 {
+    [Key]
     public int Secuencial { get; set; }
 
     public int SecConstructora { get; set; }

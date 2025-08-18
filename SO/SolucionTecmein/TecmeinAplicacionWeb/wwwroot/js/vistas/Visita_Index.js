@@ -21,37 +21,31 @@ let listaCompletaProvincias;
 let listaCompletaCanton;
 let listaCompletaParroquia;
 
-$(document).ready(function () {
-    
-   
-    fetch("Operadores")
-        .then(
-            respuesta => {
-                return respuesta.ok
-                    ? respuesta.json()
-                    : Promise.reject(respuesta);
-            }
-        )
-        .then(
-            respuestaJson => {
-                // Acceder a la propiedad $values debido a ReferenceHandler.Preserve
-                const data = respuestaJson.$values || respuestaJson;
-                listaCompletaCanton = data; // Asignar la data correcta
-                data
-                    .forEach(item => {
-                        $("#cboOperador")
-                            .append(
-                                $("<option>")
-                                    .val(item.secuencial)
-                                    .text(item.codigoOperador.trim())
-                            )
-                    })
+function cargarOperadores() {
+    fetch("/Visita/Operadores")
+        .then(response => response.ok ? response.json() : Promise.reject(response))
+        .then(data => {
+            const operadores = data.$values || data;
+            $("#cboOperador").empty().append('<option value="">Seleccione Operador</option>');
+            operadores.forEach(item => {
+                $("#cboOperador").append($("<option>").val(item.secuencial).text(item.codigoOperador));
+            });
+        })
+        .catch(error => console.error('Error al obtener la lista de Operadores:', error));
+}
 
-            }
-        )
-        .catch(error => {
-            console.error('Error al obtener la lista de Operadores:', error);
-        });
+$(document).ready(function () {
+    cargarOperadores(); // Call on document ready
+
+    fetch("/Visita/Etapas")
+        .then(response => response.ok ? response.json() : Promise.reject(response))
+        .then(respuestaJson => {
+            const data = respuestaJson.$values || respuestaJson;
+            data.forEach(item => {
+                $("#cboEtapaObra").append($("<option>").val(item.id).text(item.descripcion));
+            });
+        })
+        .catch(error => console.error('Error al obtener la lista de Etapas:', error));
 
     fetch("Parroquias")
         .then(
@@ -176,11 +170,15 @@ $(document).ready(function () {
                 "url": 'Lista',
                 "type": "GET",
                 "datatype": "json",
-                "dataSrc": "data.$values",
+                "dataSrc": function(json) {
+                return json.data.$values;
+            },
             },
             "columns": [
                 { data: "secuencial", visible: false },
                 { data: "nombre", searchable: true },
+                { data: "nombreEmpresa", searchable: true },
+                { data: "descripcionEtapa", searchable: true },
                 { data: "nombreProvincia", searchable: true, width: "100px" },
                 { data: "nombreCanton", searchable: true, width: "80px" },
                 { data: "direccion", searchable: true },
@@ -209,7 +207,8 @@ $(document).ready(function () {
                     "orderable": true,
                     "searchable": false,
                     "width": "160px"
-                }
+                },
+                
             ],
             order: [[0, "desc"]],
             dom: "Bfrtip",
@@ -266,11 +265,7 @@ function mostrarDiv() {
     const seleccion = document.getElementById('cboEtapaObra').value;
     document.getElementById('detalleVisita_Vista').style.display = 'none';
     document.getElementById('Datos_ContratoObra').style.display = 'none'
-    //if (seleccion != 'VIS') {
-    //    document.getElementById('detalleVisita_Vista').style.display = 'block';
-    //    document.getElementById('Datos_ContratoObra').style.display = 'block'
-       
-    //}
+    
     estadoVisita = seleccion;
 
     document.getElementById('div_fechaContrato').style.display = 'none';
@@ -348,6 +343,8 @@ function mostrarModalVisita(modeloVisita = MODELO_BASEVISITA) {
     limpiarFormularioModal();
     $("#txtId").val(modeloVisita.secuencial)
     $("#txtNombreObra").val(modeloVisita.nombre)
+    $("#cboOperador").val(modeloVisita.secEmpresa);
+    $("#cboEtapaObra").val(modeloVisita.idEtapa);
     
     // Carga y selección de combos en cascada
     if (modeloVisita.secProvincia) {
@@ -476,6 +473,7 @@ $("#btnGuardarVisitas").click(function () {
     modeloVisita["fechaSiguienteVisita"] = $("#dtpkFechaSigVisita").val();
     modeloVisita["detalle"] = $("#txtDescripcion").val();
     modeloVisita["esActivo"] = $("#cboEstado").val();
+    modeloVisita["secEmpresa"] = $("#cboOperador").val();
 
     const datosFormulario = new FormData();
     datosFormulario.append("modelo", JSON.stringify(modeloVisita));
@@ -616,6 +614,58 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
         }
     )
 })
+
+$("#tbdata tbody").on("click", ".btn-avanzar-etapa", function () {
+    let fila;
+    if ($(this).closest("tr").hasClass("child")) {
+        fila = $(this).closest("tr").prev();
+    } else {
+        fila = $(this).closest("tr");
+    }
+    const data = tablaData.row(fila).data();
+
+    swal({
+        title: "Avanzar Etapa",
+        text: `¿Está seguro de avanzar la etapa de la visita "${data.nombre}"?`,
+        type: "info",
+        showCancelButton: true,
+        confirmButtonClass: "btn-info",
+        confirmButtonText: "Sí, avanzar",
+        cancelButtonText: "No, cancelar",
+        closeOnConfirm: false,
+        closeOnCancel: true
+    },
+    function (respuesta) {
+        if (respuesta) {
+            $(".showSweetAlert").LoadingOverlay("show");
+
+            const formData = new FormData();
+            formData.append("secVisita", data.secuencial);
+            formData.append("nuevoCodigoEtapa", ""); // Dejamos el código vacío para que el backend decida la siguiente etapa
+
+            fetch("/Visita/CambiarEtapa", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => {
+                $(".showSweetAlert").LoadingOverlay("hide");
+                return response.ok ? response.json() : Promise.reject(response);
+            })
+            .then(responseJson => {
+                if (responseJson.estado) {
+                    tablaData.ajax.reload(null, false); // Recargar la tabla sin resetear la paginación
+                    swal("Listo!", "La etapa de la visita fue actualizada.", "success");
+                } else {
+                    swal("Error", responseJson.mensajes, "error");
+                }
+            })
+            .catch(err => {
+                 $(".showSweetAlert").LoadingOverlay("hide");
+                 swal("Error", "No se pudo conectar con el servidor.", "error");
+            });
+        }
+    });
+});
 
 $("#tbdata tbody").on("click", ".btn-mapa", function () {
     esEdicion = true;

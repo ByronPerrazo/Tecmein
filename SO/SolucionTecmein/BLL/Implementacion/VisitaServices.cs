@@ -7,22 +7,31 @@ namespace BLL.Implementacion
 {
     public class VisitaServices : IVisitaServices
     {
-        public readonly IGenericRepository<Visita> _repositorio;
-        public VisitaServices(IGenericRepository<Visita> repositorio)
+        private readonly IGenericRepository<Visita> _repositorio;
+        private readonly IGenericRepository<Equiposvisita> _repositorioEquipos;
+        private readonly IEtapaServices _etapaServices;
+
+        public VisitaServices(
+            IGenericRepository<Visita> repositorio, 
+            IGenericRepository<Equiposvisita> repositorioEquipos, 
+            IEtapaServices etapaServices
+            )
         {
             _repositorio = repositorio;
+            _repositorioEquipos = repositorioEquipos;
+            _etapaServices = etapaServices;
         }
 
         public async Task<Visita> ConsultaVisita(int secuencial)
         {
-            // La consulta debe construirse sobre el IQueryable antes de la ejecución.
             IQueryable<Visita> query = await _repositorio.Consultar(x => x.Secuencial == secuencial);
             
-            // Aplicar Includes para carga ansiosa (Eager Loading) y AsNoTracking para eficiencia.
             Visita visitaEncontrada = await query.Include(x => x.SecProvinciaNavigation)
                                                  .Include(x => x.SecCantonNavigation)
                                                  .Include(x => x.SecParroquiaNavigation)
                                                  .Include(u => u.SecUsuarioNavigation)
+                                                 .Include(e => e.IdEtapaNavigation) // <-- Added
+                                                 .Include(em => em.SecEmpresaNavigation) // <-- Added
                                                  .AsNoTracking()
                                                  .FirstOrDefaultAsync();
 
@@ -33,12 +42,16 @@ namespace BLL.Implementacion
         {
             try
             {
+                var etapaInicial = await _etapaServices.ObtenerPorCodigo("VIS");
+                if (etapaInicial == null) throw new TaskCanceledException("No se encontró la etapa inicial 'VIS'.");
+
+                entidad.IdEtapa = etapaInicial.Id;
+
                 Visita visitaCreada = await _repositorio.Crear(entidad);
 
                 if (visitaCreada.Secuencial == 0)
                     throw new TaskCanceledException("No se pudo crear la visita.");
 
-                // No es necesario volver a consultar, la entidad creada ya tiene los datos.
                 return visitaCreada;
             }
             catch (Exception)
@@ -51,14 +64,12 @@ namespace BLL.Implementacion
         {
             try
             {
-                // Obtenemos la visita original del repositorio. El DbContext la rastreará.
                 var visitaOriginal = await _repositorio.Obtener(v => v.Secuencial == entidad.Secuencial);
                 if (visitaOriginal == null)
                 {
                     throw new KeyNotFoundException($"No se encontró la visita con el secuencial {entidad.Secuencial}");
                 }
 
-                // Actualizamos solo las propiedades necesarias.
                 visitaOriginal.Nombre = entidad.Nombre;
                 visitaOriginal.SecProvincia = entidad.SecProvincia;
                 visitaOriginal.SecCanton = entidad.SecCanton;
@@ -68,8 +79,9 @@ namespace BLL.Implementacion
                 visitaOriginal.EstaActivo = entidad.EstaActivo;
                 visitaOriginal.FechaSiguienteVisita = entidad.FechaSiguienteVisita;
                 visitaOriginal.Detalle = entidad.Detalle;
+                //visitaOriginal.SecEmpresa = entidad.SecEmpresa;
+                //visitaOriginal.IdEtapa = entidad.IdEtapa;
 
-                // Guardamos los cambios. EF Core se encarga de generar el UPDATE solo con los campos modificados.
                 bool seEdito = await _repositorio.Editar(visitaOriginal);
                 if (!seEdito)
                 {
@@ -109,14 +121,73 @@ namespace BLL.Implementacion
         public async Task<List<Visita>> ListaVisitas()
         {
             var query = await _repositorio.Consultar();
-            // Aplicar AsNoTracking para consultas de solo lectura mejora el rendimiento.
             var queryIncludes = query.Include(x => x.SecProvinciaNavigation)
                                       .Include(y => y.SecCantonNavigation)
                                       .Include(z => z.SecParroquiaNavigation)
                                       .Include(u => u.SecUsuarioNavigation)
+                                      .Include(e => e.IdEtapaNavigation) // <-- Added
+                                      .Include(em => em.SecEmpresaNavigation) // <-- Added
                                       .AsNoTracking();
 
             return await queryIncludes.ToListAsync();
+        }
+
+        public async Task<Visita> ObtenerDetalleVisita(int secuencial)
+        {
+            IQueryable<Visita> query = await _repositorio.Consultar(v => v.Secuencial == secuencial);
+
+            var visitaDetalle = await query
+                .Include(v => v.SecProvinciaNavigation)
+                .Include(v => v.SecCantonNavigation)
+                .Include(v => v.SecParroquiaNavigation)
+                .Include(v => v.SecUsuarioNavigation)
+                .Include(v => v.IdEtapaNavigation) // <-- Added
+                .Include(v => v.SecEmpresaNavigation) // <-- Added
+                .Include(v => v.Contactovisita)
+                    .ThenInclude(cv => cv.SecContactoNavigation)
+                        .ThenInclude(c => c.SecConstructoraNavigation)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            return visitaDetalle;
+        }
+
+        public async Task<List<Visita>> ListaConEquipos()
+        {
+            IQueryable<Equiposvisita> equiposQuery = await _repositorioEquipos.Consultar();
+            List<int> visitaIdsConEquipos = await equiposQuery.Select(e => e.SecVisita).Distinct().ToListAsync();
+
+            IQueryable<Visita> visitasQuery = await _repositorio.Consultar(v => visitaIdsConEquipos.Contains(v.Secuencial));
+
+            return await visitasQuery.AsNoTracking().ToListAsync();
+        }
+
+        public async Task<bool> CambiarEtapa(int secVisita, string nuevoCodigoEtapa)
+        {
+            try
+            {
+                var visita = await _repositorio.Obtener(v => v.Secuencial == secVisita);
+                if (visita == null) throw new KeyNotFoundException("Visita no encontrada.");
+
+                var etapaActual = await _etapaServices.ObtenerPorCodigo(visita.IdEtapaNavigation.Codigo);
+                var nuevaEtapa = await _etapaServices.ObtenerPorCodigo(nuevoCodigoEtapa);
+
+                if (nuevaEtapa == null) throw new KeyNotFoundException("La nueva etapa no es válida.");
+
+                // Regla de negocio: No se puede retroceder en el flujo de etapas.
+                if (nuevaEtapa.Orden < etapaActual.Orden)
+                {
+                    throw new InvalidOperationException("No se puede retroceder a una etapa anterior.");
+                }
+
+                visita.IdEtapa = nuevaEtapa.Id;
+                bool resultado = await _repositorio.Editar(visita);
+                return resultado;
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }

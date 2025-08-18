@@ -1,5 +1,6 @@
 using IOC;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using QuestPDF.Infrastructure;
 using Serilog;
 using System;
 using TecmeinWebApp.Utilidades.AutoMapper;
@@ -7,6 +8,7 @@ using TecmeinWebApp.Utilidades.AutoMapper;
 // Use the classic two-stage initialization for Serilog.
 // This allows logging during startup, before the host is built.
 Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
     .WriteTo.Console()
     .CreateBootstrapLogger();
 
@@ -46,6 +48,8 @@ try
 
     builder.Services.InyectarDependencia(builder.Configuration);
     builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+
+    QuestPDF.Settings.License = LicenseType.Community;
 
     var app = builder.Build();
 

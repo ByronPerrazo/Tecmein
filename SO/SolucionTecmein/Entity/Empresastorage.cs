@@ -1,7 +1,10 @@
-﻿namespace Entity;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Entity;
 
 public partial class Empresastorage
 {
+    [Key]
     public int SecEmpresa { get; set; }
 
     public string? Email { get; set; }

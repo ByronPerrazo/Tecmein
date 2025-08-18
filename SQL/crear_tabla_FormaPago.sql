@@ -1,0 +1,5 @@
+CREATE TABLE FormaPago (
+    SecFormaPago INT PRIMARY KEY AUTO_INCREMENT,
+    Descripcion VARCHAR(100) NOT NULL,
+    EstaActivo SMALLINT NOT NULL DEFAULT 1
+);

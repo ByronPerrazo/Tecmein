@@ -1,7 +1,10 @@
-﻿namespace Entity;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Entity;
 
 public partial class Rol
 {
+    [Key]
     public int Secuencial { get; set; }
 
     public string? Descripcion { get; set; }

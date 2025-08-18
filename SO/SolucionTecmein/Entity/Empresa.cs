@@ -1,7 +1,10 @@
-﻿namespace Entity;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Entity;
 
 public partial class Empresa
 {
+    [Key]
     public int Secuencial { get; set; }
 
     public string? UrlLogo { get; set; }
@@ -25,4 +28,6 @@ public partial class Empresa
     public virtual Empresacorreo? Empresacorreo { get; set; }
 
     public virtual Empresastorage? Empresastorage { get; set; }
+
+    public virtual ICollection<FormatoNumeroCliente> FormatosNumeroCliente { get; set; } = new List<FormatoNumeroCliente>();
 }

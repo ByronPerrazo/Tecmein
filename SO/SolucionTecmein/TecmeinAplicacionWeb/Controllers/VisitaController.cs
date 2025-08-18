@@ -22,6 +22,7 @@ namespace TecmeinWebApp.Controllers
         private readonly IContactoServices _contactoServices;
         private readonly IContactoVisitaServices _contactoVistaServices;
         private readonly IEquiposVisitaServices _equiposVisitaServices;
+        private readonly IEtapaServices _etapaServices;
         private readonly ILogger<VisitaController> _logger;
 
         private readonly IMapper _mapper;
@@ -35,6 +36,7 @@ namespace TecmeinWebApp.Controllers
                                 IContactoServices contactoServices,
                                 IContactoVisitaServices contactoVistaServices,
                                 IEquiposVisitaServices equiposVisitaServices,
+                                IEtapaServices etapaServices,
                                 ILogger<VisitaController> logger
             )
         {
@@ -48,7 +50,15 @@ namespace TecmeinWebApp.Controllers
             _contactoServices = contactoServices;
             _contactoVistaServices = contactoVistaServices;
             _equiposVisitaServices = equiposVisitaServices;
+            _etapaServices = etapaServices;
             _logger = logger;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Etapas()
+        {
+            var listaEtapasVM = _mapper.Map<List<EtapaVM>>(await _etapaServices.Lista());
+            return StatusCode(StatusCodes.Status200OK, listaEtapasVM);
         }
 
         [HttpGet]
@@ -100,11 +110,46 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Lista()
+        public async Task<IActionResult> ListaParaCotizacion()
         {
             var listaVisitaVM
-                = _mapper.Map<List<VisitaVM>>(await _visitaServices.ListaVisitas());
+                = _mapper.Map<List<VisitaVM>>(await _visitaServices.ListaConEquipos());
             return StatusCode(StatusCodes.Status200OK, new { data = listaVisitaVM });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Lista()
+        {
+            var lista = await _visitaServices.ListaVisitas();
+            var listaVisitaVM = _mapper.Map<List<VisitaVM>>(lista);
+
+            foreach (var visitaVM in listaVisitaVM)
+            {
+                var visitaOriginal = lista.FirstOrDefault(v => v.Secuencial == visitaVM.Secuencial);
+                if (visitaOriginal != null)
+                {
+                    visitaVM.DescripcionEtapa = visitaOriginal.IdEtapaNavigation?.Descripcion;
+                    visitaVM.NombreEmpresa = visitaOriginal.SecEmpresaNavigation?.Nombre;
+                }
+            }
+
+            return StatusCode(StatusCodes.Status200OK, new { data = listaVisitaVM });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CambiarEtapa([FromForm] int secVisita, [FromForm] string nuevoCodigoEtapa)
+        {
+            var gResponse = new GenericResponse<string>();
+            try
+            {
+                gResponse.Estado = await _visitaServices.CambiarEtapa(secVisita, nuevoCodigoEtapa);
+            }
+            catch (Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+            }
+            return StatusCode(StatusCodes.Status200OK, gResponse);
         }
 
         [HttpPost]
@@ -313,6 +358,48 @@ namespace TecmeinWebApp.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ObtenerDetalleVisita(int secuencialVisita)
+        {
+            var response = new GenericResponse<VisitaDetalleVM>();
+            try
+            {
+                var visita = await _visitaServices.ObtenerDetalleVisita(secuencialVisita);
+                if (visita == null)
+                {
+                    response.Estado = false;
+                    response.Mensajes = "Visita no encontrada.";
+                    return StatusCode(StatusCodes.Status404NotFound, response);
+                }
+
+                var visitaDetalleVM = new VisitaDetalleVM
+                {
+                    Secuencial = visita.Secuencial,
+                    Nombre = visita.Nombre,
+                    Direccion = visita.Direccion,
+                    NombreProvincia = visita.SecProvinciaNavigation?.Nombre,
+                    NombreCanton = visita.SecCantonNavigation?.Nombre,
+                    NombreParroquia = visita.SecParroquiaNavigation?.Nombre,
+                    NombreUsuario = visita.SecUsuarioNavigation?.Nombre,
+                    // Assuming only one Contactovisita and Contacto is relevant for display
+                    NombreConstructora = visita.Contactovisita?.FirstOrDefault()?.SecContactoNavigation?.SecConstructoraNavigation?.Nombre,
+                    NombreContacto = visita.Contactovisita?.FirstOrDefault()?.SecContactoNavigation?.Nombres,
+                    CorreoContacto = visita.Contactovisita?.FirstOrDefault()?.SecContactoNavigation?.Correo,
+                    TelefonoContacto = visita.Contactovisita?.FirstOrDefault()?.SecContactoNavigation?.Telefono
+                };
+
+                response.Estado = true;
+                response.Objeto = visitaDetalleVM;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener detalle de visita.");
+                response.Estado = false;
+                response.Mensajes = "Error interno del servidor al obtener detalle de visita.";
+            }
+            return StatusCode(StatusCodes.Status200OK, response);
         }
     }
 }

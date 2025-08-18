@@ -1,7 +1,10 @@
-﻿namespace Entity;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Entity;
 
 public partial class Catalogo
 {
+    [Key]
     public int Secuencial { get; set; }
 
     public string Nombre { get; set; } = null!;

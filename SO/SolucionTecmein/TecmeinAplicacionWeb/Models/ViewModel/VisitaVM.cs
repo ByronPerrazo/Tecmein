@@ -29,6 +29,12 @@
 
         public string? Detalle { get; set; }
 
+        public int IdEtapa { get; set; }
+        public string? DescripcionEtapa { get; set; }
+
+        public int? SecEmpresa { get; set; }
+        public string? NombreEmpresa { get; set; }
+
         //public virtual ICollection<ContactoVisita> Contactovista { get; set; } = new List<ContactoVisita>();
 
     }

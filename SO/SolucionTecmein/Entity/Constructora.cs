@@ -1,7 +1,10 @@
-﻿namespace Entity;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Entity;
 
 public partial class Constructora
 {
+    [Key]
     public int Secuencial { get; set; }
 
     public string? Nombre { get; set; }
@@ -23,4 +26,6 @@ public partial class Constructora
     public short? EstaActivo { get; set; }
 
     public virtual ICollection<Contacto> Contactos { get; set; } = new List<Contacto>();
+
+    public virtual Cliente Cliente { get; set; }
 }

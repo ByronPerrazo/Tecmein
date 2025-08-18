@@ -45,11 +45,48 @@ public partial class TecmeindbContext : DbContext
     public virtual DbSet<Equiposvisita> Equiposvisita { get; set; }
     public virtual DbSet<Permisosrol> Permisosrols { get; set; }
 
+    public virtual DbSet<Cliente> Clientes { get; set; }
+
+    public virtual DbSet<FormatoNumeroCliente> FormatoNumeroClientes { get; set; }
+
+    public virtual DbSet<Seguimiento> Seguimientos { get; set; }
+
+    public virtual DbSet<PreContrato> PreContratos { get; set; }
+    public virtual DbSet<FormaPago> FormasPago { get; set; }
+    public virtual DbSet<PlantillaPreContrato> PlantillaPreContratos { get; set; }
+    public virtual DbSet<PlantillaPreContratoParrafo> PlantillaPreContratoParrafos { get; set; }
+
+    public virtual DbSet<Contrato> Contratos { get; set; }
+
+    public virtual DbSet<Etapa> Etapas { get; set; }
+
+    public virtual DbSet<Impuesto> Impuestos { get; set; }
+
+    public virtual DbSet<ImpuestoCotizacion> ImpuestoCotizacion { get; set; }
+
+    public virtual DbSet<TipoImpuesto> TipoImpuestos { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
             .UseCollation("utf8mb3_general_ci")
             .HasCharSet("utf8mb3");
+
+        modelBuilder.Entity<Etapa>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+            entity.ToTable("etapa");
+
+            entity.Property(e => e.Id).HasColumnName("Id");
+            entity.Property(e => e.Codigo)
+                .HasMaxLength(5)
+                .HasColumnName("Codigo");
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(100)
+                .HasColumnName("Descripcion");
+            entity.Property(e => e.Orden).HasColumnName("Orden");
+            entity.Property(e => e.EstaActivo).HasColumnName("EstaActivo");
+        });
 
         modelBuilder.Entity<Constructora>(entity =>
         {
@@ -136,6 +173,10 @@ public partial class TecmeindbContext : DbContext
             entity.HasOne(d => d.SecContactoNavigation).WithMany(p => p.Contactovisita)
                 .HasForeignKey(d => d.SecContacto)
                 .HasConstraintName("Fk_Contacto_ContactoVisita");
+
+            entity.HasOne(d => d.SecVisitaNavigation).WithMany(p => p.Contactovisita)
+                .HasForeignKey(d => d.SecVisita)
+                .HasConstraintName("Fk_Visita_ContactoVisita");
         });
 
         modelBuilder.Entity<Catalogo>(entity =>
@@ -486,6 +527,19 @@ public partial class TecmeindbContext : DbContext
             entity.Property(e => e.SecProvincia).HasColumnName("secProvincia");
             entity.Property(e => e.SecUsuario).HasColumnName("secUsuario");
 
+            entity.Property(e => e.IdEtapa).HasColumnName("IdEtapa");
+            entity.Property(e => e.SecEmpresa).HasColumnName("SecEmpresa");
+
+            entity.HasOne(d => d.IdEtapaNavigation).WithMany()
+                .HasForeignKey(d => d.IdEtapa)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Visita_Etapa");
+
+            entity.HasOne(d => d.SecEmpresaNavigation).WithMany()
+                .HasForeignKey(d => d.SecEmpresa)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Visita_Empresa");
+
             entity.HasOne(d => d.SecCantonNavigation).WithMany(p => p.Visita)
                 .HasForeignKey(d => d.SecCanton)
                 .HasConstraintName("Fk_Visita_Canton");
@@ -586,6 +640,263 @@ public partial class TecmeindbContext : DbContext
             entity.Property(e => e.Modificar).HasColumnName("modificar");
             entity.Property(e => e.SecRol).HasColumnName("secRol");
             entity.Property(e => e.SecUsuarioModifica).HasColumnName("secUsuarioModifica");
+        });
+
+        modelBuilder.Entity<Cliente>(entity =>
+        {
+            entity.HasKey(e => e.SecCliente).HasName("PRIMARY");
+
+            entity.ToTable("cliente");
+
+            entity.HasIndex(e => e.SecConstructora, "FK_Cliente_Constructora_idx").IsUnique();
+
+            entity.Property(e => e.SecCliente).HasColumnName("SecCliente");
+            
+            entity.Property(e => e.SecConstructora).HasColumnName("SecConstructora");
+
+            entity.Property(e => e.NumeroCliente)
+                .HasMaxLength(50)
+                .HasColumnName("NumeroCliente");
+
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime")
+                .HasColumnName("FechaCreacion");
+
+            entity.Property(e => e.EstaActivo).HasColumnName("EstaActivo");
+
+            entity.HasOne(d => d.SecConstructoraNavigation).WithOne(p => p.Cliente)
+                .HasForeignKey<Cliente>(d => d.SecConstructora)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Cliente_Constructora");
+        });
+
+        modelBuilder.Entity<FormatoNumeroCliente>(entity =>
+        {
+            entity.HasKey(e => e.SecFormatoNumeroCliente).HasName("PRIMARY");
+
+            entity.ToTable("formatonumerocliente");
+
+            entity.HasIndex(e => e.SecEmpresa, "FK_FormatoNumeroCliente_Empresa_idx");
+
+            entity.Property(e => e.SecFormatoNumeroCliente).HasColumnName("SecFormatoNumeroCliente");
+
+            entity.Property(e => e.SecEmpresa).HasColumnName("SecEmpresa");
+
+            entity.Property(e => e.UsaFormato).HasColumnName("UsaFormato");
+
+            entity.Property(e => e.Formato)
+                .HasMaxLength(100)
+                .HasColumnName("Formato");
+
+            entity.Property(e => e.NumeroInicio).HasColumnName("NumeroInicio");
+
+            entity.HasOne(d => d.SecEmpresaNavigation).WithMany(p => p.FormatosNumeroCliente)
+                .HasForeignKey(d => d.SecEmpresa)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_FormatoNumeroCliente_Empresa");
+        });
+
+        modelBuilder.Entity<Seguimiento>(entity =>
+        {
+            entity.HasKey(e => e.SecSeguimiento).HasName("PRIMARY");
+
+            entity.ToTable("seguimiento");
+
+            entity.HasIndex(e => e.SecCotizacion, "FK_Seguimiento_Cotizacion_idx");
+
+            entity.Property(e => e.SecSeguimiento).HasColumnName("SecSeguimiento");
+            
+            entity.Property(e => e.SecCotizacion).HasColumnName("SecCotizacion");
+
+            entity.Property(e => e.Accion)
+                .HasMaxLength(50)
+                .HasColumnName("Accion");
+
+            entity.Property(e => e.Detalle)
+                .HasMaxLength(500)
+                .HasColumnName("Detalle");
+
+            entity.Property(e => e.FechaAccion)
+                .HasColumnType("datetime")
+                .HasColumnName("FechaAccion");
+
+            entity.Property(e => e.AceptacionCliente).HasColumnName("AceptacionCliente");
+
+            entity.Property(e => e.FechaRegistro)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime")
+                .HasColumnName("FechaRegistro");
+
+            entity.HasOne(d => d.SecCotizacionNavigation).WithMany(p => p.Seguimientos)
+                .HasForeignKey(d => d.SecCotizacion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Seguimiento_Cotizacion");
+        });
+
+        modelBuilder.Entity<Cotizacion>(entity =>
+        {
+            entity.HasKey(e => e.Secuencial).HasName("PRIMARY");
+
+            entity.ToTable("cotizacion");
+
+            entity.HasIndex(e => e.SecVisita, "FK_Cotizacion_Visita_idx");
+
+            entity.Property(e => e.Secuencial).HasColumnName("secuencial");
+            entity.Property(e => e.SecVisita).HasColumnName("secVisita");
+            entity.Property(e => e.EnviadoProveedor).HasColumnName("enviadoProveedor");
+            entity.Property(e => e.EnviadoCliente).HasColumnName("enviadoCliente");
+            entity.Property(e => e.Confirmacion).HasColumnName("confirmacion");
+            entity.Property(e => e.Subtotal).HasPrecision(18, 2).HasColumnName("subtotal");
+            entity.Property(e => e.ValorImpuestos).HasPrecision(18, 2).HasColumnName("valorImpuestos");
+            entity.Property(e => e.TotalConImpuestos).HasPrecision(18, 2).HasColumnName("totalConImpuestos");
+            entity.Property(e => e.ValorIVA).HasPrecision(18, 2).HasColumnName("valorIVA");
+            entity.Property(e => e.ValorImportacion).HasPrecision(18, 2).HasColumnName("valorImportacion");
+            entity.Property(e => e.EstaActivo).HasColumnName("estaActivo");
+            entity.Property(e => e.FechaRegistro).HasColumnType("datetime").HasColumnName("fechaRegistro");
+            entity.Property(e => e.FechaModificacion).HasColumnType("datetime").HasColumnName("fechaModificacion");
+
+            entity.Property(e => e.SecUsuario).HasColumnName("secUsuario");
+            entity.Property(e => e.SecCotizacionOriginal).HasColumnName("secCotizacionOriginal");
+            entity.Property(e => e.SecUsuarioModifica).HasColumnName("secUsuarioModifica");
+
+            // Relationships
+            entity.HasOne(d => d.SecVisitaNavigation).WithMany() 
+                .HasForeignKey(d => d.SecVisita)
+                .OnDelete(DeleteBehavior.ClientSetNull) 
+                .HasConstraintName("FK_Cotizacion_Visita"); 
+
+            entity.HasOne(d => d.SecUsuarioNavigation).WithMany()
+                .HasForeignKey(d => d.SecUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Cotizacion_Usuario");
+
+            entity.HasOne(d => d.SecCotizacionOriginalNavigation).WithMany()
+                .HasForeignKey(d => d.SecCotizacionOriginal)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Cotizacion_CotizacionOriginal");
+
+            entity.HasOne(d => d.SecUsuarioModificaNavigation).WithMany()
+                .HasForeignKey(d => d.SecUsuarioModifica)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Cotizacion_UsuarioModifica"); 
+
+            entity.HasMany(d => d.ImpuestoCotizaciones)
+                .WithOne(p => p.SecCotizacionNavigation)
+                .HasForeignKey(d => d.SecCotizacion)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_ImpuestoCotizacion_Cotizacion"); 
+        });
+
+        modelBuilder.Entity<Cotizaciondetalle>(entity =>
+        {
+            entity.HasKey(e => e.Secuencial).HasName("PRIMARY");
+            entity.ToTable("cotizaciondetalle");
+
+            entity.Property(e => e.Secuencial).HasColumnName("Secuencial");
+            entity.Property(e => e.SecCotizacion).HasColumnName("SecCotizacion");
+            entity.Property(e => e.DetalleEquipo).HasColumnName("DetalleEquipo");
+            entity.Property(e => e.ValorCompra).HasColumnName("ValorCompra");
+            entity.Property(e => e.MargenGanancia).HasColumnName("MargenGanancia");
+            entity.Property(e => e.Total).HasColumnName("Total");
+            entity.Property(e => e.EstaActivo).HasColumnName("EstaActivo");
+            entity.Property(e => e.FechaRegistro).HasColumnName("FechaRegistro");
+
+            entity.HasOne(d => d.SecCotizacionNavigation)
+                .WithMany(p => p.Cotizaciondetalles)
+                .HasForeignKey(d => d.SecCotizacion)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_Cotizaciondetalle_Cotizacion");
+        });
+
+        modelBuilder.Entity<Impuesto>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+            entity.ToTable("impuesto");
+
+            entity.Property(e => e.Id).HasColumnName("Id");
+            entity.Property(e => e.Codigo)
+                .HasMaxLength(10)
+                .HasColumnName("Codigo");
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(100)
+                .HasColumnName("Descripcion");
+            entity.Property(e => e.Porcentaje)
+                .HasPrecision(5, 2)
+                .HasColumnName("Porcentaje");
+            entity.Property(e => e.ValorFijo)
+                .HasPrecision(18, 2)
+                .HasColumnName("ValorFijo");
+            entity.Property(e => e.CodigoSri)
+                .HasMaxLength(5)
+                .HasColumnName("CodigoSri");
+            
+            entity.Property(e => e.Vigente).HasColumnName("Vigente");
+            entity.Property(e => e.SecTipoImpuesto).HasColumnName("SecTipoImpuesto");
+
+            entity.HasOne(d => d.SecTipoImpuestoNavigation).WithMany()
+                .HasForeignKey(d => d.SecTipoImpuesto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Impuesto_TipoImpuesto");
+            entity.Property(e => e.FechaCreacion)
+                .HasColumnType("datetime")
+                .HasColumnName("FechaCreacion");
+            entity.Property(e => e.FechaModificacion)
+                .HasColumnType("datetime")
+                .HasColumnName("FechaModificacion");
+        });
+
+        modelBuilder.Entity<ImpuestoCotizacion>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+            entity.ToTable("impuestocotizacion");
+
+            entity.Property(e => e.Id).HasColumnName("Id");
+            entity.Property(e => e.SecCotizacion).HasColumnName("SecCotizacion");
+            entity.Property(e => e.ImpuestoId).HasColumnName("ImpuestoId");
+            entity.Property(e => e.BaseImponible)
+                .HasPrecision(18, 2)
+                .HasColumnName("BaseImponible");
+            entity.Property(e => e.ValorImpuesto)
+                .HasPrecision(18, 2)
+                .HasColumnName("ValorImpuesto");
+            entity.Property(e => e.Exento).HasColumnName("Exento");
+            entity.Property(e => e.Observaciones).HasColumnName("Observaciones");
+            entity.Property(e => e.FechaRegistro)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime")
+                .HasColumnName("FechaRegistro");
+
+            entity.HasOne(d => d.SecCotizacionNavigation)
+                .WithMany(p => p.ImpuestoCotizaciones)
+                .HasForeignKey(d => d.SecCotizacion)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_ImpuestoCotizacion_Cotizacion");
+
+            entity.HasOne(d => d.ImpuestoNavigation).WithMany(p => p.ImpuestoCotizacion)
+                .HasForeignKey(d => d.ImpuestoId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ImpuestoCotizacion_Impuesto");
+        });
+
+        modelBuilder.Entity<TipoImpuesto>(entity =>
+        {
+            entity.HasKey(e => e.Secuencial).HasName("PRIMARY");
+            entity.ToTable("tipoimpuesto");
+
+            entity.Property(e => e.Secuencial).HasColumnName("Secuencial");
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(100)
+                .HasColumnName("Nombre");
+            entity.Property(e => e.EsIva).HasColumnName("EsIva");
+            entity.Property(e => e.EsImportacion).HasColumnName("EsImportacion");
+            entity.Property(e => e.EstaActivo).HasColumnName("EstaActivo");
+            entity.Property(e => e.FechaCreacion)
+                .HasColumnType("datetime")
+                .HasColumnName("FechaCreacion");
+            entity.Property(e => e.FechaModificacion)
+                .HasColumnType("datetime")
+                .HasColumnName("FechaModificacion");
         });
 
         OnModelCreatingPartial(modelBuilder);

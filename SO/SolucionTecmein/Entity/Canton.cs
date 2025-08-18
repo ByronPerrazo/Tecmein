@@ -1,7 +1,10 @@
-﻿namespace Entity;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Entity;
 
 public partial class Canton
 {
+    [Key]
     public int Secuencial { get; set; }
 
     public int SecProvincia { get; set; }

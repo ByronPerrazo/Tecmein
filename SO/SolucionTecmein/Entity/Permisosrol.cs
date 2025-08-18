@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Entity;
 
 public partial class Permisosrol
 {
+    [Key]
     public int Secuencial { get; set; }
 
     public int SecRol { get; set; }
