@@ -25,8 +25,18 @@ namespace BLL.Implementacion
 
         public async Task<List<Seguimiento>> Lista(int secCotizacion)
         {
-            IQueryable<Seguimiento> query = await _repositorio.Consultar(s => s.SecCotizacion == secCotizacion);
-            return query.ToList();
+            var cotizacionIds = new List<int>();
+            int? currentId = secCotizacion;
+
+            while (currentId.HasValue && currentId.Value > 0)
+            {
+                cotizacionIds.Add(currentId.Value);
+                var cotizacion = await _repositorioCotizacion.Obtener(c => c.Secuencial == currentId.Value);
+                currentId = cotizacion?.SecCotizacionOriginal;
+            }
+
+            IQueryable<Seguimiento> query = await _repositorio.Consultar(s => cotizacionIds.Contains(s.SecCotizacion));
+            return query.OrderByDescending(s => s.FechaAccion).ThenByDescending(s => s.FechaRegistro).ToList();
         }
 
         public async Task<Seguimiento> Crear(Seguimiento entidad)
@@ -42,9 +52,13 @@ namespace BLL.Implementacion
             entidad.FechaRegistro = DateTime.Now;
             var seguimientoCreado = await _repositorio.Crear(entidad);
 
+            // Cambiar la etapa de la Visita a "SEG" al crear cualquier seguimiento
+            await _visitaServices.CambiarEtapa(cotizacion.SecVisita, "SEG");
+
             if (entidad.AceptacionCliente)
             {
                 // 1. Cambiar la etapa de la Visita a "PRE" (Pre-Contrato)
+                // Esto solo ocurrirá si "PRE" tiene un orden mayor que "SEG"
                 await _visitaServices.CambiarEtapa(cotizacion.SecVisita, "PRE");
 
                 // 2. Actualizar el campo Confirmacion en la Cotizacion
@@ -71,6 +85,23 @@ namespace BLL.Implementacion
             seguimientoExistente.AceptacionCliente = entidad.AceptacionCliente;
 
             await _repositorio.Editar(seguimientoExistente);
+
+            // Obtener la cotización asociada para cambiar la etapa de la visita
+            var cotizacion = await _repositorioCotizacion.Obtener(c => c.Secuencial == seguimientoExistente.SecCotizacion);
+            if (cotizacion != null)
+            {
+                // Cambiar la etapa de la Visita a "SEG" al editar cualquier seguimiento
+                await _visitaServices.CambiarEtapa(cotizacion.SecVisita, "SEG");
+
+                // Si la edición establece AceptacionCliente, intentar cambiar a "PRE"
+                if (seguimientoExistente.AceptacionCliente)
+                {
+                    await _visitaServices.CambiarEtapa(cotizacion.SecVisita, "PRE");
+                    // Opcional: Actualizar Confirmacion en Cotizacion si es relevante para la edición
+                    // cotizacion.Confirmacion = true;
+                    // await _repositorioCotizacion.Editar(cotizacion);
+                }
+            }
             return seguimientoExistente;
         }
 

@@ -372,7 +372,17 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
                            destino.NombreTipoImpuesto,
                                    opt =>
                                    opt.MapFrom(origen =>
-                                               origen.SecTipoImpuestoNavigation.Nombre));
+                                               origen.SecTipoImpuestoNavigation.Nombre))
+                        .ForMember(destino =>
+                                   destino.EsIva,
+                                           opt =>
+                                           opt.MapFrom(origen =>
+                                                       origen.SecTipoImpuestoNavigation.EsIva))
+                        .ForMember(destino =>
+                                   destino.EsImportacion,
+                                           opt =>
+                                           opt.MapFrom(origen =>
+                                                       origen.SecTipoImpuestoNavigation.EsImportacion));
 
             CreateMap<ImpuestoVM, Impuesto>()
                 .ForMember(destino =>

@@ -163,34 +163,35 @@ $(document).ready(function () {
         });
 
 
-     tablaData =
-        $('#tbdata').DataTable({
-            responsive: true,
-            "ajax": {
-                "url": 'Lista',
-                "type": "GET",
-                "datatype": "json",
-                "dataSrc": function(json) {
-                return json.data.$values;
-            },
-            },
-            "columns": [
-                { data: "secuencial", visible: false },
-                { data: "nombre", searchable: true },
-                { data: "nombreEmpresa", searchable: true },
-                { data: "descripcionEtapa", searchable: true },
-                { data: "nombreProvincia", searchable: true, width: "100px" },
-                { data: "nombreCanton", searchable: true, width: "80px" },
-                { data: "direccion", searchable: true },
+     Promise.all([
+        fetch("Lista").then(response => response.text()).then(text => JSON.parse(text)),
+        fetch("GetClaims").then(response => response.json())
+    ]).then(([listaResponse, claimsResponse]) => {
 
+        const claims = claimsResponse;
+        let data = listaResponse.data;
+
+        if (claims.rol.toLowerCase() !== "administrador") {
+            data = data.filter(visita => visita.SecUsuario == claims.idUsuario);
+        }
+
+        tablaData = $('#tbdata').DataTable({
+            responsive: true,
+            data: data,
+            "columns": [
+                { data: "Secuencial", visible: false },
+                { data: "Nombre", searchable: true },
+                { data: "DescripcionEtapa", searchable: true },
+                { data: "NombreCanton", searchable: true, width: "80px" },
+                { data: "Direccion", searchable: true },
                 {
-                    data: 'geoUbicacion', width: "20px",
+                    data: 'GeoUbicacion', width: "20px",
                     render: function (data) {
-                        return '<button onclick=\"initMap(\'' + data + '\')\" class=\"btn btn-success btn-mapa btn-sm mr-1\"><i class=\"fas fa-search-location\"></i></button>';
+                        return '<button onclick="initMap(\'" + data + "\')" class="btn btn-success btn-mapa btn-sm mr-1"><i class="fas fa-search-location"></i></button>';
                     }
                 },
                 {
-                    data: "estaActivo", render: function (data) {
+                    data: "EstaActivo", render: function (data) {
                         if (data == 1)
                             return '<span class="badge badge-info">Activo</span>';
                         else
@@ -207,8 +208,7 @@ $(document).ready(function () {
                     "orderable": true,
                     "searchable": false,
                     "width": "160px"
-                },
-                
+                }
             ],
             order: [[0, "desc"]],
             dom: "Bfrtip",
@@ -237,6 +237,7 @@ $(document).ready(function () {
                 url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
             },
         });
+    });
 
 
 });
@@ -341,20 +342,20 @@ function limpiarFormularioModal() {
 }
 function mostrarModalVisita(modeloVisita = MODELO_BASEVISITA) {
     limpiarFormularioModal();
-    $("#txtId").val(modeloVisita.secuencial)
-    $("#txtNombreObra").val(modeloVisita.nombre)
-    $("#cboOperador").val(modeloVisita.secEmpresa);
-    $("#cboEtapaObra").val(modeloVisita.idEtapa);
+    $("#txtId").val(modeloVisita.Secuencial)
+    $("#txtNombreObra").val(modeloVisita.Nombre)
+    $("#cboOperador").val(modeloVisita.SecEmpresa);
+    $("#cboEtapaObra").val(modeloVisita.IdEtapa);
     
     // Carga y selección de combos en cascada
-    if (modeloVisita.secProvincia) {
-        $("#cboProvincia").val(modeloVisita.secProvincia);
-        cargarCantones(modeloVisita.secProvincia);
-        if (modeloVisita.secCanton) {
-            $("#cboCanton").val(modeloVisita.secCanton);
-            cargarParroquias(modeloVisita.secCanton);
-            if (modeloVisita.secParroquia) {
-                $("#cboParroquia").val(modeloVisita.secParroquia);
+    if (modeloVisita.SecProvincia) {
+        $("#cboProvincia").val(modeloVisita.SecProvincia);
+        cargarCantones(modeloVisita.SecProvincia);
+        if (modeloVisita.SecCanton) {
+            $("#cboCanton").val(modeloVisita.SecCanton);
+            cargarParroquias(modeloVisita.SecCanton);
+            if (modeloVisita.SecParroquia) {
+                $("#cboParroquia").val(modeloVisita.SecParroquia);
             }
         }
     } else {
@@ -362,13 +363,13 @@ function mostrarModalVisita(modeloVisita = MODELO_BASEVISITA) {
         cargarCantones($("#cboProvincia option:first").val());
     }
 
-    $("#txtDireccion").val(modeloVisita.direccion)
-    $("#txtGeolocallizacion").val(modeloVisita.geoUbicacion)
-    $("#cboEstado").val(modeloVisita.estaActivo)
+    $("#txtDireccion").val(modeloVisita.Direccion)
+    $("#txtGeolocallizacion").val(modeloVisita.GeoUbicacion)
+    $("#cboEstado").val(modeloVisita.EstaActivo)
 
-    loadDateFromString(modeloVisita.fechaSiguienteVisita)
+    loadDateFromString(modeloVisita.FechaSiguienteVisita)
     
-    $("#txtDescripcion").val(modeloVisita.detalle)
+    $("#txtDescripcion").val(modeloVisita.Detalle)
     //ejecutra llamada adicionales basados en el secuencial de la visita
 
 
@@ -579,7 +580,7 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
 
     swal({
         title: "Está Seguro de Eliminar?",
-        text: `Eliminar la visita "${data.nombre}"`,
+        text: `Eliminar la visita "${data.Nombre}"`, 
         type: "warning",
         showCancelButton: true,
         confirmButtonClass: "btn-danger",
@@ -592,7 +593,7 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
             if (respuesta) {
                 $(".showSweetAlert").LoadingOverlay("show");
 
-                fetch(`Eliminar?secuencial=${data.secuencial}`, {
+                fetch(`Eliminar?secuencial=${data.Secuencial}`, { 
                     method: "DELETE"
                 })
                     .then(response => {
@@ -604,7 +605,7 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
                         if (responseJson.estado) {
                             tablaData.row(fila).remove().draw(false);
 
-                            swal("Listo!", " La Visita a " + data.nombre + " fue Eliminada", "success");
+                            swal("Listo!", " La Visita a " + data.Nombre + " fue Eliminada", "success");
                         }
                         else {
                             swal("Fallo!", responseJson.mensajes, "error");

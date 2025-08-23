@@ -1,4 +1,4 @@
-﻿const MODELO_VISITA_PRODUCTOS = {
+const MODELO_VISITA_PRODUCTOS = {
     secuencial: 0,
     secuencialVisita: 0,
     tipoEquipo: "",
@@ -47,12 +47,12 @@ $("#tbdata tbody").on("click", ".btn-info", function () {
     }
 
     const data = tablaData.row(filaSeleccionada).data();
-    secVisitaProducto = data.secuencial;
-    nombreProyecto = data.nombre;
-    direccionProyecto = data.direccion;
-    nombreProvincia = data.nombreProvincia;
-    nombreCanton = data.nombreCanton;
-    nombreParroquia = data.nombreParroquia;
+    secVisitaProducto = data.Secuencial;
+    nombreProyecto = data.Nombre;
+    direccionProyecto = data.Direccion;
+    nombreProvincia = data.NombreProvincia;
+    nombreCanton = data.NombreCanton;
+    nombreParroquia = data.NombreParroquia;
 
 
     if (secVisitaProducto != 0)
@@ -175,8 +175,8 @@ async function ProcesoCargaLista(secuencialVisita) {
             dataType: "json"
         });
 
-        // Acceder a la propiedad $values debido a ReferenceHandler.Preserve
-        const data = response.$values || response;
+        // Acceder a la propiedad $values o data.$values
+        const data = (response.data && response.data.$values) ? response.data.$values : (response.$values || response);
 
         if (Array.isArray(data)) {
             tablaDataPro = $('#tbDataItems').DataTable({
@@ -199,11 +199,11 @@ async function ProcesoCargaLista(secuencialVisita) {
                     $(row).find('th').addClass('th-celeste');
                 },
                 order: [[0, "desc"]],
-                dom: "Bfrtip",
+                dom: '<"top"Bf>rt<"bottom"lip><"clear">',
                 paging: false, // Deshabilitar paginación
                 info: false,   // Deshabilitar información de paginación
                 searching: false, // Deshabilitar búsqueda
-                buttons: [
+                                buttons: [
                     {
                         text: '<i class="fas fa-file-excel"></i>',
                         extend: 'excelHtml5',
@@ -249,7 +249,7 @@ async function ProcesoCargaLista(secuencialVisita) {
                             // Construir el contenido del encabezado
                             const headerContent = [
                                 { text: ' Propuesta ', bold: true, fontSize: 14, alignment: 'center', margin: [0, 0, 0, 10] },
-                                {
+                                { 
                                     columns: [
                                         { width: 80, text: [{ text: 'Proyecto: ', bold: true }] },
                                         { width: '*', text: nombreProyecto }
@@ -291,8 +291,52 @@ async function ProcesoCargaLista(secuencialVisita) {
                             // Añadir el encabezado al documento
                             doc.content.splice(0, 0, { stack: headerContent, margin: [0, 0, 0, 12] });
                         }
+                    },
+                    {
+                        text: '<i class="fas fa-sync-alt"></i>', // Icono de sincronización
+                        className: 'btn-info', // Clase para el estilo del botón
+                        titleAttr: 'Sincronizar Equipos con Cotización', // Tooltip
+                        action: function (e, dt, node, config) {
+                            // Lógica para llamar al backend para sincronizar
+                            swal({
+                                title: "¿Sincronizar Equipos?",
+                                text: "Esto añadirá los equipos de esta visita a la cotización activa si no están presentes.",
+                                type: "info",
+                                showCancelButton: true,
+                                confirmButtonClass: "btn-primary",
+                                confirmButtonText: "Sí, sincronizar",
+                                cancelButtonText: "No, cancelar",
+                                closeOnConfirm: false,
+                                closeOnCancel: true
+                            }, function (respuesta) {
+                                if (respuesta) {
+                                    $(".showSweetAlert").LoadingOverlay("show");
+                                    fetch(`/Visita/SincronizarEquipos?secuencialVisita=${secVisitaProducto}`, {
+                                        method: "POST" // Usar POST para una acción que modifica datos
+                                    })
+                                    .then(response => {
+                                        $(".showSweetAlert").LoadingOverlay("hide");
+                                        return response.ok ? response.json() : Promise.reject(response);
+                                    })
+                                    .then(responseJson => {
+                                        if (responseJson.estado) {
+                                            swal("Listo!", "Equipos sincronizados exitosamente.", "success");
+                                            // Opcional: recargar la tabla de equipos si la sincronización afecta su estado visual
+                                            // tablaDataPro.ajax.reload();
+                                        } else {
+                                            swal("Error", responseJson.mensajes, "error");
+                                        }
+                                    })
+                                    .catch(err => {
+                                        $(".showSweetAlert").LoadingOverlay("hide");
+                                        swal("Error", "No se pudo conectar con el servidor.", "error");
+                                    });
+                                }
+                            });
+                        }
                     }
                 ],
+
                 language: {
                     url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
                 }
@@ -479,3 +523,46 @@ function validarNombresParadas(nombresParadas, numParadas, inputElement) {
     }
     return isValid;
 }
+
+// Evento para el botón de eliminar equipo
+$(document).on("click", ".btn-eliminar-equipo", function () {
+    const fila = $(this).closest("tr");
+    const data = tablaDataPro.row(fila).data();
+
+    swal({
+        title: "¿Está Seguro de Eliminar?",
+        text: `Eliminar el equipo "${data.detalleEspecifico}"`, // Usar detalleEspecifico para el mensaje
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonClass: "btn-danger",
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "No, cancelar",
+        closeOnConfirm: false,
+        closeOnCancel: true
+    },
+    function (respuesta) {
+        if (respuesta) {
+            $(".showSweetAlert").LoadingOverlay("show");
+
+            fetch(`ProcesaEliminar?secuencial=${data.secuencial}`, {
+                method: "DELETE"
+            })
+            .then(response => {
+                $(".showSweetAlert").LoadingOverlay("hide");
+                return response.ok ? response.json() : Promise.reject(response);
+            })
+            .then(responseJson => {
+                if (responseJson.estado) {
+                    tablaDataPro.row(fila).remove().draw(false);
+                    swal("Listo!", "El equipo fue eliminado.", "success");
+                } else {
+                    swal("Error", responseJson.mensajes, "error");
+                }
+            })
+            .catch(err => {
+                $(".showSweetAlert").LoadingOverlay("hide");
+                swal("Error", "No se pudo conectar con el servidor.", "error");
+            });
+        }
+    });
+});

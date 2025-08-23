@@ -55,6 +55,20 @@ namespace TecmeinWebApp.Controllers
             return new JsonResult(listaTipoImpuestoVM, jsonOptions);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ListaActivos()
+        {
+            var impuestoLista = await _impuestoServices.ListaActivos();
+            var impuestoListaVM = _mapper.Map<List<ImpuestoVM>>(impuestoLista);
+
+            var jsonOptions = new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            return new JsonResult(new { data = impuestoListaVM }, jsonOptions);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Crear([FromBody] ImpuestoVM modelo)
         {

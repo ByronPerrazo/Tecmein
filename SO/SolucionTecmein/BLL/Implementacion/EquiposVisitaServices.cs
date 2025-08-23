@@ -1,4 +1,4 @@
-﻿using BLL.Interfaces;
+using BLL.Interfaces;
 using DAL.Interfaces;
 using Entity;
 using System.Linq;
@@ -12,23 +12,37 @@ namespace BLL.Implementacion
         private readonly IGenericRepository<Equiposvisita> _repositorioEquiposVisita;
         private readonly IVisitaServices _visitaServices;
         private readonly IValidacionServices _validacionServices;
+        private readonly IGenericRepository<Cotizacion> _repositorioCotizacion; // New
+        private readonly IGenericRepository<Cotizaciondetalle> _repositorioCotizaciondetalle; // New
 
         public EquiposVisitaServices(IGenericRepository<Equiposvisita> repositorioEquiposVisita,
                                      IVisitaServices visitaServices,
-                                     IValidacionServices validacionServices)
+                                     IValidacionServices validacionServices,
+                                     IGenericRepository<Cotizacion> repositorioCotizacion, // New
+                                     IGenericRepository<Cotizaciondetalle> repositorioCotizaciondetalle) // New
         {
             _repositorioEquiposVisita = repositorioEquiposVisita;
             _visitaServices = visitaServices;
             _validacionServices = validacionServices;
+            _repositorioCotizacion = repositorioCotizacion; // New
+            _repositorioCotizaciondetalle = repositorioCotizaciondetalle; // New
         }
         
-        public async Task<List<Equiposvisita>> ConsultaListaPorVisita(int secuencialVisita)
+        public async Task<EquiposVisitaConEstadoCotizacion> ConsultaListaPorVisita(int secuencialVisita)
         {
-            var query = await _repositorioEquiposVisita
+            var equipos = await _repositorioEquiposVisita
                               .Consultar(x =>
                                          x.SecVisita == secuencialVisita &&
                                          x.EstaActivo == 1);
-            return query.ToList();
+
+            var cotizacionActiva = await _repositorioCotizacion.Obtener(c =>
+                c.SecVisita == secuencialVisita && c.EstaActivo.HasValue && c.EstaActivo.Value == 1);
+
+            return new EquiposVisitaConEstadoCotizacion
+            {
+                Equipos = equipos.ToList(),
+                CotizacionActivaExiste = (cotizacionActiva != null)
+            };
         }
 
         public async Task<Equiposvisita> Obtener(int secuencial)
@@ -40,7 +54,51 @@ namespace BLL.Implementacion
         public async Task<Equiposvisita> ProcesaGuardar(Equiposvisita equiposvisita)
         {
             await ValidarEquipoVisita(equiposvisita);
-            return await _repositorioEquiposVisita.Crear(equiposvisita);
+            var equipoVisitaGuardado = await _repositorioEquiposVisita.Crear(equiposvisita);
+
+            // Sincronizar con Cotizaciondetalle si existe una cotización activa para la visita
+            var cotizacionActiva = await _repositorioCotizacion.Obtener(c =>
+                c.SecVisita == equipoVisitaGuardado.SecVisita && c.EstaActivo.HasValue && c.EstaActivo.Value == 1);
+
+            if (cotizacionActiva != null)
+            {
+                var cotizaciondetalle = new Cotizaciondetalle
+                {
+                    SecCotizacion = cotizacionActiva.Secuencial,
+                    SecEquipoVisita = equipoVisitaGuardado.Secuencial, // Link to Equiposvisita
+                        DetalleEquipo = $"Sistema:{equipoVisitaGuardado.Sistema} -" +
+                                        $" Tipo Eq:{equipoVisitaGuardado.TipoEquipo} -" +
+                                        $" Marca:{equipoVisitaGuardado.Marca} -" +
+                                        $" Capacidad:{equipoVisitaGuardado.Capacidad} -" +
+                                        $" Velocidad:{equipoVisitaGuardado.Velocidad} -" +
+                                        $" Sala Maq:{equipoVisitaGuardado.SalaMaquinas} -" +
+                                        $" Motor:{equipoVisitaGuardado.TipoMotor} -" +
+                                        $" Embarque:{equipoVisitaGuardado.Embarque} -" +
+                                        $" Ducto:{equipoVisitaGuardado.TipoDucto} -" +
+                                        $" MedidasAF:{equipoVisitaGuardado.MedidasAfducto} -" +
+                                        $" Foso:{equipoVisitaGuardado.Foso} -" +
+                                        $" Recorrido:{equipoVisitaGuardado.Recorrido} -" +
+                                        $" Sbr. Recorrido:{equipoVisitaGuardado.SobreRecorrido} -" +
+                                        $" Ing. Frontales:{equipoVisitaGuardado.IngresosFrontales} -" +
+                                        $" Ing. Posteriores:{equipoVisitaGuardado.IngresosPosteriores} -" +
+                                        $" Dime Entrada:{equipoVisitaGuardado.DimencionEntrada} -" +
+                                        $" Alt Entre Pisos:{equipoVisitaGuardado.AlturaEntrePisos} -" +
+                                        $" Energia:{equipoVisitaGuardado.Energia} -" +
+                                        $" Puertas:{equipoVisitaGuardado.MaterialPuertas} -" +
+                                        $" Num. Paradas:{equipoVisitaGuardado.NumeroParadas} -" +
+                                        $" Nomb. Paradas:{equipoVisitaGuardado.NombresParadas} -" +
+                                        $" Num Personas:{equipoVisitaGuardado.NumeroPersonas}",
+                    Cantidad = equipoVisitaGuardado.Cantidad ?? 0, // Use 0 if null
+                    ValorCompra = 0, // Default value
+                    MargenGanancia = 0, // Default value
+                    Total = 0, // Will be calculated in frontend or when saving Cotizacion
+                    EstaActivo = 1,
+                    FechaRegistro = DateTime.Now
+                };
+                await _repositorioCotizaciondetalle.Crear(cotizaciondetalle);
+            }
+
+            return equipoVisitaGuardado;
         }
 
         public async Task<bool> ProcesaEliminar(Equiposvisita equiposvisita)
@@ -50,6 +108,23 @@ namespace BLL.Implementacion
             {
                 return false; // O lanzar una excepción si se prefiere
             }
+
+            // Sincronizar con Cotizaciondetalle si existe una cotización activa para la visita
+            var cotizacionActiva = await _repositorioCotizacion.Obtener(c =>
+                c.SecVisita == equipoExistente.SecVisita && c.EstaActivo.HasValue && c.EstaActivo.Value == 1);
+
+            if (cotizacionActiva != null)
+            {
+                var cotizaciondetalleAEliminar = await _repositorioCotizaciondetalle.Obtener(cd =>
+                    cd.SecCotizacion == cotizacionActiva.Secuencial &&
+                    cd.SecEquipoVisita == equipoExistente.Secuencial); // Use the new FK
+
+                if (cotizaciondetalleAEliminar != null)
+                {
+                    await _repositorioCotizaciondetalle.Eliminar(cotizaciondetalleAEliminar);
+                }
+            }
+
             return await _repositorioEquiposVisita.Eliminar(equipoExistente);
         }
 
@@ -74,6 +149,67 @@ namespace BLL.Implementacion
             {
                 throw new TaskCanceledException("La cantidad del equipo debe ser mayor que cero.");
             }
+        }
+
+        public async Task<bool> SincronizarEquiposConCotizacionActiva(int secVisita)
+        {
+            var cotizacionActiva = await _repositorioCotizacion.Obtener(c =>
+                c.SecVisita == secVisita && c.EstaActivo.HasValue && c.EstaActivo.Value == 1);
+
+            if (cotizacionActiva == null)
+            {
+                // No hay cotización activa para sincronizar
+                return false;
+            }
+
+            var equiposVisita = (await _repositorioEquiposVisita.Consultar(ev => ev.SecVisita == secVisita && ev.EstaActivo == 1)).ToList();
+            var cotizacionDetallesExistentes = (await _repositorioCotizaciondetalle.Consultar(cd => cd.SecCotizacion == cotizacionActiva.Secuencial)).ToList();
+
+            var existingSecEquipoVisitaIds = new HashSet<int?>(cotizacionDetallesExistentes.Where(cd => cd.SecEquipoVisita.HasValue).Select(cd => cd.SecEquipoVisita));
+
+            foreach (var equipoVisita in equiposVisita)
+            {
+                // Solo añadir si no existe un Cotizaciondetalle vinculado a este SecEquipoVisita
+                if (!existingSecEquipoVisitaIds.Contains(equipoVisita.Secuencial))
+                {
+                    var cotizaciondetalle = new Cotizaciondetalle
+                    {
+                        SecCotizacion = cotizacionActiva.Secuencial,
+                        SecEquipoVisita = equipoVisita.Secuencial, // Link to Equiposvisita
+                        DetalleEquipo = $"Sistema:{equipoVisita.Sistema} -" +
+                                        $" Tipo Eq:{equipoVisita.TipoEquipo} -" +
+                                        $" Marca:{equipoVisita.Marca} -" +
+                                        $" Capacidad:{equipoVisita.Capacidad} -" +
+                                        $" Velocidad:{equipoVisita.Velocidad} -" +
+                                        $" Sala Maq:{equipoVisita.SalaMaquinas} -" +
+                                        $" Motor:{equipoVisita.TipoMotor} -" +
+                                        $" Embarque:{equipoVisita.Embarque} -" +
+                                        $" Ducto:{equipoVisita.TipoDucto} -" +
+                                        $" MedidasAF:{equipoVisita.MedidasAfducto} -" +
+                                        $" Foso:{equipoVisita.Foso} -" +
+                                        $" Recorrido:{equipoVisita.Recorrido} -" +
+                                        $" Sbr. Recorrido:{equipoVisita.SobreRecorrido} -" +
+                                        $" Ing. Frontales:{equipoVisita.IngresosFrontales} -" +
+                                        $" Ing. Posteriores:{equipoVisita.IngresosPosteriores} -" +
+                                        $" Dime Entrada:{equipoVisita.DimencionEntrada} -" +
+                                        $" Alt Entre Pisos:{equipoVisita.AlturaEntrePisos} -" +
+                                        $" Energia:{equipoVisita.Energia} -" +
+                                        $" Puertas:{equipoVisita.MaterialPuertas} -" +
+                                        $" Num. Paradas:{equipoVisita.NumeroParadas} -" +
+                                        $" Nomb. Paradas:{equipoVisita.NombresParadas} -" +
+                                        $" Num Personas:{equipoVisita.NumeroPersonas}",
+                        Cantidad = equipoVisita.Cantidad ?? 0, // Use 0 if null
+                        ValorCompra = 0, // Default value
+                        MargenGanancia = 0, // Default value
+                        Total = 0, // Will be calculated in frontend or when saving Cotizacion
+                        EstaActivo = 1,
+                        FechaRegistro = DateTime.Now
+                    };
+                    await _repositorioCotizaciondetalle.Crear(cotizaciondetalle);
+                }
+            }
+
+            return true;
         }
     }
 }

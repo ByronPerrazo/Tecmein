@@ -24,6 +24,12 @@ namespace BLL.Implementacion
             return await query.Include(i => i.SecTipoImpuestoNavigation).ToListAsync();
         }
 
+        public async Task<List<Impuesto>> ListaActivos()
+        {
+            var query = await _repositorio.Consultar(i => i.Vigente == true);
+            return await query.Include(i => i.SecTipoImpuestoNavigation).ToListAsync();
+        }
+
         public async Task<Impuesto> Crear(Impuesto entidad)
         {
             try

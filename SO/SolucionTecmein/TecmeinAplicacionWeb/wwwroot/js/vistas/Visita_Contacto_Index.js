@@ -61,7 +61,6 @@ $("#tbdata tbody").on("click", ".btn-default", function () {
 
     limpiarFormularioModalContacto()
 
-    debugger;
     esEdicion = true;
     if ($(this).closest("tr").hasClass("child")) {
         filaSeleccionada = $(this).closest("tr").prev();
@@ -72,7 +71,7 @@ $("#tbdata tbody").on("click", ".btn-default", function () {
     cmboConstructora.value = -1;
 
     const data = tablaData.row(filaSeleccionada).data();
-    visitaContactoSelecionada = data.secuencial;
+    visitaContactoSelecionada = data.Secuencial;
     mostrarModalVisitaContacto(data);
 
     $("#modalDataContacto").modal("show");
@@ -82,11 +81,11 @@ $("#tbdata tbody").on("click", ".btn-default", function () {
 
 async function mostrarModalVisitaContacto(mdlVisitaContacto = MODELO_VISITA_CONTACTO) {
     try {
-        debugger;
+
         cboContactos.value = '-1';
 
         // Realizar la solicitud para obtener los datos
-        const respuesta = await fetch(`VisitaContacto?secuencialVisita=${mdlVisitaContacto.secuencial}`, {
+        const respuesta = await fetch(`VisitaContacto?secuencialVisita=${mdlVisitaContacto.Secuencial}`, {
             method: "GET",
         });
 
@@ -98,7 +97,7 @@ async function mostrarModalVisitaContacto(mdlVisitaContacto = MODELO_VISITA_CONT
         // Convertir la respuesta a JSON
         const respuestaJson = await respuesta.json();
 
-        const data = respuestaJson.data;
+        const data = respuestaJson.data.$values || respuestaJson.data;
 
         if (data != null) {
 

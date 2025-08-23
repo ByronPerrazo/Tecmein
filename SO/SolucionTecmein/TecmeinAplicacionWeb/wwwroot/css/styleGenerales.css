@@ -1,4 +1,4 @@
-﻿.error-mensaje {
+.error-mensaje {
     display: none;
     position: relative;
     padding: 0px;
@@ -75,4 +75,32 @@ div {
 
 .th-celeste {
     background-color: #e0f7fa !important;
+}
+
+/* Custom styles for DataTable font sizes */
+#tbdata thead th,
+#tbSeguimiento thead th {
+    font-size: 12px;
+}
+
+#tbdata tbody td,
+#tbSeguimiento tbody td {
+    font-size: 12px;
+}
+
+/* Custom styles for compact DataTable columns */
+.dt-compact-col {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+    white-space: nowrap; /* Prevent wrapping of content */
+}
+
+.dt-actions-col {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+    white-space: nowrap; /* Keep buttons on one line */
+}
+.dt-actions-col .btn {
+    margin-left: 0.1rem; /* Small margin between buttons */
+    margin-right: 0.1rem;
 }

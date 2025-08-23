@@ -23,8 +23,8 @@ namespace BLL.Implementacion
             IGenericRepository<ImpuestoCotizacion> repositorioImpuestoCotizacion,
             IImpuestoServices impuestoServices,
             IVisitaServices visitaServices,
-            ITipoImpuestoServices tipoImpuestoServices
-            /*, ICorreoServices correoServices */
+            ITipoImpuestoServices tipoImpuestoServices,
+            IEquiposVisitaServices equiposVisitaServices
             )
         {
             _repositorio = repositorio;
@@ -32,10 +32,11 @@ namespace BLL.Implementacion
             _repositorioImpuestoCotizacion = repositorioImpuestoCotizacion;
             _impuestoServices = impuestoServices;
             _visitaServices = visitaServices;
-            // _correoServices = correoServices;
+            _equiposVisitaServices = equiposVisitaServices;
         }
 
         private readonly IVisitaServices _visitaServices;
+        private readonly IEquiposVisitaServices _equiposVisitaServices;
 
         public async Task<List<Cotizacion>> Lista()
         {
@@ -142,9 +143,10 @@ namespace BLL.Implementacion
                 if (cotizacionCreada.Secuencial == 0)
                     throw new TaskCanceledException("No se pudo crear la cotización.");
 
-                if (cotizacionCreada.Confirmacion)
+                // Cambiar etapa de la visita a "COT" si la cotización tiene detalles
+                if (cotizacionCreada.Cotizaciondetalles.Any())
                 {
-                    await _visitaServices.CambiarEtapa(cotizacionCreada.SecVisita, "SEG");
+                    await _visitaServices.CambiarEtapa(cotizacionCreada.SecVisita, "COT");
                 }
                 
                 return cotizacionCreada;
@@ -192,14 +194,26 @@ namespace BLL.Implementacion
                 newCotizacion.ImpuestoCotizaciones = new List<ImpuestoCotizacion>();
 
                 decimal subtotalCalculado = 0;
-                foreach (var detalle in entidad.Cotizaciondetalles)
+                foreach (var detalleFromFrontend in entidad.Cotizaciondetalles)
                 {
-                    detalle.Secuencial = 0; // Para que EF los inserte como nuevos
-                    detalle.SecCotizacion = 0; // Se asignará automáticamente al guardar la cotización padre
-                    detalle.Total = detalle.ValorCompra * detalle.Cantidad * (1 + detalle.MargenGanancia / 100); // Updated calculation
-                    detalle.FechaRegistro = DateTime.Now;
-                    newCotizacion.Cotizaciondetalles.Add(detalle);
-                    subtotalCalculado += detalle.Total;
+                    var originalDetalle = cotizacionOriginal.Cotizaciondetalles
+                                                            .FirstOrDefault(cd => cd.Secuencial == detalleFromFrontend.Secuencial);
+
+                    var newCotizacionDetalle = new Cotizaciondetalle
+                    {
+                        Secuencial = 0, // For EF to insert as new
+                        SecCotizacion = 0, // Will be assigned by EF
+                        SecEquipoVisita = originalDetalle?.SecEquipoVisita ?? detalleFromFrontend.SecEquipoVisita, // Preserve link
+                        DetalleEquipo = detalleFromFrontend.DetalleEquipo,
+                        ValorCompra = detalleFromFrontend.ValorCompra,
+                        MargenGanancia = detalleFromFrontend.MargenGanancia,
+                        Cantidad = detalleFromFrontend.Cantidad,
+                        EstaActivo = detalleFromFrontend.EstaActivo,
+                        FechaRegistro = DateTime.Now,
+                        Total = detalleFromFrontend.ValorCompra * detalleFromFrontend.Cantidad * (1 + detalleFromFrontend.MargenGanancia / 100)
+                    };
+                    newCotizacion.Cotizaciondetalles.Add(newCotizacionDetalle);
+                    subtotalCalculado += newCotizacionDetalle.Total;
                 }
                 newCotizacion.Subtotal = subtotalCalculado;
 
@@ -256,9 +270,10 @@ namespace BLL.Implementacion
                 if (cotizacionCreada.Secuencial == 0)
                     throw new Exception("No se pudo crear la nueva versión de la cotización.");
 
-                if (newCotizacion.Confirmacion)
+                // Cambiar etapa de la visita a "COT" si la nueva versión de la cotización tiene detalles
+                if (newCotizacion.Cotizaciondetalles.Any())
                 {
-                    await _visitaServices.CambiarEtapa(newCotizacion.SecVisita, "SEG");
+                    await _visitaServices.CambiarEtapa(newCotizacion.SecVisita, "COT");
                 }
 
                 return cotizacionCreada;

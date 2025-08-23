@@ -120,7 +120,8 @@ namespace TecmeinWebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Lista()
         {
-            var lista = await _visitaServices.ListaVisitas();
+            List<Visita> lista = await _visitaServices.ListaVisitas();
+
             var listaVisitaVM = _mapper.Map<List<VisitaVM>>(lista);
 
             foreach (var visitaVM in listaVisitaVM)
@@ -133,7 +134,18 @@ namespace TecmeinWebApp.Controllers
                 }
             }
 
-            return StatusCode(StatusCodes.Status200OK, new { data = listaVisitaVM });
+            var jsonResult = JsonConvert.SerializeObject(new { data = listaVisitaVM });
+            return Content(jsonResult, "application/json");
+        }
+
+        [HttpGet]
+        public IActionResult GetClaims()
+        {
+            ClaimsPrincipal claimsUser = HttpContext.User;
+            string idUsuario = claimsUser.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).SingleOrDefault();
+            string rol = claimsUser.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).SingleOrDefault();
+
+            return StatusCode(StatusCodes.Status200OK, new { idUsuario, rol });
         }
 
         [HttpPost]
@@ -293,9 +305,10 @@ namespace TecmeinWebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> EquiposDeVisita(int secuencialVisita)
         {
-            var listaEquipoVistaVM
-                = _mapper.Map<List<EquiposVisitaVM>>(await _equiposVisitaServices.ConsultaListaPorVisita(secuencialVisita));
-            return StatusCode(StatusCodes.Status200OK, listaEquipoVistaVM);
+            var resultadoConsulta = await _equiposVisitaServices.ConsultaListaPorVisita(secuencialVisita);
+            var listaEquipoVistaVM = _mapper.Map<List<EquiposVisitaVM>>(resultadoConsulta.Equipos);
+
+            return StatusCode(StatusCodes.Status200OK, new { data = listaEquipoVistaVM, cotizacionActivaExiste = resultadoConsulta.CotizacionActivaExiste });
         }
 
         [HttpPost]
@@ -313,7 +326,7 @@ namespace TecmeinWebApp.Controllers
                     var equipoGenerado
                         = await _equiposVisitaServices
                                 .ProcesaGuardar(_mapper.Map<Equiposvisita>(equipoVisitaIngresadaVM));
-                        
+
 
                     equipoVisitaIngresadaVM = _mapper.Map<EquiposVisitaVM>(equipoGenerado);
 
@@ -329,7 +342,7 @@ namespace TecmeinWebApp.Controllers
             }
             return StatusCode(StatusCodes.Status200OK, genericResponse);
         }
-        
+
         [HttpDelete]
         [ValidatePermission("Eliminar")]
         public async Task<IActionResult> ProcesoEliminarEquipoVisita(int secuencialEquipoVisita)
@@ -401,5 +414,24 @@ namespace TecmeinWebApp.Controllers
             }
             return StatusCode(StatusCodes.Status200OK, response);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> SincronizarEquipos([FromQuery] int secuencialVisita)
+        {
+            var gResponse = new GenericResponse<bool>();
+            try
+            {
+                gResponse.Estado = await _equiposVisitaServices.SincronizarEquiposConCotizacionActiva(secuencialVisita);
+                gResponse.Mensajes = gResponse.Estado ? "Equipos sincronizados exitosamente." : "No se encontró una cotización activa para sincronizar.";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al sincronizar equipos con cotización activa.");
+                gResponse.Estado = false;
+                gResponse.Mensajes = $"Error al sincronizar equipos: {ex.Message}";
+            }
+            return StatusCode(StatusCodes.Status200OK, gResponse);
+        }
     }
+
 }

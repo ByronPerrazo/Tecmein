@@ -132,6 +132,20 @@ namespace BLL.Implementacion
             return await queryIncludes.ToListAsync();
         }
 
+        public async Task<List<Visita>> ListaVisitasPorUsuario(int idUsuario)
+        {
+            var query = await _repositorio.Consultar(v => v.SecUsuario == idUsuario);
+            var queryIncludes = query.Include(x => x.SecProvinciaNavigation)
+                                      .Include(y => y.SecCantonNavigation)
+                                      .Include(z => z.SecParroquiaNavigation)
+                                      .Include(u => u.SecUsuarioNavigation)
+                                      .Include(e => e.IdEtapaNavigation) // <-- Added
+                                      .Include(em => em.SecEmpresaNavigation) // <-- Added
+                                      .AsNoTracking();
+
+            return await queryIncludes.ToListAsync();
+        }
+
         public async Task<Visita> ObtenerDetalleVisita(int secuencial)
         {
             IQueryable<Visita> query = await _repositorio.Consultar(v => v.Secuencial == secuencial);
@@ -166,7 +180,7 @@ namespace BLL.Implementacion
         {
             try
             {
-                var visita = await _repositorio.Obtener(v => v.Secuencial == secVisita);
+                var visita = await _repositorio.Obtener(v => v.Secuencial == secVisita, "IdEtapaNavigation");
                 if (visita == null) throw new KeyNotFoundException("Visita no encontrada.");
 
                 var etapaActual = await _etapaServices.ObtenerPorCodigo(visita.IdEtapaNavigation.Codigo);
@@ -174,7 +188,14 @@ namespace BLL.Implementacion
 
                 if (nuevaEtapa == null) throw new KeyNotFoundException("La nueva etapa no es válida.");
 
-                // Regla de negocio: No se puede retroceder en el flujo de etapas.
+                // Regla de negocio: Si la etapa actual es "SEG", no se puede retroceder a "COT".
+                if (etapaActual.Codigo == "SEG" && nuevoCodigoEtapa == "COT")
+                {
+                    // No se hace nada, se mantiene en SEG
+                    return true; // Se considera exitoso porque no se necesita cambiar
+                }
+
+                // Regla de negocio general: No se puede retroceder en el flujo de etapas (basado en orden).
                 if (nuevaEtapa.Orden < etapaActual.Orden)
                 {
                     throw new InvalidOperationException("No se puede retroceder a una etapa anterior.");

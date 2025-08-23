@@ -7,6 +7,7 @@ namespace BLL.Interfaces
         Task<Visita> CreaVisita(Visita entidad);
         Task<Visita> ConsultaVisita(int secuencial);
         Task<List<Visita>> ListaVisitas();
+        Task<List<Visita>> ListaVisitasPorUsuario(int idUsuario);
         Task<Visita> EditaVisita(Visita entidad);
         Task<bool> Eliminar(int secuencial);
         Task<Visita> ObtenerDetalleVisita(int secuencial);

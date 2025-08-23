@@ -10,6 +10,8 @@ namespace TecmeinWebApp.Models.ViewModel
         public string? CodigoSri { get; set; }
         public int SecTipoImpuesto { get; set; }
         public string? NombreTipoImpuesto { get; set; }
+        public bool EsIva { get; set; }
+        public bool EsImportacion { get; set; }
         public bool Vigente { get; set; }
         public DateTime? FechaCreacion { get; set; }
         public DateTime? FechaModificacion { get; set; }

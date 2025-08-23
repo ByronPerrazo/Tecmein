@@ -81,6 +81,51 @@ function actualizarEstadoBotonPdfCliente() {
     }
 }
 
+function calcularImpuestosEnFrontend(subtotal) {
+    let valorIVACalculado = 0;
+    let valorImportacionCalculado = 0;
+    let impuestosAplicados = []; // To store details for display
+
+    if (activeTaxes && activeTaxes.length > 0) {
+        const ivaImpuesto = activeTaxes.find(i => i.vigente && i.esIva);
+        if (ivaImpuesto && ivaImpuesto.porcentaje) {
+            valorIVACalculado = subtotal * (ivaImpuesto.porcentaje / 100);
+            impuestosAplicados.push({
+                nombreImpuesto: ivaImpuesto.descripcion,
+                tipoImpuestoDescripcion: ivaImpuesto.nombreTipoImpuesto,
+                valorImpuesto: valorIVACalculado
+            });
+        }
+
+        const importacionImpuesto = activeTaxes.find(i => i.vigente && i.esImportacion);
+        if (importacionImpuesto) {
+            if (importacionImpuesto.porcentaje) {
+                valorImportacionCalculado = subtotal * (importacionImpuesto.porcentaje / 100);
+            } else if (importacionImpuesto.valorFijo) {
+                valorImportacionCalculado = importacionImpuesto.valorFijo;
+            }
+            if (valorImportacionCalculado > 0) {
+                impuestosAplicados.push({
+                    nombreImpuesto: importacionImpuesto.descripcion,
+                    tipoImpuestoDescripcion: importacionImpuesto.nombreTipoImpuesto,
+                    valorImpuesto: valorImportacionCalculado
+                });
+            }
+        }
+    }
+
+    const valorImpuestosTotal = valorIVACalculado + valorImportacionCalculado;
+    const totalConImpuestos = subtotal + valorImpuestosTotal;
+
+    return {
+        valorIVA: valorIVACalculado,
+        valorImportacion: valorImportacionCalculado,
+        valorImpuestos: valorImpuestosTotal,
+        totalConImpuestos: totalConImpuestos,
+        impuestosAplicados: impuestosAplicados
+    };
+}
+
 function calcularTotalesGenerales() {
     let subtotal = 0;
     $('.total-fila').each(function() {
@@ -88,8 +133,11 @@ function calcularTotalesGenerales() {
     });
     $('#spanSubtotal').text(subtotal.toFixed(2));
 
-    // Los valores de impuestos ahora se cargan desde el modelo, no se calculan aquí para cotizaciones existentes.
-    // Para nuevas cotizaciones, permanecerán en 0.00 hasta que se guarden y el backend los calcule.
+    // Calculate taxes on the frontend
+    const calculosImpuestos = calcularImpuestosEnFrontend(subtotal);
+    $('#spanImpuestos').text(calculosImpuestos.valorImpuestos.toFixed(2));
+    $('#spanTotal').text(calculosImpuestos.totalConImpuestos.toFixed(2));
+    mostrarDesgloseImpuestos(calculosImpuestos.impuestosAplicados);
 }
 
 function limpiarModal() {
@@ -127,7 +175,7 @@ function mostrarModal(modelo = MODELO_BASE) {
     if (Array.isArray(detalles) && detalles.length > 0) {
         detalles.forEach(detalle => {
             const fila = `
-                <tr data-id-equipo="${detalle.secuencial}">
+                <tr data-id-equipo="${detalle.secuencial}" data-sec-equipo-visita="${detalle.secEquipoVisita || ''}" data-esta-activo="${detalle.estaActivo || 1}">
                     <td>${detalle.detalleEquipo}</td>
                     <td><input type="number" class="form-control form-control-sm cantidad" value="${detalle.cantidad || 1}" min="1" step="1"></td>
                     <td><input type="number" class="form-control form-control-sm valor-compra" value="${detalle.valorCompra || 0}" min="0" step="0.01"></td>
@@ -161,8 +209,18 @@ function mostrarModal(modelo = MODELO_BASE) {
     $("#modalData").modal("show");
 }
 
+let activeTaxes = []; // Global variable to store active taxes
+
 $(document).ready(function () {
     $('body').tooltip({ selector: '[data-toggle="tooltip"]' });
+
+    // Fetch active taxes
+    fetch('/Impuesto/ListaActivos')
+        .then(response => response.ok ? response.json() : Promise.reject(response))
+        .then(responseJson => {
+            activeTaxes = responseJson.data.$values || responseJson.data;
+        })
+        .catch(err => console.error("Error cargando impuestos activos:", err));
 
     tablaData = $('#tbdata').DataTable({
         responsive: true,
@@ -178,13 +236,13 @@ $(document).ready(function () {
             { "data": "secuencial", "visible": false, "searchable": false },
             { "data": "nombreObra" },
             { "data": "nombreContacto" },
-            { "data": "enviadoProveedor", "render": function (data) { return data ? '<span class="badge badge-success">Sí</span>' : '<span class="badge badge-danger">No</span>'; } },
-            { "data": "enviadoCliente", "render": function (data) { return data ? '<span class="badge badge-success">Sí</span>' : '<span class="badge badge-danger">No</span>'; } },
-            { "data": "confirmacion", "render": function (data) { return data ? '<span class="badge badge-success">Sí</span>' : '<span class="badge badge-danger">No</span>'; } },
+            { "data": "enviadoProveedor", "render": function (data) { return data ? '<span class="badge badge-success">Sí</span>' : '<span class="badge badge-danger">No</span>'; }, "className": "dt-center dt-compact-col", "width": "1%" },
+            { "data": "enviadoCliente", "render": function (data) { return data ? '<span class="badge badge-success">Sí</span>' : '<span class="badge badge-danger">No</span>'; }, "className": "dt-center dt-compact-col", "width": "1%" },
+            { "data": "confirmacion", "render": function (data) { return data ? '<span class="badge badge-success">Sí</span>' : '<span class="badge badge-danger">No</span>'; }, "className": "dt-center dt-compact-col", "width": "1%" },
             { "data": "nombreUsuario" },
             { "data": "nombreUsuarioModifica" },
-            { "data": "estaActivo", "render": function (data) { return data == 1 ? '<span class="badge badge-info">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>'; } },
-            { "defaultContent": '<button class="btn btn-primary btn-editar btn-sm mr-2"><i class="fas fa-pencil-alt"></i></button><button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button>', "orderable": false, "searchable": false, "width": "80px" }
+            { "data": "estaActivo", "render": function (data) { return data == 1 ? '<span class="badge badge-info">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>'; }, "className": "dt-center dt-compact-col", "width": "1%" },
+            { "defaultContent": '<button class="btn btn-info btn-seguimiento btn-sm"><i class="fas fa-book-open"></i></button><button class="btn btn-primary btn-editar btn-sm"><i class="fas fa-pencil-alt"></i></button><button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button>', "orderable": false, "searchable": false, "className": "dt-center dt-actions-col", "width": "1%" }
         ],
         order: [[0, "desc"]],
         dom: "Bfrtip",
@@ -231,12 +289,12 @@ $(document).ready(function () {
                 fetch(`/Visita/EquiposDeVisita?secuencialVisita=${visitaId}`)
                     .then(response => response.ok ? response.json() : Promise.reject(response))
                     .then(respuestaJson => {
-                        const equipos = respuestaJson.$values || respuestaJson;
+                        const equipos = respuestaJson.data.$values || respuestaJson.data;
                         tbDetallesBody.empty();
                         if (equipos && Array.isArray(equipos)) {
                             equipos.forEach(equipo => {
                                 const fila = `
-                                <tr data-id-equipo="${equipo.secuencial}">
+                                <tr data-id-equipo="0" data-sec-equipo-visita="${equipo.secuencial || ''}" data-esta-activo="1">
                                     <td>${equipo.detalleEspecifico}</td>
                                     <td><input type="number" class="form-control form-control-sm cantidad" value="${equipo.cantidad || 1}" min="1" step="1"></td>
                                     <td><input type="number" class="form-control form-control-sm valor-compra" value="0" min="0" step="0.01"></td>
@@ -340,14 +398,15 @@ $(document).ready(function () {
         $('#tbDetalles tbody tr').each(function () {
             const fila = $(this);
             detalles.push({
-                secuencial: 0,
+                secuencial: parseInt(fila.data('id-equipo')) || 0,
                 secCotizacion: modelo.secuencial,
+                secEquipoVisita: parseInt(fila.data('sec-equipo-visita')) || null,
                 detalleEquipo: fila.find('td:first').text(),
                 cantidad: parseInt(fila.find('.cantidad').val()) || 1,
                 valorCompra: parseFloat(String(fila.find('.valor-compra').val()).replace(',', '.')) || 0,
                 margenGanancia: parseFloat(String(fila.find('.margen-ganancia').val()).replace(',', '.')) || 0,
                 total: parseFloat(String(fila.find('.total-fila').text()).replace(',', '.')) || 0,
-                estaActivo: 1
+                estaActivo: parseInt(fila.data('esta-activo')) || 1
             });
         });
         modelo.cotizaciondetalles = detalles;
@@ -488,4 +547,185 @@ $(document).ready(function () {
 
     $(document).on('input', '.valor-compra, .margen-ganancia', actualizarEstadoBotonPdfCliente);
     $('#chkEnviadoProveedor').on('change', actualizarEstadoBotonPdfCliente);
+});
+
+// --- Lógica para la gestión de Seguimientos ---
+
+let tablaSeguimiento; // Para la DataTable de seguimientos
+const MODELO_SEGUIMIENTO_BASE = {
+    secSeguimiento: 0,
+    secCotizacion: 0, // Se establecerá desde hiddenCotizacionId
+    accion: "",
+    detalle: "",
+    fechaAccion: "",
+    aceptacionCliente: false
+};
+
+function limpiarFormularioSeguimiento() {
+    $("#txtIdSeguimiento").val("0");
+    $("#txtAccion").val("");
+    $("#txtDetalle").val("");
+    $("#txtFechaAccion").val(""); // Limpiar input de fecha
+    $("#chkAceptacionCliente").prop("checked", false);
+}
+
+function mostrarModalDataSeguimiento(modelo = MODELO_SEGUIMIENTO_BASE) {
+    limpiarFormularioSeguimiento();
+
+    $("#txtIdSeguimiento").val(modelo.secSeguimiento);
+    $("#txtAccion").val(modelo.accion);
+    $("#txtDetalle").val(modelo.detalle);
+    // Formatear fecha para input type="date" (YYYY-MM-DD)
+    if (modelo.fechaAccion) {
+        const date = new Date(modelo.fechaAccion);
+        const formattedDate = date.toISOString().split('T')[0];
+        $("#txtFechaAccion").val(formattedDate);
+    } else {
+        $("#txtFechaAccion").val("");
+    }
+    $("#chkAceptacionCliente").prop("checked", modelo.aceptacionCliente);
+
+    $("#modalDataSeguimiento").modal("show");
+}
+
+function abrirModalSeguimientos(cotizacionId) {
+    $("#hiddenCotizacionId").val(cotizacionId); // Almacenar el ID de la cotización actual
+
+    // Destruir DataTable existente si ya está inicializada
+    if ($.fn.DataTable.isDataTable('#tbSeguimiento')) {
+        tablaSeguimiento.destroy();
+    }
+
+    tablaSeguimiento = $('#tbSeguimiento').DataTable({
+        responsive: true,
+        "ajax": {
+            "url": `/Seguimiento/Lista?secCotizacion=${cotizacionId}`,
+            "type": "GET",
+            "datatype": "json",
+            "dataSrc": function(json) {
+                return json.data.$values || json.data;
+            }
+        },
+        "columns": [
+            { "data": "accion" },
+            { "data": "detalle" },
+            { "data": "fechaAccion", "render": function(data) {
+                // Formatear fecha a formato local
+                const date = new Date(data);
+                return date.toLocaleDateString();
+            }},
+            { "data": "aceptacionCliente", "render": function (data) { return data ? '<span class="badge badge-success">Sí</span>' : '<span class="badge badge-danger">No</span>'; } },
+            { "defaultContent": '<button class="btn btn-primary btn-editar-seguimiento btn-sm mr-1"><i class="fas fa-pencil-alt"></i></button><button class="btn btn-danger btn-eliminar-seguimiento btn-sm"><i class="fas fa-trash-alt"></i></button>', "orderable": false, "searchable": false, "width": "80px" }
+        ],
+        order: [[2, "desc"]], // Ordenar por FechaAccion descendente
+        language: { url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json" }
+    });
+
+    $("#modalSeguimiento").modal("show");
+}
+
+$(document).ready(function () {
+    // ... (código existente de Cotizacion_Index.js) ...
+
+    // Evento para abrir el modal de seguimientos desde el botón en la tabla principal
+    $("#tbdata tbody").on("click", ".btn-seguimiento", function () {
+        const filaSeleccionada = $(this).closest("tr").hasClass("child") ? $(this).closest("tr").prev() : $(this).closest("tr");
+        const data = tablaData.row(filaSeleccionada).data();
+        abrirModalSeguimientos(data.secuencial); // Pasar el ID de la cotización
+    });
+
+    // Evento para el botón "Nuevo Seguimiento" dentro del modal de seguimientos
+    $("#btnNuevoSeguimiento").click(function () {
+        mostrarModalDataSeguimiento();
+    });
+
+    // Evento para el botón "Editar" dentro de la tabla de seguimientos
+    $("#tbSeguimiento tbody").on("click", ".btn-editar-seguimiento", function () {
+        const fila = $(this).closest("tr").hasClass("child") ? $(this).closest("tr").prev() : $(this).closest("tr");
+        const data = tablaSeguimiento.row(fila).data();
+        mostrarModalDataSeguimiento(data);
+    });
+
+    // Evento para el botón "Guardar" en el modal de creación/edición de seguimiento
+    $("#btnGuardarSeguimiento").click(function () {
+        const modelo = structuredClone(MODELO_SEGUIMIENTO_BASE);
+        modelo.secSeguimiento = parseInt($("#txtIdSeguimiento").val());
+        modelo.secCotizacion = parseInt($("#hiddenCotizacionId").val()); // Obtener ID de cotización del campo oculto
+        modelo.accion = $("#txtAccion").val();
+        modelo.detalle = $("#txtDetalle").val();
+        modelo.fechaAccion = $("#txtFechaAccion").val(); // Formato YYYY-MM-DD
+        modelo.aceptacionCliente = $("#chkAceptacionCliente").is(":checked");
+
+        // Validación básica
+        if (modelo.accion.trim() === "" || modelo.detalle.trim() === "" || modelo.fechaAccion.trim() === "") {
+            toastr.warning("Por favor, complete todos los campos obligatorios.", "Campos Incompletos");
+            return;
+        }
+
+        const esNuevo = modelo.secSeguimiento === 0;
+        const url = esNuevo ? '/Seguimiento/Crear' : '/Seguimiento/Editar';
+        const method = esNuevo ? 'POST' : 'PUT';
+
+        const formData = new FormData();
+        formData.append('modelo', JSON.stringify(modelo));
+
+        $("#modalDataSeguimiento .modal-content").LoadingOverlay("show");
+
+        fetch(url, { method: method, body: formData })
+            .then(response => {
+                $("#modalDataSeguimiento .modal-content").LoadingOverlay("hide");
+                return response.ok ? response.json() : Promise.reject(response);
+            })
+            .then(responseJson => {
+                if (responseJson.estado) {
+                    tablaSeguimiento.ajax.reload(); // Recargar la DataTable de seguimientos
+                    $('#modalDataSeguimiento').modal('hide');
+                    swal("Listo!", `El seguimiento fue ${esNuevo ? 'creado' : 'editado'} exitosamente.`, "success");
+                } else {
+                    swal("Error", responseJson.mensajes, "error");
+                }
+            }).catch(err => {
+                $("#modalDataSeguimiento .modal-content").LoadingOverlay("hide");
+                swal("Error", "No se pudo conectar con el servidor", "error");
+            });
+    });
+
+    // Evento para el botón "Eliminar" en la tabla de seguimientos
+    $("#tbSeguimiento tbody").on("click", ".btn-eliminar-seguimiento", function () {
+        const fila = $(this).closest("tr").hasClass("child") ? $(this).closest("tr").prev() : $(this).closest("tr");
+        const data = tablaSeguimiento.row(fila).data();
+
+        swal({
+            title: "¿Está Seguro de Eliminar?",
+            text: `Eliminar el seguimiento: "${data.accion}"`,
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Sí, eliminar",
+            cancelButtonText: "No, cancelar",
+            closeOnConfirm: false,
+            closeOnCancel: true
+        }, function (respuesta) {
+            if (respuesta) {
+                $(".showSweetAlert").LoadingOverlay("show");
+                fetch(`/Seguimiento/Eliminar?secuencial=${data.secSeguimiento}`, { method: "DELETE" })
+                    .then(response => {
+                        $(".showSweetAlert").LoadingOverlay("hide");
+                        return response.ok ? response.json() : Promise.reject(response);
+                    })
+                    .then(responseJson => {
+                        if (responseJson.estado) {
+                            tablaSeguimiento.ajax.reload(); // Recargar la DataTable de seguimientos
+                            swal("Listo!", "El seguimiento fue eliminado.", "success");
+                        } else {
+                            swal("Error", responseJson.mensajes, "error");
+                        }
+                    })
+                    .catch(err => {
+                        $(".showSweetAlert").LoadingOverlay("hide");
+                        swal("Error", "No se pudo conectar con el servidor.", "error");
+                    });
+            }
+        });
+    });
 });

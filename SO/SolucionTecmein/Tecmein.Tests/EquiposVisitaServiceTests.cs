@@ -17,6 +17,8 @@ namespace Tecmein.Tests
         private readonly Mock<IGenericRepository<Equiposvisita>> _mockEquiposVisitaRepo;
         private readonly Mock<IVisitaServices> _mockVisitaServices;
         private readonly Mock<IValidacionServices> _mockValidacionServices;
+        private readonly Mock<IGenericRepository<Cotizacion>> _mockCotizacionRepo; // New
+        private readonly Mock<IGenericRepository<Cotizaciondetalle>> _mockCotizacionDetalleRepo; // New
         private readonly EquiposVisitaServices _service;
 
         public EquiposVisitaServiceTests()
@@ -24,10 +26,14 @@ namespace Tecmein.Tests
             _mockEquiposVisitaRepo = new Mock<IGenericRepository<Equiposvisita>>();
             _mockVisitaServices = new Mock<IVisitaServices>();
             _mockValidacionServices = new Mock<IValidacionServices>();
+            _mockCotizacionRepo = new Mock<IGenericRepository<Cotizacion>>(); // New
+            _mockCotizacionDetalleRepo = new Mock<IGenericRepository<Cotizaciondetalle>>(); // New
             _service = new EquiposVisitaServices(
                 _mockEquiposVisitaRepo.Object,
                 _mockVisitaServices.Object,
-                _mockValidacionServices.Object
+                _mockValidacionServices.Object,
+                _mockCotizacionRepo.Object,
+                _mockCotizacionDetalleRepo.Object
             );
         }
 
@@ -58,8 +64,8 @@ namespace Tecmein.Tests
 
             // Assert
             Assert.NotNull(resultado);
-            Assert.Equal(2, resultado.Count);
-            Assert.True(resultado.All(e => e.SecVisita == 10 && e.EstaActivo == 1));
+            Assert.Equal(2, resultado.Equipos.Count());
+            Assert.True(resultado.Equipos.All(e => e.SecVisita == 10 && e.EstaActivo == 1));
         }
 
         [Fact]
