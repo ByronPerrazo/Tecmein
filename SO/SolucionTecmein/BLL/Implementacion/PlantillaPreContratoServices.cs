@@ -30,23 +30,16 @@ namespace BLL.Implementacion
 
         public async Task<PlantillaPreContrato> Crear(PlantillaPreContrato entidad)
         {
-            if (entidad == null) throw new ArgumentNullException(nameof(entidad));
             entidad.FechaRegistro = DateTime.Now;
             entidad.EstaActivo = 1;
-            var plantillaCreada = await _repositorio.Crear(entidad);
-            return plantillaCreada;
+            return await _repositorio.Crear(entidad);
         }
 
         public async Task<PlantillaPreContrato> Editar(PlantillaPreContrato entidad)
         {
-            if (entidad == null) throw new ArgumentNullException(nameof(entidad));
-
             var plantillaExistente = await _repositorio.Obtener(p => p.SecPlantillaPreContrato == entidad.SecPlantillaPreContrato);
-            if (plantillaExistente == null)
-            {
-                throw new Exception("La plantilla de pre-contrato no existe.");
-            }
-
+            if (plantillaExistente == null) throw new Exception("La plantilla de pre-contrato no existe.");
+            
             plantillaExistente.Nombre = entidad.Nombre;
             plantillaExistente.NumeracionInicial = entidad.NumeracionInicial;
             plantillaExistente.EstaActivo = entidad.EstaActivo;
@@ -58,11 +51,7 @@ namespace BLL.Implementacion
         public async Task<bool> Eliminar(int secPlantillaPreContrato)
         {
             var plantilla = await _repositorio.Obtener(p => p.SecPlantillaPreContrato == secPlantillaPreContrato);
-            if (plantilla == null)
-            {
-                throw new Exception("La plantilla de pre-contrato no existe.");
-            }
-
+            if (plantilla == null) throw new Exception("La plantilla de pre-contrato no existe.");
             return await _repositorio.Eliminar(plantilla);
         }
     }

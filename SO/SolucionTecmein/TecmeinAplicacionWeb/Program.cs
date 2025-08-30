@@ -2,11 +2,9 @@ using IOC;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using QuestPDF.Infrastructure;
 using Serilog;
-using System;
+using System.Collections.Generic;
 using TecmeinWebApp.Utilidades.AutoMapper;
 
-// Use the classic two-stage initialization for Serilog.
-// This allows logging during startup, before the host is built.
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .WriteTo.Console()
@@ -23,7 +21,6 @@ try
         .ReadFrom.Services(services)
         .Enrich.FromLogContext());
 
-    // Add services to the container.
     builder.Services.AddControllersWithViews().AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
@@ -31,20 +28,29 @@ try
     });
 
     builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-        .AddCookie(
-            op =>
-            {
-                op.LoginPath = "/Acceso/Login";
-                op.ExpireTimeSpan = TimeSpan.FromMinutes(20);
-            }
-        );
+        .AddCookie(op =>
+        {
+            op.LoginPath = "/Acceso/Login";
+            op.AccessDeniedPath = "/Home/AccessDenied";
+            op.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+        });
 
+    // --- INICIO NUEVA CONFIGURACIÓN DE AUTORIZACIÓN ---
     builder.Services.AddAuthorization(options =>
     {
-        options.AddPolicy("CanConsult", policy => policy.RequireClaim("CanConsult", "True"));
-        options.AddPolicy("CanModify", policy => policy.RequireClaim("CanModify", "True"));
-        options.AddPolicy("CanDelete", policy => policy.RequireClaim("CanDelete", "True"));
+        // Políticas genéricas basadas en acciones
+        options.AddPolicy("CanConsult", policy => policy.RequireClaim("Permission", "READ"));
+        options.AddPolicy("CanModify", policy => policy.RequireClaim("Permission", "UPDATE"));
+        options.AddPolicy("CanEliminar", policy => policy.RequireClaim("Permission", "DELETE"));
+        options.AddPolicy("CanCreate", policy => policy.RequireClaim("Permission", "CREATE"));
+
+        // Políticas específicas para controladores o acciones concretas
+        // El claim "Roles.Administrar" se asigna directamente al rol en la pantalla de gestión.
+        options.AddPolicy("Roles.Administrar", policy => policy.RequireClaim("Permission", "Roles.Administrar"));
+        
+        // Futuras políticas específicas se pueden añadir aquí...
     });
+    // --- FIN NUEVA CONFIGURACIÓN DE AUTORIZACIÓN ---
 
     builder.Services.InyectarDependencia(builder.Configuration);
     builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
@@ -53,10 +59,8 @@ try
 
     var app = builder.Build();
 
-    // This must be one of the first middleware.
     app.UseSerilogRequestLogging();
 
-    // Configure the HTTP request pipeline.
     if (!app.Environment.IsDevelopment())
     {
         app.UseExceptionHandler("/Home/Error");

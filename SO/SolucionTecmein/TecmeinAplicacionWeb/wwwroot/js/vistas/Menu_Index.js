@@ -131,7 +131,7 @@ $("#btnNuevo").click(function () {
             if (responseJson.estado) {
                 mostrarModal(MODELO_BASE, responseJson.objeto.listaMenusPadre, responseJson.objeto.iconosDisponibles);
             } else {
-                swal("Fallo!", responseJson.mensajes, "error");
+                Swal.fire("Fallo!", responseJson.mensajes, "error");
             }
         })
         .catch(error => {
@@ -166,9 +166,9 @@ $("#btnGuardar").click(function () {
             if (responseJson.estado) {
                 tablaData.ajax.reload();
                 $("#modalData").modal("hide");
-                swal("Listo!", "El menú fue guardado", "success");
+                Swal.fire("Listo!", "El menú fue guardado", "success");
             } else {
-                swal("Lo sentimos", responseJson.mensajes, "error");
+                Swal.fire("Lo sentimos", responseJson.mensajes, "error");
             }
         })
 })
@@ -196,7 +196,7 @@ $("#tbdata tbody").on("click", ".btn-editar", function () {
             if (responseJson.estado) {
                 mostrarModal(responseJson.objeto.menu, responseJson.objeto.listaMenusPadre, responseJson.objeto.iconosDisponibles);
             } else {
-                swal("Fallo!", responseJson.mensajes, "error");
+                Swal.fire("Fallo!", responseJson.mensajes, "error");
             }
         })
         .catch(error => {
@@ -216,36 +216,33 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
     }
     const data = tablaData.row(fila).data();
 
-    swal({
+    Swal.fire({
         title: "¿Está seguro?",
-        text: `Eliminar el menú "${data.descripcion}"`, 
-        type: "warning",
+        text: `Eliminar el menú "${data.descripcion}"`,
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonClass: "btn-danger",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
         confirmButtonText: "Si, eliminar",
-        cancelButtonText: "No, cancelar",
-        closeOnConfirm: false,
-        closeOnCancel: true
-    },
-        function (isConfirm) {
-            if (isConfirm) {
-                fetch(`/Menu/Eliminar?secuencial=${data.secuencial}`, {
-                    method: "DELETE"
+        cancelButtonText: "No, cancelar"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/Menu/Eliminar?secuencial=${data.secuencial}`, {
+                method: "DELETE"
+            })
+                .then(response => {
+                    return response.ok ? response.json() : Promise.reject(response);
                 })
-                    .then(response => {
-                        return response.ok ? response.json() : Promise.reject(response);
-                    })
-                    .then(responseJson => {
-                        if (responseJson.estado) {
-                            tablaData.row(fila).remove().draw();
-                            swal("Listo!", "El menú fue eliminado", "success");
-                        } else {
-                            swal("Lo sentimos", responseJson.mensaje, "error");
-                        }
-                    })
-            }
+                .then(responseJson => {
+                    if (responseJson.estado) {
+                        tablaData.row(fila).remove().draw();
+                        Swal.fire("Listo!", "El menú fue eliminado.", "success");
+                    } else {
+                        Swal.fire("Lo sentimos", responseJson.mensajes, "error");
+                    }
+                })
         }
-    )
+    })
 })
 
 function formatIcon(icon) {

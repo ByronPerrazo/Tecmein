@@ -1,7 +1,8 @@
-﻿using BLL.Interfaces;
+using BLL.Interfaces;
 using DAL.Interfaces;
 using Entity;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace BLL.Implementacion
 {
@@ -10,12 +11,13 @@ namespace BLL.Implementacion
 
         private IGenericRepository<Rol> _repositorio;
         private IUsuarioServices _usuarioServices;
-        private IPermisosRolServices _permisosRolServices;
-        public RolServices(IGenericRepository<Rol> repositorio, IUsuarioServices usuarioServices, IPermisosRolServices permisosRolServices)
+        // private IPermisosRolServices _permisosRolServices; // ELIMINADO
+
+        public RolServices(IGenericRepository<Rol> repositorio, IUsuarioServices usuarioServices /*, IPermisosRolServices permisosRolServices */)
         {
             _repositorio = repositorio;
             _usuarioServices = usuarioServices;
-            _permisosRolServices = permisosRolServices;
+            // _permisosRolServices = permisosRolServices; // ELIMINADO
         }
 
         public async Task<List<Rol>> Lista()
@@ -30,7 +32,8 @@ namespace BLL.Implementacion
                          .Obtener(x => x.Secuencial == secuecialRol);
         }
 
-        public async Task<Rol?> GuardarRol(Rol entidad)
+        // Renombrado de GuardarRol a Crear
+        public async Task<Rol?> Crear(Rol entidad)
         {
             try
             {
@@ -43,7 +46,8 @@ namespace BLL.Implementacion
             }
         }
 
-        public async Task<Rol?> EditarRol(Rol entidad)
+        // Renombrado de EditarRol a Editar
+        public async Task<Rol?> Editar(Rol entidad)
         {
             try
             {
@@ -104,38 +108,6 @@ namespace BLL.Implementacion
             }
         }
 
-        public async Task<Rol> GuardarRolCompleto(Rol entidad, Permisosrol permisos)
-        {
-            var rolGenerado = await GuardarRol(entidad);
-            if (rolGenerado != null)
-            {
-                permisos.SecRol = rolGenerado.Secuencial;
-                await _permisosRolServices.Crea(permisos);
-            }
-            return rolGenerado;
-        }
-
-        public async Task<Rol?> EditarRolCompleto(Rol entidad, Permisosrol permisos)
-        {
-            var rolEditado = await EditarRol(entidad);
-            if (rolEditado != null)
-            {
-                var permisosExistente = await _permisosRolServices.PermisosRolActivo(rolEditado.Secuencial);
-                if (permisosExistente != null)
-                {
-                    permisosExistente.Consultar = permisos.Consultar;
-                    permisosExistente.Modificar = permisos.Modificar;
-                    permisosExistente.Eliminar = permisos.Eliminar;
-                    await _permisosRolServices.Editar(permisosExistente);
-                }
-                else
-                {
-                    permisos.SecRol = rolEditado.Secuencial;
-                    await _permisosRolServices.Crea(permisos);
-                }
-            }
-            return rolEditado;
-        }
-
+        // Métodos GuardarRolCompleto y EditarRolCompleto ELIMINADOS
     }
 }

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using BLL.Interfaces;
 using Entity;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +10,7 @@ using TecmeinWebApp.Utilidades.Response;
 
 namespace TecmeinWebApp.Controllers
 {
+    [Authorize] // Requerir que el usuario esté autenticado para todo el controlador
     public class ContactoController : Controller
     {
         private readonly IContactoServices _contactoServices;
@@ -29,6 +30,17 @@ namespace TecmeinWebApp.Controllers
             _logger = logger;
         }
 
+        // La página principal del módulo de Contactos
+        // Se puede ver si se tiene acceso al menú de contactos.
+        [Authorize(Policy = "Menu.Ver.13")]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        // La lista de datos para la tabla
+        // Se puede ver si se tiene el permiso específico para ver contactos.
+        [Authorize(Policy = "Contacto.Ver")]
         [HttpGet]
         public async Task<IActionResult> Lista()
         {
@@ -51,6 +63,7 @@ namespace TecmeinWebApp.Controllers
             return new JsonResult(listaConstructorasVM, jsonOptions);
         }
 
+        [Authorize(Policy = "Contacto.Editar")]
         [HttpGet]
         public async Task<IActionResult> ObtenerParaEditar(int secuencial)
         {
@@ -83,6 +96,7 @@ namespace TecmeinWebApp.Controllers
             return new JsonResult(gResponse, jsonOptions);
         }
 
+        [Authorize(Policy = "Contacto.Crear")]
         [HttpPost]
         public async Task<IActionResult> CrearContacto([FromForm] string modelo)
         {
@@ -99,8 +113,6 @@ namespace TecmeinWebApp.Controllers
                                    .Where(x => x.Type == ClaimTypes.NameIdentifier)
                                    .Select(x => x.Value)
                                    .SingleOrDefault();
-
-                //contactoIngresadoVM..SecUsuario = ObtieneSecuencialUsuario();
 
                 var contactoGenerado
                     = await _contactoServices
@@ -119,6 +131,8 @@ namespace TecmeinWebApp.Controllers
             return StatusCode(StatusCodes.Status200OK, genericResponse);
         }
 
+        [Authorize(Policy = "Contacto.Editar")]
+        [HttpPost]
         public async Task<IActionResult> Editar([FromForm] string modelo, [FromForm] string modeloVisitaDetalle)
         {
             var genericResponse = new GenericResponse<ContactoVM>();
@@ -143,6 +157,7 @@ namespace TecmeinWebApp.Controllers
             return StatusCode(StatusCodes.Status200OK, genericResponse);
         }
 
+        [Authorize(Policy = "Contacto.Eliminar")]
         [HttpDelete]
         public async Task<IActionResult> Eliminar(int secuencial)
         {
@@ -158,12 +173,6 @@ namespace TecmeinWebApp.Controllers
                 throw;
             }
             return StatusCode(StatusCodes.Status200OK, gResponse);
-        }
-
-        [Authorize(Policy = "CanConsult")]
-        public IActionResult Index()
-        {
-            return View();
         }
 
         [HttpGet]

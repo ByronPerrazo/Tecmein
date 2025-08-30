@@ -1,0 +1,78 @@
+@model TecmeinWebApp.Models.ViewModel.GestionRolPermisosVM
+
+@{ 
+    ViewData["Title"] = "Gestionar Permisos de Rol";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Estilos {
+    <link rel="stylesheet" href="~/css/vistas/gestionar_permisos.css" />
+}
+
+<div class="card shadow-sm mb-2">
+    <div class="card-header py-3 bg-second-primary">
+        <h6 class="m-0 font-weight-bold text-white">Gestión de Permisos para el Rol: @Model.NombreRol</h6>
+    </div>
+    <div class="card-body">
+
+        <input type="hidden" id="secRol" value="@Model.SecRol" />
+
+        <!-- Sección de Permisos Genéricos -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h5><i class="fas fa-cogs mr-2"></i>Permisos Genéricos Globales</h5>
+                <p class="text-muted">Define las acciones que este rol puede realizar en los módulos a los que tiene acceso.</p>
+                <div class="permisos-globales-container">
+                    @foreach (var permiso in Model.TodosLosPermisos)
+                    {
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input permiso-check" type="checkbox" id="perm-@permiso.IdPermiso" value="@permiso.IdPermiso" 
+                                   @(Model.PermisosAsignados.Contains(permiso.IdPermiso) ? "checked" : "")>
+                            <label class="form-check-label" for="perm-@permiso.IdPermiso">@permiso.Descripcion</label>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <hr/>
+
+        <!-- Sección de Acceso a Menús -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <h5><i class="fas fa-list-ul mr-2"></i>Acceso a Módulos del Sistema</h5>
+                <p class="text-muted">Define los módulos o secciones del sistema que este rol podrá ver.</p>
+                <div class="menus-container">
+                    @foreach (var menu in Model.TodosLosMenus.Where(m => m.SecMenuPadre == null)) // Menús Padre
+                    {
+                        <div class="menu-group">
+                            <div class="form-check parent-menu">
+                                <input class="form-check-input menu-check" type="checkbox" id="menu-@menu.Secuencial" value="@menu.Secuencial"
+                                       @(Model.MenusAsignados.Contains(menu.Secuencial) ? "checked" : "")>
+                                <label class="form-check-label font-weight-bold" for="menu-@menu.Secuencial">@menu.Descripcion</label>
+                            </div>
+                            
+                            @foreach (var submenu in Model.TodosLosMenus.Where(m => m.SecMenuPadre == menu.Secuencial))
+                            {
+                                <div class="form-check child-menu ml-4">
+                                    <input class="form-check-input menu-check" type="checkbox" id="menu-@submenu.Secuencial" value="@submenu.Secuencial"
+                                           @(Model.MenusAsignados.Contains(submenu.Secuencial) ? "checked" : "")>
+                                    <label class="form-check-label" for="menu-@submenu.Secuencial">@submenu.Descripcion</label>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="card-footer bg-light d-flex justify-content-end">
+        <a class="btn btn-secondary mr-2" href="@Url.Action("Index", "Rol")">Volver a la Lista</a>
+        <button class="btn btn-primary" id="btnGuardarCambios"><i class="fas fa-save mr-2"></i>Guardar Cambios</button>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/vistas/gestionar_permisos.js"></script>
+}

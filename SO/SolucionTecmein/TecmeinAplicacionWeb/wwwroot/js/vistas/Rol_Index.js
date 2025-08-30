@@ -1,8 +1,8 @@
 const MODELO_BASE = {
-    secuencial: 0,
-    descripcion: "",
+    Secuencial: 0,
+    Descripcion: "",
     FechaRegistro: "",
-    esActivo: 1
+    EsActivo: 1
 }
 
 let tablaData;
@@ -21,14 +21,25 @@ $(document).ready(function () {
                 "url": 'ListaRol',
                 "type": "GET",
                 "datatype": "json",
-                "dataSrc": "data.$values",
+                "dataSrc": "data",
+                "error": function (jqXHR, textStatus, errorThrown) {
+                    // El manejador global en site.js ya se encarga de esto
+                    // Pero si quieres un manejo específico aquí, puedes añadirlo.
+                    // Por ahora, solo para evitar el error de DataTables si el global no lo atrapa.
+                    if (jqXHR.status === 403) {
+                        // No hacer nada, el site.js ya mostrará el Swal
+                    } else {
+                        // Manejo de otros errores si es necesario
+                        console.error("Error AJAX en DataTables:", jqXHR.status, textStatus, errorThrown);
+                    }
+                }
             },
             "columns": [
-                { data: "secuencial", visible: false },
-                { data: "descripcion", searchable: true },
-                { data: "fechaRegistro", searchable: true, width: "100px" },
+                { data: "Secuencial", visible: false, searchable: false },
+                { data: "Descripcion", searchable: true },
+                { data: "FechaRegistroString", searchable: true, width: "100px" },
                 {
-                    data: "esActivo", render: function (data) {
+                    data: "EsActivo", render: function (data) {
                         if (data == 1)
                             return '<span class="badge badge-info">Activo</span>';
                         else
@@ -39,8 +50,9 @@ $(document).ready(function () {
                 {
                     "defaultContent":
                         '<button class="btn btn-primary btn-editar btn-sm mr-2"><i class="fas fa-pencil-alt"></i></button>' +
-                        '<button class="btn btn-danger btn-eliminar btn-sm mr-2"><i class="fas fa-trash-alt"></i></button>',
-                    "orderable": true,
+                        '<button class="btn btn-danger btn-eliminar btn-sm mr-2"><i class="fas fa-trash-alt"></i></button>' +
+                        '<a class="btn btn-info btn-sm" href="#"><i class="fas fa-user-shield"></i></a>', // Botón Gestionar Permisos
+                    "orderable": false,
                     "searchable": false,
                     "width": "160px"
                 }
@@ -65,21 +77,22 @@ $(document).ready(function () {
 
 
 
-})
+}) // This closing brace was missing in the original string.
 function mostrarModal(modelo = MODELO_BASE) {
-    $("#txtId").val(modelo.secuencial);
-    $("#txtDescripcionRol").val(modelo.descripcion);
-    $("#cboEstado").val(modelo.esActivo);
+    $("#txtId").val(modelo.Secuencial);
+    $("#txtDescripcionRol").val(modelo.Descripcion);
+    $("#cboEstado").val(modelo.EsActivo);
 
-    if (modelo.oPermisosRol) {
-        $("#checkConsultar").prop("checked", modelo.oPermisosRol.consultar == 1);
-        $("#checkModificar").prop("checked", modelo.oPermisosRol.modificar == 1);
-        $("#checkEliminar").prop("checked", modelo.oPermisosRol.eliminar == 1);
-    } else {
-        $("#checkConsultar").prop("checked", false);
-        $("#checkModificar").prop("checked", false);
-        $("#checkEliminar").prop("checked", false);
-    }
+    // Lógica de permisos antigua ELIMINADA
+    // if (modelo.oPermisosRol) {
+    //     $("#checkConsultar").prop("checked", modelo.oPermisosRol.consultar == 1);
+    //     $("#checkModificar").prop("checked", modelo.oPermisosRol.modificar == 1);
+    //     $("#checkEliminar").prop("checked", modelo.oPermisosRol.eliminar == 1);
+    // } else {
+    //     $("#checkConsultar").prop("checked", false);
+    //     $("#checkModificar").prop("checked", false);
+    //     $("#checkEliminar").prop("checked", false);
+    // }
 
     $("#modalData").modal("show")
 }
@@ -105,74 +118,65 @@ $("#btnGuardar").click(function () {
         return;
     }
 
+    const selects = document.querySelectorAll("select.input-validar");
+
+    const selectsConValorDeshabilitado = Array.from(selects).filter(select => {
+        const selectedOption = select.options[select.selectedIndex];
+        return selectedOption.disabled && selectedOption.selected;
+    });
+
+    if (selectsConValorDeshabilitado.length > 0) {
+        const mensaje = `Debe seleccionar una opción válida en : "${selectsConValorDeshabilitado[0].name}"`;
+        toastr.warning("", mensaje);
+        selectsConValorDeshabilitado[0].focus();
+        return;
+    }
+
     const modelo = {
-        secuencial: $("#txtId").val(),
-        descripcion: $("#txtDescripcionRol").val(),
-        esActivo: $("#cboEstado").val(),
-        oPermisosRol: {
-            consultar: $("#checkConsultar").is(":checked") ? 1 : 0,
-            modificar: $("#checkModificar").is(":checked") ? 1 : 0,
-            eliminar: $("#checkEliminar").is(":checked") ? 1 : 0
-        }
+        Secuencial: $("#txtId").val(),
+        Descripcion: $("#txtDescripcionRol").val(),
+        EsActivo: $("#cboEstado").val(),
+        // oPermisosRol: {} // Lógica de permisos antigua ELIMINADA
     }
 
     const datosFormulario = new FormData();
     datosFormulario.append("modelo", JSON.stringify(modelo));
 
+    const url = "ProcesaGuardarRol"; // El controlador ya no espera oPermisosRol
+    const method = "POST";
+
     $("#modalData").find("div.modal-content").LoadingOverlay("show");
 
-    if (!esEdicion) {
+    fetch(url, {
+        method: method,
+        body: datosFormulario
+    })
 
-        fetch("ProcesaGuardarRol", {
-            method: "POST",
-            body: datosFormulario
-        })
-
-            .then(
-                respuesta => {
-                    $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-                    return respuesta.ok
-                        ? respuesta.json()
-                        : Promise.reject(respuesta);
-                }
-            ).then(
-                respuestaJson => {
-                    if (respuestaJson.estado) {
-                        tablaData.row.add(respuestaJson.objeto).draw(false);
-                        $("#modalData").modal("hide");
-                        swal("Listo!", "Información Guardada con Éxito", "success");
-                    } else {
-                        swal("Fallo!", respuestaJson.mensajes, "error");
-                    }
-                }
-            ).catch(error => {
-                console.error('Error al Procesar Guardar Cambios:', error);
-            });
-
-
-    } else {
-
-        fetch("ProcesaGuardarRol", {
-            method: "POST",
-            body: datosFormulario
-        })
-            .then(response => {
+        .then(
+            respuesta => {
                 $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-                return response.ok
-                    ? response.json()
-                    : Promise.reject(response);
-            }).then(responseJson => {
-                if (responseJson.estado) {
-                    tablaData.row(filaSeleccionada).data(responseJson.objeto).draw(false);
+                return respuesta.ok
+                    ? respuesta.json()
+                    : Promise.reject(respuesta);
+            }
+        ).then(
+            respuestaJson => {
+                if (respuestaJson.estado) {
+                    if (esEdicion) {
+                        tablaData.row(filaSeleccionada).data(respuestaJson.objeto).draw(false);
+                    } else {
+                        tablaData.row.add(respuestaJson.objeto).draw(false);
+                    }
                     $("#modalData").modal("hide");
-                    swal("Listo!", "Rol " + responseJson.objeto.descripcion + " Editado ", "success");
+                    swal("Listo!", `Rol ${esEdicion ? 'editado' : 'creado'} correctamente`, "success");
+                } else {
+                    swal("Fallo!", respuestaJson.mensajes, "error");
                 }
-                else {
-                    swal("Fallo!", responseJson.mensajes, "error");
-                }
-            });
+            }
+        ).catch(error => {
+            console.error('Error al Procesar Guardar Cambios:', error);
+        });
 
-    }
 
 });
 
@@ -187,7 +191,7 @@ $("#tbdata tbody").on("click", ".btn-editar", function () {
 
     const data = tablaData.row(filaSeleccionada).data();
 
-    fetch(`RolPorSecuencial?secRol=${data.secuencial}`)
+    fetch(`RolPorSecuencial?secRol=${data.Secuencial}`)
         .then(response => response.json())
         .then(data => {
             mostrarModal(data);
@@ -210,7 +214,7 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
 
     swal({
         title: "¿Está Seguro de Eliminar?",
-        text: `Eliminar el rol "${data.descripcion}"`,
+        text: `Eliminar el rol "${data.Descripcion}"`, 
         type: "warning",
         showCancelButton: true,
         confirmButtonClass: "btn-danger",
@@ -223,7 +227,7 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
             if (respuesta) {
                 $(".showSweetAlert").LoadingOverlay("show");
 
-                fetch(`Eliminar?secuencial=${data.secuencial}`, {
+                fetch(`Eliminar?secuencial=${data.Secuencial}`, {
                     method: "DELETE"
                 })
                     .then(response => {
@@ -235,10 +239,10 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
                         if (responseJson.estado) {
                             tablaData.row(fila).remove().draw(false);
 
-                            swal("Listo!", "El rol " + data.descripcion + " Fue Eliminado", "success");
+                            swal("Listo!", "El rol " + data.Descripcion + " Fue Eliminado", "success");
                         }
                         else {
-                            swal("Fallo!", responseJson.mensajes, "error");
+                            swal("Fallo!", respuestaJson.mensajes, "error");
                         }
                     });
 
@@ -249,3 +253,14 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
 
 })
 
+// Manejador para el nuevo botón "Gestionar Permisos"
+$("#tbdata tbody").on("click", ".btn-info", function () {
+    let fila;
+    if ($(this).closest("tr").hasClass("child")) {
+        fila = $(this).closest("tr").prev();
+    } else {
+        fila = $(this).closest("tr");
+    }
+    const data = tablaData.row(fila).data();
+    window.location.href = `/Rol/GestionarPermisos?secRol=${data.Secuencial}`;
+});

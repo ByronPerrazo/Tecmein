@@ -48,6 +48,7 @@ namespace IOC
                     provider.GetRequiredService<IGenericRepository<Equiposvisita>>()
                 ));
             services.AddScoped<IPermisosRolServices, PermisosRolServices>();
+            services.AddScoped<IPermisoServices, PermisoServices>();
             services.AddScoped<IRolMenuServices, RolMenuServices>();
             services.AddScoped<IValidacionServices, ValidacionServices>();
             services.AddScoped<IMenusHijosDesplegables, MenusHijosDesplegables>();
@@ -64,6 +65,7 @@ namespace IOC
             services.AddScoped<IGenericRepository<Equiposvisita>, GenericRepository<Equiposvisita>>();
             services.AddScoped<IPreContratoServices, PreContratoServices>();
             services.AddScoped<IFormaPagoServices, FormaPagoServices>();
+
             services.AddScoped<IPlantillaPreContratoServices, PlantillaPreContratoServices>();
             services.AddScoped<IPlantillaPreContratoParrafoServices, PlantillaPreContratoParrafoServices>();
 

@@ -9,7 +9,12 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
         public AutoMapperProfile()
         {
 
-            CreateMap<Rol, RolVM>().ReverseMap();
+            CreateMap<Rol, RolVM>()
+                .ForMember(destino => destino.FechaRegistroString,
+                           opt => opt.MapFrom(origen => origen.FechaRegistro.HasValue ? origen.FechaRegistro.Value.ToString("dd/MM/yyyy") : null));
+            CreateMap<RolVM, Rol>()
+                .ForMember(destino => destino.FechaRegistro,
+                           opt => opt.MapFrom(origen => !string.IsNullOrEmpty(origen.FechaRegistroString) ? DateTime.ParseExact(origen.FechaRegistroString, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture) : (DateTime?)null));
             CreateMap<Empresa, EmpresaVM>()
                 .ForMember(destino =>
                            destino.EstaActivo,
@@ -61,6 +66,10 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
                     destino.InverseSecMenuPadreNavigation,
                     opt => opt.Ignore()
                 );
+            #endregion
+
+            #region Permiso
+            CreateMap<Permiso, PermisoVM>().ReverseMap();
             #endregion
 
             CreateMap<Provincia, ProvinciaVM>().ReverseMap();
@@ -252,6 +261,8 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
             CreateMap<PlantillaPreContratoParrafo, PlantillaPreContratoParrafoVM>().ReverseMap();
 
             CreateMap<Permisosrol, PermisosrolVM>().ReverseMap();
+
+            CreateMap<Permiso, TecmeinAplicacionWeb.Models.ViewModels.PermisoVM>().ReverseMap();
 
             CreateMap<RolMenu, RolMenuVM>()
                 .ForMember(destino =>

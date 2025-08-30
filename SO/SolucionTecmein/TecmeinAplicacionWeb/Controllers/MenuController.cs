@@ -425,7 +425,7 @@ namespace TecmeinAplicacionWeb.Controllers
             var gResponse = new GenericResponse<List<MenuTableVM>>();
             try
             {
-                var menus = await _menuServices.ObtieneMenuTotal();
+                var menus = await _menuServices.ObtenerTodosParaAdministracion();
 
                 // Crear un diccionario para buscar descripciones de menús por su secuencial
                 var menuDescriptions = menus.ToDictionary(m => m.Secuencial, m => m.Descripcion);

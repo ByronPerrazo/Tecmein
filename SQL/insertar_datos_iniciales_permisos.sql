@@ -1,0 +1,31 @@
+-- (Versión 3 - MySQL - Simplificado)
+-- Llenado de datos iniciales en la tabla Permiso
+
+INSERT INTO Permiso (IdPermiso, Descripcion) VALUES
+('Menu.Ver.1', 'Permite ver el menú: DashBoard'),
+('Menu.Ver.2', 'Permite ver el menú: Administración'),
+('Menu.Ver.3', 'Permite ver el menú: Inventario'),
+('Menu.Ver.4', 'Permite ver el menú: Ventas'),
+('Menu.Ver.5', 'Permite ver el menú: Reportes'),
+('Menu.Ver.6', 'Permite ver el menú: Usuarios'),
+('Menu.Ver.7', 'Permite ver el menú: Empresa'),
+('Menu.Ver.8', 'Permite ver el menú: Tipo Producto'),
+('Menu.Ver.9', 'Permite ver el menú: Producto'),
+('Menu.Ver.10', 'Permite ver el menú: Visita'),
+('Menu.Ver.11', 'Permite ver el menú: Catalogos'),
+('Menu.Ver.12', 'Permite ver el menú: Constructora'),
+('Menu.Ver.13', 'Permite ver el menú: Contactos'),
+('Menu.Ver.15', 'Permite ver el menú: Rol'),
+('Menu.Ver.16', 'Permite ver el menú: Menu'),
+('Menu.Ver.17', 'Permite ver el menú: Parámetros'),
+('Menu.Ver.18', 'Permite ver el menú: Rol Menu'),
+('Menu.Ver.19', 'Permite ver el menú: Cotizaciones'),
+('Menu.Ver.20', 'Permite ver el menú: Impuestos'),
+('Menu.Ver.21', 'Permite ver el menú: Tipo Impuesto'),
+('Menu.Ver.22', 'Permite ver el menú: Seguimientos'),
+('Plantillas.Administrar', 'Permite crear, editar y eliminar plantillas de pre-contrato'),
+('PreContrato.Crear', 'Permite generar un nuevo pre-contrato desde una cotización'),
+('PreContrato.Editar', 'Permite crear nuevas versiones y modificar un pre-contrato'),
+('PreContrato.VerHistorial', 'Permite ver el historial de cambios de un pre-contrato'),
+('PreContrato.Exportar', 'Permite exportar un pre-contrato a formato Word'),
+('Roles.Administrar', 'Permite administrar roles y asignar permisos');

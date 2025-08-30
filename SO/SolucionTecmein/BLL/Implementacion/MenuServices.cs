@@ -8,16 +8,20 @@ namespace BLL.Implementacion
     public class MenuServices : IMenuServices
     {
         private readonly IGenericRepository<Menu> _repositorioMenu;
-        private readonly IGenericRepository<RolMenu> _repositorioRolMenu;
+        private readonly IGenericRepository<RolPermiso> _repositorioRolPermiso; // CAMBIO: Nueva dependencia
         private readonly IGenericRepository<Usuario> _repositorioUsuario;
+        private readonly IGenericRepository<RolMenu> _repositorioRolMenu;
+
 
         public MenuServices(IGenericRepository<Menu> repositorioMenu,
-                            IGenericRepository<RolMenu> repositorioRolMenu,
-                            IGenericRepository<Usuario> repositorioUsuario)
+                            IGenericRepository<RolPermiso> repositorioRolPermiso, // CAMBIO: Nueva dependencia
+                            IGenericRepository<Usuario> repositorioUsuario,
+                            IGenericRepository<RolMenu> repositorioRolMenu)
         {
             _repositorioMenu = repositorioMenu;
-            _repositorioRolMenu = repositorioRolMenu;
+            _repositorioRolPermiso = repositorioRolPermiso; // CAMBIO
             _repositorioUsuario = repositorioUsuario;
+            _repositorioRolMenu = repositorioRolMenu;
         }
         public async Task<Menu> ObtenerPorId(int secuencial)
         {
@@ -35,15 +39,33 @@ namespace BLL.Implementacion
             var usuario = await _repositorioUsuario.Obtener(u => u.Secuencial == secuencialUsuario);
             if (usuario == null || usuario.SecRol == null) return new List<Menu>();
 
-            // 1. Obtener todos los menús activos para referencia y ponerlos en un diccionario para búsqueda O(1).
+            // =================== INICIO DE LA LÓGICA CORREGIDA ===================
+
+            // 1. Obtener todos los permisos de visualización de menú para el rol del usuario.
+            var permisosQuery = await _repositorioRolPermiso.Consultar(p => p.SecRol == usuario.SecRol && p.IdPermiso.EndsWith("_VIEWMENU"));
+            
+            // 2. Extraer la raíz del permiso (ej: "USUARIO" de "USUARIO_VIEWMENU") y guardarla en un HashSet para búsqueda eficiente.
+            var permisosDeVisualizacion = (await permisosQuery.Select(p => p.IdPermiso).ToListAsync())
+                .Select(p => p.Replace("_VIEWMENU", "").ToUpper())
+                .ToHashSet();
+
+            // 3. Obtener todos los menús activos para referencia.
             var todosLosMenusActivos = await (await _repositorioMenu.Consultar(m => m.EsActivo == 1)).ToListAsync();
             var todosLosMenusDict = todosLosMenusActivos.ToDictionary(m => m.Secuencial);
 
-            // 2. Obtener los Ids de menú a los que el usuario tiene permiso directo.
-            var rolMenuQuery = await _repositorioRolMenu.Consultar(rm => rm.SecRol == usuario.SecRol && rm.EsActivo == 1 && rm.SecMenu != null);
-            var idsMenusDirectos = await rolMenuQuery.Select(rm => rm.SecMenu.Value).ToListAsync();
+            // 4. Encontrar los menús que coinciden con los permisos del usuario.
+            //    Se compara la raíz del permiso (ej: "USUARIO") con el nombre del controlador del menú.
+            var menusConPermisoDirecto = todosLosMenusActivos
+                .Where(m => !string.IsNullOrEmpty(m.Controlador) && permisosDeVisualizacion.Contains(m.Controlador.ToUpper()))
+                .ToList();
+            
+            var idsMenusDirectos = menusConPermisoDirecto.Select(m => m.Secuencial).ToList();
 
-            // 3. Construir la lista final de menús a mostrar, incluyendo todos los ancestros para evitar "hijos huérfanos".
+            // =================== FIN DE LA LÓGICA CORREGIDA ===================
+
+
+            // 5. Construir la lista final de menús a mostrar, incluyendo todos los ancestros para evitar "hijos huérfanos".
+            //    (Esta lógica de negocio se mantiene intacta)
             var menusAMostrar = new Dictionary<int, Menu>();
             foreach (var idMenu in idsMenusDirectos)
             {
@@ -56,17 +78,18 @@ namespace BLL.Implementacion
                 }
             }
 
-            // 4. Organizar la lista plana en una jerarquía (árbol) para la vista.
+            // 6. Organizar la lista plana en una jerarquía (árbol) para la vista.
+            //    (Esta lógica de negocio se mantiene intacta)
             var menusFinales = new List<Menu>();
             var menusProcesados = menusAMostrar.Values.ToList();
 
             foreach (var menu in menusProcesados)
             {
                 // Limpiar la navegación para evitar ciclos o datos incorrectos de iteraciones anteriores.
-                menu.InverseSecMenuPadreNavigation = new List<Menu>(); 
+                menu.InverseSecMenuPadreNavigation = new List<Menu>();
             }
 
-            foreach (var menu in menusProcesados.OrderBy(m=>m.Secuencial))
+            foreach (var menu in menusProcesados.OrderBy(m => m.Secuencial))
             {
                 if (menu.SecMenuPadre.HasValue && menusAMostrar.ContainsKey(menu.SecMenuPadre.Value))
                 {
@@ -84,6 +107,12 @@ namespace BLL.Implementacion
         }
 
         public async Task<List<Menu>> ObtieneMenuTotal()
+        {
+            IQueryable<Menu> query = await _repositorioMenu.Consultar(m => m.EsActivo == 1);
+            return await query.ToListAsync();
+        }
+
+        public async Task<List<Menu>> ObtenerTodosParaAdministracion()
         {
             IQueryable<Menu> query = await _repositorioMenu.Consultar();
             return await query.ToListAsync();
@@ -139,6 +168,16 @@ namespace BLL.Implementacion
                 if (menuEncontrado == null)
                     throw new TaskCanceledException("El menú no existe");
 
+                // Find and delete related RolMenu entries
+                var rolMenusAsociadosQuery = await _repositorioRolMenu.Consultar(rm => rm.SecMenu == secuencial);
+                var rolMenusAsociados = await rolMenusAsociadosQuery.ToListAsync();
+
+                foreach (var rolMenu in rolMenusAsociados)
+                {
+                    await _repositorioRolMenu.Eliminar(rolMenu);
+                }
+
+                // Now delete the menu
                 bool respuesta = await _repositorioMenu.Eliminar(menuEncontrado);
 
                 if (!respuesta)

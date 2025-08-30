@@ -1,148 +1,79 @@
-using AutoMapper;
-using BLL.Interfaces;
-using Entity;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using System.Security.Claims;
 using TecmeinWebApp.Models;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using BLL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using AutoMapper; // AÑADIDO
 using TecmeinWebApp.Models.ViewModel;
-using TecmeinWebApp.Utilidades.Response;
+using Entity; // AÑADIDO
 
-namespace TecmeinWebApp.Controllers
+namespace TecmeinWebApp.Controllers;
+
+[Authorize] 
+public class HomeController : Controller
 {
-    [Authorize]
-    public class HomeController : Controller
+    private readonly IUsuarioServices _usuarioServices;
+    private readonly ILogger<HomeController> _logger;
+    private readonly IMapper _mapper; // AÑADIDO
+
+    public HomeController(ILogger<HomeController> logger, IUsuarioServices usuarioServices, IMapper mapper) // CONSTRUCTOR MODIFICADO
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly IMapper _mapper;
-        private readonly IUsuarioServices _usuarioServicio;
+        _logger = logger;
+        _usuarioServices = usuarioServices;
+        _mapper = mapper; // AÑADIDO
+    }
 
-        public HomeController(IUsuarioServices usuarioServicio, IMapper mapper
-            , ILogger<HomeController> logger
-            )
-        {
-            _usuarioServicio = usuarioServicio;
-            _mapper = mapper;
-            _logger = logger;
+    public IActionResult Index()
+    {
+        return View();
+    }
 
-        }
+    public async Task<IActionResult> Perfil()
+    {
+        string idUsuario = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+        // 1. Obtener la entidad Usuario desde el servicio
+        var usuario = await _usuarioServices.ObtenerPorId(int.Parse(idUsuario));
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        // 2. Mapear la entidad al ViewModel que la vista espera
+        var vmUsuario = _mapper.Map<Usuario>(usuario);
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+        return View(vmUsuario);
+    }
 
-        public IActionResult Perfil()
-        {
-            return View();
-        }
+    [HttpGet]
+    public async Task<IActionResult> ObtenerUsuario()
+    {
+        string idUsuario = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var usuario = await _usuarioServices.ObtenerPorId(int.Parse(idUsuario));
+        var vmUsuario = _mapper.Map<UsuarioVM>(usuario);
 
-        [HttpGet]
-        public async Task<IActionResult> ObtenerUsuario()
-        {
-            var response = new GenericResponse<UsuarioVM>();
-            try
-            {
-                ClaimsPrincipal claimsUser = HttpContext.User;
-                string? idUsuario
-                        = claimsUser.Claims
-                                    .Where(x => x.Type == ClaimTypes.NameIdentifier)
-                                    .Select(x => x.Value)
-                                    .SingleOrDefault();
+        return StatusCode(StatusCodes.Status200OK, new { estado = true, objeto = vmUsuario });
+    }
 
-                var usuario =
-                    _mapper.Map<UsuarioVM>(await _usuarioServicio.ExistePorSecuencial(int.Parse(idUsuario)));
+    public async Task<IActionResult> Salir()
+    {
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        return RedirectToAction("Login", "Acceso");
+    }
 
-                response.Estado = true;
-                response.Objeto = usuario;
-            }
-            catch (Exception ex)
-            {
-                response.Estado = false;
-                response.Mensajes = ex.Message;
+    public IActionResult Privacy()
+    {
+        return View();
+    }
 
-            }
-            return StatusCode(StatusCodes.Status200OK, response);
-        }
-        [HttpPost]
-        public async Task<IActionResult> GuardarPerfil([FromBody] UsuarioVM modelo)
-        {
-            var response = new GenericResponse<UsuarioVM>();
-            try
-            {
-                ClaimsPrincipal claimsUser = HttpContext.User;
-                string? idUsuario =
-                       claimsUser
-                       .Claims
-                       .Where(x => x.Type == ClaimTypes.NameIdentifier)
-                       .Select(x => x.Value).SingleOrDefault();
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
 
-                var entiadadUsuario = _mapper.Map<Usuario>(modelo);
-                entiadadUsuario.Secuencial = int.Parse(idUsuario);
-
-                bool resultado = await _usuarioServicio.GuardarPerfil(entiadadUsuario);
-
-                response.Estado = resultado;
-            }
-            catch (Exception ex)
-            {
-                response.Estado = false;
-                response.Mensajes = ex.Message;
-
-            }
-            return StatusCode(StatusCodes.Status200OK, response);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CambiarClave([FromBody] CambiarClaveVM modelo)
-        {
-            var response = new GenericResponse<bool>();
-            try
-            {
-                ClaimsPrincipal claimsUser = HttpContext.User;
-                string? idUsuario =
-                       claimsUser
-                       .Claims
-                       .Where(x => x.Type == ClaimTypes.NameIdentifier)
-                       .Select(x => x.Value).SingleOrDefault();
-
-                bool resultado =
-                    await _usuarioServicio
-                           .CambiarClave(int.Parse(idUsuario),
-                                          modelo.claveActual,
-                                          modelo.claveNueva);
-
-                response.Estado = resultado;
-            }
-            catch (Exception ex)
-            {
-                response.Estado = false;
-                response.Mensajes = ex.Message;
-
-            }
-            return StatusCode(StatusCodes.Status200OK, response);
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        public async Task<IActionResult> Salir()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "Acceso");
-        }
-
+    [AllowAnonymous] // Permitir acceso sin autenticación/autorización
+    public IActionResult AccessDenied()
+    {
+        return View();
     }
 }

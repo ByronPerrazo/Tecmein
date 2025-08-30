@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using BLL.Interfaces;
 using Entity;
 using Microsoft.AspNetCore.Authorization;
@@ -6,26 +6,36 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using TecmeinWebApp.Models.ViewModel;
 using TecmeinWebApp.Utilidades.Response;
+using DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace TecmeinWebApp.Controllers
 {
+    [Authorize(Policy = "Roles.Administrar")]
     public class RolController : Controller
     {
-
         private readonly IRolServices _rolServices;
-        private readonly IPermisosRolServices _permisosRolServices;
-        private readonly IMenusHijosDesplegables _menusHijosDesplegables;
-        private readonly IRolMenuServices _rolMenuServices;
+        private readonly IMenuServices _menuServices;
+        private readonly IGenericRepository<Permiso> _repositorioPermiso;
+        private readonly IGenericRepository<RolPermiso> _repositorioRolPermiso;
+        private readonly IGenericRepository<RolMenu> _repositorioRolMenu;
         private readonly IMapper _mapper;
 
-        public RolController(IRolServices rolServices, IMapper mapper, IPermisosRolServices permisosRolServices, IMenusHijosDesplegables menusHijosDesplegables, IRolMenuServices rolMenuServices)
+        public RolController(IRolServices rolServices,
+                             IMenuServices menuServices,
+                             IMapper mapper,
+                             IGenericRepository<Permiso> repositorioPermiso,
+                             IGenericRepository<RolPermiso> repositorioRolPermiso,
+                             IGenericRepository<RolMenu> repositorioRolMenu)
         {
             _rolServices = rolServices;
+            _menuServices = menuServices;
             _mapper = mapper;
-            _permisosRolServices = permisosRolServices;
-            _menusHijosDesplegables = menusHijosDesplegables;
-            _rolMenuServices = rolMenuServices;
+            _repositorioPermiso = repositorioPermiso;
+            _repositorioRolPermiso = repositorioRolPermiso;
+            _repositorioRolMenu = repositorioRolMenu;
         }
+
         public IActionResult Index()
         {
             return View();
@@ -34,46 +44,35 @@ namespace TecmeinWebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> ListaRol()
         {
-            List<RolVM> listaRolVM
-              = _mapper.Map<List<RolVM>>(await _rolServices.Lista());
-            return StatusCode(StatusCodes.Status200OK, new { data = listaRolVM });
+            List<RolVM> listaRolVM = _mapper.Map<List<RolVM>>(await _rolServices.Lista());
+            var settings = new JsonSerializerSettings
+            {
+                PreserveReferencesHandling = PreserveReferencesHandling.None,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            };
+            var jsonResult = JsonConvert.SerializeObject(new { data = listaRolVM }, Formatting.None, settings);
+            return Content(jsonResult, "application/json");
         }
 
         [HttpGet]
         public async Task<IActionResult> RolPorSecuencial(int secRol)
         {
             var rol = await _rolServices.RolPorSecuencial(secRol);
-            var permisos = await _permisosRolServices.PermisosRolActivo(secRol);
-
             var rolVM = _mapper.Map<RolVM>(rol);
-            rolVM.oPermisosRol = _mapper.Map<PermisosrolVM>(permisos);
-
             return StatusCode(StatusCodes.Status200OK, rolVM);
         }
 
         [HttpPost]
-        [Authorize(Policy = "CanModify")]
         public async Task<IActionResult> ProcesaGuardarRol([FromForm] string modelo)
         {
             var gResponse = new GenericResponse<RolVM>();
             try
             {
                 var rolVM = JsonConvert.DeserializeObject<RolVM>(modelo);
-
-                Rol rolGenerado;
-                var permisos = _mapper.Map<Permisosrol>(rolVM.oPermisosRol);
-
-                if (rolVM.Secuencial == 0)
-                {
-                    rolGenerado = await _rolServices.GuardarRolCompleto(_mapper.Map<Rol>(rolVM), permisos);
-                }
-                else
-                {
-                    rolGenerado = await _rolServices.EditarRolCompleto(_mapper.Map<Rol>(rolVM), permisos);
-                }
-
+                Rol rolGenerado = (rolVM.Secuencial == 0)
+                    ? await _rolServices.Crear(_mapper.Map<Rol>(rolVM))
+                    : await _rolServices.Editar(_mapper.Map<Rol>(rolVM));
                 rolVM = _mapper.Map<RolVM>(rolGenerado);
-
                 gResponse.Estado = true;
                 gResponse.Objeto = rolVM;
             }
@@ -101,49 +100,76 @@ namespace TecmeinWebApp.Controllers
             return StatusCode(StatusCodes.Status200OK, gResponse);
         }
 
+        // ===================================================================
+        // GESTIÓN DE PERMISOS REFACTORIZADA
+        // ===================================================================
+
         [HttpGet]
-        public async Task<IActionResult> ObtenerMenusPorRol(int secRol)
+        public async Task<IActionResult> GestionarPermisos(int secRol)
         {
-            var gResponse = new GenericResponse<object>();
+            var rol = await _rolServices.RolPorSecuencial(secRol);
+            if (rol == null) return NotFound();
+
+            var todosLosMenus = await _menuServices.ObtieneMenuTotal();
+            var todosLosPermisos = await (await _repositorioPermiso.Consultar()).ToListAsync();
+
+            var menusAsignados = (await _repositorioRolMenu.Consultar(rm => rm.SecRol == secRol))
+                                     .Select(rm => rm.SecMenu.Value)
+                                     .ToHashSet();
+
+            var permisosAsignados = (await _repositorioRolPermiso.Consultar(rp => rp.SecRol == secRol))
+                                        .Select(rp => rp.IdPermiso)
+                                        .ToHashSet();
+
+            var vm = new GestionRolPermisosVM
+            {
+                SecRol = rol.Secuencial,
+                NombreRol = rol.Descripcion,
+                TodosLosMenus = _mapper.Map<List<MenuVM>>(todosLosMenus),
+                TodosLosPermisos = _mapper.Map<List<PermisoVM>>(todosLosPermisos),
+                MenusAsignados = menusAsignados,
+                PermisosAsignados = permisosAsignados
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GuardarPermisos([FromBody] GestionRolPermisosVM modelo)
+        {
+            var gResponse = new GenericResponse<bool>();
             try
             {
-                var todosLosMenusHijos = await _menusHijosDesplegables.ObtenerMenusHijos();
-                var rolMenusExistentes = await _rolMenuServices.Lista();
+                var menusActuales = await (await _repositorioRolMenu.Consultar(rm => rm.SecRol == modelo.SecRol)).ToListAsync();
+                foreach (var menu in menusActuales) await _repositorioRolMenu.Eliminar(menu);
 
-                var menusAsignadosIds = rolMenusExistentes
-                                        .Where(rm => rm.SecRol == secRol && rm.EsActivo == 1 && rm.SecMenu.HasValue)
-                                        .Select(rm => rm.SecMenu.Value)
-                                        .ToList();
+                var permisosActuales = await (await _repositorioRolPermiso.Consultar(rp => rp.SecRol == modelo.SecRol)).ToListAsync();
+                foreach (var permiso in permisosActuales) await _repositorioRolPermiso.Eliminar(permiso);
 
-                var menusDisponibles = todosLosMenusHijos
-                                        .Where(m => !menusAsignadosIds.Contains(m.Secuencial))
-                                        .Select(m => _mapper.Map<MenuVM>(m))
-                                        .ToList();
+                if (modelo.MenusAsignados != null)
+                {
+                    foreach (var menuId in modelo.MenusAsignados)
+                    {
+                        await _repositorioRolMenu.Crear(new RolMenu { SecRol = modelo.SecRol, SecMenu = menuId, EsActivo = 1 });
+                    }
+                }
 
-                var menusSeleccionados = todosLosMenusHijos
-                                        .Where(m => menusAsignadosIds.Contains(m.Secuencial))
-                                        .Select(m => _mapper.Map<MenuVM>(m))
-                                        .ToList();
+                if (modelo.PermisosAsignados != null)
+                {
+                    foreach (var permisoId in modelo.PermisosAsignados)
+                    {
+                        await _repositorioRolPermiso.Crear(new RolPermiso { SecRol = modelo.SecRol, IdPermiso = permisoId });
+                    }
+                }
 
                 gResponse.Estado = true;
-                gResponse.Objeto = new
-                {
-                    menusDisponibles = menusDisponibles,
-                    menusSeleccionados = menusSeleccionados
-                };
             }
             catch (Exception ex)
             {
                 gResponse.Estado = false;
                 gResponse.Mensajes = ex.Message;
             }
-
-            var jsonOptions = new System.Text.Json.JsonSerializerOptions
-            {
-                ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles,
-                PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
-            };
-            return new JsonResult(gResponse, jsonOptions);
+            return StatusCode(StatusCodes.Status200OK, gResponse);
         }
     }
 }

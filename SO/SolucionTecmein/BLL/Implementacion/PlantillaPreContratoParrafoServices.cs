@@ -30,21 +30,14 @@ namespace BLL.Implementacion
 
         public async Task<PlantillaPreContratoParrafo> Crear(PlantillaPreContratoParrafo entidad)
         {
-            if (entidad == null) throw new ArgumentNullException(nameof(entidad));
             entidad.EstaActivo = 1;
-            var parrafoCreado = await _repositorio.Crear(entidad);
-            return parrafoCreado;
+            return await _repositorio.Crear(entidad);
         }
 
         public async Task<PlantillaPreContratoParrafo> Editar(PlantillaPreContratoParrafo entidad)
         {
-            if (entidad == null) throw new ArgumentNullException(nameof(entidad));
-
             var parrafoExistente = await _repositorio.Obtener(p => p.SecPlantillaPreContratoParrafo == entidad.SecPlantillaPreContratoParrafo);
-            if (parrafoExistente == null)
-            {
-                throw new Exception("El párrafo de plantilla de pre-contrato no existe.");
-            }
+            if (parrafoExistente == null) throw new Exception("El párrafo de plantilla de pre-contrato no existe.");
 
             parrafoExistente.SecPlantillaPreContrato = entidad.SecPlantillaPreContrato;
             parrafoExistente.Orden = entidad.Orden;
@@ -58,11 +51,7 @@ namespace BLL.Implementacion
         public async Task<bool> Eliminar(int secPlantillaPreContratoParrafo)
         {
             var parrafo = await _repositorio.Obtener(p => p.SecPlantillaPreContratoParrafo == secPlantillaPreContratoParrafo);
-            if (parrafo == null)
-            {
-                throw new Exception("El párrafo de plantilla de pre-contrato no existe.");
-            }
-
+            if (parrafo == null) throw new Exception("El párrafo de plantilla de pre-contrato no existe.");
             return await _repositorio.Eliminar(parrafo);
         }
     }

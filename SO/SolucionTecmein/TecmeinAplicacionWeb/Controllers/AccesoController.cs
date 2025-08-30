@@ -1,7 +1,10 @@
-﻿using BLL.Interfaces;
+using BLL.Interfaces;
+using DAL.Interfaces;
+using Entity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using TecmeinWebApp.Models.ViewModel;
 
@@ -10,28 +13,27 @@ namespace TecmeinWebApp.Controllers
     public class AccesoController : Controller
     {
         private readonly IUsuarioServices _usuarioServices;
-        private readonly IPermisosRolServices _permisosRolServices;
+        private readonly IGenericRepository<RolPermiso> _repositorioRolPermiso;
+        private readonly IGenericRepository<RolMenu> _repositorioRolMenu; // NUEVO
+        private readonly IMenuServices _menuServices; // NUEVO
 
-        public AccesoController(IUsuarioServices usuarioServices, IPermisosRolServices permisosRolServices)
+        public AccesoController(IUsuarioServices usuarioServices, 
+                                IGenericRepository<RolPermiso> repositorioRolPermiso,
+                                IGenericRepository<RolMenu> repositorioRolMenu, // NUEVO
+                                IMenuServices menuServices) // NUEVO
         {
             _usuarioServices = usuarioServices;
-            _permisosRolServices = permisosRolServices;
+            _repositorioRolPermiso = repositorioRolPermiso;
+            _repositorioRolMenu = repositorioRolMenu; // NUEVO
+            _menuServices = menuServices; // NUEVO
         }
-
 
         public IActionResult Login()
         {
-            ClaimsPrincipal claimUser = HttpContext.User;
-
-            if (claimUser.Identity.IsAuthenticated)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Home");
             }
-
-            return View();
-        }
-        public IActionResult RestablecerClave()
-        {
             return View();
         }
 
@@ -44,23 +46,48 @@ namespace TecmeinWebApp.Controllers
                 ViewData["Mensaje"] = "Credenciales no registradas";
                 return View();
             }
-            ViewData["Mensaje"] = null;
 
-            var claims = new List<Claim>() {
-            new(ClaimTypes.Name, usuarioDetectado.Nombre),
-            new(ClaimTypes.NameIdentifier, usuarioDetectado.Secuencial.ToString()),
-            new(ClaimTypes.Role, usuarioDetectado.SecRol.ToString()),
-            new("UrlFoto", usuarioDetectado.UrlFoto)
+            var claims = new List<Claim>()
+            {
+                new(ClaimTypes.Name, usuarioDetectado.Nombre),
+                new(ClaimTypes.NameIdentifier, usuarioDetectado.Secuencial.ToString()),
+                new(ClaimTypes.Role, usuarioDetectado.SecRol.ToString()),
+                new("UrlFoto", usuarioDetectado.UrlFoto)
             };
 
-            var permisosRol = await _permisosRolServices.PermisosRolActivo(usuarioDetectado.SecRol);
+            // --- INICIO LÓGICA DE PERMISOS REFACTORIZADA ---
+            var rolId = usuarioDetectado.SecRol.Value;
 
-            if (permisosRol != null)
+            // 1. Obtener permisos genéricos y específicos del rol (CREATE, READ, Roles.Administrar, etc.)
+            var permisosDirectos = (await _repositorioRolPermiso.Consultar(p => p.SecRol == rolId))
+                                       .Select(p => p.IdPermiso).ToList();
+
+            // 2. Obtener los menús asignados al rol
+            var idsMenusAsignados = (await _repositorioRolMenu.Consultar(rm => rm.SecRol == rolId))
+                                        .Select(rm => rm.SecMenu.Value).ToHashSet();
+            
+            var menusAsignados = (await _menuServices.ObtieneMenuTotal())
+                                     .Where(m => idsMenusAsignados.Contains(m.Secuencial));
+
+            // 3. Añadir permisos directos/específicos como claims
+            foreach (var permiso in permisosDirectos)
             {
-                claims.Add(new Claim("CanConsult", (permisosRol.Consultar == 1).ToString()));
-                claims.Add(new Claim("CanModify", (permisosRol.Modificar == 1).ToString()));
-                claims.Add(new Claim("CanDelete", (permisosRol.Eliminar == 1).ToString()));
+                claims.Add(new Claim("Permission", permiso));
             }
+
+            // 4. Añadir permisos concatenados (MENU_ACCION) para las políticas
+            var permisosGenericos = new[] { "CREATE", "READ", "UPDATE", "DELETE" };
+            foreach (var menu in menusAsignados)
+            {
+                if (!string.IsNullOrEmpty(menu.Controlador))
+                {
+                    foreach (var permiso in permisosDirectos.Intersect(permisosGenericos))
+                    {
+                        claims.Add(new Claim("Permission", $"{menu.Controlador.ToUpper()}_{permiso}"));
+                    }
+                }
+            }
+            // --- FIN LÓGICA DE PERMISOS ---
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var properties = new AuthenticationProperties()
@@ -69,50 +96,34 @@ namespace TecmeinWebApp.Controllers
                 IsPersistent = modelo.MantenerSesionIniciada,
             };
 
-            await HttpContext
-                    .SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                                 new ClaimsPrincipal(claimsIdentity),
-                                 properties);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), properties);
 
-            if (permisosRol == null || permisosRol.Consultar == 0)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            else
-            {
-                return RedirectToAction("Index", "DashBoard");
-            }
+            return RedirectToAction("Index", "Home");
         }
+
+        public IActionResult RestablecerClave() => View();
 
         [HttpPost]
         public async Task<IActionResult> RestablecerClave(LoginUsuarioVM modelo)
         {
             try
             {
-                string urlPlatillaCorreo = $"{this.Request.Scheme}://{this.Request.Host}/Plantilla/RestablecerClave?clave=[clave]";
+                string urlPlatillaCorreo = $"{Request.Scheme}://{Request.Host}/Plantilla/RestablecerClave?clave=[clave]";
                 bool resultado = await _usuarioServices.RestablecerClave(modelo.Correo, urlPlatillaCorreo);
                 if (resultado)
                 {
                     ViewData["Mensaje"] = "Su Contraseña Fue Restablecida, Los Datos de Acceso fueron enviados al correo ingresado";
-                    ViewData["MensajeError"] = null;
-                    return View();
                 }
                 else
                 {
-                    ViewData["Mensaje"] = null;
                     ViewData["MensajeError"] = "Lo sentimos el correo Ingresado no tenemos registrado";
-
-
                 }
-                ViewData["Mensaje"] = null;
             }
             catch (Exception ex)
             {
-                ViewData["Mensaje"] = null;
                 ViewData["MensajeError"] = ex.Message;
             }
             return View();
         }
     }
-
 }

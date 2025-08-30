@@ -1,4 +1,4 @@
-﻿using Entity;
+using Entity;
 
 namespace BLL.Interfaces
 {
@@ -6,10 +6,8 @@ namespace BLL.Interfaces
     {
         Task<List<Rol>> Lista();
         Task<Rol?> RolPorSecuencial(int secuecialRol);
-        Task<Rol?> GuardarRol(Rol entidad);
-        Task<Rol?> EditarRol(Rol entidad);
-        Task<Rol> GuardarRolCompleto(Rol entidad, Permisosrol permisos);
-        Task<Rol?> EditarRolCompleto(Rol entidad, Permisosrol permisos);
+        Task<Rol?> Crear(Rol entidad); // Renombrado de GuardarRol
+        Task<Rol?> Editar(Rol entidad); // Mantenido como EditarRol
         Task<bool> EliminarRol(int secuencialRol);
     }
 }

@@ -1,4 +1,4 @@
-﻿using Entity;
+using Entity;
 using Microsoft.EntityFrameworkCore;
 
 namespace DAL.DBContext;
@@ -65,6 +65,9 @@ public partial class TecmeindbContext : DbContext
     public virtual DbSet<ImpuestoCotizacion> ImpuestoCotizacion { get; set; }
 
     public virtual DbSet<TipoImpuesto> TipoImpuestos { get; set; }
+
+    public virtual DbSet<Permiso> Permisos { get; set; }
+    public virtual DbSet<RolPermiso> RolPermisos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -897,6 +900,70 @@ public partial class TecmeindbContext : DbContext
             entity.Property(e => e.FechaModificacion)
                 .HasColumnType("datetime")
                 .HasColumnName("FechaModificacion");
+        });
+
+        modelBuilder.Entity<Permiso>(entity =>
+        {
+            entity.HasKey(e => e.IdPermiso).HasName("PRIMARY");
+            entity.ToTable("permiso");
+
+            entity.Property(e => e.IdPermiso)
+                .HasMaxLength(100)
+                .HasColumnName("IdPermiso");
+
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(255)
+                .HasColumnName("Descripcion");
+        });
+
+        modelBuilder.Entity<RolPermiso>(entity =>
+        {
+            entity.HasKey(e => new { e.SecRol, e.IdPermiso });
+
+            entity.ToTable("rolpermiso");
+
+            entity.HasOne(d => d.Rol)
+                .WithMany(p => p.RolPermisos)
+                .HasForeignKey(d => d.SecRol)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RolPermiso_Rol");
+
+            entity.HasOne(d => d.Permiso)
+                .WithMany(p => p.RolPermisos)
+                .HasForeignKey(d => d.IdPermiso)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RolPermiso_Permiso");
+        });
+
+        modelBuilder.Entity<PlantillaPreContrato>(entity =>
+        {
+            entity.HasKey(e => e.SecPlantillaPreContrato).HasName("PRIMARY");
+            entity.ToTable("plantillaprecontrato");
+
+            entity.Property(e => e.SecPlantillaPreContrato).HasColumnName("SecPlantillaPreContrato");
+            entity.Property(e => e.Nombre).HasMaxLength(150);
+            entity.Property(e => e.NumeracionInicial).HasMaxLength(50);
+            entity.Property(e => e.FechaRegistro).HasColumnType("datetime");
+            entity.Property(e => e.EstaActivo).HasColumnName("EstaActivo");
+        });
+
+        modelBuilder.Entity<PlantillaPreContratoParrafo>(entity =>
+        {
+            entity.HasKey(e => e.SecPlantillaPreContratoParrafo).HasName("PRIMARY");
+            entity.ToTable("plantillaprecontratoparrafo");
+
+            entity.HasIndex(e => e.SecPlantillaPreContrato, "IX_plantillaprecontratoparrafo_plantilla");
+
+            entity.Property(e => e.SecPlantillaPreContratoParrafo).HasColumnName("SecPlantillaPreContratoParrafo");
+            entity.Property(e => e.SecPlantillaPreContrato).HasColumnName("SecPlantillaPreContrato");
+            entity.Property(e => e.Orden).HasColumnName("Orden");
+            entity.Property(e => e.Contenido).HasColumnType("TEXT");
+            entity.Property(e => e.EstaActivo).HasColumnName("EstaActivo");
+
+            entity.HasOne(d => d.SecPlantillaPreContratoNavigation)
+                .WithMany(p => p.PlantillaPreContratoParrafos)
+                .HasForeignKey(d => d.SecPlantillaPreContrato)
+                .HasConstraintName("FK_plantillaprecontratoparrafo_plantillaprecontrato");
         });
 
         OnModelCreatingPartial(modelBuilder);
