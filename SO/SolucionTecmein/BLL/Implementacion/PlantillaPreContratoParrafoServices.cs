@@ -30,7 +30,7 @@ namespace BLL.Implementacion
 
         public async Task<PlantillaPreContratoParrafo> Crear(PlantillaPreContratoParrafo entidad)
         {
-            entidad.EstaActivo = 1;
+            entidad.EstaActivo = true;
             return await _repositorio.Crear(entidad);
         }
 

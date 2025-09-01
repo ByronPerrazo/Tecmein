@@ -25,6 +25,6 @@ namespace Entity
         public DateTime FechaRegistro { get; set; }
 
         public virtual Cotizacion SecCotizacionNavigation { get; set; } = null!;
-        public virtual ICollection<PlantillaPreContratoParrafo> PlantillaPreContratoParrafos { get; set; } = new List<PlantillaPreContratoParrafo>();
+        
     }
 }

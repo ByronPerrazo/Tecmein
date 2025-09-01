@@ -95,7 +95,7 @@ namespace BLL.Implementacion
             }
 
             // Lógica para obtener los párrafos de la plantilla
-            var parrafos = (await _repositorioParrafo.Consultar(p => p.SecPlantillaPreContrato == preContrato.SecCotizacion && p.EstaActivo == 1)).OrderBy(p => p.Orden).ToList();
+            var parrafos = (await _repositorioParrafo.Consultar(p => p.SecPlantillaPreContrato == preContrato.SecCotizacion && p.EstaActivo == true)).OrderBy(p => p.Orden).ToList();
 
             // TODO: Implementar la lógica real de generación de documento Word
             // Esto implicaría usar una librería como DocX, Open XML SDK, o similar.

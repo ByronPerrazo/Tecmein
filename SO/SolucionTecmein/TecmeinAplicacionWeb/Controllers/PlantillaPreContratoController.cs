@@ -1,24 +1,22 @@
-using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using BLL.Interfaces;
 using Entity;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using TecmeinWebApp.Models.ViewModel;
-using TecmeinWebApp.Utilidades.Response;
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
-namespace TecmeinWebApp.Controllers
+namespace TecmeinAplicacionWeb.Controllers
 {
     public class PlantillaPreContratoController : Controller
     {
-        private readonly IMapper _mapper;
-        private readonly IPlantillaPreContratoServices _plantillaServices;
+        private readonly IPlantillaPreContratoServices _plantillaPreContratoServices;
+        private readonly IPlantillaPreContratoParrafoServices _plantillaPreContratoParrafoServices;
 
-        public PlantillaPreContratoController(IMapper mapper, IPlantillaPreContratoServices plantillaServices)
+        public PlantillaPreContratoController(
+            IPlantillaPreContratoServices plantillaPreContratoServices,
+            IPlantillaPreContratoParrafoServices plantillaPreContratoParrafoServices)
         {
-            _mapper = mapper;
-            _plantillaServices = plantillaServices;
+            _plantillaPreContratoServices = plantillaPreContratoServices;
+            _plantillaPreContratoParrafoServices = plantillaPreContratoParrafoServices;
         }
 
         public IActionResult Index()
@@ -27,69 +25,69 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Lista()
+        public async Task<JsonResult> Lista()
         {
-            var listaPlantillaVM
-               = _mapper.Map<List<PlantillaPreContratoVM>>(await _plantillaServices.Lista());
-            return StatusCode(StatusCodes.Status200OK, new { data = listaPlantillaVM });
+            List<PlantillaPreContrato> lista = await _plantillaPreContratoServices.Lista();
+            return Json(new { data = lista });
         }
 
         [HttpPost]
-        public async Task<IActionResult> Crear([FromForm] string modelo)
+        public async Task<JsonResult> Crear([FromBody] PlantillaPreContrato entidad)
         {
-            var gResponse = new GenericResponse<PlantillaPreContratoVM>();
+            bool resultado = true;
             try
             {
-                var plantillaVM = JsonConvert.DeserializeObject<PlantillaPreContratoVM>(modelo);
-                PlantillaPreContrato plantillaCreada = await _plantillaServices.Crear(_mapper.Map<PlantillaPreContrato>(plantillaVM));
-                gResponse.Estado = true;
-                gResponse.Objeto = _mapper.Map<PlantillaPreContratoVM>(plantillaCreada);
-                return StatusCode(StatusCodes.Status201Created, gResponse);
+                PlantillaPreContrato plantilla_creada = await _plantillaPreContratoServices.Crear(entidad);
+                if (plantilla_creada.SecPlantillaPreContrato == 0)
+                {
+                    resultado = false;
+                }
             }
-            catch (System.Exception ex)
+            catch
             {
-                gResponse.Estado = false;
-                gResponse.Mensajes = ex.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, gResponse);
+                resultado = false;
             }
+            return Json(new { resultado = resultado });
         }
 
         [HttpPut]
-        public async Task<IActionResult> Editar([FromForm] string modelo)
+        public async Task<JsonResult> Editar([FromBody] PlantillaPreContrato entidad)
         {
-            var gResponse = new GenericResponse<PlantillaPreContratoVM>();
+            bool resultado = true;
             try
             {
-                PlantillaPreContratoVM? plantillaVM = JsonConvert.DeserializeObject<PlantillaPreContratoVM>(modelo);
-                var plantillaEditada = await _plantillaServices.Editar(_mapper.Map<PlantillaPreContrato>(plantillaVM));
-                gResponse.Estado = true;
-                gResponse.Objeto = _mapper.Map<PlantillaPreContratoVM>(plantillaEditada);
-                return StatusCode(StatusCodes.Status200OK, gResponse);
+                PlantillaPreContrato plantilla_editada = await _plantillaPreContratoServices.Editar(entidad);
+                if (plantilla_editada.SecPlantillaPreContrato == 0)
+                {
+                    resultado = false;
+                }
             }
-            catch (System.Exception ex)
+            catch
             {
-                gResponse.Estado = false;
-                gResponse.Mensajes = ex.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, gResponse);
+                resultado = false;
             }
+            return Json(new { resultado = resultado });
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Eliminar(int secuencial)
+        public async Task<JsonResult> Eliminar(int SecPlantillaPreContrato)
         {
-            var gResponse = new GenericResponse<string>();
+            bool resultado = true;
             try
             {
-                bool eliminado = await _plantillaServices.Eliminar(secuencial);
-                gResponse.Estado = eliminado;
-                return StatusCode(StatusCodes.Status200OK, gResponse);
+                resultado = await _plantillaPreContratoServices.Eliminar(SecPlantillaPreContrato);
             }
-            catch (System.Exception ex)
+            catch
             {
-                gResponse.Estado = false;
-                gResponse.Mensajes = ex.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, gResponse);
+                resultado = false;
             }
+            return Json(new { resultado = resultado });
+        }
+
+        public IActionResult Parrafos(int id)
+        {
+            ViewBag.IdPlantilla = id;
+            return View();
         }
     }
 }

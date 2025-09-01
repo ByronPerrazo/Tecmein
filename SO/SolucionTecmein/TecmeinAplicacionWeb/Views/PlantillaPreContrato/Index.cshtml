@@ -1,42 +1,62 @@
-@model TecmeinWebApp.Models.ViewModel.PlantillaPreContratoVM
-
-@{ 
-    ViewData["Title"] = "Plantillas de Pre-Contrato";
+@{
+    ViewData["Title"] = "Administración de Plantillas de Pre-Contrato";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@section Estilos {
+    <link rel="stylesheet" href="~/vendor/datatables/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="~/css/styleGenerales.css">
+}
 
-<div class="card">
-    <div class="card-header">
-        <h5>Gestión de Plantillas de Pre-Contrato</h5>
+<div class="card shadow mb-4">
+    <div class="card-header py-3 bg-primary">
+        <h6 class="m-0 font-weight-bold text-white">Plantillas de Pre-Contrato</h6>
     </div>
     <div class="card-body">
-        <form id="plantillaForm">
-            <input type="hidden" asp-for="SecPlantillaPreContrato" />
-
-            <div class="form-group">
-                <label for="Nombre">Nombre de la Plantilla</label>
-                <input type="text" class="form-control" asp-for="Nombre" placeholder="Ej: Plantilla General">
+        <div class="row">
+            <div class="col-sm-12">
+                <button class="btn btn-success btn-sm" onclick="mostrarModal()">
+                    <i class="fas fa-plus-circle"></i> Crear Nueva Plantilla
+                </button>
             </div>
-
-            <div class="form-group">
-                <label for="NumeracionInicial">Numeración Inicial</label>
-                <input type="text" class="form-control" asp-for="NumeracionInicial" placeholder="Ej: PC-001">
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-bordered" id="tbdata" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Nombre</th>
+                            <th>Numeracion Inicial</th>
+                            <th>Fecha Registro</th>
+                            <th>Activo</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
-
-            <div class="form-group">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" asp-for="EstaActivo">
-                    <label class="form-check-label" for="EstaActivo">
-                        Está Activo
-                    </label>
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Guardar Plantilla</button>
-        </form>
+        </div>
     </div>
 </div>
 
+@Html.Partial("_PlantillaPreContratoModal")
+
 @section Scripts{
-    <script src="~/js/vistas/PlantillaPreContrato_Index.js"></script>
+
+    <script src="~/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/dataTables.responsive.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/dataTables.buttons.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/jszip.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.html5.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.print.min.js"></script>
+
+
+
+    <script src="~/js/vistas/PlantillaPreContrato/PlantillaPreContrato_Index.js"></script>
+
 }

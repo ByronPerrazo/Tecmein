@@ -2,11 +2,11 @@ using AutoMapper;
 using BLL.Interfaces;
 using Entity;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using TecmeinWebApp.Models.ViewModel;
 using TecmeinWebApp.Utilidades.Response;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http; // Required for StatusCode
 
 namespace TecmeinWebApp.Controllers
 {
@@ -21,22 +21,47 @@ namespace TecmeinWebApp.Controllers
             _parrafoServices = parrafoServices;
         }
 
+        public IActionResult Parrafos(int id)
+        {
+            ViewBag.IdPlantilla = id;
+            return View();
+        }
+
         [HttpGet]
         public async Task<IActionResult> Lista(int secPlantillaPreContrato)
         {
-            var listaParrafoVM
-               = _mapper.Map<List<PlantillaPreContratoParrafoVM>>(await _parrafoServices.Lista(secPlantillaPreContrato));
-            return StatusCode(StatusCodes.Status200OK, new { data = listaParrafoVM });
+            var listaParrafos = await _parrafoServices.Lista(secPlantillaPreContrato);
+            var listaParrafoVM = _mapper.Map<List<PlantillaPreContratoParrafoVM>>(listaParrafos);
+            return Ok(new { data = listaParrafoVM });
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Crear([FromForm] string modelo)
+        [HttpGet]
+        public async Task<IActionResult> Obtener(int secPlantillaPreContratoParrafo)
         {
             var gResponse = new GenericResponse<PlantillaPreContratoParrafoVM>();
             try
             {
-                var parrafoVM = JsonConvert.DeserializeObject<PlantillaPreContratoParrafoVM>(modelo);
-                PlantillaPreContratoParrafo parrafoCreado = await _parrafoServices.Crear(_mapper.Map<PlantillaPreContratoParrafo>(parrafoVM));
+                var parrafo = await _parrafoServices.Obtener(secPlantillaPreContratoParrafo);
+                gResponse.Estado = true;
+                gResponse.Objeto = _mapper.Map<PlantillaPreContratoParrafoVM>(parrafo);
+                return StatusCode(StatusCodes.Status200OK, gResponse);
+            }
+            catch (System.Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+                return StatusCode(StatusCodes.Status400BadRequest, gResponse);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Crear([FromBody] PlantillaPreContratoParrafoVM modelo)
+        {
+            var gResponse = new GenericResponse<PlantillaPreContratoParrafoVM>();
+            try
+            {
+                var parrafoEntidad = _mapper.Map<PlantillaPreContratoParrafo>(modelo);
+                var parrafoCreado = await _parrafoServices.Crear(parrafoEntidad);
                 gResponse.Estado = true;
                 gResponse.Objeto = _mapper.Map<PlantillaPreContratoParrafoVM>(parrafoCreado);
                 return StatusCode(StatusCodes.Status201Created, gResponse);
@@ -50,13 +75,13 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Editar([FromForm] string modelo)
+        public async Task<IActionResult> Editar([FromBody] PlantillaPreContratoParrafoVM modelo)
         {
             var gResponse = new GenericResponse<PlantillaPreContratoParrafoVM>();
             try
             {
-                PlantillaPreContratoParrafoVM? parrafoVM = JsonConvert.DeserializeObject<PlantillaPreContratoParrafoVM>(modelo);
-                var parrafoEditado = await _parrafoServices.Editar(_mapper.Map<PlantillaPreContratoParrafo>(parrafoVM));
+                var parrafoEntidad = _mapper.Map<PlantillaPreContratoParrafo>(modelo);
+                var parrafoEditado = await _parrafoServices.Editar(parrafoEntidad);
                 gResponse.Estado = true;
                 gResponse.Objeto = _mapper.Map<PlantillaPreContratoParrafoVM>(parrafoEditado);
                 return StatusCode(StatusCodes.Status200OK, gResponse);
@@ -70,12 +95,12 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Eliminar(int secuencial)
+        public async Task<IActionResult> Eliminar(int secPlantillaPreContratoParrafo)
         {
             var gResponse = new GenericResponse<string>();
             try
             {
-                bool eliminado = await _parrafoServices.Eliminar(secuencial);
+                bool eliminado = await _parrafoServices.Eliminar(secPlantillaPreContratoParrafo);
                 gResponse.Estado = eliminado;
                 return StatusCode(StatusCodes.Status200OK, gResponse);
             }

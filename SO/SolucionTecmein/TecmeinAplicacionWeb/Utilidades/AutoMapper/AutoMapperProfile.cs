@@ -258,7 +258,9 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
 
             CreateMap<PlantillaPreContrato, PlantillaPreContratoVM>().ReverseMap();
 
-            CreateMap<PlantillaPreContratoParrafo, PlantillaPreContratoParrafoVM>().ReverseMap();
+                        CreateMap<PlantillaPreContratoParrafo, PlantillaPreContratoParrafoVM>();
+
+            CreateMap<PlantillaPreContratoParrafoVM, PlantillaPreContratoParrafo>();
 
             CreateMap<Permisosrol, PermisosrolVM>().ReverseMap();
 

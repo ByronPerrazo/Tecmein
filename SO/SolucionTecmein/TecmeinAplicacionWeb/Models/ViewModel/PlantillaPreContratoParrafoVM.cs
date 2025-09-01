@@ -8,6 +8,6 @@ namespace TecmeinWebApp.Models.ViewModel
         public int SecPlantillaPreContrato { get; set; }
         public int Orden { get; set; }
         public string Contenido { get; set; } = null!;
-        public short EstaActivo { get; set; }
+        public bool EstaActivo { get; set; }
     }
 }

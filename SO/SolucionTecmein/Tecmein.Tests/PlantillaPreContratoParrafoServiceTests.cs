@@ -27,7 +27,12 @@ namespace Tecmein.Tests
         {
             // Arrange
             var parrafo = new PlantillaPreContratoParrafo { SecPlantillaPreContrato = 1, Orden = 1, Contenido = "Contenido de prueba" };
-            _mockRepo.Setup(repo => repo.Crear(It.IsAny<PlantillaPreContratoParrafo>())).ReturnsAsync(parrafo);
+            _mockRepo.Setup(repo => repo.Crear(It.IsAny<PlantillaPreContratoParrafo>()))
+                     .ReturnsAsync((PlantillaPreContratoParrafo p) => 
+                     {
+                         p.EstaActivo = true; // El servicio lo establece en true
+                         return p;
+                     });
 
             // Act
             var resultado = await _service.Crear(parrafo);
@@ -35,7 +40,7 @@ namespace Tecmein.Tests
             // Assert
             Assert.NotNull(resultado);
             Assert.Equal("Contenido de prueba", resultado.Contenido);
-            Assert.Equal(1, resultado.EstaActivo);
+            Assert.True(resultado.EstaActivo);
             _mockRepo.Verify(repo => repo.Crear(It.IsAny<PlantillaPreContratoParrafo>()), Times.Once);
         }
 
@@ -43,8 +48,8 @@ namespace Tecmein.Tests
         public async Task Editar_ParrafoExistente_DebeEditarCorrectamente()
         {
             // Arrange
-            var parrafoExistente = new PlantillaPreContratoParrafo { SecPlantillaPreContratoParrafo = 1, SecPlantillaPreContrato = 1, Orden = 1, Contenido = "Original", EstaActivo = 1 };
-            var parrafoEditado = new PlantillaPreContratoParrafo { SecPlantillaPreContratoParrafo = 1, SecPlantillaPreContrato = 1, Orden = 2, Contenido = "Editado", EstaActivo = 0 };
+            var parrafoExistente = new PlantillaPreContratoParrafo { SecPlantillaPreContratoParrafo = 1, SecPlantillaPreContrato = 1, Orden = 1, Contenido = "Original", EstaActivo = true };
+            var parrafoEditado = new PlantillaPreContratoParrafo { SecPlantillaPreContratoParrafo = 1, SecPlantillaPreContrato = 1, Orden = 2, Contenido = "Editado", EstaActivo = false };
 
             _mockRepo.Setup(repo => repo.Obtener(It.IsAny<Expression<Func<PlantillaPreContratoParrafo, bool>>>(), null)).ReturnsAsync(parrafoExistente);
             _mockRepo.Setup(repo => repo.Editar(It.IsAny<PlantillaPreContratoParrafo>())).ReturnsAsync(true);
@@ -56,7 +61,7 @@ namespace Tecmein.Tests
             Assert.NotNull(resultado);
             Assert.Equal("Editado", resultado.Contenido);
             Assert.Equal(2, resultado.Orden);
-            Assert.Equal(0, resultado.EstaActivo);
+            Assert.False(resultado.EstaActivo);
             _mockRepo.Verify(repo => repo.Editar(It.IsAny<PlantillaPreContratoParrafo>()), Times.Once);
         }
 
@@ -64,7 +69,7 @@ namespace Tecmein.Tests
         public async Task Eliminar_ParrafoExistente_DebeEliminarCorrectamente()
         {
             // Arrange
-            var parrafoExistente = new PlantillaPreContratoParrafo { SecPlantillaPreContratoParrafo = 1 };
+            var parrafoExistente = new PlantillaPreContratoParrafo { SecPlantillaPreContratoParrafo = 1, SecPlantillaPreContrato = 1, Orden = 1, Contenido = "Para eliminar", EstaActivo = true };
 
             _mockRepo.Setup(repo => repo.Obtener(It.IsAny<Expression<Func<PlantillaPreContratoParrafo, bool>>>(), null)).ReturnsAsync(parrafoExistente);
             _mockRepo.Setup(repo => repo.Eliminar(It.IsAny<PlantillaPreContratoParrafo>())).ReturnsAsync(true);
