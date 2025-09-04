@@ -256,9 +256,12 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
 
             CreateMap<FormaPago, FormaPagoVM>().ReverseMap();
 
-            CreateMap<PlantillaPreContrato, PlantillaPreContratoVM>().ReverseMap();
+            CreateMap<PlantillaPreContrato, PlantillaPreContratoVM>()
+                .ForMember(destino => destino.DescripcionTipoDocumento,
+                           opt => opt.MapFrom(origen => origen.SecTipoDocumentoNavigation.Descripcion))
+                .ReverseMap();
 
-                        CreateMap<PlantillaPreContratoParrafo, PlantillaPreContratoParrafoVM>();
+            CreateMap<PlantillaPreContratoParrafo, PlantillaPreContratoParrafoVM>();
 
             CreateMap<PlantillaPreContratoParrafoVM, PlantillaPreContratoParrafo>();
 

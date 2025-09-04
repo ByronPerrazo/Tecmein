@@ -3,22 +3,20 @@ const MODELO_BASE = {
     secPlantillaPreContrato: 0,
     orden: 0,
     contenido: "",
-    estaActivo: 1 // 1 para Activo, 0 para Inactivo
+    estaActivo: 1
 };
 
 let tablaData;
 
-// Esta función se llamará DESPUÉS de que el script de TinyMCE se haya cargado
 function inicializarPagina() {
-    // 1. Inicializar TinyMCE
     tinymce.init({
         selector: 'textarea#Contenido',
         plugins: 'lists link image table code help wordcount',
         toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | indent outdent | bullist numlist | code | table',
-        language: 'es'
+        language: 'es',
+        height: 350
     });
 
-    // 2. Inicializar DataTable
     const secPlantilla = $("#SecPlantillaPreContrato").val();
     MODELO_BASE.secPlantillaPreContrato = parseInt(secPlantilla);
 
@@ -28,7 +26,9 @@ function inicializarPagina() {
             "url": `/PlantillaPreContratoParrafo/Lista?secPlantillaPreContrato=${secPlantilla}`,
             "type": "GET",
             "datatype": "json",
-            "dataSrc": "data.$values"
+            "dataSrc": function (json) {
+                return json.data && json.data.$values ? json.data.$values : json.data;
+            }
         },
         "columns": [
             { "data": "orden", "width": "10%" },
@@ -52,7 +52,6 @@ function inicializarPagina() {
         },
     });
 
-    // 3. Asignar eventos a los botones
     $("#btnNuevo").on("click", function () {
         mostrarModal();
     });
@@ -73,28 +72,18 @@ function inicializarPagina() {
 }
 
 $(document).ready(function () {
-    // 1. Pedir la clave de API al servidor
     fetch("/api/config/tinymce-key")
-        .then(response => {
-            if (!response.ok) throw new Error("No se pudo obtener la clave de API.");
-            return response.json();
-        })
+        .then(response => response.ok ? response.json() : Promise.reject(response))
         .then(config => {
-            // 2. Crear el tag de script dinámicamente con la clave obtenida
             const script = document.createElement('script');
             script.src = `https://cdn.tiny.cloud/1/${config.apiKey}/tinymce/7/tinymce.min.js`;
             script.referrerpolicy = 'origin';
-            
-            // 3. Cuando el script de TinyMCE termine de cargar, inicializar el resto de la página
-            script.onload = () => {
-                inicializarPagina();
-            };
-            
+            script.onload = () => inicializarPagina();
             document.head.appendChild(script);
         })
         .catch(error => {
             console.error("Error fatal al cargar TinyMCE:", error);
-            Swal.fire("Error Crítico", "No se pudo cargar el editor de texto. Por favor, contacte al administrador.", "error");
+            Swal.fire("Error Crítico", "No se pudo cargar el editor de texto.", "error");
         });
 });
 
@@ -103,6 +92,10 @@ function mostrarModal(modelo = MODELO_BASE) {
     $("#Orden").val(modelo.orden);
     tinymce.get('Contenido').setContent(modelo.contenido || "");
     $("#EstaActivo").val(modelo.estaActivo ? 1 : 0);
+    
+    // Cargar los parámetros cada vez que se abre el modal
+    cargarParametros();
+
     $('#parrafoModal').modal('show');
 }
 
@@ -124,10 +117,7 @@ function guardarCambios() {
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify(modelo)
     })
-    .then(response => {
-        if (response.ok) return response.json();
-        else return response.json().then(err => Promise.reject(err));
-    })
+    .then(response => response.ok ? response.json() : response.json().then(err => Promise.reject(err)))
     .then(responseJson => {
         if (responseJson.estado) {
             tablaData.ajax.reload(null, false);
@@ -158,10 +148,7 @@ function eliminar(data) {
             fetch(`/PlantillaPreContratoParrafo/Eliminar?secPlantillaPreContratoParrafo=${data.secPlantillaPreContratoParrafo}`, {
                 method: "DELETE"
             })
-            .then(response => {
-                if (response.ok) return response.json();
-                else return response.json().then(err => Promise.reject(err));
-            })
+            .then(response => response.ok ? response.json() : response.json().then(err => Promise.reject(err)))
             .then(responseJson => {
                 if (responseJson.estado) {
                     tablaData.ajax.reload(null, false);
@@ -177,3 +164,40 @@ function eliminar(data) {
         }
     });
 }
+
+function cargarParametros() {
+    fetch("/DiccionarioParametro/ListaActivos")
+        .then(response => response.ok ? response.json() : Promise.reject(response))
+        .then(responseJson => {
+            // Se verifica la estructura de datos que devuelve el serializador de .NET
+            const listaParametros = responseJson.data && responseJson.data.$values ? responseJson.data.$values : responseJson.data;
+            
+            const contenedor = $("#parametros-disponibles");
+            contenedor.html(""); // Limpiar antes de añadir
+
+            if (listaParametros && listaParametros.length > 0) {
+                 listaParametros.forEach(item => {
+                    const boton = $("<button>")
+                        .addClass("btn btn-sm btn-outline-primary m-1 parametro-item")
+                        .text(item.parametro)
+                        .attr("title", item.descripcion);
+                    contenedor.append(boton);
+                });
+            } else {
+                contenedor.html("<p class='text-muted'>No hay parámetros activos.</p>");
+            }
+        })
+        .catch(error => {
+            console.error("Error al cargar parámetros:", error);
+            const contenedor = $("#parametros-disponibles");
+            contenedor.html("<p class='text-danger'>No se pudieron cargar los parámetros.</p>");
+        });
+}
+
+// Evento para insertar el parámetro en TinyMCE
+$("#parametros-disponibles").on("click", ".parametro-item", function() {
+    const parametroAInsertar = $(this).text();
+    if (tinymce.activeEditor) {
+        tinymce.activeEditor.execCommand('mceInsertContent', false, parametroAInsertar);
+    }
+});

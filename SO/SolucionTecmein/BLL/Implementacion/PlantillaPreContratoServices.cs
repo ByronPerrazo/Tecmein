@@ -19,7 +19,7 @@ namespace BLL.Implementacion
 
         public async Task<List<PlantillaPreContrato>> Lista()
         {
-            IQueryable<PlantillaPreContrato> query = await _repositorio.Consultar();
+            IQueryable<PlantillaPreContrato> query = await _repositorio.Consultar(includeProperties: "SecTipoDocumentoNavigation");
             return query.ToList();
         }
 
@@ -43,6 +43,7 @@ namespace BLL.Implementacion
             plantillaExistente.Nombre = entidad.Nombre;
             plantillaExistente.NumeracionInicial = entidad.NumeracionInicial;
             plantillaExistente.EstaActivo = entidad.EstaActivo;
+            plantillaExistente.SecTipoDocumento = entidad.SecTipoDocumento;
 
             await _repositorio.Editar(plantillaExistente);
             return plantillaExistente;

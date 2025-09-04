@@ -13,6 +13,7 @@ $(document).ready(function () {
             { "data": "secPlantillaPreContrato", "visible": false, "searchable": false },
             { "data": "nombre" },
             { "data": "numeracionInicial" },
+            { "data": "descripcionTipoDocumento" }, // Nueva columna
             { "data": "fechaRegistro" },
             {
                 "data": "estaActivo", "render": function (valor) {
@@ -41,7 +42,7 @@ $(document).ready(function () {
                 title: '',
                 filename: 'Reporte Plantillas',
                 exportOptions: {
-                    columns: [1, 2, 3, 4]
+                    columns: [1, 2, 3, 4, 5] // Ajustado para la nueva columna
                 }
             },
             {
@@ -50,10 +51,10 @@ $(document).ready(function () {
                 title: 'Reporte Plantillas',
                 filename: 'Reporte Plantillas',
                 exportOptions: {
-                    columns: [1, 2, 3, 4]
+                    columns: [1, 2, 3, 4, 5] // Ajustado para la nueva columna
                 },
                 customize: function (doc) {
-                    doc.content[1].table.widths = ['25%', '25%', '25%', '25%']
+                    doc.content[1].table.widths = ['20%', '20%', '20%', '20%', '20%'] // Ajustado
                 }
             },
         ],
@@ -69,6 +70,25 @@ function mostrarModal(data = null) {
     $("#txtNumeracionInicial").val(data ? data.numeracionInicial : "");
     $("#cboEstado").val(data ? data.estaActivo : 1);
 
+    // Fetch TipoDocumento list and populate dropdown
+    fetch("/PlantillaPreContrato/ListaTiposDocumento")
+        .then(response => response.json())
+        .then(responseJson => {
+            if (responseJson.data) {
+                $("#cboTipoDocumento").empty(); // Clear existing options
+                responseJson.data.$values.forEach(item => { // Assuming $values for OData
+                    $("#cboTipoDocumento").append(new Option(item.text, item.value));
+                });
+                // Set selected value if editing
+                if (data) {
+                    $("#cboTipoDocumento").val(data.secTipoDocumento);
+                }
+            }
+        })
+        .catch(error => {
+            console.error("Error al cargar tipos de documento:", error);
+        });
+
     $('#modalData').modal('show');
 }
 
@@ -77,7 +97,8 @@ function GuardarCambios() {
         SecPlantillaPreContrato: parseInt($("#txtSecPlantillaPreContrato").val()),
         Nombre: $("#txtNombre").val(),
         NumeracionInicial: $("#txtNumeracionInicial").val(),
-        EstaActivo: parseInt($("#cboEstado").val())
+        EstaActivo: parseInt($("#cboEstado").val()),
+        SecTipoDocumento: parseInt($("#cboTipoDocumento").val()) // Añadido
     }
 
     fetch(`/PlantillaPreContrato/${objeto.SecPlantillaPreContrato == 0 ? "Crear" : "Editar"}`, {

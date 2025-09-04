@@ -40,7 +40,7 @@
 
 <!-- Modal -->
 <div class="modal fade" id="parrafoModal" tabindex="-1" role="dialog" aria-labelledby="parrafoModalLabel" aria-hidden="true" data-backdrop="static">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="parrafoModalLabel">Detalle del Párrafo</h5>
@@ -49,37 +49,47 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="parrafoForm">
-                    <input type="hidden" id="SecPlantillaPreContratoParrafo" value="0" />
-                    <input type="hidden" id="SecPlantillaPreContrato" value="@ViewBag.IdPlantilla" />
+                <div class="row">
+                    <div class="col-sm-8">
+                        <form id="parrafoForm">
+                            <input type="hidden" id="SecPlantillaPreContratoParrafo" value="0" />
+                            <input type="hidden" id="SecPlantillaPreContrato" value="@ViewBag.IdPlantilla" />
 
-                    <div class="row">
-                        <div class="col-sm-12">
                             <div class="form-group">
                                 <label for="Contenido">Contenido</label>
-                                <textarea class="form-control" id="Contenido" rows="5"></textarea>
+                                <textarea class="form-control" id="Contenido" rows="15"></textarea>
                             </div>
-                        </div>
-                    </div>
 
-                     <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label for="Orden">Orden</label>
-                                <input type="number" class="form-control" id="Orden" min="0">
+                             <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="Orden">Orden</label>
+                                        <input type="number" class="form-control" id="Orden" min="0">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                     <div class="form-group">
+                                        <label for="EstaActivo">Estado</label>
+                                        <select class="form-control" id="EstaActivo">
+                                            <option value="1">Activo</option>
+                                            <option value="0">Inactivo</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-sm-6">
-                             <div class="form-group">
-                                <label for="EstaActivo">Estado</label>
-                                <select class="form-control" id="EstaActivo">
-                                    <option value="1">Activo</option>
-                                    <option value="0">Inactivo</option>
-                                </select>
+                        </form>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow">
+                            <div class="card-header py-3 bg-info">
+                                <h6 class="m-0 font-weight-bold text-white">Parámetros Disponibles</h6>
+                            </div>
+                            <div class="card-body" id="parametros-disponibles" style="max-height: 450px; overflow-y: auto;">
+                                <!-- Los parámetros se cargarán aquí dinámicamente -->
                             </div>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>

@@ -1,13 +1,8 @@
-using Xunit;
-using Moq;
 using BLL.Implementacion;
 using DAL.Interfaces;
 using Entity;
-using System;
-using System.Threading.Tasks;
+using Moq;
 using System.Linq.Expressions;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Tecmein.Tests
 {
@@ -28,7 +23,7 @@ namespace Tecmein.Tests
             // Arrange
             var parrafo = new PlantillaPreContratoParrafo { SecPlantillaPreContrato = 1, Orden = 1, Contenido = "Contenido de prueba" };
             _mockRepo.Setup(repo => repo.Crear(It.IsAny<PlantillaPreContratoParrafo>()))
-                     .ReturnsAsync((PlantillaPreContratoParrafo p) => 
+                     .ReturnsAsync((PlantillaPreContratoParrafo p) =>
                      {
                          p.EstaActivo = true; // El servicio lo establece en true
                          return p;

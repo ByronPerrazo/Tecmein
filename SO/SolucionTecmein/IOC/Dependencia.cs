@@ -68,6 +68,8 @@ namespace IOC
 
             services.AddScoped<IPlantillaPreContratoServices, PlantillaPreContratoServices>();
             services.AddScoped<IPlantillaPreContratoParrafoServices, PlantillaPreContratoParrafoServices>();
+            services.AddScoped<IDiccionarioParametroService, DiccionarioParametroService>();
+            services.AddScoped<ITipoDocumentoServices, TipoDocumentoServices>();
 
 
         }

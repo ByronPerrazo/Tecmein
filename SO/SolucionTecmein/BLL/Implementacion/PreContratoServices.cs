@@ -66,7 +66,7 @@ namespace BLL.Implementacion
             preContratoExistente.PolizaGarantia = entidad.PolizaGarantia;
             preContratoExistente.ValorAnticipo = entidad.ValorAnticipo;
             preContratoExistente.FechaAnticipo = entidad.FechaAnticipo;
-            preContratoExistente.FormaPago = entidad.FormaPago;
+            preContratoExistente.SecFormaPago = entidad.SecFormaPago;
             preContratoExistente.NumeroCuotas = entidad.NumeroCuotas;
             preContratoExistente.FechaPrimeraCuota = entidad.FechaPrimeraCuota;
             preContratoExistente.EstaActivo = entidad.EstaActivo;

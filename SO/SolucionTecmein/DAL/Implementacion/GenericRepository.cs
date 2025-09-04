@@ -77,15 +77,24 @@ namespace DAL.Implementacion
             }
         }
 
-        public async Task<IQueryable<TEntity>> Consultar(Expression<Func<TEntity, bool>> filtro = null)
+        public async Task<IQueryable<TEntity>> Consultar(Expression<Func<TEntity, bool>>? filtro = null, params string[] includeProperties)
         {
-            await Task.CompletedTask;
+            IQueryable<TEntity> query = _dbContext.Set<TEntity>();
 
-            IQueryable<TEntity> queryEntidad = filtro == null
-                                              ? _dbContext.Set<TEntity>()
-                                              : _dbContext.Set<TEntity>()
-                                              .Where(filtro);
-            return queryEntidad;
+            if (filtro != null)
+            {
+                query = query.Where(filtro);
+            }
+
+            if (includeProperties != null && includeProperties.Length > 0)
+            {
+                foreach (var includeProperty in includeProperties)
+                {
+                    query = query.Include(includeProperty);
+                }
+            }
+            
+            return await Task.FromResult(query);
         }
 
     }

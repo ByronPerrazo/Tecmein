@@ -3,6 +3,10 @@ using BLL.Interfaces;
 using Entity;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using TecmeinWebApp.Models.ViewModel;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Linq;
+using AutoMapper; // Added
 
 namespace TecmeinAplicacionWeb.Controllers
 {
@@ -10,13 +14,19 @@ namespace TecmeinAplicacionWeb.Controllers
     {
         private readonly IPlantillaPreContratoServices _plantillaPreContratoServices;
         private readonly IPlantillaPreContratoParrafoServices _plantillaPreContratoParrafoServices;
+        private readonly ITipoDocumentoServices _tipoDocumentoServices;
+        private readonly IMapper _mapper; // Added
 
         public PlantillaPreContratoController(
             IPlantillaPreContratoServices plantillaPreContratoServices,
-            IPlantillaPreContratoParrafoServices plantillaPreContratoParrafoServices)
+            IPlantillaPreContratoParrafoServices plantillaPreContratoParrafoServices,
+            ITipoDocumentoServices tipoDocumentoServices,
+            IMapper mapper) // Modified constructor
         {
             _plantillaPreContratoServices = plantillaPreContratoServices;
             _plantillaPreContratoParrafoServices = plantillaPreContratoParrafoServices;
+            _tipoDocumentoServices = tipoDocumentoServices;
+            _mapper = mapper; // Assigned
         }
 
         public IActionResult Index()
@@ -27,8 +37,21 @@ namespace TecmeinAplicacionWeb.Controllers
         [HttpGet]
         public async Task<JsonResult> Lista()
         {
-            List<PlantillaPreContrato> lista = await _plantillaPreContratoServices.Lista();
-            return Json(new { data = lista });
+            List<PlantillaPreContrato> listaEntidades = await _plantillaPreContratoServices.Lista(); // Changed to entity list
+            List<PlantillaPreContratoVM> listaVM = _mapper.Map<List<PlantillaPreContratoVM>>(listaEntidades); // Mapped to VM
+            return Json(new { data = listaVM });
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> ListaTiposDocumento()
+        {
+            List<TipoDocumento> listaTipos = await _tipoDocumentoServices.Lista();
+            List<SelectListItem> selectList = listaTipos.Select(td => new SelectListItem()
+            {
+                Text = td.Descripcion,
+                Value = td.SecTipoDocumento.ToString()
+            }).ToList();
+            return Json(new { data = selectList });
         }
 
         [HttpPost]

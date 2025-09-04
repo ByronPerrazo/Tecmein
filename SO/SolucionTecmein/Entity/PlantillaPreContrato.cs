@@ -15,6 +15,9 @@ namespace Entity
         public string? NumeracionInicial { get; set; } // Corregido a string
         public DateTime? FechaRegistro { get; set; }
         public int? EstaActivo { get; set; }
+        public int SecTipoDocumento { get; set; }
+
+        public virtual TipoDocumento SecTipoDocumentoNavigation { get; set; }
 
         public virtual ICollection<PlantillaPreContratoParrafo> PlantillaPreContratoParrafos { get; set; }
     }
