@@ -64,10 +64,15 @@ namespace BLL.Implementacion
         {
             try
             {
-                var visitaOriginal = await _repositorio.Obtener(v => v.Secuencial == entidad.Secuencial);
+                var visitaOriginal = await _repositorio.Obtener(v => v.Secuencial == entidad.Secuencial, "IdEtapaNavigation");
                 if (visitaOriginal == null)
                 {
                     throw new KeyNotFoundException($"No se encontró la visita con el secuencial {entidad.Secuencial}");
+                }
+
+                if (visitaOriginal.IdEtapaNavigation.Codigo == "PRE" || visitaOriginal.IdEtapaNavigation.Codigo == "SEG" || visitaOriginal.IdEtapaNavigation.Codigo == "COT")
+                {
+                    throw new InvalidOperationException("No se puede editar una visita que ya está en etapa de cotización, pre-contrato o seguimiento.");
                 }
 
                 visitaOriginal.Nombre = entidad.Nombre;
@@ -79,8 +84,6 @@ namespace BLL.Implementacion
                 visitaOriginal.EstaActivo = entidad.EstaActivo;
                 visitaOriginal.FechaSiguienteVisita = entidad.FechaSiguienteVisita;
                 visitaOriginal.Detalle = entidad.Detalle;
-                //visitaOriginal.SecEmpresa = entidad.SecEmpresa;
-                //visitaOriginal.IdEtapa = entidad.IdEtapa;
 
                 bool seEdito = await _repositorio.Editar(visitaOriginal);
                 if (!seEdito)

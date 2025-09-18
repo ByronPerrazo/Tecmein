@@ -72,6 +72,14 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
             CreateMap<Permiso, PermisoVM>().ReverseMap();
             #endregion
 
+            CreateMap<TipoDocumento, TipoDocumentoVM>()
+                .ForMember(destino => destino.FechaRegistro,
+                           opt => opt.MapFrom(origen => origen.FechaRegistro.HasValue ? origen.FechaRegistro.Value.ToString("dd/MM/yyyy") : null));
+
+            CreateMap<TipoDocumentoVM, TipoDocumento>()
+                .ForMember(destino => destino.FechaRegistro,
+                           opt => opt.MapFrom(origen => !string.IsNullOrEmpty(origen.FechaRegistro) ? DateTime.ParseExact(origen.FechaRegistro, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture) : (DateTime?)null));
+
             CreateMap<Provincia, ProvinciaVM>().ReverseMap();
             CreateMap<Canton, CantonVM>().ReverseMap();
 
@@ -425,6 +433,20 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
                            destino.ImpuestoNavigation,
                                    opt =>
                                    opt.Ignore());
+
+            CreateMap<PolizaGarantia, PolizaGarantiaVM>().ReverseMap();
+
+            CreateMap<PreContratoModalVM, PreContrato>()
+                .ForMember(dest => dest.FechaAnticipo, opt => opt.MapFrom(src =>
+                    !string.IsNullOrEmpty(src.FechaAnticipo.ToString()) ? (DateTime?)DateTime.Parse(src.FechaAnticipo.ToString(), System.Globalization.CultureInfo.InvariantCulture) : null))
+                .ForMember(dest => dest.FechaPrimeraCuota, opt => opt.MapFrom(src =>
+                    !string.IsNullOrEmpty(src.FechaPrimeraCuota.ToString()) ? (DateTime?)DateTime.Parse(src.FechaPrimeraCuota.ToString(), System.Globalization.CultureInfo.InvariantCulture) : null));
+            CreateMap<PreContrato, PreContratoVM>()
+                .ForMember(destino => destino.NombreUsuarioCrea,
+                           opt => opt.MapFrom(origen => origen.SecUsuarioCreaNavigation.Nombre))
+                .ForMember(destino => destino.NombreObra,
+                           opt => opt.MapFrom(origen => origen.SecCotizacionNavigation.SecVisitaNavigation.Nombre));
+            CreateMap<PreContratoVM, PreContrato>();
         }
     }
 }

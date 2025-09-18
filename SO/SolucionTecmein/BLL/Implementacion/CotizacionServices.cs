@@ -3,6 +3,7 @@ using DAL.Interfaces;
 using Entity;
 using Microsoft.EntityFrameworkCore;
 using QuestPDF.Fluent;
+using System;
 using System.Text;
 using BLL.Utilidades.PDF;
 
@@ -51,14 +52,28 @@ namespace BLL.Implementacion
                 .ToListAsync();
         }
 
+        
+
         public async Task<Cotizacion> Detalle(int secuencial)
         {
             IQueryable<Cotizacion> query = await _repositorio.Consultar(c => c.Secuencial == secuencial);
             var cotizacion = await query
+                .Include(c => c.SecVisitaNavigation)
+                    .ThenInclude(v => v.SecEmpresaNavigation)
+                .Include(c => c.SecVisitaNavigation)
+                    .ThenInclude(v => v.Contactovisita)
+                        .ThenInclude(cv => cv.SecContactoNavigation)
+                            .ThenInclude(co => co.SecConstructoraNavigation)
+                .Include(c => c.SecVisitaNavigation)
+                    .ThenInclude(v => v.SecProvinciaNavigation)
+                .Include(c => c.SecVisitaNavigation)
+                    .ThenInclude(v => v.SecCantonNavigation)
+                .Include(c => c.SecUsuarioNavigation)
+                .Include(c => c.SecUsuarioModificaNavigation)
                 .Include(c => c.Cotizaciondetalles)
                 .Include(c => c.ImpuestoCotizaciones)
                     .ThenInclude(ic => ic.ImpuestoNavigation)
-                        .ThenInclude(i => i.SecTipoImpuestoNavigation) // Added for TipoImpuesto
+                        .ThenInclude(i => i.SecTipoImpuestoNavigation)
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
 
@@ -161,6 +176,12 @@ namespace BLL.Implementacion
         {
             try
             {
+                var visita = await _visitaServices.ConsultaVisita(entidad.SecVisita);
+                if (visita.IdEtapaNavigation.Codigo == "PRE" || visita.IdEtapaNavigation.Codigo == "SEG")
+                {
+                    throw new InvalidOperationException("No se puede editar una cotización de una visita que ya está en etapa de pre-contrato o seguimiento.");
+                }
+
                 var cotizacionOriginal = await _repositorio.Obtener(c => c.Secuencial == entidad.Secuencial, "Cotizaciondetalles,ImpuestoCotizaciones");
 
                 if (cotizacionOriginal == null)
@@ -293,6 +314,13 @@ namespace BLL.Implementacion
                 {
                     return false;
                 }
+
+                var visita = await _visitaServices.ConsultaVisita(cotizacion.SecVisita);
+                if (visita.IdEtapaNavigation.Codigo == "PRE" || visita.IdEtapaNavigation.Codigo == "SEG")
+                {
+                    throw new InvalidOperationException("No se puede eliminar una cotización de una visita que ya está en etapa de pre-contrato o seguimiento.");
+                }
+
                 cotizacion.EstaActivo = 0;
                 bool resultado = await _repositorio.Editar(cotizacion);
                 return resultado;

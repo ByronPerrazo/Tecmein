@@ -21,21 +21,25 @@ namespace Entity
         public int? SecFormaPago { get; set; } // Añadido
 
         public int Version { get; set; }
+        [Required]
         public string Estado { get; set; }
         public bool EstaActivo { get; set; }
         public DateTime FechaRegistro { get; set; } // Renombrado de FechaCreacion
 
         // Campos de negocio añadidos
-        public int? Dias { get; set; }
+        public int Dias { get; set; }
+        [Required]
         public string TipoDias { get; set; }
-        public decimal? ValorContrato { get; set; }
-        public int? AniosGarantia { get; set; }
-        public int? MesesGarantia { get; set; }
+        public decimal ValorContrato { get; set; }
+        public int AniosGarantia { get; set; }
+        public int MesesGarantia { get; set; }
+        [Required]
         public string PeriodoMantenimiento { get; set; }
+        [Required]
         public string PolizaGarantia { get; set; }
-        public decimal? ValorAnticipo { get; set; }
+        public decimal ValorAnticipo { get; set; }
         public DateTime? FechaAnticipo { get; set; }
-        public int? NumeroCuotas { get; set; }
+        public int NumeroCuotas { get; set; }
         public DateTime? FechaPrimeraCuota { get; set; }
 
 

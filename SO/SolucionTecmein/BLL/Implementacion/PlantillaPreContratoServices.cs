@@ -25,7 +25,7 @@ namespace BLL.Implementacion
 
         public async Task<PlantillaPreContrato> Obtener(int secPlantillaPreContrato)
         {
-            return await _repositorio.Obtener(p => p.SecPlantillaPreContrato == secPlantillaPreContrato);
+            return await _repositorio.Obtener(p => p.SecPlantillaPreContrato == secPlantillaPreContrato, incluirPropiedades: "SecTipoDocumentoNavigation");
         }
 
         public async Task<PlantillaPreContrato> Crear(PlantillaPreContrato entidad)

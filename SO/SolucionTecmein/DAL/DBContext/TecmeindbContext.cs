@@ -51,6 +51,8 @@ public partial class TecmeindbContext : DbContext
 
     public virtual DbSet<Seguimiento> Seguimientos { get; set; }
 
+    public virtual DbSet<Cotizacion> Cotizacion { get; set; }
+
     public virtual DbSet<PreContrato> PreContratos { get; set; }
     public virtual DbSet<FormaPago> FormasPago { get; set; }
     public virtual DbSet<PlantillaPreContrato> PlantillaPreContratos { get; set; }
@@ -70,6 +72,8 @@ public partial class TecmeindbContext : DbContext
     public virtual DbSet<RolPermiso> RolPermisos { get; set; }
 
     public virtual DbSet<TipoDocumento> TipoDocumentos { get; set; }
+
+    public virtual DbSet<PolizaGarantia> PolizaGarantia { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -1004,6 +1008,16 @@ public partial class TecmeindbContext : DbContext
             entity.Property(e => e.Descripcion).HasMaxLength(255);
             entity.Property(e => e.EstaActivo).HasColumnName("EstaActivo");
             entity.Property(e => e.FechaRegistro).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<FormaPago>(entity =>
+        {
+            entity.HasKey(e => e.SecFormaPago).HasName("PRIMARY");
+            entity.ToTable("formapago");
+
+            entity.Property(e => e.SecFormaPago).HasColumnName("SecFormaPago");
+            entity.Property(e => e.Descripcion).HasMaxLength(100);
+            entity.Property(e => e.EstaActivo).HasColumnName("EstaActivo");
         });
 
         modelBuilder.Entity<PlantillaPreContrato>(entity =>

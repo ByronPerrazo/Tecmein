@@ -19,7 +19,8 @@ namespace IOC
                 {
                     options
                     .UseMySql(configuration.GetConnectionString("ConexionDB"),
-                              Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.37-mysql"));
+                              Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.37-mysql"),
+                              o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
                 });
 
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -54,22 +55,57 @@ namespace IOC
             services.AddScoped<IMenusHijosDesplegables, MenusHijosDesplegables>();
             services.AddScoped<IImpuestoServices, ImpuestoServices>();
             services.AddScoped<ITipoImpuestoServices, TipoImpuestoServices>();
-            services.AddScoped<ICotizacionServices, CotizacionServices>();
+            services.AddScoped<ICotizacionServices, CotizacionServices>(provider =>
+                new CotizacionServices(
+                    provider.GetRequiredService<IGenericRepository<Cotizacion>>(),
+                    provider.GetRequiredService<IGenericRepository<Cotizaciondetalle>>(),
+                    provider.GetRequiredService<IGenericRepository<ImpuestoCotizacion>>(),
+                    provider.GetRequiredService<IImpuestoServices>(),
+                    provider.GetRequiredService<IVisitaServices>(),
+                    provider.GetRequiredService<ITipoImpuestoServices>(),
+                    provider.GetRequiredService<IEquiposVisitaServices>()
+                ));
             services.AddScoped<IEtapaServices, EtapaServices>();
             services.AddScoped<IVisitaServices, VisitaServices>();
             services.AddScoped<IClienteServices, ClienteServices>();
             services.AddScoped<IFormatoNumeroClienteServices, FormatoNumeroClienteServices>();
-            services.AddScoped<ISeguimientoServices, SeguimientoServices>();
+            services.AddScoped<ISeguimientoServices, SeguimientoServices>(provider =>
+                new SeguimientoServices(
+                    provider.GetRequiredService<IGenericRepository<Seguimiento>>(),
+                    provider.GetRequiredService<ICotizacionServices>(),
+                    provider.GetRequiredService<IVisitaServices>(),
+                    provider.GetRequiredService<IGenericRepository<Cotizacion>>(),
+                    provider.GetRequiredService<IGenericRepository<PreContrato>>()
+                ));
             services.AddScoped<AutorizacionService>();
             services.AddScoped<IGenericRepository<Contactovisita>, GenericRepository<Contactovisita>>();
             services.AddScoped<IGenericRepository<Equiposvisita>, GenericRepository<Equiposvisita>>();
-            services.AddScoped<IPreContratoServices, PreContratoServices>();
+            services.AddScoped<IGenericRepository<PreContratoParrafo>, GenericRepository<PreContratoParrafo>>();
+            services.AddScoped<IPreContratoServices, PreContratoServices>(provider =>
+                new PreContratoServices(
+                    provider.GetRequiredService<IGenericRepository<PreContrato>>(),
+                    provider.GetRequiredService<ICotizacionServices>(),
+                    provider.GetRequiredService<IGenericRepository<PreContratoParrafo>>(),
+                    provider.GetRequiredService<IPreContratoGeneratorService>()
+                ));
             services.AddScoped<IFormaPagoServices, FormaPagoServices>();
+            services.AddScoped<IPreContratoGeneratorService, PreContratoGeneratorService>(provider =>
+                new PreContratoGeneratorService(
+                    provider.GetRequiredService<TecmeindbContext>(),
+                    provider.GetRequiredService<IGenericRepository<DiccionarioParametro>>()
+                ));
 
             services.AddScoped<IPlantillaPreContratoServices, PlantillaPreContratoServices>();
             services.AddScoped<IPlantillaPreContratoParrafoServices, PlantillaPreContratoParrafoServices>();
             services.AddScoped<IDiccionarioParametroService, DiccionarioParametroService>();
             services.AddScoped<ITipoDocumentoServices, TipoDocumentoServices>();
+            services.AddScoped<IPolizaGarantiaServices, PolizaGarantiaServices>();
+            services.AddScoped<IGenericRepository<PolizaGarantia>, GenericRepository<PolizaGarantia>>();
+
+            // Registro del patrón Strategy para la generación de documentos
+            services.AddScoped<IEstrategiaGeneradorDocumento, EstrategiaPreContrato>();
+
+            services.AddScoped<IGeneradorDocumentoService, GeneradorDocumentoService>();
 
 
         }

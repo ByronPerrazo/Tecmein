@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Implementacion
 {
@@ -14,13 +15,19 @@ namespace BLL.Implementacion
         private readonly ICotizacionServices _cotizacionServices;
         private readonly IVisitaServices _visitaServices;
         private readonly IGenericRepository<Cotizacion> _repositorioCotizacion;
+        private readonly IGenericRepository<PreContrato> _repositorioPreContrato; // Added
 
-        public SeguimientoServices(IGenericRepository<Seguimiento> repositorio, ICotizacionServices cotizacionServices, IVisitaServices visitaServices, IGenericRepository<Cotizacion> repositorioCotizacion)
+        public SeguimientoServices(IGenericRepository<Seguimiento> repositorio, 
+                                 ICotizacionServices cotizacionServices, 
+                                 IVisitaServices visitaServices, 
+                                 IGenericRepository<Cotizacion> repositorioCotizacion, 
+                                 IGenericRepository<PreContrato> repositorioPreContrato) // Added
         {
             _repositorio = repositorio;
             _cotizacionServices = cotizacionServices;
             _visitaServices = visitaServices;
             _repositorioCotizacion = repositorioCotizacion;
+            _repositorioPreContrato = repositorioPreContrato; // Added
         }
 
         public async Task<List<Seguimiento>> Lista(int secCotizacion)
@@ -36,14 +43,14 @@ namespace BLL.Implementacion
             }
 
             IQueryable<Seguimiento> query = await _repositorio.Consultar(s => cotizacionIds.Contains(s.SecCotizacion));
-            return query.OrderByDescending(s => s.FechaAccion).ThenByDescending(s => s.FechaRegistro).ToList();
+            return await query.OrderByDescending(s => s.FechaAccion).ThenByDescending(s => s.FechaRegistro).ToListAsync();
         }
 
         public async Task<Seguimiento> Crear(Seguimiento entidad)
         {
             if (entidad == null) throw new ArgumentNullException(nameof(entidad));
 
-            var cotizacion = await _repositorioCotizacion.Obtener(c => c.Secuencial == entidad.SecCotizacion); // Get tracked Cotizacion
+            var cotizacion = await _repositorioCotizacion.Obtener(c => c.Secuencial == entidad.SecCotizacion);
             if (cotizacion == null)
             {
                 throw new Exception("La cotización especificada no existe.");
@@ -52,18 +59,29 @@ namespace BLL.Implementacion
             entidad.FechaRegistro = DateTime.Now;
             var seguimientoCreado = await _repositorio.Crear(entidad);
 
-            // Cambiar la etapa de la Visita a "SEG" al crear cualquier seguimiento
             await _visitaServices.CambiarEtapa(cotizacion.SecVisita, "SEG");
 
             if (entidad.AceptacionCliente)
             {
-                // 1. Cambiar la etapa de la Visita a "PRE" (Pre-Contrato)
-                // Esto solo ocurrirá si "PRE" tiene un orden mayor que "SEG"
                 await _visitaServices.CambiarEtapa(cotizacion.SecVisita, "PRE");
 
-                // 2. Actualizar el campo Confirmacion en la Cotizacion
                 cotizacion.Confirmacion = true;
                 await _repositorioCotizacion.Editar(cotizacion);
+
+                // Se comenta la creación automática para moverla a un proceso manual desde la pantalla de Pre-Contratos.
+                /*
+                var nuevoPreContrato = new PreContrato
+                {
+                    SecCotizacion = cotizacion.Secuencial,
+                    SecPlantillaPreContrato = 1, 
+                    SecUsuarioCrea = cotizacion.SecUsuario ?? 1, 
+                    Version = 1,
+                    Estado = "Borrador",
+                    EstaActivo = true,
+                    FechaRegistro = DateTime.Now
+                };
+                await _preContratoServices.Crear(nuevoPreContrato);
+                */
             }
 
             return seguimientoCreado;
@@ -86,34 +104,54 @@ namespace BLL.Implementacion
 
             await _repositorio.Editar(seguimientoExistente);
 
-            // Obtener la cotización asociada para cambiar la etapa de la visita
-            var cotizacion = await _repositorioCotizacion.Obtener(c => c.Secuencial == seguimientoExistente.SecCotizacion);
-            if (cotizacion != null)
+            if (seguimientoExistente.AceptacionCliente)
             {
-                // Cambiar la etapa de la Visita a "SEG" al editar cualquier seguimiento
-                await _visitaServices.CambiarEtapa(cotizacion.SecVisita, "SEG");
-
-                // Si la edición establece AceptacionCliente, intentar cambiar a "PRE"
-                if (seguimientoExistente.AceptacionCliente)
+                var cotizacion = await _repositorioCotizacion.Obtener(c => c.Secuencial == seguimientoExistente.SecCotizacion);
+                if (cotizacion != null)
                 {
+                    cotizacion.Confirmacion = true;
+                    await _repositorioCotizacion.Editar(cotizacion);
                     await _visitaServices.CambiarEtapa(cotizacion.SecVisita, "PRE");
-                    // Opcional: Actualizar Confirmacion en Cotizacion si es relevante para la edición
-                    // cotizacion.Confirmacion = true;
-                    // await _repositorioCotizacion.Editar(cotizacion);
                 }
             }
+
             return seguimientoExistente;
         }
 
-        public async Task<bool> Eliminar(int secSeguimiento)
+        public async Task<bool> Eliminar(int secuencial)
         {
-            var seguimiento = await _repositorio.Obtener(s => s.SecSeguimiento == secSeguimiento);
-            if (seguimiento == null)
+            try
             {
-                throw new Exception("El seguimiento no existe.");
+                var seguimiento = await _repositorio.Obtener(s => s.SecSeguimiento == secuencial);
+                if (seguimiento == null)
+                {
+                    return false;
+                }
+                bool resultado = await _repositorio.Eliminar(seguimiento);
+                return resultado;
             }
+            catch
+            {
+                throw;
+            }
+        }
 
-            return await _repositorio.Eliminar(seguimiento);
+        public async Task<List<Cotizacion>> ObtenerCotizacionesAprobadasSinPreContrato()
+        {
+            var cotizacionesAprobadasQuery = await _repositorioCotizacion.Consultar(c => c.Confirmacion == true && c.EstaActivo == 1);
+            var cotizacionesAprobadas = await cotizacionesAprobadasQuery.Include(c => c.SecVisitaNavigation).ToListAsync();
+
+            var cotizacionesConPreContratoQuery = await _repositorioPreContrato.Consultar(p => p.EstaActivo);
+            var cotizacionesConPreContratoIds = await cotizacionesConPreContratoQuery.Select(p => p.SecCotizacion).Distinct().ToListAsync();
+
+            var cotizacionesSinPreContrato = cotizacionesAprobadas.Where(c => !cotizacionesConPreContratoIds.Contains(c.Secuencial));
+
+            var cotizacionesFinales = cotizacionesSinPreContrato
+                .GroupBy(c => c.SecVisita)
+                .Select(g => g.OrderByDescending(c => c.FechaRegistro).First())
+                .ToList();
+
+            return cotizacionesFinales;
         }
     }
 }

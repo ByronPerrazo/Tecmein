@@ -34,7 +34,7 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     @foreach (var submenu in menu.SubMenu)
                     {
-                        <a class="collapse-item" href="@($"../{submenu.Controlador}/{submenu.PaginaAccion}")">
+                        <a class="collapse-item" href="@($"/{submenu.Controlador}/{submenu.PaginaAccion}")">
                             @submenu.Descripcion
                         </a>
                     }

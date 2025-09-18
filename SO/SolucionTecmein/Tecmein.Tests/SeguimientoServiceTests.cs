@@ -16,6 +16,7 @@ namespace Tecmein.Tests
         private readonly Mock<ICotizacionServices> _mockCotizacionServices;
         private readonly Mock<IVisitaServices> _mockVisitaServices;
         private readonly Mock<IGenericRepository<Cotizacion>> _mockCotizacionRepo;
+        private readonly Mock<IPreContratoServices> _mockPreContratoServices; // Added
         private readonly SeguimientoServices _seguimientoService;
 
         public SeguimientoServiceTests()
@@ -24,7 +25,8 @@ namespace Tecmein.Tests
             _mockCotizacionServices = new Mock<ICotizacionServices>();
             _mockVisitaServices = new Mock<IVisitaServices>();
             _mockCotizacionRepo = new Mock<IGenericRepository<Cotizacion>>();
-            _seguimientoService = new SeguimientoServices(_mockSeguimientoRepo.Object, _mockCotizacionServices.Object, _mockVisitaServices.Object, _mockCotizacionRepo.Object);
+            _mockPreContratoServices = new Mock<IPreContratoServices>(); // Added
+           //_seguimientoService = new SeguimientoServices(_mockSeguimientoRepo.Object, _mockCotizacionServices.Object, _mockVisitaServices.Object, _mockCotizacionRepo.Object, new re);
         }
 
         /*

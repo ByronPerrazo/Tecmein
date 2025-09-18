@@ -17,6 +17,7 @@ namespace Tecmein.Tests
         private readonly Mock<IGenericRepository<PreContrato>> _mockPreContratoRepo;
         private readonly Mock<ICotizacionServices> _mockCotizacionServices;
         private readonly Mock<IGenericRepository<PlantillaPreContratoParrafo>> _mockPlantillaParrafoRepo;
+        private readonly Mock<IGenericRepository<PreContratoParrafo>> _mockPreContratoParrafoRepo; // Added
         private readonly PreContratoServices _preContratoService;
 
         public PreContratoServiceTests()
@@ -24,25 +25,35 @@ namespace Tecmein.Tests
             _mockPreContratoRepo = new Mock<IGenericRepository<PreContrato>>();
             _mockCotizacionServices = new Mock<ICotizacionServices>();
             _mockPlantillaParrafoRepo = new Mock<IGenericRepository<PlantillaPreContratoParrafo>>();
-            _preContratoService = new PreContratoServices(_mockPreContratoRepo.Object, _mockCotizacionServices.Object, _mockPlantillaParrafoRepo.Object);
+            _mockPreContratoParrafoRepo = new Mock<IGenericRepository<PreContratoParrafo>>(); // Added
+            //_preContratoService = new PreContratoServices(_mockPreContratoRepo.Object, _mockCotizacionServices.Object, _mockPlantillaParrafoRepo.Object, _mockPreContratoParrafoRepo.Object); // Modified
         }
 
         [Fact]
-        public async Task Crear_ConCotizacionExistente_DebeCrearPreContrato()
+        public async Task Crear_ConCotizacionExistente_DebeCrearPreContratoYClonarParrafos()
         {
             // Arrange
             var cotizacion = new Cotizacion { Secuencial = 1 };
-            var preContrato = new PreContrato { SecCotizacion = 1 };
+            var preContrato = new PreContrato { SecCotizacion = 1, SecPlantillaPreContrato = 1 };
+            var parrafosPlantilla = new List<PlantillaPreContratoParrafo>
+            {
+                new PlantillaPreContratoParrafo { Contenido = "Parrafo 1", Orden = 1, EstaActivo = true },
+                new PlantillaPreContratoParrafo { Contenido = "Parrafo 2", Orden = 2, EstaActivo = true }
+            };
 
             _mockCotizacionServices.Setup(s => s.Detalle(1)).ReturnsAsync(cotizacion);
-            _mockPreContratoRepo.Setup(repo => repo.Crear(It.IsAny<PreContrato>())).ReturnsAsync(preContrato);
+            _mockPreContratoRepo.Setup(repo => repo.Crear(It.IsAny<PreContrato>())).ReturnsAsync(new PreContrato { SecPreContrato = 100 }); // Return with ID
+            _mockPlantillaParrafoRepo.Setup(repo => repo.Consultar(It.IsAny<Expression<Func<PlantillaPreContratoParrafo, bool>>>())).ReturnsAsync(parrafosPlantilla.AsQueryable());
+            _mockPreContratoParrafoRepo.Setup(repo => repo.Crear(It.IsAny<PreContratoParrafo>())).ReturnsAsync((PreContratoParrafo p) => p); // Return the created paragraph
 
             // Act
             var resultado = await _preContratoService.Crear(preContrato);
 
             // Assert
             Assert.NotNull(resultado);
+            Assert.Equal(100, resultado.SecPreContrato);
             _mockPreContratoRepo.Verify(repo => repo.Crear(It.IsAny<PreContrato>()), Times.Once);
+            _mockPreContratoParrafoRepo.Verify(repo => repo.Crear(It.IsAny<PreContratoParrafo>()), Times.Exactly(2)); // Verify paragraphs are cloned
         }
 
         [Fact]

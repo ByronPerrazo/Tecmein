@@ -1,0 +1,59 @@
+<div class="modal fade" id="modalHistorial" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="card shadow-sm">
+                <div class="card-header py-2 bg-second-primary">
+                    <h6 class="m-0 font-weight-bold text-white">
+                        <i class="fas fa-history"></i> Historial de Cambios del Pre-Contrato
+                        <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" class="text-white">×</span>
+                        </button>
+                    </h6>
+                </div>
+                <div class="card-body p-2">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-bordered" id="tablaHistorial" cellspacing="0" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Versión</th>
+                                        <th>Fecha del Cambio</th>
+                                        <th>Realizado por</th>
+                                        <th>Estado</th>
+                                        <th>Ver Contenido</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0 d-flex justify-content-end">
+                    <button class="btn btn-secondary btn-sm m-1" type="button" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal anidado para ver el contenido histórico -->
+<div class="modal fade" id="modalVerVersion" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="card shadow-sm">
+                <div class="card-header py-2 bg-info">
+                    <h6 class="m-0 font-weight-bold text-white">
+                        <i class="fas fa-eye"></i> Visualizador de Versión Histórica
+                    </h6>
+                </div>
+                <div class="card-body p-2">
+                    <iframe id="iframeContenidoHistorico" style="width: 100%; height: 60vh; border: 1px solid #ddd;"></iframe>
+                </div>
+                <div class="card-body p-0 d-flex justify-content-end">
+                    <button class="btn btn-secondary btn-sm m-1" type="button" id="btnCerrarVerVersion">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

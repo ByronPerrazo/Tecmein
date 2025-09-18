@@ -1,0 +1,30 @@
+@using System.Web
+@model TecmeinWebApp.Models.ViewModel.PreContratoVM
+@{
+    ViewData["Title"] = "Editor de Pre-Contrato";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 bg-second-primary">
+        <h6 class="m-0 font-weight-bold text-white">Editor de Pre-Contrato para Cotización: @Model.SecCotizacion</h6>
+    </div>
+    <div class="card-body">
+        <input type="hidden" id="hiddnCotizacionId" value="@Model.SecCotizacion" />
+
+        <div class="form-group">
+            <label>Contenido del Pre-Contrato</label>
+            <textarea id="editorPreContrato" rows="20">@Html.Raw(ViewBag.Contenido)</textarea>
+        </div>
+
+    </div>
+    <div class="card-footer">
+        <button class="btn btn-primary" id="btnGuardar">Guardar Cambios</button>
+        <a class="btn btn-info" href="@Url.Action("Index", "PreContrato")">Volver a la Lista</a>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.tiny.cloud/1/@ViewBag.TinyMceApiKey/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="~/js/PreContrato_Editor.js"></script>
+}

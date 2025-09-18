@@ -53,6 +53,12 @@ namespace BLL.Implementacion
 
         public async Task<Equiposvisita> ProcesaGuardar(Equiposvisita equiposvisita)
         {
+            var visita = await _visitaServices.ConsultaVisita(equiposvisita.SecVisita);
+            if (visita.IdEtapaNavigation.Codigo == "PRE" || visita.IdEtapaNavigation.Codigo == "SEG" || visita.IdEtapaNavigation.Codigo == "COT")
+            {
+                throw new InvalidOperationException("No se puede agregar un equipo a una visita que ya está en etapa de cotización, pre-contrato o seguimiento.");
+            }
+
             await ValidarEquipoVisita(equiposvisita);
             var equipoVisitaGuardado = await _repositorioEquiposVisita.Crear(equiposvisita);
 
@@ -107,6 +113,12 @@ namespace BLL.Implementacion
             if (equipoExistente == null)
             {
                 return false; // O lanzar una excepción si se prefiere
+            }
+
+            var visita = await _visitaServices.ConsultaVisita(equipoExistente.SecVisita);
+            if (visita.IdEtapaNavigation.Codigo == "PRE" || visita.IdEtapaNavigation.Codigo == "SEG" || visita.IdEtapaNavigation.Codigo == "COT")
+            {
+                throw new InvalidOperationException("No se puede eliminar un equipo de una visita que ya está en etapa de cotización, pre-contrato o seguimiento.");
             }
 
             // Sincronizar con Cotizaciondetalle si existe una cotización activa para la visita

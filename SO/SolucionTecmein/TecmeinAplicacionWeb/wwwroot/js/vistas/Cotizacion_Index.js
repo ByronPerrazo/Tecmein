@@ -158,6 +158,8 @@ function limpiarModal() {
     actualizarEstadoBotonPdfCliente();
 }
 
+
+
 function mostrarModal(modelo = MODELO_BASE) {
     limpiarModal();
 
@@ -188,11 +190,28 @@ function mostrarModal(modelo = MODELO_BASE) {
     }
 
     if(modelo.secVisita > 0) {
+        fetch(`/Visita/ObtenerDetalleVisita?secuencialVisita=${modelo.secVisita}`)
+            .then(response => response.ok ? response.json() : Promise.reject(response))
+            .then(respuestaJson => {
+                if (respuestaJson.estado && respuestaJson.objeto) {
+                    const detalle = respuestaJson.objeto;
+                    if (detalle.idEtapaNavigation.codigo === 'PRE' || detalle.idEtapaNavigation.codigo === 'SEG' || detalle.idEtapaNavigation.codigo === 'COT') {
+                        $('.btn-eliminar-detalle').prop('disabled', true);
+                        $('.cantidad').prop('disabled', true);
+                        $('.valor-compra').prop('disabled', true);
+                        $('.margen-ganancia').prop('disabled', true);
+                        $('#btnGuardar').prop('disabled', true);
+                    }
+                }
+            });
         $("#cboVisita").trigger('change');
     }
 
     if (modelo.secuencial > 0) {
         $('#btnGuardar').prop('disabled', false);
+        
+    } else {
+        $('#seccionPreContrato').hide();
     }
 
     $('#chkEnviadoProveedor').prop('checked', modelo.enviadoProveedor);
@@ -206,12 +225,17 @@ function mostrarModal(modelo = MODELO_BASE) {
     mostrarDesgloseImpuestos(modelo.impuestoCotizaciones);
 
     actualizarEstadoBotonPdfCliente();
+    
     $("#modalData").modal("show");
 }
 
+
+
 let activeTaxes = []; // Global variable to store active taxes
 
+
 $(document).ready(function () {
+    
     $('body').tooltip({ selector: '[data-toggle="tooltip"]' });
 
     // Fetch active taxes
@@ -367,18 +391,17 @@ $(document).ready(function () {
 
     $(document).on('click', '.btn-eliminar-detalle', function() {
         const fila = $(this).closest('tr');
-        swal({
-            title: "¿Está Seguro de Eliminar?",
+        Swal.fire({
+            title: '¿Está Seguro de Eliminar?',
             text: `Eliminar el equipo "${fila.find('td:first').text().substring(0, 25)}" de la cotización.`,
-            type: "warning",
+            icon: 'warning',
             showCancelButton: true,
-            confirmButtonClass: "btn-danger",
-            confirmButtonText: "Sí, eliminar",
-            cancelButtonText: "No, cancelar",
-            closeOnConfirm: true,
-            closeOnCancel: true
-        }, function (respuesta) {
-            if (respuesta) {
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'No, cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
                 fila.remove();
                 calcularTotalesGenerales();
                 actualizarEstadoBotonPdfCliente();
@@ -429,13 +452,13 @@ $(document).ready(function () {
                 if (responseJson.estado) {
                     tablaData.ajax.reload();
                     $('#modalData').modal('hide');
-                    swal("Listo!", `La cotización fue ${esNuevo ? 'creada' : 'editada'} exitosamente.`, "success");
+                    Swal.fire('Listo!', `La cotización fue ${esNuevo ? 'creada' : 'editada'} exitosamente.`, 'success');
                 } else {
-                    swal("Error", responseJson.mensajes, "error");
+                    Swal.fire('Error', responseJson.mensajes, 'error');
                 }
             }).catch(err => {
                 $("#modalData .modal-content").LoadingOverlay("hide");
-                swal("Error", "No se pudo conectar con el servidor", "error");
+                Swal.fire('Error', 'No se pudo conectar con el servidor', 'error');
             });
     });
 
@@ -457,7 +480,7 @@ $(document).ready(function () {
             })
             .catch(err => {
                 $("#modalData .modal-content").LoadingOverlay("hide");
-                swal("Error", "No se pudo obtener la información de la cotización.", "error");
+                Swal.fire('Error', 'No se pudo obtener la información de la cotización.', 'error');
             });
     });
 
@@ -465,18 +488,17 @@ $(document).ready(function () {
         const fila = $(this).closest("tr").hasClass("child") ? $(this).closest("tr").prev() : $(this).closest("tr");
         const data = tablaData.row(fila).data();
 
-        swal({
-            title: "Está Seguro de Eliminar?",
+        Swal.fire({
+            title: 'Está Seguro de Eliminar?',
             text: `Eliminar la cotización para la obra "${data.nombreObra}"`,
-            type: "warning",
+            icon: 'warning',
             showCancelButton: true,
-            confirmButtonClass: "btn-danger",
-            confirmButtonText: "Sí, eliminar",
-            cancelButtonText: "No, cancelar",
-            closeOnConfirm: false,
-            closeOnCancel: true
-        }, function (respuesta) {
-            if (respuesta) {
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'No, cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
                 $(".showSweetAlert").LoadingOverlay("show");
                 fetch(`/Cotizacion/Eliminar?id=${data.secuencial}`, { method: "DELETE" })
                     .then(response => {
@@ -486,14 +508,14 @@ $(document).ready(function () {
                     .then(responseJson => {
                         if (responseJson.estado) {
                             tablaData.row(fila).remove().draw();
-                            swal("Listo!", "La cotización fue eliminada.", "success");
+                            Swal.fire('Listo!', 'La cotización fue eliminada.', 'success');
                         } else {
-                            swal("Error", responseJson.mensajes, "error");
+                            Swal.fire('Error', responseJson.mensajes, 'error');
                         }
                     })
                     .catch(err => {
                         $(".showSweetAlert").LoadingOverlay("hide");
-                        swal("Error", "No se pudo conectar con el servidor.", "error");
+                        Swal.fire('Error', 'No se pudo conectar con el servidor.', 'error');
                     });
             }
         });
@@ -544,6 +566,10 @@ $(document).ready(function () {
             boton.prop('disabled', false);
         }, 1000); // 1 segundo de espera
     });
+
+    
+
+    
 
     $(document).on('input', '.valor-compra, .margen-ganancia', actualizarEstadoBotonPdfCliente);
     $('#chkEnviadoProveedor').on('change', actualizarEstadoBotonPdfCliente);
@@ -680,13 +706,14 @@ $(document).ready(function () {
                 if (responseJson.estado) {
                     tablaSeguimiento.ajax.reload(); // Recargar la DataTable de seguimientos
                     $('#modalDataSeguimiento').modal('hide');
-                    swal("Listo!", `El seguimiento fue ${esNuevo ? 'creado' : 'editado'} exitosamente.`, "success");
+                    Swal.fire('Listo!', `El seguimiento fue ${esNuevo ? 'creado' : 'editado'} exitosamente.`, 'success');
+                    
                 } else {
-                    swal("Error", responseJson.mensajes, "error");
+                    Swal.fire('Error', responseJson.mensajes, 'error');
                 }
             }).catch(err => {
                 $("#modalDataSeguimiento .modal-content").LoadingOverlay("hide");
-                swal("Error", "No se pudo conectar con el servidor", "error");
+                Swal.fire('Error', 'No se pudo conectar con el servidor', 'error');
             });
     });
 
@@ -695,18 +722,17 @@ $(document).ready(function () {
         const fila = $(this).closest("tr").hasClass("child") ? $(this).closest("tr").prev() : $(this).closest("tr");
         const data = tablaSeguimiento.row(fila).data();
 
-        swal({
-            title: "¿Está Seguro de Eliminar?",
+        Swal.fire({
+            title: '¿Está Seguro de Eliminar?',
             text: `Eliminar el seguimiento: "${data.accion}"`,
-            type: "warning",
+            icon: 'warning',
             showCancelButton: true,
-            confirmButtonClass: "btn-danger",
-            confirmButtonText: "Sí, eliminar",
-            cancelButtonText: "No, cancelar",
-            closeOnConfirm: false,
-            closeOnCancel: true
-        }, function (respuesta) {
-            if (respuesta) {
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'No, cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
                 $(".showSweetAlert").LoadingOverlay("show");
                 fetch(`/Seguimiento/Eliminar?secuencial=${data.secSeguimiento}`, { method: "DELETE" })
                     .then(response => {
@@ -716,14 +742,14 @@ $(document).ready(function () {
                     .then(responseJson => {
                         if (responseJson.estado) {
                             tablaSeguimiento.ajax.reload(); // Recargar la DataTable de seguimientos
-                            swal("Listo!", "El seguimiento fue eliminado.", "success");
+                            Swal.fire('Listo!', 'El seguimiento fue eliminado.', 'success');
                         } else {
-                            swal("Error", responseJson.mensajes, "error");
+                            Swal.fire('Error', responseJson.mensajes, 'error');
                         }
                     })
                     .catch(err => {
                         $(".showSweetAlert").LoadingOverlay("hide");
-                        swal("Error", "No se pudo conectar con el servidor.", "error");
+                        Swal.fire('Error', 'No se pudo conectar con el servidor.', 'error');
                     });
             }
         });

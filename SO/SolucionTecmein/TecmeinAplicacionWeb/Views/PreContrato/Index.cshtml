@@ -1,0 +1,62 @@
+@{
+    ViewData["Title"] = "Pre-Contratos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Estilos {
+    <link rel="stylesheet" href="~/vendor/datatables/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="~/css/styleGenerales.css">
+}
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3 bg-second-primary">
+        <h6 class="m-0 font-weight-bold text-white">Lista de Pre-Contratos</h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-3">
+                <button class="btn btn-success" data-toggle="modal" id="btnNuevo"><i class="fas fa-plus"></i> Nuevo</button>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-bordered" id="tablaPreContratos" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>N° Pre-Contrato</th>
+                            <th>N° Cotización</th>
+                            <th>Nombre de la Obra</th>
+                            <th>Fecha de Creación</th>
+                            <th>Versión</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("_PreContratoModal")
+@await Html.PartialAsync("_HistorialCambiosModal")
+@await Html.PartialAsync("_EditorPreContratoModal")
+@await Html.PartialAsync("_VistaPreviaModal")
+
+@section Scripts {
+    <script src="~/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/dataTables.responsive.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/dataTables.buttons.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/jszip.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.html5.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.print.min.js"></script>
+    
+    <script src="~/js/PreContrato_EditorModal.js"></script>
+    <script src="~/js/PreContrato_Index.js"></script>
+}

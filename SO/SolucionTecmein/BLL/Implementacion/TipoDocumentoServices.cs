@@ -27,6 +27,7 @@ namespace BLL.Implementacion
         {
             try
             {
+                entidad.FechaRegistro = DateTime.Now;
                 TipoDocumento tipoDocumento_creado = await _repositorio.Crear(entidad);
                 if (tipoDocumento_creado.SecTipoDocumento == 0)
                     throw new Exception("No se pudo crear el tipo de documento");

@@ -1,0 +1,28 @@
+<!-- Modal para el Editor de Pre-Contrato -->
+<div class="modal fade" id="modalEditorPreContrato" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="card shadow-sm">
+                <div class="card-header py-2 bg-second-primary">
+                    <h6 class="m-0 font-weight-bold text-white">
+                        <i class="fas fa-edit"></i> Editor de Contenido del Pre-Contrato
+                        <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" class="text-white">×</span>
+                        </button>
+                    </h6>
+                </div>
+                <div class="card-body p-2">
+                    <input type="hidden" id="hiddnSecPreContratoEditor" value="0" />
+                    <div class="form-group">
+                        <label>Contenido del Pre-Contrato</label>
+                        <textarea id="editorContenidoPreContrato" rows="20"></textarea>
+                    </div>
+                </div>
+                <div class="card-body p-0 d-flex justify-content-end">
+                    <button class="btn btn-primary btn-sm m-1 mr-2" type="button" id="btnGuardarContenidoEditor">Guardar Contenido</button>
+                    <button class="btn btn-secondary btn-sm m-1" type="button" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

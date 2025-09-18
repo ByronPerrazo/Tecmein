@@ -38,7 +38,7 @@ namespace TecmeinWebApp.Controllers
                 {
                     var contactoPrincipal = cotizacionOriginal.SecVisitaNavigation.Contactovisita
                         .FirstOrDefault(cv => cv.EstaActivo == 1 && cv.SecContactoNavigation != null)?.SecContactoNavigation;
-                    
+
                     cotizacionVM.NombreContacto = contactoPrincipal != null ? $"{contactoPrincipal.Nombres} {contactoPrincipal.Apellidos}" : "Sin Contacto";
                 }
                 else
@@ -190,5 +190,8 @@ namespace TecmeinWebApp.Controllers
             }
             return StatusCode(StatusCodes.Status200OK, response);
         }
+
+                
     }
 }
+

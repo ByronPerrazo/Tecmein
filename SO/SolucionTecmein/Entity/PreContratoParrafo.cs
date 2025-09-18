@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entity
 {
+    [Table("precontratoparrafo")] // Add this attribute
     public partial class PreContratoParrafo
     {
         [Key]
