@@ -4,7 +4,7 @@ using Entity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
-using TecmeinWebApp.Models.ViewModel;
+using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
 
 namespace TecmeinWebApp.Controllers

@@ -4,7 +4,7 @@ using DAL.Interfaces;
 using Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using TecmeinWebApp.Models.ViewModel;
+using TecmeinAplicacionWeb.Models.ViewModels;
 
 namespace TecmeinWebApp.Utilidades.ViewComponents
 {

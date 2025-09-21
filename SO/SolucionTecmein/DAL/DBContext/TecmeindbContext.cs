@@ -1073,6 +1073,36 @@ public partial class TecmeindbContext : DbContext
             entity.Property(e => e.EstaActivo);
         });
 
+        modelBuilder.Entity<Contrato>(entity =>
+        {
+            entity.HasKey(e => e.IdContrato).HasName("PRIMARY");
+            entity.ToTable("contrato");
+
+            entity.HasIndex(e => e.IdCotizacion, "FK_Contrato_Cotizacion_idx");
+            entity.HasIndex(e => e.IdUsuarioCarga, "FK_Contrato_Usuario_idx");
+
+            entity.Property(e => e.IdContrato).HasColumnName("IdContrato");
+            entity.Property(e => e.IdCotizacion).HasColumnName("IdCotizacion");
+            entity.Property(e => e.FechaFirma).HasColumnType("datetime").HasColumnName("FechaFirma");
+            entity.Property(e => e.IdUsuarioCarga).HasColumnName("IdUsuarioCarga");
+            entity.Property(e => e.NombreArchivo).HasMaxLength(255).HasColumnName("NombreArchivo");
+            entity.Property(e => e.RutaArchivo).HasMaxLength(1024).HasColumnName("RutaArchivo");
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime").HasColumnName("FechaCreacion");
+            entity.Property(e => e.EsActivo).HasColumnName("EsActivo");
+
+            entity.HasOne(d => d.IdCotizacionNavigation)
+                .WithMany()
+                .HasForeignKey(d => d.IdCotizacion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Contrato_Cotizacion");
+
+            entity.HasOne(d => d.IdUsuarioCargaNavigation)
+                .WithMany()
+                .HasForeignKey(d => d.IdUsuarioCarga)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Contrato_Usuario");
+        });
+
         OnModelCreatingPartial(modelBuilder);
     }
 

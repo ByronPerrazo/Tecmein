@@ -1,18 +1,17 @@
-using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using TecmeinWebApp.Models;
-using System.Security.Claims;
+using AutoMapper; // AÑADIDO
+using BLL.Interfaces;
+using Entity; // AÑADIDO
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using AutoMapper; // AÑADIDO
-using TecmeinWebApp.Models.ViewModel;
-using Entity; // AÑADIDO
+using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
+using System.Security.Claims;
+using TecmeinAplicacionWeb.Models.ViewModels;
 
 namespace TecmeinWebApp.Controllers;
 
-[Authorize] 
+[Authorize]
 public class HomeController : Controller
 {
     private readonly IUsuarioServices _usuarioServices;

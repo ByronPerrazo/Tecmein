@@ -1,44 +1,36 @@
-using AutoMapper;
-using BLL.DTOs;
-using BLL.Interfaces;
-using Entity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using BLL.Interfaces;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using Entity;
+using AutoMapper;
+using TecmeinAplicacionWeb.Models.ViewModels;
+using Newtonsoft.Json;
 using System.Security.Claims;
-using TecmeinWebApp.Models;
-using TecmeinWebApp.Models.ViewModel;
-using TecmeinWebApp.Utilidades.Response;
 
-namespace TecmeinWebApp.Controllers
+namespace TecmeinAplicacionWeb.Controllers
 {
     public class PreContratoController : Controller
     {
-        private readonly IPreContratoServices _preContratoServices;
-        private readonly ICotizacionServices _cotizacionServices;
-        private readonly IPlantillaPreContratoServices _plantillaPreContratoServices;
-        private readonly IFormaPagoServices _formaPagoServices;
-        private readonly ISeguimientoServices _seguimientoServices;
-        private readonly IPreContratoGeneratorService _preContratoGeneratorService;
-        private readonly IConfiguration _configuration;
+        private readonly IPreContratoServices _preContratoService;
+        private readonly ICotizacionServices _cotizacionService;
+        private readonly IFormaPagoServices _formaPagoService;
+        private readonly IPlantillaPreContratoServices _plantillaPreContratoService;
+        private readonly IPolizaGarantiaServices _polizaGarantiaService;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
+        private readonly IPreContratoGeneratorService _preContratoGeneratorService;
 
-        public PreContratoController(IPreContratoServices preContratoServices,
-                                     ICotizacionServices cotizacionServices,
-                                     IPlantillaPreContratoServices plantillaPreContratoServices,
-                                     IFormaPagoServices formaPagoServices,
-                                     ISeguimientoServices seguimientoServices,
-                                     IPreContratoGeneratorService preContratoGeneratorService,
-                                     IConfiguration configuration,
-                                     IMapper mapper)
+        public PreContratoController(IPreContratoServices preContratoService, ICotizacionServices cotizacionService, IFormaPagoServices formaPagoService, IPlantillaPreContratoServices plantillaPreContratoService, IPolizaGarantiaServices polizaGarantiaService, IMapper mapper, IConfiguration configuration, IPreContratoGeneratorService preContratoGeneratorService)
         {
-            _preContratoServices = preContratoServices;
-            _cotizacionServices = cotizacionServices;
-            _plantillaPreContratoServices = plantillaPreContratoServices;
-            _formaPagoServices = formaPagoServices;
-            _seguimientoServices = seguimientoServices;
-            _preContratoGeneratorService = preContratoGeneratorService;
-            _configuration = configuration;
+            _preContratoService = preContratoService;
+            _cotizacionService = cotizacionService;
+            _formaPagoService = formaPagoService;
+            _plantillaPreContratoService = plantillaPreContratoService;
+            _polizaGarantiaService = polizaGarantiaService;
             _mapper = mapper;
+            _configuration = configuration;
+            _preContratoGeneratorService = preContratoGeneratorService;
         }
 
         public IActionResult Index()
@@ -46,79 +38,104 @@ namespace TecmeinWebApp.Controllers
             return View();
         }
 
-        [HttpGet("PreContrato/Editor/{cotizacionId}")]
-        public async Task<IActionResult> Editor(int cotizacionId)
+        [HttpGet]
+        public async Task<IActionResult> Listar()
+        {
+            var lista = await _preContratoService.Lista();
+            List<PreContratoVM> vmLista = _mapper.Map<List<PreContratoVM>>(lista);
+            return StatusCode(StatusCodes.Status200OK, new { data = vmLista });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Aprobar(int id)
         {
             try
             {
-                ViewBag.TinyMceApiKey = _configuration["ApiKeys:TinyMCE"];
-                string contenidoHtml;
+                bool resultado = await _preContratoService.Aprobar(id);
+                return StatusCode(StatusCodes.Status200OK, new { success = resultado, message = resultado ? "Pre-contrato aprobado correctamente." : "No se pudo aprobar el pre-contrato." });
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { success = false, message = ex.Message });
+            }
+        }
 
-                var preContrato = await _preContratoServices.ObtenerUltimaVersion(cotizacionId);
+        [HttpDelete]
+        public async Task<IActionResult> Eliminar(int id)
+        {
+            try
+            {
+                bool resultado = await _preContratoService.Eliminar(id);
+                return StatusCode(StatusCodes.Status200OK, new { estado = resultado, mensajes = resultado ? "Pre-contrato eliminado correctamente." : "No se pudo eliminar el pre-contrato." });
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { estado = false, mensajes = ex.Message });
+            }
+        }
 
+        [HttpGet]
+        public async Task<IActionResult> Historial(int id)
+        {
+            try
+            {
+                var lista = await _preContratoService.ObtenerHistorial(id);
+                List<PreContratoVM> vmLista = _mapper.Map<List<PreContratoVM>>(lista);
+                return StatusCode(StatusCodes.Status200OK, new { data = vmLista });
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ContenidoParrafo(int id)
+        {
+            try
+            {
+                var parrafo = await _preContratoService.ObtenerPrimerParrafo(id);
+                if (parrafo == null)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound, new { estado = false, mensajes = "Contenido no encontrado." });
+                }
+                return StatusCode(StatusCodes.Status200OK, new { estado = true, objeto = new { contenido = parrafo.Contenido } });
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { estado = false, mensajes = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Editor(int id)
+        {
+            try
+            {
+                // Obtener el modelo base (sin párrafos) para el @Model de la vista
+                var preContrato = await _preContratoService.Obtener(id);
                 if (preContrato == null)
                 {
-                    // CASO 1: No existe pre-contrato. Se genera la versión 1 a partir de una plantilla.
-                    string userIdString = User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier);
-                    if (!int.TryParse(userIdString, out int secUsuario))
-                    {
-                        return Unauthorized("Sesión de usuario inválida.");
-                    }
-
-                    var primeraPlantilla = (await _plantillaPreContratoServices.Lista()).FirstOrDefault();
-                    if (primeraPlantilla == null)
-                    {
-                        throw new Exception("No se encontraron plantillas para generar el pre-contrato inicial.");
-                    }
-
-                    var cotizacion = await _cotizacionServices.Detalle(cotizacionId);
-                    var dto = new PreContratoGeneratorDTO
-                    {
-                        SecCotizacion = cotizacionId,
-                        SecPlantillaPreContrato = primeraPlantilla.SecPlantillaPreContrato,
-                        ValorContrato = (decimal)(cotizacion.Subtotal + cotizacion.ValorImpuestos)
-                    };
-                    contenidoHtml = await _preContratoGeneratorService.GenerarVistaPreviaHtml(dto);
-
-                    // Se guarda esta primera versión generada.
-                    preContrato = await _preContratoServices.GuardarDesdeEditor(cotizacionId, contenidoHtml, secUsuario);
+                    // Considerar una página de error amigable
+                    return NotFound($"Pre-contrato con ID {id} no encontrado.");
                 }
-                else
-                {
-                    // CASO 2: El pre-contrato ya existe. Se carga el contenido HTML guardado en la BD.
-                    var parrafo = await _preContratoServices.ObtenerPrimerParrafo(preContrato.SecPreContrato);
-                    contenidoHtml = parrafo?.Contenido ?? string.Empty;
-                }
+                var vmPreContrato = _mapper.Map<PreContratoVM>(preContrato);
 
-                var modelo = _mapper.Map<PreContratoVM>(preContrato);
+                // Obtener el contenido HTML por separado y pasarlo por ViewBag
+                string contenidoHtml = await _preContratoService.ObtenerContenidoHtml(id);
                 ViewBag.Contenido = contenidoHtml;
 
-                return View(modelo);
+                // Obtener la clave de TinyMCE desde la configuración
+                ViewBag.TinyMceApiKey = _configuration["ApiKeys:TinyMCE"];
+
+                return View(vmPreContrato);
             }
             catch (Exception ex)
             {
-                return View("Error", new ErrorViewModel { RequestId = System.Diagnostics.Activity.Current?.Id ?? HttpContext.TraceIdentifier, Message = ex.Message });
+                // Loggear el error y mostrar una vista de error
+                // Log.Error(ex, "Error al cargar el editor para PreContrato ID {id}");
+                return View("Error"); // Asumiendo que tienes una vista de error genérica
             }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Lista()
-        {
-            var lista = await _preContratoServices.Lista();
-            var listaVM = _mapper.Map<List<PreContratoVM>>(lista);
-            return Json(new { data = listaVM });
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> ListaCotizaciones()
-        {
-            var lista = await _cotizacionServices.Lista();
-            var selectList = lista.Select(c => new SelectListItem
-            {
-                Value = c.Secuencial.ToString(),
-                Text = c.SecVisitaNavigation != null ? c.SecVisitaNavigation.Nombre : c.Secuencial.ToString()
-            }).ToList();
-            return Json(new { data = selectList });
         }
 
         [HttpGet]
@@ -126,296 +143,176 @@ namespace TecmeinWebApp.Controllers
         {
             try
             {
-                var cotizacionesAprobadas = await _seguimientoServices.ObtenerCotizacionesAprobadasSinPreContrato();
-                var selectList = cotizacionesAprobadas.Select(c => new SelectListItem
-                {
-                    Value = c.Secuencial.ToString(),
-                    Text = $"{c.Secuencial} - {c.SecVisitaNavigation?.Nombre ?? "N/A"}"
-                }).ToList();
-                return Json(new { data = selectList });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { estado = false, mensajes = ex.Message });
-            }
-        }
+                var cotizaciones = await _cotizacionService.Lista();
+                var cotizacionesAprobadas = cotizaciones
+                    .Where(c => c.EstaActivo == 1 && c.Confirmacion == true && c.SecVisitaNavigation != null)
+                    .Select(c => new
+                    {
+                        value = c.Secuencial,
+                        text = $"COT-{c.Secuencial} - {(c.SecVisitaNavigation != null ? c.SecVisitaNavigation.Nombre : "Sin Nombre de Obra")}"
+                    })
+                    .ToList();
 
-
-        [HttpGet]
-        public async Task<IActionResult> ListaPlantillas()
-        {
-            var lista = await _plantillaPreContratoServices.Lista();
-            var selectList = lista.Select(p => new SelectListItem
+                return StatusCode(StatusCodes.Status200OK, new { data = cotizacionesAprobadas });
+            }
+            catch (System.Exception ex)
             {
-                Value = p.SecPlantillaPreContrato.ToString(),
-                Text = p.Nombre
-            }).ToList();
-            return Json(new { data = selectList });
+                return StatusCode(StatusCodes.Status500InternalServerError, new { success = false, message = ex.Message });
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> ListaFormasPago()
         {
-            var lista = await _formaPagoServices.Lista();
-            var selectList = lista.Select(f => new SelectListItem
+            try
             {
-                Value = f.SecFormaPago.ToString(),
-                Text = f.Descripcion
-            }).ToList();
-            return Json(new { data = selectList });
+                var lista = await _formaPagoService.Lista();
+                var formasPago = lista.Select(fp => new { value = fp.SecFormaPago, text = fp.Descripcion }).ToList();
+                return StatusCode(StatusCodes.Status200OK, new { data = formasPago });
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { success = false, message = ex.Message });
+            }
         }
 
         [HttpGet]
-        public async Task<IActionResult> Detalle(int secPreContrato)
-        {
-            var preContrato = await _preContratoServices.Obtener(secPreContrato);
-            var vm = _mapper.Map<PreContratoVM>(preContrato);
-            return Json(new { data = vm });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Crear([FromBody] PreContratoVM modelo)
-        {
-            var entidad = _mapper.Map<PreContrato>(modelo);
-            var resultado = await _preContratoServices.Crear(entidad);
-            return Json(new { data = resultado });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CrearDesdeCotizacion(int cotizacionId)
+        public async Task<IActionResult> ListaPlantillas()
         {
             try
             {
-                string userIdString = User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier);
-                if (!int.TryParse(userIdString, out int secUsuario))
+                var lista = await _plantillaPreContratoService.Lista();
+                var plantillas = lista.Select(p => new { value = p.SecPlantillaPreContrato, text = p.Nombre }).ToList();
+                return StatusCode(StatusCodes.Status200OK, new { data = plantillas });
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ListaParaDropdown()
+        {
+            try
+            {
+                var lista = await _polizaGarantiaService.Lista();
+                var polizas = lista.Select(p => new { value = p.Secuencial, text = p.Descripcion }).ToList();
+                return StatusCode(StatusCodes.Status200OK, new { data = polizas });
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GuardarPreContrato([FromBody] GuardarPreContratoRequest request)
+        {
+            try
+            {
+                // Obtener el ID del usuario autenticado
+                var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (usuarioIdClaim == null || !int.TryParse(usuarioIdClaim.Value, out int usuarioId))
                 {
-                    return Unauthorized(new { estado = false, mensajes = "Sesión de usuario inválida." });
+                    return Json(new { estado = false, mensajes = "Usuario no autenticado o ID de usuario inválido." });
                 }
 
-                var preContrato = await _preContratoServices.CrearDesdeCotizacion(cotizacionId, secUsuario);
-                var vm = _mapper.Map<PreContratoVM>(preContrato);
-                return Ok(new { estado = true, objeto = vm });
+                // Llamar al servicio para guardar el pre-contrato con el nuevo contenido
+                await _preContratoService.ActualizarContenidoPreContrato(request.SecPreContrato, request.Contenido, usuarioId);
+
+                return Json(new { estado = true, mensajes = "Pre-contrato guardado exitosamente." });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { estado = false, mensajes = ex.Message });
+                return Json(new { estado = false, mensajes = ex.Message });
             }
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> Editar([FromBody] PreContratoVM modelo)
-        {
-            var entidad = _mapper.Map<PreContrato>(modelo);
-            var resultado = await _preContratoServices.Editar(entidad);
-            return Json(new { data = resultado });
         }
 
         [HttpPost]
-        public async Task<IActionResult> GenerarVistaPrevia([FromBody] PreContratoModalVM modelo)
+        public async Task<IActionResult> GenerarVistaPrevia([FromBody] GenerarVistaPreviaRequest request)
         {
-            var gResponse = new GenericResponse<string>();
             try
             {
-                var dto = new PreContratoGeneratorDTO
+                // Mapear el request a PreContratoGeneratorDTO
+                var preContratoData = new BLL.DTOs.PreContratoGeneratorDTO
                 {
-                    SecCotizacion = modelo.SecCotizacion,
-                    SecFormaPago = modelo.SecFormaPago,
-                    SecPlantillaPreContrato = modelo.SecPlantillaPreContrato,
-                    ValorContrato = modelo.ValorContrato,
-                    ValorAnticipo = modelo.ValorAnticipo,
-                    FechaAnticipo = modelo.FechaAnticipo,
-                    NumeroCuotas = modelo.NumeroCuotas,
-                    FechaPrimeraCuota = modelo.FechaPrimeraCuota,
-                    Dias = modelo.Dias,
-                    TipoDias = modelo.TipoDias,
-                    PeriodoMantenimiento = modelo.PeriodoMantenimiento,
-                    AniosGarantia = modelo.AniosGarantia,
-                    MesesGarantia = modelo.MesesGarantia,
-                    PolizaGarantia = modelo.PolizaGarantia
+                    SecCotizacion = request.SecCotizacion,
+                    SecFormaPago = request.SecFormaPago,
+                    SecPlantillaPreContrato = request.SecPlantillaPreContrato,
+                    ValorContrato = request.ValorContrato,
+                    ValorAnticipo = request.ValorAnticipo,
+                    FechaAnticipo = string.IsNullOrEmpty(request.FechaAnticipo) ? (DateTime?)null : DateTime.Parse(request.FechaAnticipo),
+                    NumeroCuotas = request.NumeroCuotas,
+                    FechaPrimeraCuota = string.IsNullOrEmpty(request.FechaPrimeraCuota) ? (DateTime?)null : DateTime.Parse(request.FechaPrimeraCuota),
+                    Dias = request.Dias,
+                    TipoDias = request.TipoDias,
+                    PeriodoMantenimiento = request.PeriodoMantenimiento,
+                    AniosGarantia = request.AniosGarantia,
+                    MesesGarantia = request.MesesGarantia,
+                    PolizaGarantia = request.PolizaGarantia
                 };
 
-                string contenidoHtml = await _preContratoGeneratorService.GenerarVistaPreviaHtml(dto);
-                gResponse.Estado = true;
-                gResponse.Objeto = contenidoHtml;
+                string htmlPreview = await _preContratoGeneratorService.GenerarVistaPreviaHtml(preContratoData);
+
+                return Json(new { estado = true, objeto = htmlPreview });
             }
             catch (Exception ex)
             {
-                gResponse.Estado = false;
-                gResponse.Mensajes = ex.Message;
+                return Json(new { estado = false, mensajes = $"Error al generar la vista previa: {ex.Message}" });
             }
-            return Json(gResponse);
-        }
-
-
-
-        [HttpPost("PreContrato/ObtenerDatosParaPlaceholders")]
-        public async Task<IActionResult> ObtenerDatosParaPlaceholders([FromBody] PreContratoModalVM modelo)
-        {
-            var gResponse = new GenericResponse<PlaceholderDataDTO>();
-            try
-            {
-                var dto = new PreContratoGeneratorDTO
-                {
-                    SecCotizacion = modelo.SecCotizacion,
-                    SecFormaPago = modelo.SecFormaPago,
-                    SecPlantillaPreContrato = modelo.SecPlantillaPreContrato,
-                    ValorContrato = modelo.ValorContrato,
-                    ValorAnticipo = modelo.ValorAnticipo,
-                    FechaAnticipo = modelo.FechaAnticipo,
-                    NumeroCuotas = modelo.NumeroCuotas,
-                    FechaPrimeraCuota = modelo.FechaPrimeraCuota,
-                    Dias = modelo.Dias,
-                    TipoDias = modelo.TipoDias,
-                    PeriodoMantenimiento = modelo.PeriodoMantenimiento,
-                    AniosGarantia = modelo.AniosGarantia,
-                    MesesGarantia = modelo.MesesGarantia,
-                    PolizaGarantia = modelo.PolizaGarantia
-                };
-
-                var placeholderData = await _preContratoGeneratorService.ObtenerDatosParaPlaceholders(dto);
-                gResponse.Estado = true;
-                gResponse.Objeto = placeholderData;
-            }
-            catch (Exception ex)
-            {
-                gResponse.Estado = false;
-                gResponse.Mensajes = ex.Message;
-            }
-            return Json(gResponse);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CrearDesdeModal([FromBody] PreContratoModalVM modelo)
+        public async Task<IActionResult> CrearDesdeModal([FromBody] CrearPreContratoRequest request)
         {
-            var gResponse = new GenericResponse<PreContratoVM>();
             try
             {
-                string userIdString = User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier);
-                if (!int.TryParse(userIdString, out int secUsuario))
+                // Obtener el ID del usuario autenticado
+                var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (usuarioIdClaim == null || !int.TryParse(usuarioIdClaim.Value, out int usuarioId))
                 {
-                    return Unauthorized(new { estado = false, mensajes = "Sesión de usuario inválida." });
+                    return Json(new { estado = false, mensajes = "Usuario no autenticado o ID de usuario inválido." });
                 }
 
+                // Mapear el request a PreContrato
                 var entidad = new PreContrato
                 {
-                    SecCotizacion = modelo.SecCotizacion,
-                    SecFormaPago = modelo.SecFormaPago,
-                    SecPlantillaPreContrato = modelo.SecPlantillaPreContrato,
-                    ValorContrato = modelo.ValorContrato,
-                    ValorAnticipo = modelo.ValorAnticipo,
-                    FechaAnticipo = modelo.FechaAnticipo,
-                    NumeroCuotas = modelo.NumeroCuotas,
-                    FechaPrimeraCuota = modelo.FechaPrimeraCuota,
-                    Dias = modelo.Dias,
-                    TipoDias = modelo.TipoDias,
-                    PeriodoMantenimiento = modelo.PeriodoMantenimiento,
-                    AniosGarantia = modelo.AniosGarantia,
-                    MesesGarantia = modelo.MesesGarantia,
-                    PolizaGarantia = modelo.PolizaGarantia
+                    SecCotizacion = request.SecCotizacion,
+                    SecFormaPago = request.SecFormaPago,
+                    SecPlantillaPreContrato = request.SecPlantillaPreContrato,
+                    ValorContrato = request.ValorContrato,
+                    ValorAnticipo = request.ValorAnticipo,
+                    FechaAnticipo = string.IsNullOrEmpty(request.FechaAnticipo) ? (DateTime?)null : DateTime.Parse(request.FechaAnticipo),
+                    NumeroCuotas = request.NumeroCuotas,
+                    FechaPrimeraCuota = string.IsNullOrEmpty(request.FechaPrimeraCuota) ? (DateTime?)null : DateTime.Parse(request.FechaPrimeraCuota),
+                    Dias = request.Dias,
+                    TipoDias = request.TipoDias,
+                    PeriodoMantenimiento = request.PeriodoMantenimiento,
+                    AniosGarantia = request.AniosGarantia,
+                    MesesGarantia = request.MesesGarantia,
+                    PolizaGarantia = request.PolizaGarantia
                 };
-                var preContratoCreado = await _preContratoServices.CrearDesdeModal(entidad, secUsuario);
-                var preContratoVM = _mapper.Map<PreContratoVM>(preContratoCreado);
 
-                gResponse.Estado = true;
-                gResponse.Objeto = preContratoVM;
-            }
-            catch (Exception ex)
-            {
-                gResponse.Estado = false;
-                gResponse.Mensajes = ex.Message;
-            }
-            return Json(gResponse);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> GuardarPreContrato([FromBody] GuardarPreContratoVM modelo)
-        {
-            try
-            {
-                string userIdString = User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier);
-                if (!int.TryParse(userIdString, out int secUsuario))
+                var preContratoCreado = await _preContratoService.CrearDesdeModal(entidad, usuarioId, request.ContenidoHtml);
+                if (preContratoCreado == null || preContratoCreado.SecPreContrato == 0)
                 {
-                    return Unauthorized(new { estado = false, mensajes = "Sesión de usuario inválida." });
+                    return Json(new { estado = false, mensajes = "No se pudo crear el pre-contrato." });
                 }
 
-                // Llamada real al nuevo método del servicio
-                var preContratoGuardado = await _preContratoServices.GuardarDesdeEditor(modelo.CotizacionId, modelo.Contenido, secUsuario);
-
-                return Ok(new { estado = true });
+                return Json(new { estado = true, mensajes = "Pre-contrato creado exitosamente." });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { estado = false, mensajes = ex.Message });
+                return Json(new { estado = false, mensajes = ex.Message });
             }
-        }
-
-        [HttpGet("PreContrato/Historial/{id}")]
-        public async Task<IActionResult> Historial(int id)
-        {
-            try
-            {
-                var historial = await _preContratoServices.ObtenerHistorial(id);
-                var historialVM = _mapper.Map<List<PreContratoVM>>(historial);
-                return Ok(new { data = historialVM });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { data = new List<object>(), mensajes = ex.Message });
-            }
-        }
-
-        [HttpGet("PreContrato/ContenidoParrafo/{id}")]
-        public async Task<IActionResult> ContenidoParrafo(int id)
-        {
-            try
-            {
-                var parrafo = await _preContratoServices.ObtenerPrimerParrafo(id);
-                if (parrafo == null)
-                {
-                    return NotFound(new { estado = false, mensajes = "No se encontró contenido para esta versión." });
-                }
-                return Ok(new { estado = true, objeto = new { contenido = parrafo.Contenido } });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { estado = false, mensajes = ex.Message });
-            }
-        }
-
-        [HttpGet("PreContrato/PrevisualizarContenido/{id}")]
-        public async Task<IActionResult> PrevisualizarContenido(int id)
-        {
-            try
-            {
-                // Cambiado para obtener el contenido guardado, no el regenerado.
-                var parrafo = await _preContratoServices.ObtenerPrimerParrafo(id);
-                var contenido = parrafo?.Contenido ?? string.Empty;
-                return Ok(new { estado = true, objeto = new { contenido = contenido } });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { estado = false, mensajes = ex.Message });
-            }
-        }
-
-        [HttpDelete("PreContrato/Eliminar/{id}")]
-        public async Task<IActionResult> Eliminar(int id)
-        {
-            var gResponse = new GenericResponse<bool>();
-            try
-            {
-                bool resultado = await _preContratoServices.Eliminar(id);
-                gResponse.Estado = resultado;
-            }
-            catch (Exception ex)
-            {
-                gResponse.Estado = false;
-                gResponse.Mensajes = ex.Message;
-            }
-            return Json(gResponse);
         }
     }
+
+    // ViewModel interno para la solicitud de guardado
+    public class GuardarPreContratoRequest
+    {
+        public int SecPreContrato { get; set; }
+        public string Contenido { get; set; }
+    }
 }
-
-
-

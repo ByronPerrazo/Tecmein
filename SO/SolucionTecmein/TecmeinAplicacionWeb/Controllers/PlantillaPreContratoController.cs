@@ -3,7 +3,7 @@ using BLL.Interfaces;
 using Entity;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using TecmeinWebApp.Models.ViewModel;
+using TecmeinAplicacionWeb.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Linq;
 using AutoMapper;

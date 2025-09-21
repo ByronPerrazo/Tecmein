@@ -1,8 +1,9 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Entity;
-using TecmeinWebApp.Models.ViewModel;
+using TecmeinAplicacionWeb.Models.ViewModels;
+using TecmeinAplicacionWeb.Models.ViewModels; // <--- Para los nuevos ViewModels
 
-namespace TecmeinWebApp.Utilidades.AutoMapper
+namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
 {
     public class AutoMapperProfile : Profile
     {
@@ -273,7 +274,11 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
 
             CreateMap<PlantillaPreContratoParrafoVM, PlantillaPreContratoParrafo>();
 
-            CreateMap<Permisosrol, PermisosrolVM>().ReverseMap();
+            CreateMap<RolPermiso, RolPermisoVM>()
+                .ForMember(dest => dest.NombreRol, opt => opt.MapFrom(src => src.Rol.Descripcion))
+                .ForMember(dest => dest.DescripcionPermiso, opt => opt.MapFrom(src => src.Permiso.Descripcion));
+
+            CreateMap<RolPermisoVM, RolPermiso>();
 
             CreateMap<Permiso, TecmeinAplicacionWeb.Models.ViewModels.PermisoVM>().ReverseMap();
 
@@ -445,8 +450,36 @@ namespace TecmeinWebApp.Utilidades.AutoMapper
                 .ForMember(destino => destino.NombreUsuarioCrea,
                            opt => opt.MapFrom(origen => origen.SecUsuarioCreaNavigation.Nombre))
                 .ForMember(destino => destino.NombreObra,
-                           opt => opt.MapFrom(origen => origen.SecCotizacionNavigation.SecVisitaNavigation.Nombre));
+                           opt => opt.MapFrom(origen => origen.SecCotizacionNavigation.SecVisitaNavigation.Nombre ?? "Sin Nombre de Obra"))
+                .ForMember(destino => destino.NumeroCotizacion,
+                           opt => opt.MapFrom(origen => origen.SecCotizacionNavigation.Secuencial.ToString()))
+                .ForMember(destino => destino.NombreCliente,
+                           opt => opt.MapFrom(origen =>
+                                origen.SecCotizacionNavigation == null ? "N/A" :
+                                origen.SecCotizacionNavigation.SecVisitaNavigation == null ? "N/A" :
+                                origen.SecCotizacionNavigation.SecVisitaNavigation.Contactovisita == null || !origen.SecCotizacionNavigation.SecVisitaNavigation.Contactovisita.Any() ? "N/A" :
+                                origen.SecCotizacionNavigation.SecVisitaNavigation.Contactovisita.FirstOrDefault().SecContactoNavigation == null ? "N/A" :
+                                origen.SecCotizacionNavigation.SecVisitaNavigation.Contactovisita.FirstOrDefault().SecContactoNavigation.Nombres + " " +
+                                origen.SecCotizacionNavigation.SecVisitaNavigation.Contactovisita.FirstOrDefault().SecContactoNavigation.Apellidos
+                           ))
+                .ForMember(destino => destino.NumeroCotizacion,
+                           opt => opt.MapFrom(origen => origen.SecCotizacion.ToString()));
             CreateMap<PreContratoVM, PreContrato>();
+
+            #region Contrato
+            CreateMap<Contrato, VMContrato>()
+                .ForMember(dest => dest.NombreObra,
+                           opt => opt.MapFrom(src => src.IdCotizacionNavigation.SecVisitaNavigation.Nombre ?? "Sin Obra Asociada"))
+                .ForMember(dest => dest.NombreUsuarioCarga,
+                           opt => opt.MapFrom(src => src.IdUsuarioCargaNavigation.Nombre))
+                .ForMember(dest => dest.FechaFirma,
+                           opt => opt.MapFrom(src => src.FechaFirma.ToString("dd/MM/yyyy")));
+
+            CreateMap<VMContrato, Contrato>()
+                .ForMember(dest => dest.IdCotizacionNavigation, opt => opt.Ignore())
+                .ForMember(dest => dest.IdUsuarioCargaNavigation, opt => opt.Ignore());
+            #endregion
+
         }
     }
 }

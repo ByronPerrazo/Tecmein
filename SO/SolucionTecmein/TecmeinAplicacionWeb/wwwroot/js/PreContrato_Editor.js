@@ -9,11 +9,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('btnGuardar').addEventListener('click', function () {
-        const cotizacionId = document.getElementById('hiddnCotizacionId').value;
+        const secPreContrato = document.getElementById('hiddnPreContratoId').value;
         const contenido = tinymce.get('editorPreContrato').getContent();
 
         const data = {
-            CotizacionId: parseInt(cotizacionId),
+            SecPreContrato: parseInt(secPreContrato),
             Contenido: contenido
         };
 

@@ -17,7 +17,10 @@ namespace BLL.Interfaces
         Task<PreContrato> GuardarDesdeEditor(int cotizacionId, string contenidoHtml, int usuarioId);
         Task<List<PreContrato>> ObtenerHistorial(int secPreContrato);
         Task<PreContratoParrafo> ObtenerPrimerParrafo(int secPreContrato);
-        Task<PreContrato> CrearDesdeModal(PreContrato entidad, int usuarioId);
+        Task<PreContrato> CrearDesdeModal(PreContrato entidad, int usuarioId, string contenidoHtml);
+        Task<bool> Aprobar(int secPreContrato);
+        Task<string> ObtenerContenidoHtml(int secPreContrato);
+        Task<PreContrato> ActualizarContenidoPreContrato(int secPreContrato, string contenidoHtml, int usuarioId);
         Task<string> ObtenerContenidoPrevisualizado(int secPreContrato);
         Task<bool> ActualizarContenido(int secPreContrato, string contenidoHtml);
     }

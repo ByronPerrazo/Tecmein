@@ -4,7 +4,8 @@ using Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using TecmeinWebApp.Models.ViewModel;
+using TecmeinAplicacionWeb.Models.ViewModels; // Añadido para encontrar RolVM
+using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
 using System.Text.Json;
 using System.Text.Json.Serialization;

@@ -2,8 +2,7 @@ using IOC;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using QuestPDF.Infrastructure;
 using Serilog;
-using System.Collections.Generic;
-using TecmeinWebApp.Utilidades.AutoMapper;
+using TecmeinAplicacionWeb.Utilidades.AutoMapper;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
@@ -47,7 +46,7 @@ try
         // Políticas específicas para controladores o acciones concretas
         // El claim "Roles.Administrar" se asigna directamente al rol en la pantalla de gestión.
         options.AddPolicy("Roles.Administrar", policy => policy.RequireClaim("Permission", "Roles.Administrar"));
-        
+
         // Futuras políticas específicas se pueden añadir aquí...
     });
     // --- FIN NUEVA CONFIGURACIÓN DE AUTORIZACIÓN ---

@@ -2,7 +2,7 @@ $(document).ready(function () {
     var tablaPreContratos;
 
     const spanishLanguage = {
-        "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"
+        "url": "/js/datatables/i18n/Spanish.json"
     };
 
     function cargarDatos() {
@@ -13,7 +13,7 @@ $(document).ready(function () {
         tablaPreContratos = $("#tablaPreContratos").DataTable({
             responsive: true,
             "ajax": {
-                "url": "/PreContrato/Lista",
+                "url": "/PreContrato/Listar",
                 "type": "GET",
                 "datatype": "json",
                 "dataSrc": function (json) {
@@ -22,7 +22,7 @@ $(document).ready(function () {
             },
             "columns": [
                 { "data": "secPreContrato" },
-                { "data": "secCotizacion" },
+                { "data": "numeroCotizacion" },
                 { "data": "nombreObra" },
                 { 
                     "data": "fechaRegistro",
@@ -31,17 +31,22 @@ $(document).ready(function () {
                     }
                 },
                 { "data": "version" },
+                { "data": "estado" }, // Nueva columna para el estado
                 {
                     "data": "secPreContrato",
                     "render": function (data, type, row) {
-                        const btnEditar = `<button class="btn btn-primary btn-sm btn-editar" data-cotizacion-id="${row.secCotizacion}" title="Editar"><i class="fas fa-pencil-alt"></i></button>`;
+                        const btnEditar = `<button class="btn btn-primary btn-sm btn-editar" data-id="${data}" title="Editar"><i class="fas fa-pencil-alt"></i></button>`;
                         const btnHistorial = `<button class="btn btn-secondary btn-sm btn-historial" data-id="${data}" title="Ver Historial"><i class="fas fa-history"></i></button>`;
                         const btnEliminar = `<button class="btn btn-danger btn-sm btn-eliminar" data-id="${data}" title="Eliminar"><i class="fas fa-trash-alt"></i></button>`;
-                        return `<div class="btn-group" role="group">${btnEditar}${btnHistorial}${btnEliminar}</div>`;
+                        let btnAprobar = '';
+                        if (row.estado !== "Aprobado") {
+                            btnAprobar = `<button class="btn btn-success btn-sm btn-aprobar" data-id="${data}" title="Aprobar"><i class="fas fa-check"></i></button>`;
+                        }
+                        return `<div class="btn-group" role="group">${btnEditar}${btnHistorial}${btnEliminar}${btnAprobar}</div>`;
                     },
                     "orderable": false,
                     "searchable": false,
-                    "width": "120px"
+                    "width": "150px"
                 }
             ],
             "order": [[0, "desc"]],
@@ -154,11 +159,20 @@ $(document).ready(function () {
             Swal.fire("Error", "No hay datos para guardar.", "error");
             return;
         }
+
+        const contenidoHtml = $("#contenidoVistaPrevia").html(); // Obtener el contenido HTML de la vista previa
+
+        // Crear un nuevo objeto que incluya los datos del formulario y el contenido HTML
+        const payload = {
+            ...datosFormularioParaGuardar,
+            ContenidoHtml: contenidoHtml
+        };
+
         $.ajax({
             url: "/PreContrato/CrearDesdeModal",
             type: "POST",
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(datosFormularioParaGuardar),
+            data: JSON.stringify(payload),
             beforeSend: () => Swal.fire({ title: 'Guardando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() }),
             success: function(response) {
                 if (response.estado) {
@@ -174,11 +188,11 @@ $(document).ready(function () {
     });
 
     $("#tablaPreContratos tbody").on("click", ".btn-editar", function () {
-        var cotizacionId = $(this).attr("data-cotizacion-id");
-        if (cotizacionId && cotizacionId !== "undefined") {
-            window.location.href = `/PreContrato/Editor/${cotizacionId}`;
+        var secPreContrato = $(this).data("id");
+        if (secPreContrato && secPreContrato !== "undefined") {
+            window.location.href = `/PreContrato/Editor/${secPreContrato}`;
         } else {
-            Swal.fire("Error", "No se pudo obtener el ID de la cotización para editar.", "error");
+            Swal.fire("Error", "No se pudo obtener el ID del pre-contrato para editar.", "error");
         }
     });
 
@@ -203,6 +217,39 @@ $(document).ready(function () {
                             Swal.fire('¡Eliminado!', 'El pre-contrato ha sido eliminado.', 'success');
                         } else {
                             Swal.fire('Error', data.mensajes, 'error');
+                        }
+                    })
+                    .catch(() => Swal.fire('Error', 'No se pudo comunicar con el servidor.', 'error'));
+            }
+        });
+    });
+
+    $("#tablaPreContratos tbody").on("click", ".btn-aprobar", function () {
+        var id = $(this).data("id");
+        Swal.fire({
+            title: '¿Está seguro de aprobar este pre-contrato?',
+            text: "Esta acción marcará el pre-contrato como aprobado y lo hará elegible para la creación de un contrato.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, aprobar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/PreContrato/Aprobar/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            tablaPreContratos.ajax.reload(null, false);
+                            Swal.fire('¡Aprobado!', data.message, 'success');
+                        } else {
+                            Swal.fire('Error', data.message, 'error');
                         }
                     })
                     .catch(() => Swal.fire('Error', 'No se pudo comunicar con el servidor.', 'error'));

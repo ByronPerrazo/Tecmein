@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using BLL.Interfaces;
 using Entity;
 using AutoMapper;
-using TecmeinWebApp.Models.ViewModel;
+using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
 using System.Text.Json;
 using System.Text.Json.Serialization;

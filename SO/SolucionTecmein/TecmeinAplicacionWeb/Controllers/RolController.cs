@@ -1,13 +1,13 @@
 using AutoMapper;
 using BLL.Interfaces;
+using DAL.Interfaces;
 using Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using TecmeinWebApp.Models.ViewModel;
-using TecmeinWebApp.Utilidades.Response;
-using DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using TecmeinAplicacionWeb.Models.ViewModels; 
+using TecmeinWebApp.Utilidades.Response;
 
 namespace TecmeinWebApp.Controllers
 {
@@ -121,7 +121,7 @@ namespace TecmeinWebApp.Controllers
                                         .Select(rp => rp.IdPermiso)
                                         .ToHashSet();
 
-            var vm = new GestionRolPermisosVM
+            var vm = new GestionRolPermisoVM
             {
                 SecRol = rol.Secuencial,
                 NombreRol = rol.Descripcion,
@@ -135,7 +135,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GuardarPermisos([FromBody] GestionRolPermisosVM modelo)
+        public async Task<IActionResult> GuardarPermisos([FromBody] GestionRolPermisoVM modelo)
         {
             var gResponse = new GenericResponse<bool>();
             try

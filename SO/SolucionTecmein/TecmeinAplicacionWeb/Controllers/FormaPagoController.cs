@@ -3,7 +3,7 @@ using BLL.Interfaces;
 using Entity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using TecmeinWebApp.Models.ViewModel;
+using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
 using System.Collections.Generic;
 using System.Threading.Tasks;

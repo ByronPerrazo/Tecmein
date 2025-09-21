@@ -101,6 +101,13 @@ namespace IOC
             services.AddScoped<ITipoDocumentoServices, TipoDocumentoServices>();
             services.AddScoped<IPolizaGarantiaServices, PolizaGarantiaServices>();
             services.AddScoped<IGenericRepository<PolizaGarantia>, GenericRepository<PolizaGarantia>>();
+            services.AddScoped<IContratoService, ContratoService>(provider =>
+                new ContratoService(
+                    provider.GetRequiredService<IGenericRepository<Contrato>>(),
+                    provider.GetRequiredService<IGenericRepository<Cotizacion>>(),
+                    provider.GetRequiredService<IGenericRepository<PreContrato>>(),
+                    provider.GetRequiredService<IStorageServices>()
+                ));
 
             // Registro del patrón Strategy para la generación de documentos
             services.AddScoped<IEstrategiaGeneradorDocumento, EstrategiaPreContrato>();

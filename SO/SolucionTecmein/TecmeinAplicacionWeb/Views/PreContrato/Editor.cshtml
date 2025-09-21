@@ -1,5 +1,5 @@
 @using System.Web
-@model TecmeinWebApp.Models.ViewModel.PreContratoVM
+@model  TecmeinAplicacionWeb.Models.ViewModels.PreContratoVM
 @{
     ViewData["Title"] = "Editor de Pre-Contrato";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -10,7 +10,7 @@
         <h6 class="m-0 font-weight-bold text-white">Editor de Pre-Contrato para Cotización: @Model.SecCotizacion</h6>
     </div>
     <div class="card-body">
-        <input type="hidden" id="hiddnCotizacionId" value="@Model.SecCotizacion" />
+        <input type="hidden" id="hiddnPreContratoId" value="@Model.SecPreContrato" />
 
         <div class="form-group">
             <label>Contenido del Pre-Contrato</label>
