@@ -1,56 +1,73 @@
-using AutoMapper;
-using BLL.Interfaces;
-using Entity;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using TecmeinAplicacionWeb.Models.ViewModels;
-using TecmeinWebApp.Utilidades.Response;
-using System.Threading.Tasks;
 
-namespace TecmeinWebApp.Controllers
+using Microsoft.AspNetCore.Mvc;
+using BLL.Interfaces;
+using System.Threading.Tasks;
+using Entity;
+using TecmeinAplicacionWeb.Models.ViewModels;
+using AutoMapper;
+using TecmeinWebApp.Utilidades.Response;
+using System.Collections.Generic;
+
+namespace TecmeinAplicacionWeb.Controllers
 {
     public class FormatoNumeroClienteController : Controller
     {
+        private readonly IFormatoNumeroClienteService _formatoService;
         private readonly IMapper _mapper;
-        private readonly IFormatoNumeroClienteServices _formatoServices;
 
-        public FormatoNumeroClienteController(IMapper mapper, IFormatoNumeroClienteServices formatoServices)
+        public FormatoNumeroClienteController(IFormatoNumeroClienteService formatoService, IMapper mapper)
         {
+            _formatoService = formatoService;
             _mapper = mapper;
-            _formatoServices = formatoServices;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            // Asumimos SecEmpresa = 1 por ahora
-            var formato = await _formatoServices.ObtenerPorEmpresa(1);
-            var formatoVM = _mapper.Map<FormatoNumeroClienteVm>(formato);
-            return View(formatoVM);
+            return View();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Guardar([FromForm] string modelo)
+        [HttpGet]
+        public async Task<IActionResult> Lista()
         {
-            var gResponse = new GenericResponse<FormatoNumeroClienteVm>();
+            var gResponse = new GenericResponse<List<FormatoNumeroClienteVM>>();
             try
             {
-                var formatoVM = JsonConvert.DeserializeObject<FormatoNumeroClienteVm>(modelo);
-                // Asumimos SecEmpresa = 1 por ahora
-                formatoVM.SecEmpresa = 1;
-
-                var formato = _mapper.Map<FormatoNumeroCliente>(formatoVM);
-                var formatoGuardado = await _formatoServices.Guardar(formato);
-
+                var formato = await _formatoService.Obtener();
+                var lista = new List<FormatoNumeroClienteVM>();
+                if (formato != null)
+                {
+                    lista.Add(_mapper.Map<FormatoNumeroClienteVM>(formato));
+                }
+                
                 gResponse.Estado = true;
-                gResponse.Objeto = _mapper.Map<FormatoNumeroClienteVm>(formatoGuardado);
-                return StatusCode(StatusCodes.Status200OK, gResponse);
+                gResponse.Objeto = lista;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 gResponse.Estado = false;
                 gResponse.Mensajes = ex.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, gResponse);
             }
+            return StatusCode(StatusCodes.Status200OK, gResponse);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Guardar([FromBody] FormatoNumeroClienteVM modelo)
+        {
+            var gResponse = new GenericResponse<FormatoNumeroClienteVM>();
+            try
+            {
+                var formato = _mapper.Map<FormatoNumeroCliente>(modelo);
+                var formatoGuardado = await _formatoService.Guardar(formato);
+
+                gResponse.Estado = true;
+                gResponse.Objeto = _mapper.Map<FormatoNumeroClienteVM>(formatoGuardado);
+            }
+            catch (Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+            }
+            return StatusCode(StatusCodes.Status200OK, gResponse);
         }
     }
 }

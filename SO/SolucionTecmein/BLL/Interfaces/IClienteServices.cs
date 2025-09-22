@@ -10,5 +10,6 @@ namespace BLL.Interfaces
         Task<bool> Eliminar(int secCliente);
         Task<Cliente> ObtenerPorId(int secCliente);
         Task<Cliente> ObtenerPorIdConstructora(int secConstructora);
+        Task<string> GenerarSiguienteNumeroCliente();
     }
 }

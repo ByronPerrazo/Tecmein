@@ -1,42 +1,83 @@
-@model  TecmeinAplicacionWeb.Models.ViewModels.FormatoNumeroClienteVm
 
-@{ 
-    ViewData["Title"] = "Formato Número Cliente";
+@{
+    ViewData["Title"] = "Numeración de Clientes";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="card">
-    <div class="card-header">
-        <h5>Configuración de Formato de Número de Cliente</h5>
+<div class="card shadow mb-4">
+    <div class="card-header py-3 bg-second-primary">
+        <h6 class="m-0 font-weight-bold text-white">Configuración de Numeración de Clientes</h6>
     </div>
     <div class="card-body">
-        <form id="formatoForm">
-            <input type="hidden" asp-for="SecFormatoNumeroCliente" />
-            <input type="hidden" asp-for="SecEmpresa" />
-
-            <div class="form-group">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" asp-for="UsaFormato">
-                    <label class="form-check-label" for="UsaFormato">
-                        Usar Formato Personalizado
-                    </label>
-                </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <button class="btn btn-success" id="btnNuevo">
+                    <i class="fas fa-plus-circle"></i> Nueva Configuración
+                </button>
             </div>
-
-            <div class="form-group">
-                <label for="Formato">Formato</label>
-                <input type="text" class="form-control" asp-for="Formato" placeholder="Ej: CLI-{numero}">
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-sm-12">
+                <table id="tbdata" class="table table-bordered" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Usa Formato</th>
+                            <th>Formato</th>
+                            <th>Próximo Número</th>
+                            <th>Longitud Número</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
-
-            <div class="form-group">
-                <label for="NumeroInicio">Número de Inicio</label>
-                <input type="number" class="form-control" asp-for="NumeroInicio">
-            </div>
-
-            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-        </form>
+        </div>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="card shadow-sm">
+                <div class="card-header py-2 bg-second-primary">
+                    <h6 class="m-0 font-weight-bold text-white">
+                        <i class="fas fa-cogs"></i> Detalle de Configuración
+                        <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" class="text-white">×</span>
+                        </button>
+                    </h6>
+                </div>
+                <div class="card-body p-2">
+                    <form>
+                        <input type="hidden" id="txtId" value="0">
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="checkUsaFormato">
+                                <label class="form-check-label" for="checkUsaFormato">Usar Formato de Numeración Automática</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="txtFormato">Formato</label>
+                            <input type="text" class="form-control form-control-sm" id="txtFormato" placeholder="Ej: CLI-{YYYY}-">
+                            <small class="form-text text-muted">Use {YYYY} para el año actual. El número consecutivo se agregará al final.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="txtNumeroInicio">Próximo Número</label>
+                            <input type="number" class="form-control form-control-sm" id="txtNumeroInicio">
+                        </div>
+                    </form>
+                </div>
+                <div class="card-body p-0 d-flex justify-content-end">
+                    <button class="btn btn-primary btn-sm m-1 mr-2" type="button" id="btnGuardar">Guardar</button>
+                    <button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @section Scripts{
     <script src="~/js/vistas/FormatoNumeroCliente_Index.js"></script>

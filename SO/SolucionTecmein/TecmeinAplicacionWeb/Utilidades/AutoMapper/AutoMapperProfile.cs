@@ -259,7 +259,7 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
 
             #endregion
 
-            CreateMap<FormatoNumeroCliente, FormatoNumeroClienteVm>().ReverseMap();
+            CreateMap<FormatoNumeroCliente, FormatoNumeroClienteVM>().ReverseMap();
 
             CreateMap<Seguimiento, SeguimientoVM>().ReverseMap();
 

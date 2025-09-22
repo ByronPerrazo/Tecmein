@@ -12,6 +12,7 @@ namespace Entity
         public bool UsaFormato { get; set; }
         public string? Formato { get; set; }
         public int NumeroInicio { get; set; }
+        public int LongitudNumero { get; set; }
 
         public virtual Empresa SecEmpresaNavigation { get; set; } = null!;
     }

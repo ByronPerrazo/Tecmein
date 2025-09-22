@@ -1,7 +1,8 @@
 using BLL.Interfaces;
 using DAL.Interfaces;
 using Entity;
-using System; 
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,12 +11,46 @@ namespace BLL.Implementacion
     public class ClienteServices : IClienteServices
     {
         private readonly IGenericRepository<Cliente> _repositorio;
+        private readonly IGenericRepository<FormatoNumeroCliente> _repositorioFormato;
         private readonly IConstructoraServices _constructoraServices;
 
-        public ClienteServices(IGenericRepository<Cliente> repositorio, IConstructoraServices constructoraServices)
+        public ClienteServices(
+            IGenericRepository<Cliente> repositorio, 
+            IGenericRepository<FormatoNumeroCliente> repositorioFormato,
+            IConstructoraServices constructoraServices)
         {
             _repositorio = repositorio;
+            _repositorioFormato = repositorioFormato;
             _constructoraServices = constructoraServices;
+        }
+
+        public async Task<string> GenerarSiguienteNumeroCliente()
+        {
+            var formatoConfig = await _repositorioFormato.Obtener(f => f.UsaFormato);
+            if (formatoConfig == null)
+            {
+                throw new Exception("La numeración automática de clientes no está configurada o está inactiva.");
+            }
+
+            string formato = formatoConfig.Formato ?? "";
+            string prefijo = formato.Replace("{YYYY}", DateTime.Now.Year.ToString());
+
+            int ultimoNumero = 0;
+            var query = await _repositorio.Consultar(c => c.NumeroCliente.StartsWith(prefijo));
+            var clientesConPrefijo = await query.ToListAsync();
+
+            if (clientesConPrefijo.Any())
+            {
+                ultimoNumero = clientesConPrefijo
+                    .Select(c => int.TryParse(c.NumeroCliente.Substring(prefijo.Length), out int num) ? num : 0)
+                    .Max();
+            }
+
+            int proximoNumero = (ultimoNumero == 0) ? formatoConfig.NumeroInicio : ultimoNumero + 1;
+
+            string numeroFormateado = proximoNumero.ToString().PadLeft(formatoConfig.LongitudNumero, '0');
+
+            return $"{prefijo}{numeroFormateado}";
         }
 
         public async Task<Cliente> Crear(Cliente entidad)
@@ -34,8 +69,7 @@ namespace BLL.Implementacion
                 throw new Exception("La constructora especificada no existe.");
             }
 
-            // Lógica para generar NumeroCliente (simplificada por ahora)
-            entidad.NumeroCliente = $"CLI-{constructora.Secuencial}";
+            entidad.NumeroCliente = await GenerarSiguienteNumeroCliente();
             entidad.FechaCreacion = DateTime.Now;
             entidad.EstaActivo = true;
 
@@ -53,7 +87,8 @@ namespace BLL.Implementacion
                 throw new Exception("El cliente no existe.");
             }
 
-            clienteExistente.NumeroCliente = entidad.NumeroCliente;
+            // No se debería poder cambiar el número de cliente una vez creado
+            // clienteExistente.NumeroCliente = entidad.NumeroCliente;
             clienteExistente.EstaActivo = entidad.EstaActivo;
 
             await _repositorio.Editar(clienteExistente);

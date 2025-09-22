@@ -67,8 +67,13 @@ namespace IOC
                 ));
             services.AddScoped<IEtapaServices, EtapaServices>();
             services.AddScoped<IVisitaServices, VisitaServices>();
-            services.AddScoped<IClienteServices, ClienteServices>();
-            services.AddScoped<IFormatoNumeroClienteServices, FormatoNumeroClienteServices>();
+            services.AddScoped<IClienteServices, ClienteServices>(provider =>
+                new ClienteServices(
+                    provider.GetRequiredService<IGenericRepository<Cliente>>(),
+                    provider.GetRequiredService<IGenericRepository<FormatoNumeroCliente>>(),
+                    provider.GetRequiredService<IConstructoraServices>()
+                ));
+            services.AddScoped<IFormatoNumeroClienteService, FormatoNumeroClienteService>();
             services.AddScoped<ISeguimientoServices, SeguimientoServices>(provider =>
                 new SeguimientoServices(
                     provider.GetRequiredService<IGenericRepository<Seguimiento>>(),
@@ -106,7 +111,9 @@ namespace IOC
                     provider.GetRequiredService<IGenericRepository<Contrato>>(),
                     provider.GetRequiredService<IGenericRepository<Cotizacion>>(),
                     provider.GetRequiredService<IGenericRepository<PreContrato>>(),
-                    provider.GetRequiredService<IStorageServices>()
+                    provider.GetRequiredService<IClienteServices>(),
+                    provider.GetRequiredService<IStorageServices>(),
+                    provider.GetRequiredService<TecmeindbContext>()
                 ));
 
             // Registro del patrón Strategy para la generación de documentos
