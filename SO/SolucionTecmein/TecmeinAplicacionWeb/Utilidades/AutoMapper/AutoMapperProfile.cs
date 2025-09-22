@@ -467,7 +467,7 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
             CreateMap<PreContratoVM, PreContrato>();
 
             #region Contrato
-            CreateMap<Contrato, VMContrato>()
+            CreateMap<Contrato, ContratoVM>()
                 .ForMember(dest => dest.NombreObra,
                            opt => opt.MapFrom(src => src.IdCotizacionNavigation.SecVisitaNavigation.Nombre ?? "Sin Obra Asociada"))
                 .ForMember(dest => dest.NombreUsuarioCarga,
@@ -475,7 +475,9 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
                 .ForMember(dest => dest.FechaFirma,
                            opt => opt.MapFrom(src => src.FechaFirma.ToString("dd/MM/yyyy")));
 
-            CreateMap<VMContrato, Contrato>()
+            CreateMap<ContratoVM, Contrato>()
+                .ForMember(dest => dest.FechaFirma, 
+                           opt => opt.MapFrom(src => DateTime.ParseExact(src.FechaFirma, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)))
                 .ForMember(dest => dest.IdCotizacionNavigation, opt => opt.Ignore())
                 .ForMember(dest => dest.IdUsuarioCargaNavigation, opt => opt.Ignore());
             #endregion

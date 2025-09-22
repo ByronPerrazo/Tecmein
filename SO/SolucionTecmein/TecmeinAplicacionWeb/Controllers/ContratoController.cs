@@ -31,7 +31,7 @@ namespace TecmeinAplicacionWeb.Controllers
         public async Task<IActionResult> Listar()
         {
             var lista = await _contratoService.Listar();
-            List<VMContrato> vmLista = _mapper.Map<List<VMContrato>>(lista);
+            List<ContratoVM> vmLista = _mapper.Map<List<ContratoVM>>(lista);
             return StatusCode(StatusCodes.Status200OK, new { data = vmLista });
         }
 
@@ -51,7 +51,7 @@ namespace TecmeinAplicacionWeb.Controllers
                 var gCurrentUser = HttpContext.User;
                 string idUsuario = gCurrentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-                VMContrato vmContrato = JsonConvert.DeserializeObject<VMContrato>(modelo);
+                ContratoVM vmContrato = JsonConvert.DeserializeObject<ContratoVM>(modelo);
                 vmContrato.IdUsuarioCarga = int.Parse(idUsuario);
 
                 Contrato contrato = _mapper.Map<Contrato>(vmContrato);
@@ -68,7 +68,7 @@ namespace TecmeinAplicacionWeb.Controllers
 
                 Contrato contrato_creado = await _contratoService.Crear(contrato, streamArchivo, nombreArchivo);
 
-                vmContrato = _mapper.Map<VMContrato>(contrato_creado);
+                vmContrato = _mapper.Map<ContratoVM>(contrato_creado);
 
                 return StatusCode(StatusCodes.Status200OK, new { success = true, data = vmContrato });
             }
@@ -82,8 +82,30 @@ namespace TecmeinAplicacionWeb.Controllers
         [HttpPut]
         public async Task<IActionResult> Editar([FromForm] string modelo, [FromForm] IFormFile? archivo)
         {
-            // Lógica para editar, verificando permisos de administrador
-            return StatusCode(StatusCodes.Status200OK, new { success = true, message = "Contrato editado" });
+            try
+            {
+                ContratoVM vmContrato = JsonConvert.DeserializeObject<ContratoVM>(modelo);
+                Contrato contrato = _mapper.Map<Contrato>(vmContrato);
+
+                Stream streamArchivo = null;
+                string nombreArchivo = "";
+
+                if (archivo != null)
+                {
+                    streamArchivo = archivo.OpenReadStream();
+                    nombreArchivo = archivo.FileName;
+                }
+
+                Contrato contrato_editado = await _contratoService.Editar(contrato, streamArchivo, nombreArchivo);
+
+                vmContrato = _mapper.Map<ContratoVM>(contrato_editado);
+
+                return StatusCode(StatusCodes.Status200OK, new { success = true, data = vmContrato });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { success = false, message = ex.Message });
+            }
         }
 
         [HttpDelete]

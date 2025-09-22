@@ -56,10 +56,45 @@ namespace BLL.Implementacion
             }
         }
 
-        public async Task<bool> Editar(Contrato entidad)
+        public async Task<Contrato> Editar(Contrato entidad, Stream archivoStream = null, string nombreArchivo = "")
         {
-            // Lógica para editar, recordando la restricción de administrador
-            throw new NotImplementedException();
+            try
+            {
+                var contratoExistente = await _repoContrato.Obtener(c => c.IdContrato == entidad.IdContrato);
+                if (contratoExistente == null)
+                    throw new TaskCanceledException("El contrato no fue encontrado");
+
+                contratoExistente.FechaFirma = entidad.FechaFirma;
+                contratoExistente.EsActivo = entidad.EsActivo;
+
+                if (archivoStream != null)
+                {
+                    // 1. Eliminar archivo antiguo si existe
+                    if (!string.IsNullOrEmpty(contratoExistente.NombreArchivo))
+                    {
+                        string carpetaEliminar = $"contratos/{contratoExistente.IdContrato}";
+                        await _storageService.EliminarStorage(carpetaEliminar, contratoExistente.NombreArchivo);
+                    }
+
+                    // 2. Subir nuevo archivo
+                    string carpetaDestino = $"contratos/{contratoExistente.IdContrato}";
+                    string urlArchivo = await _storageService.SubirStorage(archivoStream, carpetaDestino, nombreArchivo);
+
+                    // 3. Actualizar propiedades del archivo
+                    contratoExistente.NombreArchivo = nombreArchivo;
+                    contratoExistente.RutaArchivo = urlArchivo;
+                }
+
+                bool seEdito = await _repoContrato.Editar(contratoExistente);
+                if (!seEdito)
+                    throw new TaskCanceledException("No se pudo editar el contrato");
+
+                return contratoExistente;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public async Task<bool> Eliminar(int id)
@@ -81,7 +116,10 @@ namespace BLL.Implementacion
         public async Task<List<Contrato>> Listar()
         {
             IQueryable<Contrato> query = await _repoContrato.Consultar();
-            return query.Include(c => c.IdCotizacionNavigation).Include(c => c.IdCotizacionNavigation.SecVisitaNavigation).Include(c => c.IdUsuarioCargaNavigation).ToList();
+            return query.Include(c => c.IdCotizacionNavigation)
+                        .ThenInclude(cot => cot.SecVisitaNavigation)
+                        .Include(c => c.IdUsuarioCargaNavigation)
+                        .ToList();
         }
 
         public async Task<Contrato> Obtener(int id)

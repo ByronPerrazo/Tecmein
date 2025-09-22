@@ -12,7 +12,7 @@ namespace BLL.Interfaces
     {
         Task<List<Contrato>> Listar();
         Task<Contrato> Crear(Contrato entidad, Stream archivoStream = null, string nombreArchivo = "");
-        Task<bool> Editar(Contrato entidad);
+        Task<Contrato> Editar(Contrato entidad, Stream archivoStream = null, string nombreArchivo = "");
         Task<Contrato> Obtener(int id);
         Task<bool> Eliminar(int id);
 

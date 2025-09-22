@@ -36,7 +36,16 @@ $(document).ready(function () {
         "ajax": {
             "url": "Listar",
             "type": "GET",
-            "datatype": "json"
+            "datatype": "json",
+            "dataSrc": function (json) {
+                // Debido a ReferenceHandler.Preserve en la serialización de .NET,
+                // el array de datos viene en la propiedad $values.
+                if (json.data && json.data.$values) {
+                    return json.data.$values;
+                }
+                // Fallback por si la respuesta no tiene el wrapper $values
+                return json.data || [];
+            }
         },
         "columns": [
             { "data": "nombreObra" },
@@ -74,6 +83,7 @@ function limpiarModal() {
     $('#txtIdContrato').val("0");
     $('#cboCotizacion').val('');
     $('#txtFechaFirma').val('');
+    $('#cboEstado').val('1');
     $('#fileContrato').val('');
     $('#cboCotizacion').prop('disabled', false);
 }
@@ -89,6 +99,7 @@ $("#btnGuardar").click(function () {
     var idContrato = $('#txtIdContrato').val();
     var idCotizacion = $('#cboCotizacion').val();
     var fechaFirma = $('#txtFechaFirma').val();
+    var esActivo = $('#cboEstado').val();
     var archivo = $('#fileContrato')[0].files[0];
 
     if (!idCotizacion || !fechaFirma || (idContrato == "0" && !archivo)) {
@@ -100,16 +111,18 @@ $("#btnGuardar").click(function () {
     var modelo = {
         IdContrato: parseInt(idContrato),
         IdCotizacion: parseInt(idCotizacion),
-        FechaFirma: fechaFirma
+        FechaFirma: fechaFirma,
+        EsActivo: parseInt(esActivo)
     };
 
     formData.append("modelo", JSON.stringify(modelo));
     formData.append("archivo", archivo); // El archivo puede ser null si se está editando
 
     const url = idContrato == "0" ? "Crear" : "Editar";
+    const method = idContrato == "0" ? "POST" : "PUT";
 
     fetch(url, {
-        method: "POST",
+        method: method,
         body: formData
     })
     .then(response => {

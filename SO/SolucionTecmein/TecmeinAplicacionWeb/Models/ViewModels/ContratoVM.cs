@@ -1,6 +1,6 @@
 namespace TecmeinAplicacionWeb.Models.ViewModels
 {
-    public class VMContrato
+    public class ContratoVM
     {
         public int IdContrato { get; set; }
         public int IdCotizacion { get; set; }
@@ -9,6 +9,7 @@ namespace TecmeinAplicacionWeb.Models.ViewModels
         public int IdUsuarioCarga { get; set; }
         public string? NombreUsuarioCarga { get; set; } // Para mostrar
         public string? NombreArchivo { get; set; }
+        public string? RutaArchivo { get; set; } // Propiedad que faltaba
         public int EsActivo { get; set; }
     }
 }
