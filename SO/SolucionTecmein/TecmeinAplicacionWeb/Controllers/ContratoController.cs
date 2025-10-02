@@ -7,7 +7,8 @@ using AutoMapper;
 using System.Collections.Generic;
 using System.Security.Claims;
 using Newtonsoft.Json;
-using System.IO;
+using TecmeinWebApp.Utilidades.Response;
+using BLL.DTOs;
 
 namespace TecmeinAplicacionWeb.Controllers
 {
@@ -36,45 +37,95 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ListarPreContratos()
+        public async Task<IActionResult> ListarPreContratosParaContrato()
         {
-            var lista = await _contratoService.ListarPreContratosParaContrato();
-            // Aquí se podría mapear a un ViewModel (VM) si fuese necesario para la vista.
-            return StatusCode(StatusCodes.Status200OK, new { data = lista });
+            var gResponse = new GenericResponse<List<PreContratoVM>>();
+            try
+            {
+                var listaPreContratos = await _contratoService.ListarPreContratosParaContrato();
+                var vmLista = _mapper.Map<List<PreContratoVM>>(listaPreContratos);
+
+                gResponse.Estado = true;
+                gResponse.Objeto = vmLista;
+            }
+            catch (Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+            }
+            return StatusCode(StatusCodes.Status200OK, gResponse);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ObtenerDetalles(int id)
+        {
+            var gResponse = new GenericResponse<ContratoVM>();
+            try
+            {
+                Contrato contrato = await _contratoService.ObtenerParaEdicion(id);
+                if (contrato == null)
+                {
+                    gResponse.Estado = false;
+                    gResponse.Mensajes = "Contrato no encontrado";
+                    return StatusCode(StatusCodes.Status404NotFound, gResponse);
+                }
+
+                ContratoVM vm = _mapper.Map<ContratoVM>(contrato);
+
+                // Mapeo manual de campos que no están en el mapeo automático
+                vm.NombreProyecto = contrato.IdCotizacionNavigation?.SecVisitaNavigation?.Nombre;
+                vm.SecCliente = contrato.SecCliente;
+
+                gResponse.Estado = true;
+                gResponse.Objeto = vm;
+            }
+            catch (Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, gResponse);
+            }
+            return StatusCode(StatusCodes.Status200OK, gResponse);
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> Crear([FromForm] string modelo, [FromForm] IFormFile archivo)
         {
+            var gResponse = new GenericResponse<ContratoVM>();
             try
             {
+                var vmContrato = JsonConvert.DeserializeObject<ContratoVM>(modelo);
                 var gCurrentUser = HttpContext.User;
                 string idUsuario = gCurrentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-                ContratoVM vmContrato = JsonConvert.DeserializeObject<ContratoVM>(modelo);
-                vmContrato.IdUsuarioCarga = int.Parse(idUsuario);
-
-                Contrato contrato = _mapper.Map<Contrato>(vmContrato);
-                contrato.FechaCreacion = DateTime.Now; // Asignar la fecha de creación
-
-                Stream streamArchivo = null;
-                string nombreArchivo = "";
-
-                if (archivo != null)
+                if (archivo == null)
                 {
-                    streamArchivo = archivo.OpenReadStream();
-                    nombreArchivo = archivo.FileName;
+                    throw new Exception("El archivo del contrato es obligatorio.");
                 }
 
-                Contrato contrato_creado = await _contratoService.Crear(contrato, streamArchivo, nombreArchivo);
+                var creacionDto = new BLL.DTOs.ContratoCreacionDTO
+                {
+                    IdCotizacion = vmContrato.IdCotizacion > 0 ? vmContrato.IdCotizacion : null,
+                    SecCliente = vmContrato.SecCliente > 0 ? vmContrato.SecCliente : null,
+                    FechaFirma = DateTime.Parse(vmContrato.FechaFirma), // Asegurarse que el formato sea correcto
+                    IdUsuarioCarga = int.Parse(idUsuario),
+                    ArchivoStream = archivo.OpenReadStream(),
+                    NombreArchivo = archivo.FileName
+                };
 
-                vmContrato = _mapper.Map<ContratoVM>(contrato_creado);
+                Contrato contratoCreado = await _contratoService.Crear(creacionDto);
 
-                return StatusCode(StatusCodes.Status200OK, new { success = true, data = vmContrato });
+                gResponse.Estado = true;
+                gResponse.Objeto = _mapper.Map<ContratoVM>(contratoCreado);
+
+                return StatusCode(StatusCodes.Status200OK, gResponse);
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { success = false, message = ex.Message });
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, gResponse);
             }
         }
 
@@ -82,37 +133,44 @@ namespace TecmeinAplicacionWeb.Controllers
         [HttpPut]
         public async Task<IActionResult> Editar([FromForm] string modelo, [FromForm] IFormFile? archivo)
         {
+            var gResponse = new GenericResponse<ContratoVM>();
             try
             {
-                ContratoVM vmContrato = JsonConvert.DeserializeObject<ContratoVM>(modelo);
+                var vmContrato = JsonConvert.DeserializeObject<ContratoVM>(modelo);
                 Contrato contrato = _mapper.Map<Contrato>(vmContrato);
 
-                Stream streamArchivo = null;
-                string nombreArchivo = "";
+                Stream? streamArchivo = archivo?.OpenReadStream();
+                string nombreArchivo = archivo?.FileName ?? string.Empty;
 
-                if (archivo != null)
-                {
-                    streamArchivo = archivo.OpenReadStream();
-                    nombreArchivo = archivo.FileName;
-                }
+                Contrato contratoEditado = await _contratoService.Editar(contrato, vmContrato.NombreProyecto, streamArchivo, nombreArchivo);
 
-                Contrato contrato_editado = await _contratoService.Editar(contrato, streamArchivo, nombreArchivo);
+                gResponse.Estado = true;
+                gResponse.Objeto = _mapper.Map<ContratoVM>(contratoEditado);
 
-                vmContrato = _mapper.Map<ContratoVM>(contrato_editado);
-
-                return StatusCode(StatusCodes.Status200OK, new { success = true, data = vmContrato });
+                return StatusCode(StatusCodes.Status200OK, gResponse);
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { success = false, message = ex.Message });
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, gResponse);
             }
         }
 
         [HttpDelete]
         public async Task<IActionResult> Eliminar(int id)
         {
-            var resultado = await _contratoService.Eliminar(id);
-            return StatusCode(StatusCodes.Status200OK, new { success = resultado });
+            var gResponse = new GenericResponse<string>();
+            try
+            {
+                gResponse.Estado = await _contratoService.Eliminar(id);
+            }
+            catch (Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+            }
+            return StatusCode(StatusCodes.Status200OK, gResponse);
         }
     }
 }

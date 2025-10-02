@@ -195,7 +195,7 @@ function mostrarModal(modelo = MODELO_BASE) {
             .then(respuestaJson => {
                 if (respuestaJson.estado && respuestaJson.objeto) {
                     const detalle = respuestaJson.objeto;
-                    if (detalle.idEtapaNavigation.codigo === 'PRE' || detalle.idEtapaNavigation.codigo === 'SEG' || detalle.idEtapaNavigation.codigo === 'COT') {
+                    if (detalle.codigoEtapa === 'PRE' || detalle.codigoEtapa === 'SEG' || detalle.codigoEtapa === 'COT') {
                         $('.btn-eliminar-detalle').prop('disabled', true);
                         $('.cantidad').prop('disabled', true);
                         $('.valor-compra').prop('disabled', true);
@@ -700,7 +700,20 @@ $(document).ready(function () {
         fetch(url, { method: method, body: formData })
             .then(response => {
                 $("#modalDataSeguimiento .modal-content").LoadingOverlay("hide");
-                return response.ok ? response.json() : Promise.reject(response);
+                if (!response.ok) {
+                    // Si response.ok es false, intentar obtener JSON de error o simplemente rechazar
+                    return response.json().catch(() => Promise.reject(new Error(`HTTP error! status: ${response.status}`)))
+                                   .then(errorJson => Promise.reject(errorJson));
+                }
+                // Si response.ok es true, pero response.json() falla, significa que el cuerpo no es JSON válido
+                return response.text().then(text => {
+                    try {
+                        return JSON.parse(text);
+                    } catch (e) {
+                        console.error("Failed to parse JSON response:", text, e);
+                        return Promise.reject(new Error("Respuesta del servidor no es JSON válida."));
+                    }
+                });
             })
             .then(responseJson => {
                 if (responseJson.estado) {
@@ -713,7 +726,17 @@ $(document).ready(function () {
                 }
             }).catch(err => {
                 $("#modalDataSeguimiento .modal-content").LoadingOverlay("hide");
-                Swal.fire('Error', 'No se pudo conectar con el servidor', 'error');
+                // Manejo de errores más específico
+                if (err instanceof Response) {
+                    Swal.fire('Error', `Error de red o respuesta no válida del servidor (Status: ${err.status})`, 'error');
+                } else if (err && err.mensajes) { // Si es un GenericResponse con mensajes
+                    Swal.fire('Error', err.mensajes, 'error');
+                } else if (err && err.message) { // Si es un Error de JS con mensaje
+                    Swal.fire('Error', err.message, 'error');
+                } else {
+                    Swal.fire('Error', 'No se pudo conectar con el servidor o la respuesta no es JSON válida.', 'error');
+                    console.error("Fetch error:", err); // Log del error real
+                }
             });
     });
 

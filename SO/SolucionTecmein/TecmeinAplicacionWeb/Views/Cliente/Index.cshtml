@@ -1,0 +1,82 @@
+@{
+    ViewData["Title"] = "Clientes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 bg-second-primary">
+        <h6 class="m-0 font-weight-bold text-white">Lista de Clientes</h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-12">
+                <button class="btn btn-success" id="btnNuevoCliente">
+                    <i class="fas fa-plus-circle"></i> Crear Nuevo Cliente
+                </button>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-sm-12">
+                <table id="tbdataClientes" class="table table-bordered" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Número Cliente</th>
+                            <th>Nombre Constructora</th>
+                            <th>Fecha Creación</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Crear/Editar Cliente -->
+<div class="modal fade" id="modalCliente" tabindex="-1" role="dialog" aria-labelledby="modalClienteLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="card shadow-sm">
+                <div class="card-header py-2 bg-second-primary">
+                    <h6 class="m-0 font-weight-bold text-white">
+                        <i class="fas fa-user"></i> Detalle del Cliente
+                        <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" class="text-white">×</span>
+                        </button>
+                    </h6>
+                </div>
+                <div class="card-body p-2">
+                    <form id="formCliente">
+                        <input type="hidden" id="txtSecCliente" value="0" />
+                        <div class="form-group">
+                            <label for="cboConstructoraCliente">Constructora</label>
+                            <select class="form-control form-control-sm" id="cboConstructoraCliente">
+                                <!-- Opciones cargadas por JS -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="txtNumeroCliente">Número de Cliente</label>
+                            <input type="text" class="form-control form-control-sm" id="txtNumeroCliente" readonly>
+                        </div>
+                        <div class="form-group form-check">
+                            <input type="checkbox" class="form-check-input" id="chkEstaActivo" checked>
+                            <label class="form-check-label" for="chkEstaActivo">Activo</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-body p-0 d-flex justify-content-end">
+                    <button class="btn btn-primary btn-sm m-1 mr-2" type="button" id="btnGuardarCliente">Guardar</button>
+                    <button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="~/js/vistas/Cliente_Index.js"></script>
+}

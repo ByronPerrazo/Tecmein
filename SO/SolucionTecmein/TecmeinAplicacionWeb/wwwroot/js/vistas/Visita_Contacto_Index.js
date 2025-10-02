@@ -237,16 +237,16 @@ async function crearContactoVisita() {
             const responseJson = await response.json();
             if (responseJson.estado) {
                 $("#modalDataContacto").modal("hide");
-                swal("Listo!", "Contacto de Visita Guardado", "success");
+                Swal.fire("Listo!", "Contacto de Visita Guardado", "success");
 
             } else {
-                swal("Fallo!", responseJson.mensajes, "error");
+                Swal.fire("Fallo!", responseJson.mensajes, "error");
             }
         } else {
             throw new Error("Error en la respuesta del servidor");
         }
     } catch (error) {
-        swal("Error!", error.message, "error");
+        Swal.fire("Error!", error.message, "error");
     } finally {
         $("#modalDataContacto").find("div.modal-content").LoadingOverlay("hide");
     }

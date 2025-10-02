@@ -15,7 +15,7 @@
     <div class="card-body">
         <div class="row">
             <div class="col-sm-3">
-                <button class="btn btn-success" id="btnNuevo"><i class="fas fa-file-signature"></i> Nuevo Contrato</button>
+                <button class="btn btn-success" id="btnNuevoContrato"><i class="fas fa-plus"></i> Nuevo Contrato</button>
             </div>
         </div>
         <hr />
@@ -39,50 +39,149 @@
     </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="modalContrato" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
-    <div class="modal-dialog" role="document">
+
+<!-- Modal para Crear Contrato Directo -->
+<div class="modal fade" id="modalContratoUnificado" tabindex="-1" role="dialog" aria-labelledby="modalContratoDirectoLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="card shadow-sm">
                 <div class="card-header py-2 bg-second-primary">
                     <h6 class="m-0 font-weight-bold text-white">
-                        <i class="fas fa-file-signature"></i> Detalle Contrato
+                        <i class="fas fa-plus"></i> Crear Contrato Directo
                         <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true" class="text-white">×</span>
                         </button>
                     </h6>
                 </div>
                 <div class="card-body p-2">
-                    <form id="formContrato">
-                        <input type="hidden" id="txtIdContrato" value="0">
+                    <form id="formContratoDirecto" enctype="multipart/form-data">
+                        <input type="hidden" id="txtIdContratoDirecto" value="0" />
                         <div class="form-group">
-                            <label for="cboCotizacion">Obra (Cotización)</label>
-                            <select class="form-control form-control-sm" id="cboCotizacion"></select>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="chkCrearDesdePreContrato">
+                                <label class="form-check-label" for="chkCrearDesdePreContrato">
+                                    Crear desde Pre-Contrato
+                                </label>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="txtFechaFirma">Fecha de Firma</label>
-                            <div class="input-group date" data-provide="datepicker">
-                                <input type="text" class="form-control form-control-sm" id="txtFechaFirma">
-                                <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-th"></span>
+                        <div class="row">
+                            <div id="divPreContrato" class="col-sm-6" style="display: none;">
+                                <div class="form-group">
+                                    <label for="cboPreContrato">Pre-Contrato Aprobado</label>
+                                    <select class="form-control form-control-sm" id="cboPreContrato">
+                                        <!-- Opciones cargadas por JS -->
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="divCliente" class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="cboClienteDirecto">Cliente</label>
+                                    <select class="form-control form-control-sm" id="cboClienteDirecto">
+                                        <!-- Opciones cargadas por JS -->
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="txtNombreProyecto">Nombre del Proyecto</label>
+                                    <input type="text" class="form-control form-control-sm" id="txtNombreProyecto" placeholder="Ej: Edificio XYZ">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="txtFechaFirmaDirecto">Fecha de Firma</label>
+                                    <div class="input-group date" data-provide="datepicker">
+                                        <input type="text" class="form-control form-control-sm" id="txtFechaFirmaDirecto">
+                                        <div class="input-group-addon">
+                                            <span class="glyphicon glyphicon-th"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="cboEstadoDirecto">Estado</label>
+                                    <select class="form-control form-control-sm" id="cboEstadoDirecto">
+                                        <option value="1">Activo</option>
+                                        <option value="0">Inactivo</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="cboEstado">Estado</label>
-                            <select class="form-control form-control-sm" id="cboEstado">
-                                <option value="1">Activo</option>
-                                <option value="0">Inactivo</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="fileContrato">Archivo PDF del Contrato</label>
-                            <input type="file" class="form-control-file" id="fileContrato" accept="application/pdf">
+                            <label for="fileContratoDirecto">Archivo PDF del Contrato</label>
+                            <input type="file" class="form-control-file" id="fileContratoDirecto" accept="application/pdf">
                         </div>
                     </form>
                 </div>
                 <div class="card-body p-0 d-flex justify-content-end">
-                    <button class="btn btn-primary btn-sm m-1 mr-2" type="button" id="btnGuardar">Guardar</button>
+                    <button class="btn btn-primary btn-sm m-1 mr-2" type="button" id="btnGuardarContratoDirecto">Guardar</button>
+                    <button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Plan de Pagos -->
+<div class="modal fade" id="modalPlanDePago" tabindex="-1" role="dialog" aria-labelledby="modalPlanDePagoLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="card shadow-sm">
+                <div class="card-header py-2 bg-second-primary">
+                    <h6 class="m-0 font-weight-bold text-white" id="modalPlanDePagoTitle">Plan de Pagos</h6>
+                    <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="text-white">×</span>
+                    </button>
+                </div>
+                <div class="card-body p-2">
+                    <form id="formPlanDePago">
+                        <input type="hidden" id="txtIdContratoPlan" value="0" />
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="txtValorAnticipoPlan">Valor del Anticipo</label>
+                                    <input type="number" class="form-control form-control-sm" id="txtValorAnticipoPlan" value="0" min="0">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="txtFechaAnticipoPlan">Fecha del Anticipo</label>
+                                    <input type="text" class="form-control form-control-sm" id="txtFechaAnticipoPlan">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="txtNumeroCuotasPlan">Número de Cuotas</label>
+                                    <input type="number" class="form-control form-control-sm" id="txtNumeroCuotasPlan" value="0" min="0">
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <h6>Parrilla de Cuotas</h6>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-sm">
+                                <thead>
+                                    <tr>
+                                        <th># Cuota</th>
+                                        <th>Fecha de Vencimiento</th>
+                                        <th>Monto</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyCuotas">
+                                    <!-- Filas generadas por JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-body p-0 d-flex justify-content-end">
+                    <button class="btn btn-success btn-sm m-1 mr-2" type="button" id="btnGenerarDocumentoPlan">Generar Documento</button>
+                    <button class="btn btn-primary btn-sm m-1 mr-2" type="button" id="btnGuardarPlanDePago">Guardar Plan</button>
                     <button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>

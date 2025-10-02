@@ -1,3 +1,4 @@
+using BLL.DTOs;
 using BLL.Interfaces;
 using DAL.DBContext;
 using DAL.Interfaces;
@@ -12,86 +13,102 @@ namespace BLL.Implementacion
 {
     public class ContratoService : IContratoService
     {
-        private readonly IGenericRepository<Contrato> _repoContrato;
-        private readonly IGenericRepository<Cotizacion> _repoCotizacion;
-        private readonly IGenericRepository<PreContrato> _repoPreContrato;
-        private readonly IClienteServices _clienteService;
-        private readonly IStorageServices _storageService;
+        private readonly IGenericRepository<Contrato> _repositorioContrato;
+        private readonly IGenericRepository<Cotizacion> _repositorioCotizacion;
+        private readonly IGenericRepository<Visita> _repositorioVisita;
+        private readonly IClienteServices _clienteServices;
+        private readonly IStorageServices _storageServices;
+        private readonly IGenericRepository<PreContrato> _repositorioPreContrato;
+        private readonly IGenericRepository<Etapa> _repositorioEtapa;
         private readonly TecmeindbContext _dbContext;
 
         public ContratoService(
-            IGenericRepository<Contrato> repoContrato,
-            IGenericRepository<Cotizacion> repoCotizacion,
-            IGenericRepository<PreContrato> repoPreContrato,
-            IClienteServices clienteService,
-            IStorageServices storageService,
+            IGenericRepository<Contrato> repositorioContrato,
+            IGenericRepository<Cotizacion> repositorioCotizacion,
+            IGenericRepository<Visita> repositorioVisita,
+            IClienteServices clienteServices,
+            IStorageServices storageServices,
+            IGenericRepository<PreContrato> repositorioPreContrato,
+            IGenericRepository<Etapa> repositorioEtapa,
             TecmeindbContext dbContext)
         {
-            _repoContrato = repoContrato;
-            _repoCotizacion = repoCotizacion;
-            _repoPreContrato = repoPreContrato;
-            _clienteService = clienteService;
-            _storageService = storageService;
+            _repositorioContrato = repositorioContrato;
+            _repositorioCotizacion = repositorioCotizacion;
+            _repositorioVisita = repositorioVisita;
+            _clienteServices = clienteServices;
+            _storageServices = storageServices;
+            _repositorioPreContrato = repositorioPreContrato;
+            _repositorioEtapa = repositorioEtapa;
             _dbContext = dbContext;
         }
 
-        public async Task<Contrato> Crear(Contrato entidad, Stream archivoStream = null, string nombreArchivo = "")
+        public async Task<Contrato> Crear(ContratoCreacionDTO dto)
         {
             await using var transaction = await _dbContext.Database.BeginTransactionAsync();
             try
             {
-                // 1. Obtener la cotización y la constructora asociada
-                var cotizacion = await _repoCotizacion.Obtener(
-                    c => c.Secuencial == entidad.IdCotizacion,
-                    incluirPropiedades: "SecVisitaNavigation.Contactovisita.SecContactoNavigation.SecConstructoraNavigation"
-                );
+                int idCotizacionFinal;
+                int secClienteFinal;
 
-                if (cotizacion?.SecVisitaNavigation?.Contactovisita?.FirstOrDefault()?.SecContactoNavigation?.SecConstructoraNavigation == null)
+                if (dto.IdCotizacion.HasValue && dto.IdCotizacion > 0)
                 {
-                    throw new TaskCanceledException("No se pudo encontrar la constructora asociada a la cotización.");
-                }
-                var constructora = cotizacion.SecVisitaNavigation.Contactovisita.First().SecContactoNavigation.SecConstructoraNavigation;
+                    var cotizacion = await _dbContext.Cotizacion.Include(c => c.SecVisitaNavigation).FirstOrDefaultAsync(c => c.Secuencial == dto.IdCotizacion.Value);
+                    if (cotizacion == null) throw new Exception("La cotización especificada no fue encontrada.");
+                    if (cotizacion.SecVisitaNavigation?.SecConstructora == null) throw new Exception("La visita de la cotización debe tener una constructora.");
 
-                // 2. Verificar si ya existe un cliente para la constructora
-                var clienteExistente = await _clienteService.ObtenerPorIdConstructora(constructora.Secuencial);
-                string numeroCliente;
+                    var cliente = await _clienteServices.ObtenerOCrearPorConstructora(cotizacion.SecVisitaNavigation.SecConstructora.Value);
+                    if (cliente == null) throw new Exception("No se pudo obtener o crear el cliente.");
 
-                if (clienteExistente == null)
-                {
-                    // 3a. Si no existe, crear el nuevo cliente
-                    var nuevoCliente = new Cliente
+                    idCotizacionFinal = cotizacion.Secuencial;
+                    secClienteFinal = cliente.SecCliente;
+
+                    var preContrato = await _repositorioPreContrato.Obtener(p => p.SecCotizacion == cotizacion.Secuencial && p.Estado == "Aprobado");
+                    if (preContrato != null)
                     {
-                        SecConstructora = constructora.Secuencial,
-                        FechaCreacion = DateTime.Now,
-                        EstaActivo = true
-                    };
-                    // El método Crear de ClienteService se encarga de generar el NumeroCliente
-                    var clienteCreado = await _clienteService.Crear(nuevoCliente);
-                    numeroCliente = clienteCreado.NumeroCliente;
+                        preContrato.Estado = "Procesado";
+                        preContrato.EstaActivo = false;
+                    }
+                }
+                else if (dto.SecCliente.HasValue && dto.SecCliente > 0)
+                {
+                    var cliente = await _dbContext.Clientes.FindAsync(dto.SecCliente.Value);
+                    if (cliente == null) throw new Exception("Cliente no encontrado.");
+
+                    var etapa = await _repositorioEtapa.Obtener(e => e.Codigo == "HIST") ?? await CrearEtapaHistorico();
+                    var visitaDummy = await CrearVisitaDummy(dto.IdUsuarioCarga, cliente, etapa.Id, dto.NombreProyecto);
+                    var cotizacionDummy = await CrearCotizacionDummy(visitaDummy.Secuencial, dto.IdUsuarioCarga);
+
+                    idCotizacionFinal = cotizacionDummy.Secuencial;
+                    secClienteFinal = cliente.SecCliente;
                 }
                 else
                 {
-                    // 3b. Si ya existe, usar su número de cliente
-                    numeroCliente = clienteExistente.NumeroCliente;
+                    throw new Exception("Datos insuficientes. Se requiere un IdCotizacion o un SecCliente.");
                 }
 
-                // 4. Subir el archivo del contrato usando el número de cliente para la ruta
-                if (archivoStream != null && !string.IsNullOrEmpty(nombreArchivo))
+                var contrato = new Contrato
                 {
-                    string carpetaDestino = $"Contratos/{numeroCliente}";
-                    string urlArchivo = await _storageService.SubirStorage(archivoStream, carpetaDestino, nombreArchivo);
-                    entidad.NombreArchivo = nombreArchivo;
-                    entidad.RutaArchivo = urlArchivo;
-                }
+                    IdCotizacion = idCotizacionFinal,
+                    SecCliente = secClienteFinal,
+                    FechaFirma = dto.FechaFirma,
+                    IdUsuarioCarga = dto.IdUsuarioCarga,
+                    NombreArchivo = dto.NombreArchivo,
+                    RutaArchivo = "",
+                    FechaCreacion = DateTime.Now,
+                    EsActivo = true
+                };
 
-                // 5. Crear el contrato en la BD
-                Contrato contratoCreado = await _repoContrato.Crear(entidad);
-                if (contratoCreado.IdContrato == 0)
+                var contratoCreado = await _repositorioContrato.Crear(contrato);
+                if (contratoCreado.IdContrato == 0) throw new Exception("No se pudo crear el registro del contrato.");
+
+                if (dto.ArchivoStream != null && !string.IsNullOrEmpty(dto.NombreArchivo))
                 {
-                    throw new TaskCanceledException("No se pudo crear el contrato en la base de datos.");
+                    string numeroCliente = (await _dbContext.Clientes.FindAsync(secClienteFinal)).NumeroCliente;
+                    string carpetaDestino = $"Contratos/{numeroCliente}/{contratoCreado.IdContrato}";
+                    contratoCreado.RutaArchivo = await _storageServices.SubirStorage(dto.ArchivoStream, carpetaDestino, dto.NombreArchivo);
                 }
 
-                // 6. Confirmar la transacción
+                await _dbContext.SaveChangesAsync();
                 await transaction.CommitAsync();
                 return contratoCreado;
             }
@@ -101,59 +118,145 @@ namespace BLL.Implementacion
                 throw new Exception($"Error al crear el contrato: {ex.Message}", ex);
             }
         }
-
-        // ... (Resto de los métodos Editar, Eliminar, Listar, etc. se mantienen igual por ahora)
-        public async Task<Contrato> Editar(Contrato entidad, Stream archivoStream = null, string nombreArchivo = "")
+        
+        public async Task<Contrato> Editar(Contrato entidad, string nombreProyecto, Stream archivoStream, string nombreArchivo)
         {
-            var contratoExistente = await _repoContrato.Obtener(c => c.IdContrato == entidad.IdContrato);
-            if (contratoExistente == null)
-                throw new TaskCanceledException("El contrato no fue encontrado");
+            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            try
+            {
+                var contratoExistente = await _repositorioContrato.Obtener(c => c.IdContrato == entidad.IdContrato);
+                if (contratoExistente == null) throw new Exception("El contrato no fue encontrado.");
 
-            contratoExistente.FechaFirma = entidad.FechaFirma;
-            contratoExistente.EsActivo = entidad.EsActivo;
-            
-            // La lógica para editar el archivo es compleja y se abordará por separado.
+                var cotizacion = await _dbContext.Cotizacion.Include(c => c.SecVisitaNavigation).FirstOrDefaultAsync(c => c.Secuencial == contratoExistente.IdCotizacion);
+                if (cotizacion?.SecVisitaNavigation != null && !string.IsNullOrEmpty(nombreProyecto))
+                {
+                    cotizacion.SecVisitaNavigation.Nombre = nombreProyecto;
+                }
 
-            bool seEdito = await _repoContrato.Editar(contratoExistente);
-            if (!seEdito)
-                throw new TaskCanceledException("No se pudo editar el contrato");
+                contratoExistente.FechaFirma = entidad.FechaFirma;
+                contratoExistente.EsActivo = entidad.EsActivo;
 
-            return contratoExistente;
+                if (archivoStream != null && !string.IsNullOrEmpty(nombreArchivo))
+                {
+                    var cliente = await _dbContext.Clientes.FindAsync(contratoExistente.SecCliente);
+                    string carpetaDestino = $"Contratos/{cliente.NumeroCliente}/{contratoExistente.IdContrato}";
+                    if (!string.IsNullOrEmpty(contratoExistente.RutaArchivo))
+                    {
+                        await _storageServices.EliminarStorage(contratoExistente.RutaArchivo, contratoExistente.NombreArchivo);
+                    }
+                    contratoExistente.RutaArchivo = await _storageServices.SubirStorage(archivoStream, carpetaDestino, nombreArchivo);
+                    contratoExistente.NombreArchivo = nombreArchivo;
+                }
+
+                await _dbContext.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return contratoExistente;
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                throw new Exception($"Error al editar el contrato: {ex.Message}", ex);
+            }
         }
 
-        public async Task<bool> Eliminar(int id)
+        private async Task<Etapa> CrearEtapaHistorico()
         {
-            var contrato = await _repoContrato.Obtener(c => c.IdContrato == id);
-            if (contrato == null)
+            var etapa = new Etapa { Codigo = "HIST", Descripcion = "Histórico", Orden = 99, EstaActivo = false };
+            return await _repositorioEtapa.Crear(etapa);
+        }
+
+        private async Task<Visita> CrearVisitaDummy(int idUsuario, Cliente cliente, int idEtapa, string nombreProyecto)
+        {
+            var visita = new Visita
             {
-                return false;
-            }
+                SecUsuario = idUsuario,
+                IdEtapa = idEtapa,
+                Nombre = nombreProyecto,
+                Detalle = "Registro automático para contrato directo",
+                EstaActivo = 0,
+                FechaRegistro = DateTime.Now,
+                Direccion = "N/A",
+                GeoUbicacion = "N/A",
+                FechaSiguienteVisita = DateTime.Now,
+                SecConstructora = cliente.SecConstructora
+            };
+            return await _repositorioVisita.Crear(visita);
+        }
 
-            // La lógica para eliminar el archivo asociado también iría aquí.
-
-            return await _repoContrato.Eliminar(contrato);
+        private async Task<Cotizacion> CrearCotizacionDummy(int idVisita, int idUsuario)
+        {
+            var cotizacion = new Cotizacion
+            {
+                SecVisita = idVisita,
+                Subtotal = 0,
+                EstaActivo = 0,
+                FechaRegistro = DateTime.Now,
+                SecUsuario = idUsuario
+            };
+            return await _repositorioCotizacion.Crear(cotizacion);
         }
 
         public async Task<List<Contrato>> Listar()
         {
-            var query = await _repoContrato.Consultar();
-            return await query.Include(c => c.IdCotizacionNavigation)
-                              .ThenInclude(cot => cot.SecVisitaNavigation)
+            var query = await _repositorioContrato.Consultar(c => c.EsActivo == true);
+            return await query.Include(c => c.IdCotizacionNavigation).ThenInclude(cot => cot.SecVisitaNavigation)
                               .Include(c => c.IdUsuarioCargaNavigation)
+                              .Include(c => c.SecClienteNavigation)
                               .ToListAsync();
         }
 
         public async Task<Contrato> Obtener(int id)
         {
-            return await _repoContrato.Obtener(c => c.IdContrato == id);
+            return await _repositorioContrato.Obtener(c => c.IdContrato == id);
+        }
+
+        public async Task<Contrato> ObtenerParaEdicion(int idContrato)
+        {
+            var query = await _repositorioContrato.Consultar(c => c.IdContrato == idContrato);
+            return await query
+                .Include(c => c.SecClienteNavigation)
+                .Include(c => c.IdCotizacionNavigation).ThenInclude(cot => cot.SecVisitaNavigation)
+                .Include(c => c.PlanDePagoNavigation).ThenInclude(pdp => pdp.Cuotas)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> Eliminar(int id)
+        {
+            var contrato = await _repositorioContrato.Obtener(c => c.IdContrato == id);
+            if (contrato == null) 
+            {
+                throw new TaskCanceledException("Contrato no encontrado");
+            }
+
+            contrato.EsActivo = false;
+            bool response = await _repositorioContrato.Editar(contrato);
+            return response;
         }
 
         public async Task<List<PreContrato>> ListarPreContratosParaContrato()
         {
-            var query = await _repoPreContrato.Consultar(p => p.Estado == "Aprobado" && p.EstaActivo);
+            var query = await _repositorioPreContrato.Consultar(p => p.Estado == "Aprobado" && p.EstaActivo);
             return await query.Include(p => p.SecCotizacionNavigation)
                               .ThenInclude(c => c.SecVisitaNavigation)
                               .ToListAsync();
+        }
+
+        public async Task<List<Contrato>> ObtenerContratosPorCliente(int secCliente)
+        {
+            try
+            {
+                var query = await _repositorioContrato.Consultar(c => c.SecCliente == secCliente);
+                return await query.Include(c => c.IdCotizacionNavigation)
+                                  .ThenInclude(cot => cot.SecVisitaNavigation)
+                                  .ThenInclude(v => v.IdEtapaNavigation)
+                                  .Include(c => c.SecClienteNavigation)
+                                  .Include(c => c.PlanDePagoNavigation)
+                                  .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al obtener contratos por cliente: {ex.Message}", ex);
+            }
         }
     }
 }

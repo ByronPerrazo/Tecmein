@@ -1,7 +1,6 @@
 using AutoMapper;
 using Entity;
 using TecmeinAplicacionWeb.Models.ViewModels;
-using TecmeinAplicacionWeb.Models.ViewModels; // <--- Para los nuevos ViewModels
 
 namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
 {
@@ -126,6 +125,18 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
                .ForMember(destino => destino.NombreParroquia,
                            opt => opt.MapFrom(origen =>
                                               origen.SecParroquiaNavigation.Nombre))
+                .ForMember(destino => destino.DescripcionEtapa,
+                            opt => opt.MapFrom(origen =>
+                                               origen.IdEtapaNavigation.Descripcion))
+                .ForMember(destino => destino.NombreEmpresa,
+                            opt => opt.MapFrom(origen =>
+                                               origen.SecEmpresaNavigation.Nombre))
+                .ForMember(destino => destino.NombreConstructora,
+                            opt => opt.MapFrom(origen =>
+                                               origen.SecConstructoraNavigation.Nombre))
+                .ForMember(destino => destino.CodigoEtapa,
+                            opt => opt.MapFrom(origen =>
+                                               origen.IdEtapaNavigation.Codigo))
                ;
 
             #endregion
@@ -146,6 +157,8 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
                                    opt.MapFrom(origen =>
                                                       origen.EstaActivo == 1));
 
+
+            CreateMap<Constructora, ConstructoraVM>().ReverseMap();
 
             CreateMap<Constructora, ConstructoraVM>()
             .ForMember(destino =>
@@ -260,6 +273,35 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
             #endregion
 
             CreateMap<FormatoNumeroCliente, FormatoNumeroClienteVM>().ReverseMap();
+
+            CreateMap<Cliente, ClienteVM>()
+                .ForMember(destino =>
+                    destino.SecConstructora, // Añadido para que el VM tenga el ID
+                    opt => opt.MapFrom(origen => origen.SecConstructora))
+                .ForMember(destino =>
+                    destino.NombreConstructora,
+                    opt => opt.MapFrom(origen => origen.SecConstructoraNavigation.Nombre))
+                .ForMember(destino =>
+                    destino.FechaCreacion,
+                    opt => opt.MapFrom(origen => origen.FechaCreacion.ToString("dd/MM/yyyy")));
+
+            CreateMap<ClienteVM, Cliente>()
+                .ForMember(destino =>
+                    destino.SecCliente,
+                    opt => opt.MapFrom(origen => origen.SecCliente))
+                .ForMember(destino =>
+                    destino.SecConstructora,
+                    opt => opt.MapFrom(origen => origen.SecConstructora))
+                .ForMember(destino =>
+                    destino.EstaActivo,
+                    opt => opt.MapFrom(origen => origen.EstaActivo))
+                .ForMember(destino =>
+                    destino.SecConstructoraNavigation, // Ignorar la propiedad de navegación
+                    opt => opt.Ignore());
+
+
+
+
 
             CreateMap<Seguimiento, SeguimientoVM>().ReverseMap();
 
@@ -481,6 +523,25 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
                 .ForMember(dest => dest.IdCotizacionNavigation, opt => opt.Ignore())
                 .ForMember(dest => dest.IdUsuarioCargaNavigation, opt => opt.Ignore());
             #endregion
+
+            CreateMap<PlanDePago, PlanDePagoVM>()
+                .ForMember(destino => destino.DescripcionFormaPago,
+                           opt => opt.MapFrom(origen => origen.SecFormaPagoNavigation.Descripcion))
+                .ForMember(destino => destino.FechaRegistro,
+                           opt => opt.MapFrom(origen => origen.FechaRegistro.ToString("dd/MM/yyyy")))
+                .ForMember(destino => destino.FechaAnticipo,
+                           opt => opt.MapFrom(origen => origen.FechaAnticipo.HasValue ? origen.FechaAnticipo.Value.ToString("dd/MM/yyyy") : null))
+                .ForMember(destino => destino.FechaPrimeraCuota,
+                           opt => opt.MapFrom(origen => origen.FechaPrimeraCuota.HasValue ? origen.FechaPrimeraCuota.Value.ToString("dd/MM/yyyy") : null));
+            CreateMap<PlanDePagoVM, PlanDePago>()
+                .ForMember(destino => destino.SecFormaPagoNavigation, opt => opt.Ignore());
+
+            CreateMap<Cuota, CuotaVM>()
+                .ForMember(destino => destino.FechaVencimiento,
+                           opt => opt.MapFrom(origen => origen.FechaVencimiento.ToString("dd/MM/yyyy")))
+                .ForMember(destino => destino.FechaRegistro,
+                           opt => opt.MapFrom(origen => origen.FechaRegistro.ToString("dd/MM/yyyy")));
+            CreateMap<CuotaVM, Cuota>();
 
         }
     }

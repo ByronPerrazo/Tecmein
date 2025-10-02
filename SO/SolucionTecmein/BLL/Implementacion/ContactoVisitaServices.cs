@@ -8,11 +8,13 @@ namespace BLL.Implementacion
     public class ContactoVisitaServices : IContactoVisitaServices
     {
         private readonly IGenericRepository<Contactovisita> _repositorio;
+        private readonly IGenericRepository<Visita> _repositorioVisita;
         private readonly IContactoServices _contactoServices;
 
-        public ContactoVisitaServices(IGenericRepository<Contactovisita> repositorio, IContactoServices contactoServices)
+        public ContactoVisitaServices(IGenericRepository<Contactovisita> repositorio, IGenericRepository<Visita> repositorioVisita, IContactoServices contactoServices)
         {
             _repositorio = repositorio;
+            _repositorioVisita = repositorioVisita;
             _contactoServices = contactoServices;
         }
 
@@ -33,13 +35,15 @@ namespace BLL.Implementacion
 
             var registroExistente = await _repositorio.Obtener(x => x.SecVisita == entidad.SecVisita);
 
+            Contactovisita? resultado = null;
+
             if (registroExistente == null)
             {
                 // Crear
                 entidad.EstaActivo = 1;
                 var nuevoRegistro = await _repositorio.Crear(entidad);
                 nuevoRegistro.SecContactoNavigation = contactoAsociado;
-                return nuevoRegistro;
+                resultado = nuevoRegistro;
             }
             else
             {
@@ -49,10 +53,26 @@ namespace BLL.Implementacion
                 if (seEdito)
                 {
                     registroExistente.SecContactoNavigation = contactoAsociado;
-                    return registroExistente;
+                    resultado = registroExistente;
                 }
             }
-            return null;
+
+            if (resultado != null && contactoAsociado.SecConstructora != 0)
+            {
+                await ActualizarConstructoraEnVisita(resultado.SecVisita, contactoAsociado.SecConstructora);
+            }
+
+            return resultado;
+        }
+
+        private async Task ActualizarConstructoraEnVisita(int secVisita, int secConstructora)
+        {
+            var visita = await _repositorioVisita.Obtener(v => v.Secuencial == secVisita);
+            if (visita != null)
+            {
+                visita.SecConstructora = secConstructora;
+                await _repositorioVisita.Editar(visita);
+            }
         }
 
         public async Task<Contactovisita> CrearContactoVisita(Contactovisita entidad)

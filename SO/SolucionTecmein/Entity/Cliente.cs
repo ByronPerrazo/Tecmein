@@ -6,6 +6,11 @@ namespace Entity
 {
     public partial class Cliente
     {
+        public Cliente()
+        {
+            Contratos = new HashSet<Contrato>();
+        }
+
         [Key]
         public int SecCliente { get; set; }
         public int SecConstructora { get; set; }
@@ -14,5 +19,6 @@ namespace Entity
         public bool? EstaActivo { get; set; }
 
         public virtual Constructora SecConstructoraNavigation { get; set; } = null!;
+        public virtual ICollection<Contrato> Contratos { get; set; }
     }
 }

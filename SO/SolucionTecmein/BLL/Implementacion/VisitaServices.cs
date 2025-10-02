@@ -32,6 +32,7 @@ namespace BLL.Implementacion
                                                  .Include(u => u.SecUsuarioNavigation)
                                                  .Include(e => e.IdEtapaNavigation) // <-- Added
                                                  .Include(em => em.SecEmpresaNavigation) // <-- Added
+                                                 .Include(c => c.SecConstructoraNavigation)
                                                  .AsNoTracking()
                                                  .FirstOrDefaultAsync();
 
@@ -84,6 +85,7 @@ namespace BLL.Implementacion
                 visitaOriginal.EstaActivo = entidad.EstaActivo;
                 visitaOriginal.FechaSiguienteVisita = entidad.FechaSiguienteVisita;
                 visitaOriginal.Detalle = entidad.Detalle;
+                visitaOriginal.SecConstructora = entidad.SecConstructora;
 
                 bool seEdito = await _repositorio.Editar(visitaOriginal);
                 if (!seEdito)
@@ -123,13 +125,14 @@ namespace BLL.Implementacion
         }
         public async Task<List<Visita>> ListaVisitas()
         {
-            var query = await _repositorio.Consultar();
+            var query = await _repositorio.Consultar(v => v.IdEtapaNavigation.Codigo != "HIST");
             var queryIncludes = query.Include(x => x.SecProvinciaNavigation)
                                       .Include(y => y.SecCantonNavigation)
                                       .Include(z => z.SecParroquiaNavigation)
                                       .Include(u => u.SecUsuarioNavigation)
                                       .Include(e => e.IdEtapaNavigation) // <-- Added
                                       .Include(em => em.SecEmpresaNavigation) // <-- Added
+                                      .Include(c => c.SecConstructoraNavigation)
                                       .AsNoTracking();
 
             return await queryIncludes.ToListAsync();
@@ -137,13 +140,14 @@ namespace BLL.Implementacion
 
         public async Task<List<Visita>> ListaVisitasPorUsuario(int idUsuario)
         {
-            var query = await _repositorio.Consultar(v => v.SecUsuario == idUsuario);
+            var query = await _repositorio.Consultar(v => v.SecUsuario == idUsuario && v.IdEtapaNavigation.Codigo != "HIST");
             var queryIncludes = query.Include(x => x.SecProvinciaNavigation)
                                       .Include(y => y.SecCantonNavigation)
                                       .Include(z => z.SecParroquiaNavigation)
                                       .Include(u => u.SecUsuarioNavigation)
                                       .Include(e => e.IdEtapaNavigation) // <-- Added
                                       .Include(em => em.SecEmpresaNavigation) // <-- Added
+                                      .Include(c => c.SecConstructoraNavigation)
                                       .AsNoTracking();
 
             return await queryIncludes.ToListAsync();
@@ -160,6 +164,7 @@ namespace BLL.Implementacion
                 .Include(v => v.SecUsuarioNavigation)
                 .Include(v => v.IdEtapaNavigation) // <-- Added
                 .Include(v => v.SecEmpresaNavigation) // <-- Added
+                .Include(v => v.SecConstructoraNavigation)
                 .Include(v => v.Contactovisita)
                     .ThenInclude(cv => cv.SecContactoNavigation)
                         .ThenInclude(c => c.SecConstructoraNavigation)

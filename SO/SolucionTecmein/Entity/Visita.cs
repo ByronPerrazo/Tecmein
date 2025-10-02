@@ -34,6 +34,8 @@ public partial class Visita
 
     public short? EstaActivo { get; set; }
 
+    public int? SecConstructora { get; set; } // Nuevo campo
+
     public virtual Canton? SecCantonNavigation { get; set; }
 
     public virtual Parroquia? SecParroquiaNavigation { get; set; }
@@ -49,4 +51,7 @@ public partial class Visita
 
     [ForeignKey("SecEmpresa")]
     public virtual Empresa? SecEmpresaNavigation { get; set; }
+
+    [ForeignKey("SecConstructora")] // Nueva navegación
+    public virtual Constructora? SecConstructoraNavigation { get; set; }
 }

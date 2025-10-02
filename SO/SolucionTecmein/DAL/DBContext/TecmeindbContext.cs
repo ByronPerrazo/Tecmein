@@ -75,6 +75,12 @@ public partial class TecmeindbContext : DbContext
 
     public virtual DbSet<PolizaGarantia> PolizaGarantia { get; set; }
 
+    public virtual DbSet<PlanDePago> PlanesDePago { get; set; }
+
+    public virtual DbSet<Pago> Pagos { get; set; }
+
+    public virtual DbSet<Cuota> Cuotas { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -1090,6 +1096,12 @@ public partial class TecmeindbContext : DbContext
             entity.Property(e => e.FechaCreacion).HasColumnType("datetime").HasColumnName("FechaCreacion");
             entity.Property(e => e.EsActivo).HasColumnName("EsActivo");
 
+            entity.HasOne(d => d.SecClienteNavigation)
+                .WithMany(p => p.Contratos)
+                .HasForeignKey(d => d.SecCliente)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Contrato_Cliente");
+
             entity.HasOne(d => d.IdCotizacionNavigation)
                 .WithMany()
                 .HasForeignKey(d => d.IdCotizacion)
@@ -1101,6 +1113,88 @@ public partial class TecmeindbContext : DbContext
                 .HasForeignKey(d => d.IdUsuarioCarga)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Contrato_Usuario");
+
+            // Configuración para la relación uno a uno con PlanDePago
+            entity.HasOne(c => c.PlanDePagoNavigation)
+                .WithOne(pp => pp.IdContratoNavigation)
+                .HasForeignKey<PlanDePago>(pp => pp.IdContrato);
+        });
+
+        OnModelCreatingPartial(modelBuilder);
+
+        modelBuilder.Entity<PlanDePago>(entity =>
+        {
+            entity.HasKey(e => e.IdPlanDePago).HasName("PRIMARY");
+            entity.ToTable("plandepago");
+
+            entity.HasIndex(e => e.IdContrato, "FK_PlanDePago_Contrato_idx").IsUnique();
+            entity.HasIndex(e => e.SecFormaPago, "FK_PlanDePago_FormaPago_idx");
+
+            entity.Property(e => e.IdPlanDePago).HasColumnName("IdPlanDePago");
+            entity.Property(e => e.IdContrato).HasColumnName("IdContrato");
+            entity.Property(e => e.SecFormaPago).HasColumnName("SecFormaPago");
+            entity.Property(e => e.ValorContrato).HasPrecision(18, 2).HasColumnName("ValorContrato");
+            entity.Property(e => e.ValorAnticipo).HasPrecision(18, 2).HasColumnName("ValorAnticipo");
+            entity.Property(e => e.FechaAnticipo).HasColumnType("datetime").HasColumnName("FechaAnticipo");
+            entity.Property(e => e.NumeroCuotas).HasColumnName("NumeroCuotas");
+            entity.Property(e => e.FechaPrimeraCuota).HasColumnType("datetime").HasColumnName("FechaPrimeraCuota");
+            entity.Property(e => e.EstaActivo).HasColumnName("EstaActivo");
+            entity.Property(e => e.FechaRegistro).HasColumnType("datetime").HasColumnName("FechaRegistro");
+
+            entity.HasOne(d => d.SecFormaPagoNavigation).WithMany()
+                .HasForeignKey(d => d.SecFormaPago)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PlanDePago_FormaPago");
+        });
+
+        modelBuilder.Entity<Pago>(entity =>
+        {
+            entity.HasKey(e => e.IdPago).HasName("PRIMARY");
+            entity.ToTable("pago");
+
+            entity.HasIndex(e => e.IdPlanDePago, "FK_Pago_PlanDePago_idx");
+            entity.HasIndex(e => e.RegistradoPorUsuarioId, "FK_Pago_Usuario_idx");
+
+            entity.Property(e => e.IdPago).HasColumnName("IdPago");
+            entity.Property(e => e.IdPlanDePago).HasColumnName("IdPlanDePago");
+            entity.Property(e => e.Monto).HasPrecision(18, 2).HasColumnName("Monto");
+            entity.Property(e => e.FechaPago).HasColumnType("datetime").HasColumnName("FechaPago");
+            entity.Property(e => e.ComprobanteUrl).HasMaxLength(255).HasColumnName("ComprobanteUrl");
+            entity.Property(e => e.ComprobanteNombre).HasMaxLength(255).HasColumnName("ComprobanteNombre");
+            entity.Property(e => e.RegistradoPorUsuarioId).HasColumnName("RegistradoPorUsuarioId");
+            entity.Property(e => e.EstaActivo).HasColumnName("EstaActivo");
+            entity.Property(e => e.FechaRegistro).HasColumnType("datetime").HasColumnName("FechaRegistro");
+
+            entity.HasOne(d => d.IdPlanDePagoNavigation).WithMany(p => p.Pagos)
+                .HasForeignKey(d => d.IdPlanDePago)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Pago_PlanDePago");
+
+            entity.HasOne(d => d.RegistradoPorUsuario).WithMany()
+                .HasForeignKey(d => d.RegistradoPorUsuarioId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Pago_Usuario");
+        });
+
+        modelBuilder.Entity<Cuota>(entity =>
+        {
+            entity.HasKey(e => e.IdCuota).HasName("PRIMARY");
+            entity.ToTable("cuota");
+
+            entity.HasIndex(e => e.IdPlanDePago, "FK_Cuota_PlanDePago_idx");
+
+            entity.Property(e => e.IdCuota).HasColumnName("IdCuota");
+            entity.Property(e => e.IdPlanDePago).HasColumnName("IdPlanDePago");
+            entity.Property(e => e.NumeroCuota).HasColumnName("NumeroCuota");
+            entity.Property(e => e.MontoEsperado).HasPrecision(18, 2).HasColumnName("MontoEsperado");
+            entity.Property(e => e.FechaVencimiento).HasColumnType("datetime").HasColumnName("FechaVencimiento");
+            entity.Property(e => e.Estado).HasMaxLength(50).HasColumnName("Estado");
+            entity.Property(e => e.FechaRegistro).HasColumnType("datetime").HasColumnName("FechaRegistro");
+
+            entity.HasOne(d => d.IdPlanDePagoNavigation).WithMany(p => p.Cuotas)
+                .HasForeignKey(d => d.IdPlanDePago)
+                .OnDelete(DeleteBehavior.Cascade) // Si se borra el plan, se borran las cuotas
+                .HasConstraintName("FK_Cuota_PlanDePago");
         });
 
         OnModelCreatingPartial(modelBuilder);

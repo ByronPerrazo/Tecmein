@@ -32,7 +32,7 @@ namespace TecmeinWebApp.Controllers
 
         // La página principal del módulo de Contactos
         // Se puede ver si se tiene acceso al menú de contactos.
-        [Authorize(Policy = "Menu.Ver.13")]
+        [Authorize(Policy = "CONTACTO_VIEWMENU")]
         public IActionResult Index()
         {
             return View();

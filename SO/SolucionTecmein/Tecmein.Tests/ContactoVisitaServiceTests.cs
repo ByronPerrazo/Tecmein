@@ -14,14 +14,16 @@ namespace Tecmein.Tests
     public class ContactoVisitaServiceTests
     {
         private readonly Mock<IGenericRepository<Contactovisita>> _mockRepo;
+        private readonly Mock<IGenericRepository<Visita>> _mockRepoVisita;
         private readonly Mock<IContactoServices> _mockContactoServices;
         private readonly ContactoVisitaServices _service;
 
         public ContactoVisitaServiceTests()
         {
             _mockRepo = new Mock<IGenericRepository<Contactovisita>>();
+            _mockRepoVisita = new Mock<IGenericRepository<Visita>>();
             _mockContactoServices = new Mock<IContactoServices>();
-            _service = new ContactoVisitaServices(_mockRepo.Object, _mockContactoServices.Object);
+           // _service = new ContactoVisitaServices(_mockRepo.Object, _mockRepoVisita, _mockContactoServices.Object);
         }
 
         private List<Contactovisita> GetTestContactoVisitas(List<Contacto> contactos)

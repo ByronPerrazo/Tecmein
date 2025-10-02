@@ -27,11 +27,42 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> ListaActivas()
+        {
+            var gResponse = new GenericResponse<List<FormaPagoVM>>();
+            try
+            {
+                var listaFormaPago = await _formaPagoServices.Lista();
+                var listaActivas = listaFormaPago.Where(fp => fp.EstaActivo == 1).ToList();
+                var listaVm = _mapper.Map<List<FormaPagoVM>>(listaActivas);
+                gResponse.Estado = true;
+                gResponse.Objeto = listaVm;
+            }
+            catch (Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+            }
+            return StatusCode(StatusCodes.Status200OK, gResponse);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Lista()
         {
-            var listaFormaPagoVM
-               = _mapper.Map<List<FormaPagoVM>>(await _formaPagoServices.Lista());
-            return StatusCode(StatusCodes.Status200OK, new { data = listaFormaPagoVM });
+            var gResponse = new GenericResponse<List<FormaPagoVM>>();
+            try
+            {
+                var listaFormaPago = await _formaPagoServices.Lista();
+                var listaVm = _mapper.Map<List<FormaPagoVM>>(listaFormaPago);
+                gResponse.Estado = true;
+                gResponse.Objeto = listaVm;
+            }
+            catch (Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+            }
+            return StatusCode(StatusCodes.Status200OK, gResponse);
         }
 
         [HttpPost]
@@ -89,6 +120,21 @@ namespace TecmeinWebApp.Controllers
                 gResponse.Estado = false;
                 gResponse.Mensajes = ex.Message;
                 return StatusCode(StatusCodes.Status400BadRequest, gResponse);
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> ListaParaDropdown()
+        {
+            try
+            {
+                var lista = await _formaPagoServices.Lista();
+                var formasPago = lista.Where(fp => fp.EstaActivo == 1).Select(fp => new { value = fp.SecFormaPago, text = fp.Descripcion }).ToList();
+                
+                return StatusCode(StatusCodes.Status200OK, new { data = formasPago });
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { success = false, message = ex.Message });
             }
         }
     }

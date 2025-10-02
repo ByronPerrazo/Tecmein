@@ -24,6 +24,7 @@ namespace IOC
                 });
 
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IGenericRepository<Cuota>, GenericRepository<Cuota>>(); // Nuevo
             services.AddSingleton<IDatosGlobalesServices, DatosGlobalesServicio>();
 
             services.AddScoped<IUsuarioServices, UsuarioServices>();
@@ -71,7 +72,16 @@ namespace IOC
                 new ClienteServices(
                     provider.GetRequiredService<IGenericRepository<Cliente>>(),
                     provider.GetRequiredService<IGenericRepository<FormatoNumeroCliente>>(),
-                    provider.GetRequiredService<IConstructoraServices>()
+                    provider.GetRequiredService<IGenericRepository<Visita>>(),
+                    provider.GetRequiredService<IGenericRepository<Cotizacion>>(),
+                    provider.GetRequiredService<IGenericRepository<Contrato>>(),
+                    provider.GetRequiredService<IGenericRepository<PlanDePago>>(),
+                    provider.GetRequiredService<IGenericRepository<Etapa>>(),
+                    provider.GetRequiredService<IGenericRepository<FormaPago>>(),
+                    provider.GetRequiredService<IConstructoraServices>(),
+                    provider.GetRequiredService<IStorageServices>(),
+                    provider.GetRequiredService<IGenericRepository<Cuota>>(), // Nuevo
+                    provider.GetRequiredService<TecmeindbContext>()
                 ));
             services.AddScoped<IFormatoNumeroClienteService, FormatoNumeroClienteService>();
             services.AddScoped<ISeguimientoServices, SeguimientoServices>(provider =>
@@ -106,13 +116,16 @@ namespace IOC
             services.AddScoped<ITipoDocumentoServices, TipoDocumentoServices>();
             services.AddScoped<IPolizaGarantiaServices, PolizaGarantiaServices>();
             services.AddScoped<IGenericRepository<PolizaGarantia>, GenericRepository<PolizaGarantia>>();
+            services.AddScoped<IPlanDePagoService, PlanDePagoService>(); // Nuevo
             services.AddScoped<IContratoService, ContratoService>(provider =>
                 new ContratoService(
                     provider.GetRequiredService<IGenericRepository<Contrato>>(),
                     provider.GetRequiredService<IGenericRepository<Cotizacion>>(),
-                    provider.GetRequiredService<IGenericRepository<PreContrato>>(),
+                    provider.GetRequiredService<IGenericRepository<Visita>>(),
                     provider.GetRequiredService<IClienteServices>(),
                     provider.GetRequiredService<IStorageServices>(),
+                    provider.GetRequiredService<IGenericRepository<PreContrato>>(),
+                    provider.GetRequiredService<IGenericRepository<Etapa>>(),
                     provider.GetRequiredService<TecmeindbContext>()
                 ));
 

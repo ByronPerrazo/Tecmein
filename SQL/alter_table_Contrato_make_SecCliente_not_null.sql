@@ -1,0 +1,2 @@
+ALTER TABLE Contrato
+ALTER COLUMN SecCliente INT NOT NULL;

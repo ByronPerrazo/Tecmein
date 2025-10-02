@@ -1,9 +1,7 @@
 using BLL.DTOs;
 using Entity;
-using System;
+using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BLL.Interfaces
@@ -11,12 +9,17 @@ namespace BLL.Interfaces
     public interface IContratoService
     {
         Task<List<Contrato>> Listar();
-        Task<Contrato> Crear(Contrato entidad, Stream archivoStream = null, string nombreArchivo = "");
-        Task<Contrato> Editar(Contrato entidad, Stream archivoStream = null, string nombreArchivo = "");
+        Task<Contrato> Crear(ContratoCreacionDTO dto);
+        Task<Contrato> Editar(Contrato entidad, string nombreProyecto, Stream archivoStream, string nombreArchivo);
         Task<Contrato> Obtener(int id);
         Task<bool> Eliminar(int id);
 
+        Task<Contrato> ObtenerParaEdicion(int idContrato);
+
         // Método para obtener los pre-contratos que pueden convertirse en contrato
         Task<List<PreContrato>> ListarPreContratosParaContrato();
+
+        // Nuevo método para obtener contratos por cliente
+        Task<List<Contrato>> ObtenerContratosPorCliente(int secCliente);
     }
 }

@@ -34,6 +34,26 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> ListaActivas()
+        {
+            var gResponse = new GenericResponse<List<ConstructoraVM>>();
+            try
+            {
+                var listaConstructora = await _constructoraServices.Lista();
+                var listaActivas = listaConstructora.Where(c => c.EstaActivo == 1).ToList();
+                var listaVm = _mapper.Map<List<ConstructoraVM>>(listaActivas);
+                gResponse.Estado = true;
+                gResponse.Objeto = listaVm;
+            }
+            catch (Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+            }
+            return StatusCode(StatusCodes.Status200OK, gResponse);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> ObtenerPorSecuencial(int secuencial)
         {
             var gResponse = new GenericResponse<ConstructoraVM>();
@@ -110,5 +130,19 @@ namespace TecmeinWebApp.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ListaParaDropdown()
+        {
+            try
+            {
+                var lista = await _constructoraServices.Lista();
+                var constructoras = lista.Where(c => c.EstaActivo == 1).Select(c => new { value = c.Secuencial, text = c.Nombre }).ToList();
+                return StatusCode(StatusCodes.Status200OK, new { data = constructoras });
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { success = false, message = ex.Message });
+            }
+        }
     }
 }

@@ -1,0 +1,71 @@
+@{
+    ViewData["Title"] = "Planes de Pago";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 bg-second-primary">
+        <h6 class="m-0 font-weight-bold text-white">Lista de Planes de Pago</h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-12">
+                <table id="tbPlanesDePago" class="table table-bordered" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>ID Plan</th>
+                            <th>ID Contrato</th>
+                            <th>Forma Pago</th>
+                            <th>Valor Contrato</th>
+                            <th>Anticipo</th>
+                            <th>Cuotas</th>
+                            <th>Fecha Primera Cuota</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para ver Cuotas -->
+<div class="modal fade" id="modalCuotas" tabindex="-1" role="dialog" aria-labelledby="modalCuotasLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="card shadow-sm">
+                <div class="card-header py-2 bg-second-primary">
+                    <h6 class="m-0 font-weight-bold text-white">
+                        <i class="fas fa-money-check-alt"></i> Cuotas del Plan de Pago #<span id="planDePagoIdModal"></span>
+                        <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" class="text-white">×</span>
+                        </button>
+                    </h6>
+                </div>
+                <div class="card-body p-2">
+                    <table id="tbCuotas" class="table table-bordered" cellspacing="0" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th># Cuota</th>
+                                <th>Monto Esperado</th>
+                                <th>Fecha Vencimiento</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="card-body p-0 d-flex justify-content-end">
+                    <button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/vistas/PlanDePago_Index.js"></script>
+}

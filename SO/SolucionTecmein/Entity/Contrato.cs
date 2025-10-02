@@ -23,7 +23,13 @@ public partial class Contrato
 
     public bool? EsActivo { get; set; }
 
+    public int SecCliente { get; set; } // Propiedad para la FK a Cliente
+
     public virtual Cotizacion IdCotizacionNavigation { get; set; } = null!;
 
     public virtual Usuario IdUsuarioCargaNavigation { get; set; } = null!;
+
+    public virtual Cliente SecClienteNavigation { get; set; } = null!; // Propiedad de navegación
+
+    public virtual PlanDePago? PlanDePagoNavigation { get; set; }
 }
