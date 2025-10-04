@@ -500,12 +500,12 @@ $("#btnGuardarVisitas").click(function () {
                 if (responseJson.estado) {
                     tablaData.row.add(responseJson.objeto).draw(false);
                     $("#modalData").modal("hide");
-                    swal("Listo!",
+                    Swal.fire("Listo!",
                         "Visita a " + responseJson.objeto.nombre + " Creada ",
                         "success");
                 }
                 else {
-                    swal("Fallo!", responseJson.mensajes, "error");
+                    Swal.fire("Fallo!", responseJson.mensajes, "error");
                 }
             });
     }
@@ -535,15 +535,12 @@ $("#btnGuardarVisitas").click(function () {
                         .data(responseJson.objeto)
                         .draw(false);
                     $("#modalData").modal("hide");
-                    swal("Listo!",
-                        "Visita a " + responseJson.objeto.nombre + " Editada ",
-                        "success");
-                    swal("Listo!",
+                    Swal.fire("Listo!",
                         "Visita a " + responseJson.objeto.nombre + " Editada ",
                         "success");
                 }
                 else {
-                    swal("Fallo!", responseJson.mensajes, "error");
+                    Swal.fire("Fallo!", responseJson.mensajes, "error");
                 }
             });
 
@@ -578,42 +575,43 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
 
     const data = tablaData.row(fila).data();
 
-    swal({
+    Swal.fire({
         title: "Está Seguro de Eliminar?",
         text: `Eliminar la visita "${data.Nombre}"`, 
-        type: "warning",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonClass: "btn-danger",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
         confirmButtonText: "Si, eliminar",
-        cancelButtonText: "No, cancelar",
-        closeOnConfirm: false,
-        closeOnCancel: true
-    },
-        function (respuesta) {
-            if (respuesta) {
-                $(".showSweetAlert").LoadingOverlay("show");
+        cancelButtonText: "No, cancelar"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $(".showSweetAlert").LoadingOverlay("show");
 
-                fetch(`Eliminar?secuencial=${data.Secuencial}`, { 
-                    method: "DELETE"
+            fetch(`Eliminar?secuencial=${data.Secuencial}`, { 
+                method: "DELETE"
+            })
+                .then(response => {
+                    $(".showSweetAlert").LoadingOverlay("hide");
+                    return response.ok
+                        ? response.json()
+                        : Promise.reject(response);
+                }).then(responseJson => {
+                    if (responseJson.estado) {
+                        tablaData.row(fila).remove().draw(false);
+
+                        Swal.fire("Listo!", " La Visita a " + data.Nombre + " fue Eliminada", "success");
+                    }
+                    else {
+                        Swal.fire("Fallo!", responseJson.mensajes, "error");
+                    }
                 })
-                    .then(response => {
-                        $(".showSweetAlert").LoadingOverlay("hide");
-                        return response.ok
-                            ? response.json()
-                            : Promise.reject(response);
-                    }).then(responseJson => {
-                        if (responseJson.estado) {
-                            tablaData.row(fila).remove().draw(false);
-
-                            swal("Listo!", " La Visita a " + data.Nombre + " fue Eliminada", "success");
-                        }
-                        else {
-                            swal("Fallo!", responseJson.mensajes, "error");
-                        }
-                    });
-            }
+                .catch(error => {
+                    $(".showSweetAlert").LoadingOverlay("hide");
+                    Swal.fire("Error de Conexión", "No se pudo conectar con el servidor o hubo un error inesperado.", "error");
+                });
         }
-    )
+    })
 })
 
 $("#tbdata tbody").on("click", ".btn-avanzar-etapa", function () {
@@ -625,23 +623,21 @@ $("#tbdata tbody").on("click", ".btn-avanzar-etapa", function () {
     }
     const data = tablaData.row(fila).data();
 
-    swal({
+    Swal.fire({
         title: "Avanzar Etapa",
-        text: `¿Está seguro de avanzar la etapa de la visita "${data.nombre}"?`,
-        type: "info",
+        text: `¿Está seguro de avanzar la etapa de la visita "${data.Nombre}"?`,
+        icon: "info",
         showCancelButton: true,
-        confirmButtonClass: "btn-info",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
         confirmButtonText: "Sí, avanzar",
-        cancelButtonText: "No, cancelar",
-        closeOnConfirm: false,
-        closeOnCancel: true
-    },
-    function (respuesta) {
-        if (respuesta) {
+        cancelButtonText: "No, cancelar"
+    }).then((result) => {
+        if (result.isConfirmed) {
             $(".showSweetAlert").LoadingOverlay("show");
 
             const formData = new FormData();
-            formData.append("secVisita", data.secuencial);
+            formData.append("secVisita", data.Secuencial);
             formData.append("nuevoCodigoEtapa", ""); // Dejamos el código vacío para que el backend decida la siguiente etapa
 
             fetch("/Visita/CambiarEtapa", {
@@ -655,14 +651,14 @@ $("#tbdata tbody").on("click", ".btn-avanzar-etapa", function () {
             .then(responseJson => {
                 if (responseJson.estado) {
                     tablaData.ajax.reload(null, false); // Recargar la tabla sin resetear la paginación
-                    swal("Listo!", "La etapa de la visita fue actualizada.", "success");
+                    Swal.fire("Listo!", "La etapa de la visita fue actualizada.", "success");
                 } else {
-                    swal("Error", responseJson.mensajes, "error");
+                    Swal.fire("Error", responseJson.mensajes, "error");
                 }
             })
             .catch(err => {
                  $(".showSweetAlert").LoadingOverlay("hide");
-                 swal("Error", "No se pudo conectar con el servidor.", "error");
+                 Swal.fire("Error", "No se pudo conectar con el servidor.", "error");
             });
         }
     });

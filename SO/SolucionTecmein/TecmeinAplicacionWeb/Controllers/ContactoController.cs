@@ -32,7 +32,6 @@ namespace TecmeinWebApp.Controllers
 
         // La página principal del módulo de Contactos
         // Se puede ver si se tiene acceso al menú de contactos.
-        [Authorize(Policy = "CONTACTO_VIEWMENU")]
         public IActionResult Index()
         {
             return View();
@@ -40,7 +39,6 @@ namespace TecmeinWebApp.Controllers
 
         // La lista de datos para la tabla
         // Se puede ver si se tiene el permiso específico para ver contactos.
-        [Authorize(Policy = "Contacto.Ver")]
         [HttpGet]
         public async Task<IActionResult> Lista()
         {
@@ -63,7 +61,7 @@ namespace TecmeinWebApp.Controllers
             return new JsonResult(listaConstructorasVM, jsonOptions);
         }
 
-        [Authorize(Policy = "Contacto.Editar")]
+        
         [HttpGet]
         public async Task<IActionResult> ObtenerParaEditar(int secuencial)
         {
@@ -96,7 +94,6 @@ namespace TecmeinWebApp.Controllers
             return new JsonResult(gResponse, jsonOptions);
         }
 
-        [Authorize(Policy = "Contacto.Crear")]
         [HttpPost]
         public async Task<IActionResult> CrearContacto([FromForm] string modelo)
         {
@@ -131,9 +128,8 @@ namespace TecmeinWebApp.Controllers
             return StatusCode(StatusCodes.Status200OK, genericResponse);
         }
 
-        [Authorize(Policy = "Contacto.Editar")]
-        [HttpPost]
-        public async Task<IActionResult> Editar([FromForm] string modelo, [FromForm] string modeloVisitaDetalle)
+        [HttpPut]
+        public async Task<IActionResult> Editar([FromForm] string modelo)
         {
             var genericResponse = new GenericResponse<ContactoVM>();
             try
@@ -157,8 +153,7 @@ namespace TecmeinWebApp.Controllers
             return StatusCode(StatusCodes.Status200OK, genericResponse);
         }
 
-        [Authorize(Policy = "Contacto.Eliminar")]
-        [HttpDelete]
+       [HttpDelete]
         public async Task<IActionResult> Eliminar(int secuencial)
         {
             var gResponse = new GenericResponse<string>();

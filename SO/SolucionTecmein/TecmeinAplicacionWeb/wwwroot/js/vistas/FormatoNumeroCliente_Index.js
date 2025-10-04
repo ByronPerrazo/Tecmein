@@ -17,8 +17,8 @@ $(document).ready(function () {
             "type": "GET",
             "datatype": "json",
             "dataSrc": function (json) {
-                if (json.estado) {
-                    return json.objeto && json.objeto.$values ? json.objeto.$values : json.objeto;
+                if (json.estado && json.objeto && json.objeto.$values) {
+                    return json.objeto.$values;
                 }
                 return [];
             }
@@ -88,8 +88,7 @@ $("#btnGuardar").click(function () {
         usaFormato: $("#checkUsaFormato").is(":checked"),
         formato: $("#txtFormato").val(),
         numeroInicio: parseInt($("#txtNumeroInicio").val()),
-        longitudNumero: parseInt($("#txtLongitudNumero
-").val())
+        longitudNumero: parseInt($("#txtLongitudNumero").val())
     }
 
     $("#modalData").find(".modal-content").LoadingOverlay("show");

@@ -20,7 +20,9 @@ $(document).ready(function () {
             "url": 'Lista',
             "type": "GET",
             "datatype": "json",
-            "dataSrc": "data.$values"
+            "dataSrc": function (json) {
+                return json.data.$values;
+            }
         },
         "columns": [
             { data: "secuencial", visible: false, searchable: false },
@@ -180,9 +182,9 @@ $("#btnGuardarContacto").click(function () {
                 tablaData.row.add(responseJson.objeto).draw(false);
             }
             $("#modalData").modal("hide");
-            swal("Listo!", `Contacto ${esEdicion ? 'editado' : 'creado'} correctamente`, "success");
+            Swal.fire("Listo!", `Contacto ${esEdicion ? 'editado' : 'creado'} correctamente`, "success");
         } else {
-            swal("Fallo!", responseJson.mensajes, "error");
+            Swal.fire("Fallo!", responseJson.mensajes, "error");
         }
     })
     .catch(error => {
@@ -214,7 +216,7 @@ $("#tbdata tbody").on("click", ".btn-editar", function () {
             if (responseJson.estado) {
                 mostrarModal(responseJson.objeto.contacto, responseJson.objeto.listaConstructoras);
             } else {
-                swal("Fallo!", responseJson.mensajes, "error");
+                Swal.fire("Fallo!", responseJson.mensajes, "error");
             }
         })
         .catch(error => {
@@ -234,19 +236,17 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
 
     const data = tablaData.row(fila).data();
 
-    swal({
+    Swal.fire({
         title: "Está Seguro de Eliminar?",
         text: `Eliminar El Contacto "${data.nombres}"`,
-        type: "warning",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonClass: "btn-danger",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
         confirmButtonText: "Si, eliminar",
-        cancelButtonText: "No, cancelar",
-        closeOnConfirm: false,
-        closeOnCancel: true
-    },
-    function (respuesta) {
-        if (respuesta) {
+        cancelButtonText: "No, cancelar"
+    }).then((result) => {
+        if (result.isConfirmed) {
             $(".showSweetAlert").LoadingOverlay("show");
 
             fetch(`Eliminar?secuencial=${data.secuencial}`, {
@@ -259,9 +259,9 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
             .then(responseJson => {
                 if (responseJson.estado) {
                     tablaData.row(fila).remove().draw();
-                    swal("Listo!", "El Contacto fue eliminado", "success");
+                    Swal.fire("Listo!", "El Contacto fue eliminado", "success");
                 } else {
-                    swal("Fallo!", responseJson.mensajes, "error");
+                    Swal.fire("Fallo!", responseJson.mensajes, "error");
                 }
             });
         }

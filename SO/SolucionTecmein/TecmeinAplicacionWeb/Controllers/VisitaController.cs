@@ -272,11 +272,15 @@ namespace TecmeinWebApp.Controllers
 
                 gResponse.Estado = await _visitaServices.Eliminar(secuencial);
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
                 gResponse.Estado = false;
                 gResponse.Mensajes = ex.Message;
-                throw;
+            }
+            catch (Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = "No se pudo eliminar la visita."; // Generic message for other errors
             }
             return StatusCode(StatusCodes.Status200OK, gResponse);
         }

@@ -106,17 +106,25 @@ namespace BLL.Implementacion
             try
             {
                 var seElimino = false;
-                var tipoProducto
+                var visita
                     = await _repositorio
                              .Consultar(x => x.Secuencial == secuencial);
 
-                var tipo = tipoProducto.FirstOrDefault();
-                if (tipo != null)
+                var visitaAEliminar = visita.FirstOrDefault();
+                if (visitaAEliminar != null)
                 {
-                    var usuarioGenerado = await _repositorio.Eliminar(tipo);
-                    seElimino = true;
+                    seElimino = await _repositorio.Eliminar(visitaAEliminar);
                 }
                 return seElimino;
+            }
+            catch (DbUpdateException ex)
+            {
+                // Check if the exception is due to a foreign key constraint violation
+                if (ex.InnerException != null && ex.InnerException.Message.Contains("FOREIGN KEY constraint fails"))
+                {
+                    throw new InvalidOperationException("No se puede eliminar la visita porque tiene cotizaciones asociadas.");
+                }
+                throw; // Re-throw other DbUpdateExceptions
             }
             catch (Exception)
             {
