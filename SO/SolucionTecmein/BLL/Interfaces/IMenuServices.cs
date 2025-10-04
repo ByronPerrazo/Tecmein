@@ -7,6 +7,7 @@ namespace BLL.Interfaces
         Task<Menu> ObtenerPorId(int secuencial);
         Task<List<Menu>> ObtenerTodosPadre();
         Task<List<Menu>> ObtieneMenu(int secuencialUsuario);
+        Task<List<Menu>> ObtieneMenusPorIdsAsync(HashSet<int> menuIds);
         Task<List<Menu>> ObtieneMenuTotal();
         Task<List<Menu>> ObtenerTodosParaAdministracion();
         Task<Menu> Crear(Menu entidad);

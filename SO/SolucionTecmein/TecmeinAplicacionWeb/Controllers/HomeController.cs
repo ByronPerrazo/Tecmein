@@ -64,6 +64,11 @@ public class HomeController : Controller
         return View();
     }
 
+    public IActionResult TestError()
+    {
+        throw new Exception("Error de prueba generado intencionalmente para verificar el manejo de errores.");
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

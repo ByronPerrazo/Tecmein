@@ -34,43 +34,42 @@ namespace BLL.Implementacion
             return await query.ToListAsync();
         }
 
+        public async Task<List<Menu>> ObtieneMenusPorIdsAsync(HashSet<int> menuIds)
+        {
+            IQueryable<Menu> query = await _repositorioMenu.Consultar(m => menuIds.Contains(m.Secuencial) && m.EsActivo == 1);
+            return await query.ToListAsync();
+        }
+
         public async Task<List<Menu>> ObtieneMenu(int secuencialUsuario)
         {
             var usuario = await _repositorioUsuario.Obtener(u => u.Secuencial == secuencialUsuario);
             if (usuario == null || usuario.SecRol == null) return new List<Menu>();
 
-            // =================== INICIO DE LA LÓGICA CORREGIDA ===================
-
-            // 1. Obtener todos los permisos de visualización de menú para el rol del usuario.
+            // 1. Obtener permisos de visualización de menú para el rol del usuario.
             var permisosQuery = await _repositorioRolPermiso.Consultar(p => p.SecRol == usuario.SecRol && p.IdPermiso.EndsWith("_VIEWMENU"));
-            
-            // 2. Extraer la raíz del permiso (ej: "USUARIO" de "USUARIO_VIEWMENU") y guardarla en un HashSet para búsqueda eficiente.
             var permisosDeVisualizacion = (await permisosQuery.Select(p => p.IdPermiso).ToListAsync())
                 .Select(p => p.Replace("_VIEWMENU", "").ToUpper())
                 .ToHashSet();
 
-            // 3. Obtener todos los menús activos para referencia.
-            var todosLosMenusActivos = await (await _repositorioMenu.Consultar(m => m.EsActivo == 1)).ToListAsync();
-            var todosLosMenusDict = todosLosMenusActivos.ToDictionary(m => m.Secuencial);
+            // 2. Obtener los IDs de menús asignados al rol
+            var idsMenusAsignados = (await _repositorioRolMenu.Consultar(rm => rm.SecRol == usuario.SecRol))
+                                        .Select(rm => rm.SecMenu.Value).ToHashSet();
 
-            // 4. Encontrar los menús que coinciden con los permisos del usuario.
-            //    Se compara la raíz del permiso (ej: "USUARIO") con el nombre del controlador del menú.
-            var menusConPermisoDirecto = todosLosMenusActivos
-                .Where(m => !string.IsNullOrEmpty(m.Controlador) && permisosDeVisualizacion.Contains(m.Controlador.ToUpper()))
-                .ToList();
-            
-            var idsMenusDirectos = menusConPermisoDirecto.Select(m => m.Secuencial).ToList();
+            // 3. Obtener todos los menús activos que coinciden con los permisos y están asignados al rol
+            var menusConPermisoYRol = await (await _repositorioMenu.Consultar(m =>
+                    m.EsActivo == 1 &&
+                    !string.IsNullOrEmpty(m.Controlador) &&
+                    permisosDeVisualizacion.Contains(m.Controlador.ToUpper()) &&
+                    idsMenusAsignados.Contains(m.Secuencial)
+                )).ToListAsync();
 
-            // =================== FIN DE LA LÓGICA CORREGIDA ===================
+            var todosLosMenusDict = menusConPermisoYRol.ToDictionary(m => m.Secuencial);
 
-
-            // 5. Construir la lista final de menús a mostrar, incluyendo todos los ancestros para evitar "hijos huérfanos".
-            //    (Esta lógica de negocio se mantiene intacta)
+            // 4. Construir la lista final de menús a mostrar, incluyendo todos los ancestros.
             var menusAMostrar = new Dictionary<int, Menu>();
-            foreach (var idMenu in idsMenusDirectos)
+            foreach (var menu in menusConPermisoYRol)
             {
-                var menuActual = todosLosMenusDict.GetValueOrDefault(idMenu);
-                // Escalar hacia arriba en el árbol para agregar a los padres.
+                var menuActual = menu;
                 while (menuActual != null && !menusAMostrar.ContainsKey(menuActual.Secuencial))
                 {
                     menusAMostrar.Add(menuActual.Secuencial, menuActual);
@@ -78,14 +77,12 @@ namespace BLL.Implementacion
                 }
             }
 
-            // 6. Organizar la lista plana en una jerarquía (árbol) para la vista.
-            //    (Esta lógica de negocio se mantiene intacta)
+            // 5. Organizar la lista plana en una jerarquía (árbol) para la vista.
             var menusFinales = new List<Menu>();
             var menusProcesados = menusAMostrar.Values.ToList();
 
             foreach (var menu in menusProcesados)
             {
-                // Limpiar la navegación para evitar ciclos o datos incorrectos de iteraciones anteriores.
                 menu.InverseSecMenuPadreNavigation = new List<Menu>();
             }
 
@@ -98,7 +95,6 @@ namespace BLL.Implementacion
                 }
                 else
                 {
-                    // Es un menú raíz.
                     menusFinales.Add(menu);
                 }
             }

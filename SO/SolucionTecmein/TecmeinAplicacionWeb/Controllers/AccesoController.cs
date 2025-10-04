@@ -74,8 +74,7 @@ namespace TecmeinWebApp.Controllers
             var idsMenusAsignados = (await _repositorioRolMenu.Consultar(rm => rm.SecRol == rolId))
                                         .Select(rm => rm.SecMenu.Value).ToHashSet();
 
-            var menusAsignados = (await _menuServices.ObtieneMenuTotal())
-                                     .Where(m => idsMenusAsignados.Contains(m.Secuencial));
+            var menusAsignados = await _menuServices.ObtieneMenusPorIdsAsync(idsMenusAsignados);
 
             // 3. Añadir permisos directos/específicos como claims
             foreach (var permiso in permisosDirectos)

@@ -137,6 +137,9 @@ namespace IOC
             // Nuevo Servicio de Auditoría
             services.AddScoped<IAuditService, AuditService>();
 
+            // Registro de IMemoryCache
+            services.AddMemoryCache();
+
 
         }
     }

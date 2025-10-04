@@ -40,6 +40,9 @@ try
             op.LoginPath = "/Acceso/Login";
             op.AccessDeniedPath = "/Home/AccessDenied";
             op.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+            op.Cookie.HttpOnly = true;
+            op.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            op.Cookie.SameSite = SameSiteMode.Strict;
         });
 
     // --- INICIO NUEVA CONFIGURACIÓN DE AUTORIZACIÓN ---
@@ -73,6 +76,7 @@ try
         app.UseExceptionHandler("/Home/Error");
     }
     app.UseStaticFiles();
+    app.UseStatusCodePages();
 
     app.UseRouting();
     app.UseAuthentication();
