@@ -80,6 +80,8 @@ public partial class TecmeindbContext : DbContext
 
     public virtual DbSet<Cuota> Cuotas { get; set; }
 
+    public virtual DbSet<AuditoriaEvento> AuditoriaEventos { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder

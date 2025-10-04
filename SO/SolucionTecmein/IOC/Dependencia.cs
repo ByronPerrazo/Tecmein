@@ -134,6 +134,9 @@ namespace IOC
 
             services.AddScoped<IGeneradorDocumentoService, GeneradorDocumentoService>();
 
+            // Nuevo Servicio de Auditoría
+            services.AddScoped<IAuditService, AuditService>();
+
 
         }
     }
