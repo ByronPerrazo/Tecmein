@@ -1,5 +1,7 @@
 using IOC;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using QuestPDF.Infrastructure;
 using Serilog;
 using TecmeinAplicacionWeb.Utilidades.AutoMapper;
@@ -20,7 +22,13 @@ try
         .ReadFrom.Services(services)
         .Enrich.FromLogContext());
 
-    builder.Services.AddControllersWithViews().AddJsonOptions(options =>
+    builder.Services.AddControllersWithViews(options =>
+    {
+        var policy = new AuthorizationPolicyBuilder()
+                         .RequireAuthenticatedUser()
+                         .Build();
+        options.Filters.Add(new AuthorizeFilter(policy));
+    }).AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
         options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;

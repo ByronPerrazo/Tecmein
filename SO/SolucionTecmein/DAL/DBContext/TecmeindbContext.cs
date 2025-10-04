@@ -43,7 +43,6 @@ public partial class TecmeindbContext : DbContext
     public virtual DbSet<Visita> Visita { get; set; }
 
     public virtual DbSet<Equiposvisita> Equiposvisita { get; set; }
-    public virtual DbSet<Permisosrol> Permisosrols { get; set; }
 
     public virtual DbSet<Cliente> Clientes { get; set; }
 
@@ -639,23 +638,6 @@ public partial class TecmeindbContext : DbContext
                 .HasColumnName("velocidad");
         });
 
-        modelBuilder.Entity<Permisosrol>(entity =>
-        {
-            entity.HasKey(e => e.Secuencial).HasName("PRIMARY");
-
-            entity.ToTable("permisosrol");
-
-            entity.Property(e => e.Secuencial).HasColumnName("secuencial");
-            entity.Property(e => e.Activo).HasColumnName("activo");
-            entity.Property(e => e.Consultar).HasColumnName("consultar");
-            entity.Property(e => e.Eliminar).HasColumnName("eliminar");
-            entity.Property(e => e.FechaRegistro)
-                .HasColumnType("datetime")
-                .HasColumnName("fechaRegistro");
-            entity.Property(e => e.Modificar).HasColumnName("modificar");
-            entity.Property(e => e.SecRol).HasColumnName("secRol");
-            entity.Property(e => e.SecUsuarioModifica).HasColumnName("secUsuarioModifica");
-        });
 
         modelBuilder.Entity<Cliente>(entity =>
         {

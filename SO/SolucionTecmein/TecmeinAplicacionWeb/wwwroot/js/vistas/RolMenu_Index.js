@@ -62,7 +62,12 @@ $(document).ready(function () {
                 },
                 {
                     "data": "fechaRegistro", render: function (data) {
-                        return moment(data).format('DD/MM/YYYY');
+                        if (!data) return "";
+                        var date = new Date(data);
+                        var day = ("0" + date.getDate()).slice(-2);
+                        var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                        var year = date.getFullYear();
+                        return `${day}/${month}/${year}`;
                     }
                 },
                 {

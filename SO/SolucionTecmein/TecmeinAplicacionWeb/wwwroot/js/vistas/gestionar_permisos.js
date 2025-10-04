@@ -32,17 +32,17 @@ $(document).ready(function () {
         })
         .then(responseJson => {
             if (responseJson.estado) {
-                swal("¡Listo!", "Los permisos se han actualizado correctamente", "success").then(() => {
+                Swal.fire("¡Listo!", "Los permisos se han actualizado correctamente", "success").then(() => {
                     // Opcional: redirigir a la lista de roles
                     window.location.href = "/Rol/Index";
                 });
             } else {
-                swal("Error", responseJson.mensajes, "error");
+                Swal.fire("Error", responseJson.mensajes, "error");
             }
         })
         .catch(error => {
             $("div.card").LoadingOverlay("hide");
-            swal("Error", "No se pudo comunicar con el servidor", "error");
+            Swal.fire("Error", "No se pudo comunicar con el servidor", "error");
             console.error("Error en la solicitud fetch:", error);
         });
     });

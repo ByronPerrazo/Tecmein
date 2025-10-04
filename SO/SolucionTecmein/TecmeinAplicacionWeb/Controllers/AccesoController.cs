@@ -3,13 +3,14 @@ using DAL.Interfaces;
 using Entity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using TecmeinAplicacionWeb.Models.ViewModels;
 
 namespace TecmeinWebApp.Controllers
 {
+    [AllowAnonymous]
     public class AccesoController : Controller
     {
         private readonly IUsuarioServices _usuarioServices;
@@ -17,7 +18,7 @@ namespace TecmeinWebApp.Controllers
         private readonly IGenericRepository<RolMenu> _repositorioRolMenu; // NUEVO
         private readonly IMenuServices _menuServices; // NUEVO
 
-        public AccesoController(IUsuarioServices usuarioServices, 
+        public AccesoController(IUsuarioServices usuarioServices,
                                 IGenericRepository<RolPermiso> repositorioRolPermiso,
                                 IGenericRepository<RolMenu> repositorioRolMenu, // NUEVO
                                 IMenuServices menuServices) // NUEVO
@@ -65,7 +66,7 @@ namespace TecmeinWebApp.Controllers
             // 2. Obtener los menús asignados al rol
             var idsMenusAsignados = (await _repositorioRolMenu.Consultar(rm => rm.SecRol == rolId))
                                         .Select(rm => rm.SecMenu.Value).ToHashSet();
-            
+
             var menusAsignados = (await _menuServices.ObtieneMenuTotal())
                                      .Where(m => idsMenusAsignados.Contains(m.Secuencial));
 

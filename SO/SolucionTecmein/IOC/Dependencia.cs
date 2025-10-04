@@ -49,7 +49,7 @@ namespace IOC
                     provider.GetRequiredService<IGenericRepository<Visita>>(),
                     provider.GetRequiredService<IGenericRepository<Equiposvisita>>()
                 ));
-            services.AddScoped<IPermisosRolServices, PermisosRolServices>();
+
             services.AddScoped<IPermisoServices, PermisoServices>();
             services.AddScoped<IRolMenuServices, RolMenuServices>();
             services.AddScoped<IValidacionServices, ValidacionServices>();
