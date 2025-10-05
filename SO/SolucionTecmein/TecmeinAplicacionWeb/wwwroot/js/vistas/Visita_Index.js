@@ -209,13 +209,13 @@ $(document).ready(function () {
 
                 {
                     "defaultContent":
-                        '<button class="btn btn-primary btn-editar btn-sm mr-2"><i class="fas fa-pencil-alt"></i></button>' +
-                        '<button class="btn btn-primary btn-default btn-sm mr-2"><i class="fas fa-file-alt"></i></button>' +
-                        '<button class="btn btn-primary btn-info btn-sm mr-2"><i class="fas fa-list-alt"></i></button>' +
-                        '<button class="btn btn-danger btn-eliminar btn-sm mr-2"><i class="fas fa-trash-alt"></i></button>',
-                    "orderable": true,
-                    "searchable": false,
-                    "width": "160px"
+                        '<div class="btn-group" role="group">' +
+                        '<button class="btn btn-primary btn-editar btn-sm" title="Editar"><i class="fas fa-pencil-alt"></i></button>' +
+                        '<button class="btn btn-primary btn-default btn-sm" title="Ver Archivo"><i class="fas fa-file-alt"></i></button>' +
+                        '<button class="btn btn-primary btn-info btn-sm" title="Ver Detalles"><i class="fas fa-list-alt"></i></button>' +
+                        '<button class="btn btn-danger btn-eliminar btn-sm" title="Eliminar"><i class="fas fa-trash-alt"></i></button>' +
+                        '</div>',
+                    "orderable": false, "searchable": false
                 }
             ],
             order: [[0, "desc"]],

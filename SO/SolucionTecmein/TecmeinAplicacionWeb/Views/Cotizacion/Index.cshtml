@@ -209,27 +209,31 @@
 <div class="modal fade" id="modalSeguimiento" tabindex="-1" role="dialog" aria-labelledby="modalSeguimientoLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalSeguimientoLabel">Historial de Seguimiento</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="hiddenCotizacionId" value="0" />
-                <button id="btnNuevoSeguimiento" class="btn btn-sm btn-success mb-2">Nuevo Seguimiento</button>
-                <table id="tbSeguimiento" class="table table-striped table-bordered" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>Acción</th>
-                            <th>Detalle</th>
-                            <th>Fecha Acción</th>
-                            <th>Aceptado</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+            <div class="card shadow-sm">
+                <div class="card-header py-2 bg-second-primary">
+                    <h6 class="m-0 font-weight-bold text-white">
+                        <i class="fas fa-history"></i> Historial de Seguimiento
+                        <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" class="text-white">×</span>
+                        </button>
+                    </h6>
+                </div>
+                <div class="card-body p-2">
+                    <input type="hidden" id="hiddenCotizacionId" value="0" />
+                    <button id="btnNuevoSeguimiento" class="btn btn-sm btn-success mb-2">Nuevo Seguimiento</button>
+                    <table id="tbSeguimiento" class="table table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Acción</th>
+                                <th>Detalle</th>
+                                <th>Fecha Acción</th>
+                                <th>Aceptado</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -239,38 +243,42 @@
 <div class="modal fade" id="modalDataSeguimiento" tabindex="-1" role="dialog" aria-labelledby="modalDataSeguimientoLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalDataSeguimientoLabel">Detalle de Seguimiento</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="formSeguimiento">
-                    <input type="hidden" id="txtIdSeguimiento" value="0">
-                    <div class="form-group">
-                        <label for="txtAccion">Acción</label>
-                        <input type="text" class="form-control" id="txtAccion" placeholder="Ej: Llamada, Correo, Reunión">
-                    </div>
-                    <div class="form-group">
-                        <label for="txtDetalle">Detalle</label>
-                        <textarea class="form-control" id="txtDetalle" rows="4"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="txtFechaAccion">Fecha de Acción</label>
-                        <input type="date" class="form-control" id="txtFechaAccion">
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="chkAceptacionCliente">
-                        <label class="form-check-label" for="chkAceptacionCliente">
-                            Aceptación del Cliente (Convierte a Pre-Contrato)
-                        </label>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="btnGuardarSeguimiento">Guardar</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <div class="card shadow-sm">
+                <div class="card-header py-2 bg-second-primary">
+                    <h6 class="m-0 font-weight-bold text-white">
+                        <i class="fas fa-clipboard-list"></i> Detalle de Seguimiento
+                        <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" class="text-white">×</span>
+                        </button>
+                    </h6>
+                </div>
+                <div class="card-body p-2">
+                    <form id="formSeguimiento">
+                        <input type="hidden" id="txtIdSeguimiento" value="0">
+                        <div class="form-group">
+                            <label for="txtAccion">Acción</label>
+                            <input type="text" class="form-control" id="txtAccion" placeholder="Ej: Llamada, Correo, Reunión">
+                        </div>
+                        <div class="form-group">
+                            <label for="txtDetalle">Detalle</label>
+                            <textarea class="form-control" id="txtDetalle" rows="4"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="txtFechaAccion">Fecha de Acción</label>
+                            <input type="date" class="form-control" id="txtFechaAccion">
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="chkAceptacionCliente">
+                            <label class="form-check-label" for="chkAceptacionCliente">
+                                Aceptación del Cliente (Convierte a Pre-Contrato)
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-body p-0 d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary btn-sm m-1 mr-2" id="btnGuardarSeguimiento">Guardar</button>
+                    <button type="button" class="btn btn-danger btn-sm m-1" data-dismiss="modal">Cancelar</button>
+                </div>
             </div>
         </div>
     </div>

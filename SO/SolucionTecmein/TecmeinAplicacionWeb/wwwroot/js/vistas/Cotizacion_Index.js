@@ -266,7 +266,7 @@ $(document).ready(function () {
             { "data": "nombreUsuario" },
             { "data": "nombreUsuarioModifica" },
             { "data": "estaActivo", "render": function (data) { return data == 1 ? '<span class="badge badge-info">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>'; }, "className": "dt-center dt-compact-col", "width": "1%" },
-            { "defaultContent": '<button class="btn btn-info btn-seguimiento btn-sm"><i class="fas fa-book-open"></i></button><button class="btn btn-primary btn-editar btn-sm"><i class="fas fa-pencil-alt"></i></button><button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button>', "orderable": false, "searchable": false, "className": "dt-center dt-actions-col", "width": "1%" }
+            { "defaultContent": '<div class="btn-group" role="group"><button class="btn btn-primary btn-editar btn-sm" title="Editar Cotización"><i class="fas fa-pencil-alt"></i></button><button class="btn btn-info btn-seguimiento btn-sm" title="Ver Seguimientos"><i class="fas fa-book-open"></i></button><button class="btn btn-danger btn-eliminar btn-sm" title="Eliminar Cotización"><i class="fas fa-trash-alt"></i></button></div>', "orderable": false, "searchable": false }
         ],
         order: [[0, "desc"]],
         dom: "Bfrtip",
@@ -641,7 +641,7 @@ function abrirModalSeguimientos(cotizacionId) {
                 return date.toLocaleDateString();
             }},
             { "data": "aceptacionCliente", "render": function (data) { return data ? '<span class="badge badge-success">Sí</span>' : '<span class="badge badge-danger">No</span>'; } },
-            { "defaultContent": '<button class="btn btn-primary btn-editar-seguimiento btn-sm mr-1"><i class="fas fa-pencil-alt"></i></button><button class="btn btn-danger btn-eliminar-seguimiento btn-sm"><i class="fas fa-trash-alt"></i></button>', "orderable": false, "searchable": false, "width": "80px" }
+            { "defaultContent": '<div class="btn-group" role="group"><button class="btn btn-primary btn-editar-seguimiento btn-sm" title="Editar Seguimiento"><i class="fas fa-pencil-alt"></i></button><button class="btn btn-danger btn-eliminar-seguimiento btn-sm" title="Eliminar Seguimiento"><i class="fas fa-trash-alt"></i></button></div>', "orderable": false, "searchable": false }
         ],
         order: [[2, "desc"]], // Ordenar por FechaAccion descendente
         language: { url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json" }
