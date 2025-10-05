@@ -97,7 +97,7 @@ async function mostrarModalVisitaContacto(mdlVisitaContacto = MODELO_VISITA_CONT
         // Convertir la respuesta a JSON
         const respuestaJson = await respuesta.json();
 
-        const data = respuestaJson.data.$values || respuestaJson.data;
+        const data = respuestaJson.objeto || respuestaJson;
 
         if (data != null) {
 

@@ -31,17 +31,17 @@ $(document).ready(function () {
         })
         .then(responseJson => {
             if (responseJson.estado) {
-                swal("Listo!", "La forma de pago ha sido guardada", "success");
+                Swal.fire(", "La forma de pago ha sido guardada", "success");
                 // Optionally, update the hidden SecFormaPago if it was a creation
                 if (modelo.SecFormaPago == 0 || modelo.SecFormaPago == "") {
                     $("#SecFormaPago").val(responseJson.objeto.secFormaPago);
                 }
             } else {
-                swal("Error!", responseJson.mensajes, "error");
+                Swal.fire("Error!", responseJson.mensajes, "error");
             }
         })
         .catch((error) => {
-            swal("Error!", "No se pudo guardar la forma de pago", "error");
+            Swal.fire("Error!", "No se pudo guardar la forma de pago", "error");
         });
     });
 });

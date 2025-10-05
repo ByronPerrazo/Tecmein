@@ -152,12 +152,12 @@ $("#btnAgregarItem").click(function () {
             if (responseJson.estado) {
                 tablaDataPro.row.add(responseJson.objeto).draw(false);
                 $("#modalData").modal("hide");
-                swal("Listo!",
+                Swal.fire("Listo!",
                     "Equipo Agregado Con Exito ",
                     "success");
             }
             else {
-                swal("Fallo!", responseJson.mensajes, "error");
+                Swal.fire("Fallo!", responseJson.mensajes, "error");
             }
         });
 
@@ -298,18 +298,17 @@ async function ProcesoCargaLista(secuencialVisita) {
                         titleAttr: 'Sincronizar Equipos con Cotización', // Tooltip
                         action: function (e, dt, node, config) {
                             // Lógica para llamar al backend para sincronizar
-                            swal({
+                            Swal.fire({
                                 title: "¿Sincronizar Equipos?",
                                 text: "Esto añadirá los equipos de esta visita a la cotización activa si no están presentes.",
-                                type: "info",
+                                icon: "info",
                                 showCancelButton: true,
-                                confirmButtonClass: "btn-primary",
+                                confirmButtonColor: "btn-primary",
                                 confirmButtonText: "Sí, sincronizar",
                                 cancelButtonText: "No, cancelar",
-                                closeOnConfirm: false,
-                                closeOnCancel: true
-                            }, function (respuesta) {
-                                if (respuesta) {
+                                reverseButtons: true
+                            }).then((result) => {
+                                if (result.isConfirmed) {
                                     $(".showSweetAlert").LoadingOverlay("show");
                                     fetch(`/Visita/SincronizarEquipos?secuencialVisita=${secVisitaProducto}`, {
                                         method: "POST" // Usar POST para una acción que modifica datos
@@ -320,16 +319,16 @@ async function ProcesoCargaLista(secuencialVisita) {
                                     })
                                     .then(responseJson => {
                                         if (responseJson.estado) {
-                                            swal("Listo!", "Equipos sincronizados exitosamente.", "success");
+                                            Swal.fire("Listo!", "Equipos sincronizados exitosamente.", "success");
                                             // Opcional: recargar la tabla de equipos si la sincronización afecta su estado visual
                                             // tablaDataPro.ajax.reload();
                                         } else {
-                                            swal("Error", responseJson.mensajes, "error");
+                                            Swal.fire("Error", responseJson.mensajes, "error");
                                         }
                                     })
                                     .catch(err => {
                                         $(".showSweetAlert").LoadingOverlay("hide");
-                                        swal("Error", "No se pudo conectar con el servidor.", "error");
+                                        Swal.fire("Error", "No se pudo conectar con el servidor.", "error");
                                     });
                                 }
                             });
@@ -349,12 +348,12 @@ async function ProcesoCargaLista(secuencialVisita) {
 
         } else {
             console.error("La respuesta no es un array:", response);
-            swal("Error!", "La respuesta del servidor no es válida.", "error");
+            Swal.fire("Error!", "La respuesta del servidor no es válida.", "error");
         }
 
     } catch (error) {
         console.error("Error en el proceso:", error);
-        swal("Error!", error.message, "error");
+        Swal.fire("Error!", error.message, "error");
     }
 }
 
@@ -529,19 +528,17 @@ $(document).on("click", ".btn-eliminar-equipo", function () {
     const fila = $(this).closest("tr");
     const data = tablaDataPro.row(fila).data();
 
-    swal({
+    Swal.fire({
         title: "¿Está Seguro de Eliminar?",
         text: `Eliminar el equipo "${data.detalleEspecifico}"`, // Usar detalleEspecifico para el mensaje
-        type: "warning",
+        icon: "warning",
         showCancelButton: true,
         confirmButtonClass: "btn-danger",
         confirmButtonText: "Sí, eliminar",
         cancelButtonText: "No, cancelar",
-        closeOnConfirm: false,
-        closeOnCancel: true
-    },
-    function (respuesta) {
-        if (respuesta) {
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
             $(".showSweetAlert").LoadingOverlay("show");
 
             fetch(`ProcesaEliminar?secuencial=${data.secuencial}`, {
@@ -554,14 +551,14 @@ $(document).on("click", ".btn-eliminar-equipo", function () {
             .then(responseJson => {
                 if (responseJson.estado) {
                     tablaDataPro.row(fila).remove().draw(false);
-                    swal("Listo!", "El equipo fue eliminado.", "success");
+                    Swal.fire("Listo!", "El equipo fue eliminado.", "success");
                 } else {
-                    swal("Error", responseJson.mensajes, "error");
+                    Swal.fire("Error", responseJson.mensajes, "error");
                 }
             })
             .catch(err => {
                 $(".showSweetAlert").LoadingOverlay("hide");
-                swal("Error", "No se pudo conectar con el servidor.", "error");
+                Swal.fire("Error", "No se pudo conectar con el servidor.", "error");
             });
         }
     });

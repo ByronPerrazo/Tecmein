@@ -21,9 +21,7 @@ $(document).ready(function () {
                     $("#txTelefono").val(d.telefono);
                     $("#txtRol").val(d.nombreRol);
                     secuencialUserLog = parseInt(d.secuencial);
-                } else {
-                    swal("Fallo!", respuestaJson.mensajes, "error");
-                }
+                    Swal.fire("Fallo!", respuestaJson.mensajes, "error");
             }
         ).catch(error => {
             console.error('Error al obtener los datos:', error);
@@ -52,48 +50,50 @@ $("#btnGuardarCambios").click(function () {
         telefono: $("#txTelefono").val().trim()
     }
 
-    swal({
+    Swal.fire({
         title: "Está seguro?",
         text: `Se modificaran los datos de "${$("#txtNombre").val()}"`,
-        type: "warning",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonClass: "btn-danger",
+        confirmButtonColor: "#DD6B55",
         confirmButtonText: "Si, guardar",
         cancelButtonText: "No, cancelar",
-        closeOnConfirm: false,
-        closeOnCancel: true
-    },
-        function (respuesta) {
-            if (respuesta) {
-                $(".showSweetAlert").LoadingOverlay("show");
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $(".showSweetAlert").LoadingOverlay("show");
 
-                fetch("GuardarPerfil", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json; charset=utf-8" },
-                    body: JSON.stringify(modelo)
-                })
-                    .then(
-                        respuesta => {
-                            $(".showSweetAlert").LoadingOverlay("hide");
-                            return respuesta.ok
-                                ? respuesta.json()
-                                : Promise.reject(respuesta);
-                        }
-                    ).then(
-                        respuestaJson => {
-                            if (respuestaJson.estado) {
-                                swal("Listo!", "Información Guardada con Éxito", "success");
-                            } else {
-                                swal("Fallo!", respuestaJson.mensajes, "error");
-                            }
-                        }
-                    ).catch(error => {
-                        console.error('Error al Procesar Guardar Cambios:', error);
-                    });
-
+            let modelo = {
+                correo: $("#txtCorreo").val().trim(),
+                telefono: $("#txTelefono").val().trim()
             }
+
+            fetch("GuardarPerfil", {
+                method: "POST",
+                headers: { "Content-Type": "application/json; charset=utf-8" },
+                body: JSON.stringify(modelo)
+            })
+                .then(
+                    respuesta => {
+                        $(".showSweetAlert").LoadingOverlay("hide");
+                        return respuesta.ok
+                            ? respuesta.json()
+                            : Promise.reject(respuesta);
+                    }
+                ).then(
+                    respuestaJson => {
+                        if (respuestaJson.estado) {
+                            Swal.fire("Listo!", "Información Guardada con Éxito", "success");
+                        } else {
+                            Swal.fire("Fallo!", respuestaJson.mensajes, "error");
+                        }
+                    }
+                ).catch(error => {
+                    console.error('Error al Procesar Guardar Cambios:', error);
+                    Swal.fire("Error", "No se pudo comunicar con el servidor", "error");
+                });
         }
-    )
+    });
 
 });
 
@@ -140,47 +140,49 @@ $("#btnCambiarClave").click(function () {
 
 
 
-    swal({
+    Swal.fire({
         title: "Está seguro?",
         text: `Se cambiará la Clave de Acceso a "${$("#txtNombre").val()}"`,
-        type: "warning",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonClass: "btn-danger",
+        confirmButtonColor: "#DD6B55",
         confirmButtonText: "Si, guardar",
         cancelButtonText: "No, cancelar",
-        closeOnConfirm: false,
-        closeOnCancel: true
-    },
-        function (respuesta) {
-            if (respuesta) {
-                $(".showSweetAlert").LoadingOverlay("show");
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $(".showSweetAlert").LoadingOverlay("show");
 
-                fetch("CambiarClave", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json; charset=utf-8" },
-                    body: JSON.stringify(modelo)
-                })
-                    .then(
-                        respuesta => {
-                            $(".showSweetAlert").LoadingOverlay("hide");
-                            return respuesta.ok
-                                ? respuesta.json()
-                                : Promise.reject(respuesta);
-                        }
-                    ).then(
-                        respuestaJson => {
-                            if (respuestaJson.estado) {
-                                swal("Listo!", "Clave Modificada con Éxito", "success");
-                            } else {
-                                swal("Fallo!", respuestaJson.mensajes, "error");
-                            }
-                        }
-                    ).catch(error => {
-                        console.error('Error al Procesar Guardar Cambios:', error);
-                    });
-
+            let modelo = {
+                claveActual: claveActualForm,
+                claveNueva: claveNuevaForm
             }
+
+            fetch("CambiarClave", {
+                method: "POST",
+                headers: { "Content-Type": "application/json; charset=utf-8" },
+                body: JSON.stringify(modelo)
+            })
+                .then(
+                    respuesta => {
+                        $(".showSweetAlert").LoadingOverlay("hide");
+                        return respuesta.ok
+                            ? respuesta.json()
+                            : Promise.reject(respuesta);
+                    }
+                ).then(
+                    respuestaJson => {
+                        if (respuestaJson.estado) {
+                            Swal.fire("Listo!", "Clave Modificada con Éxito", "success");
+                        } else {
+                            Swal.fire("Fallo!", respuestaJson.mensajes, "error");
+                        }
+                    }
+                ).catch(error => {
+                    console.error('Error al Procesar Guardar Cambios:', error);
+                });
+
         }
-    )
+    });
 
 });

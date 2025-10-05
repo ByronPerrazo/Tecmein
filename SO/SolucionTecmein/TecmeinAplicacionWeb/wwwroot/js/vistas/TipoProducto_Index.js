@@ -112,10 +112,10 @@ $("#btnGuardar").click(function () {
                 if (responseJson.estado) {
                     tablaData.row.add(responseJson.objeto).draw(false);
                     $("#modalData").modal("hide");
-                    swal("Listo!", "Tipo Producto " + responseJson.objeto.nombre + " Creado ", "success");
+                    Swal.fire("Listo!", "Tipo Producto " + responseJson.objeto.nombre + " Creado ", "success");
                 }
                 else {
-                    swal("Fallo!", responseJson.mensajes, "error");
+                    Swal.fire("Fallo!", responseJson.mensajes, "error");
                 }
             });
     } else {
@@ -134,10 +134,10 @@ $("#btnGuardar").click(function () {
                     debugger;
                     tablaData.row(filaSeleccionada).data(responseJson.objeto).draw(false);
                     $("#modalData").modal("hide");
-                    swal("Listo!", "Tipo Producto " + responseJson.objeto.nombre + " Editado ", "success");
+                    Swal.fire("Listo!", "Tipo Producto " + responseJson.objeto.nombre + " Editado ", "success");
                 }
                 else {
-                    swal("Fallo!", responseJson.mensajes, "error");
+                    Swal.fire("Fallo!", responseJson.mensajes, "error");
                 }
             });
 
@@ -169,44 +169,40 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
 
     const data = tablaData.row(fila).data();
 
-    swal({
+    Swal.fire({
         title: "Está Seguro de Eliminar?",
         text: `Eliminar el Tipo Producto "${data.nombre}"`,
-        type: "warning",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonClass: "btn-danger",
+        confirmButtonColor: "#DD6B55",
         confirmButtonText: "Si, eliminar",
         cancelButtonText: "No, cancelar",
-        closeOnConfirm: false,
-        closeOnCancel: true
-    },
-        function (respuesta) {
-            if (respuesta) {
-                $(".showSweetAlert").LoadingOverlay("show");
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $(".showSweetAlert").LoadingOverlay("show");
 
-                fetch(`Eliminar?secuencial=${data.secuencial}`, {
-                    method: "DELETE"
-                })
-                    .then(response => {
-                        $(".showSweetAlert").LoadingOverlay("hide");
-                        return response.ok
-                            ? response.json()
-                            : Promise.reject(response);
-                    }).then(responseJson => {
-                        debugger;
-                        if (responseJson.estado) {
-                            tablaData.row(fila).remove().draw(false);
+            fetch(`Eliminar?secuencial=${data.secuencial}`, {
+                method: "DELETE"
+            })
+                .then(response => {
+                    $(".showSweetAlert").LoadingOverlay("hide");
+                    return response.ok
+                        ? response.json()
+                        : Promise.reject(response);
+                }).then(responseJson => {
+                    debugger;
+                    if (responseJson.estado) {
+                        tablaData.row(fila).remove().draw(false);
 
-                            swal("Listo!", " El Tipo Producto " + data.nombre + " fue Eliminado", "success");
-                        }
-                        else {
-                            swal("Fallo!", responseJson.mensajes, "error");
-                        }
-                    });
+                        Swal.fire("Listo!", " El Tipo Producto " + data.nombre + " fue Eliminado", "success");
+                    }
+                    else {
+                        Swal.fire("Fallo!", responseJson.mensajes, "error");
+                    }
+                });
 
-            }
         }
-
-    )
+    });
 
 })

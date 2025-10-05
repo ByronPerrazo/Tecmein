@@ -184,6 +184,8 @@ namespace TecmeinWebApp.Controllers
                                    .SingleOrDefault();
 
                 visitaIngresadaVM.SecUsuario = ObtieneSecuencialUsuario();
+                visitaIngresadaVM.IdEtapa = 1;
+                visitaIngresadaVM.EstaActivo = 1;
 
                 var visitaGenerada
                     = await _visitaServices

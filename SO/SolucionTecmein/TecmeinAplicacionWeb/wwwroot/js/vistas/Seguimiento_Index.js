@@ -34,17 +34,17 @@ $(document).ready(function () {
         })
         .then(responseJson => {
             if (responseJson.estado) {
-                swal("Listo!", "El seguimiento ha sido guardado", "success");
+                Swal.fire("Listo!", "El seguimiento ha sido guardado", "success");
                 // Optionally, update the hidden SecSeguimiento if it was a creation
                 if (modelo.SecSeguimiento == 0 || modelo.SecSeguimiento == "") {
                     $("#SecSeguimiento").val(responseJson.objeto.secSeguimiento);
                 }
             } else {
-                swal("Error!", responseJson.mensajes, "error");
+                Swal.fire("Error!", responseJson.mensajes, "error");
             }
         })
         .catch((error) => {
-            swal("Error!", "No se pudo guardar el seguimiento", "error");
+            Swal.fire("Error!", "No se pudo guardar el seguimiento", "error");
         });
     });
 });

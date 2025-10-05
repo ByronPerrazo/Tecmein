@@ -19,6 +19,7 @@ namespace BLL.Implementacion
                                , IUtilidadesServices utilidadesServices
                                , ICorreoServices correoServies
                                , IEmpresaStorageServices empresaStorageServices
+                               , IAuditService auditService // AUDITORÍA
             )
         {
             _repositorio = repositorio;
@@ -26,14 +27,17 @@ namespace BLL.Implementacion
             _utilidadesServices = utilidadesServices;
             _correoServies = correoServies;
             _empresaStorageServices = empresaStorageServices;
+            _auditService = auditService; // AUDITORÍA
         }
+
+        private readonly IAuditService _auditService; // AUDITORÍA
 
         public async Task<List<Usuario>> Lista()
         {
             var query = await _repositorio.Consultar();
             return query.Include(x => x.SecRolNavigation).ToList();
         }
-        public async Task<Usuario> Crear(Usuario entidad, Stream? imagen = null, string nombreImagen = "", string urlPantillaCorreo = "")
+        public async Task<Usuario> Crear(Usuario entidad, Stream? imagen = null, string nombreImagen = "", string urlPantillaCorreo = "", int? idUsuarioAuditoria = null, string? nombreUsuarioAuditoria = null, string? direccionIpAuditoria = null)
         {
             try
             {
@@ -57,7 +61,6 @@ namespace BLL.Implementacion
 
                 if (imagen != null)
                 {
-                    //var imagenTransformada = _utilidadesServices.ConvertToWebPComprimido(NombreFoto, "C:/", "C:/convert/");
                     entidad.UrlFoto = await _storageServies.SubirStorage(imagen,
                                                                          almacenamientoEmpresa.CarpetaUsuario,
                                                                          nombreImagen);
@@ -70,9 +73,17 @@ namespace BLL.Implementacion
 
                 urlPantillaCorreo = await EnviarCorreoConPlantilla(urlPantillaCorreo, usuarioGenerado, almacenamientoEmpresa.SecEmpresaNavigation, false, claveGenerada);
 
-
                 var userAdquirido = await _repositorio.Consultar(x => x.Correo == usuarioGenerado.Correo);
                 usuarioGenerado = userAdquirido.Include(x => x.SecRolNavigation).First();
+
+                // Auditoría: Registro de creación de usuario
+                await _auditService.RegistrarEventoAsync(
+                    "CREACION_USUARIO",
+                    idUsuarioAuditoria,
+                    nombreUsuarioAuditoria,
+                    $"Usuario creado: {usuarioGenerado.Nombre} ({usuarioGenerado.Correo}) con Rol: {usuarioGenerado.SecRolNavigation?.Descripcion}",
+                    direccionIpAuditoria
+                );
 
                 return usuarioGenerado;
             }
@@ -145,91 +156,111 @@ namespace BLL.Implementacion
         }
 
 
-        public async Task<Usuario> Editar(Usuario entidad, Stream? Foto = null, string? NombreFoto = "", string cabeceraUrlCorreo = "")
+        public async Task<Usuario> Editar(Usuario entidad, Stream? Foto = null, string? NombreFoto = "", string cabeceraUrlCorreo = "", int? idUsuarioAuditoria = null, string? nombreUsuarioAuditoria = null, string? direccionIpAuditoria = null)
         {
             try
             {
-                var usuario
-                    = await _repositorio
-                            .Obtener(x => x.Correo == entidad.Correo);
+                var usuarioOriginal = await _repositorio.Obtener(x => x.Secuencial == entidad.Secuencial, "SecRolNavigation");
 
-                if (usuario != null && usuario.Secuencial != entidad.Secuencial)
+                if (usuarioOriginal == null)
+                    throw new TaskCanceledException("Usuario no encontrado");
+
+                var usuarioConMismoCorreo = await _repositorio.Obtener(x => x.Correo == entidad.Correo);
+
+                if (usuarioConMismoCorreo != null && usuarioConMismoCorreo.Secuencial != entidad.Secuencial)
                     throw new TaskCanceledException("Correo Ya Registrado");
 
-                var correoModificado
-                    = usuario != null
-                    ? usuario.Correo != entidad.Correo
-                    : false;
+                // Detección de cambios para auditoría
+                var cambios = new List<string>();
+                if (usuarioOriginal.Nombre != entidad.Nombre) cambios.Add($"Nombre: '{usuarioOriginal.Nombre}' -> '{entidad.Nombre}'");
+                if (usuarioOriginal.Correo != entidad.Correo) cambios.Add($"Correo: '{usuarioOriginal.Correo}' -> '{entidad.Correo}'");
+                if (usuarioOriginal.Telefono != entidad.Telefono) cambios.Add($"Teléfono: '{usuarioOriginal.Telefono}' -> '{entidad.Telefono}'");
+                if (usuarioOriginal.SecRol != entidad.SecRol) cambios.Add($"Rol: '{usuarioOriginal.SecRolNavigation?.Descripcion}' -> '{entidad.SecRolNavigation?.Descripcion}'");
+                if (usuarioOriginal.EsActivo != entidad.EsActivo) cambios.Add($"Estado: '{(usuarioOriginal.EsActivo == 1 ? "Activo" : "Inactivo")}' -> '{(entidad.EsActivo == 1 ? "Activo" : "Inactivo")}'");
 
-                usuario.Nombre = entidad.Nombre;
-                usuario.Correo = entidad.Correo;
-                usuario.SecRol = entidad.SecRol;
-                usuario.Telefono = entidad.Telefono;
-                usuario.EsActivo = entidad.EsActivo;
-
+                // Actualizar propiedades
+                usuarioOriginal.Nombre = entidad.Nombre;
+                usuarioOriginal.Correo = entidad.Correo;
+                usuarioOriginal.SecRol = entidad.SecRol;
+                usuarioOriginal.Telefono = entidad.Telefono;
+                usuarioOriginal.EsActivo = entidad.EsActivo;
 
                 var empresaStorage = await _empresaStorageServices.Consultar();
                 var almacenamientoEmpresa = empresaStorage.FirstOrDefault(x => x.SecEmpresa == 1);
                 if (almacenamientoEmpresa == null)
                     throw new TaskCanceledException($"Error Empresa No ha definido un FTP");
 
-
                 if (Foto != null)
                 {
-                    //var imagenTransformada = _utilidadesServices.ConvertToWebPComprimido(NombreFoto, "C:/", "C:/convert/");
-                    usuario.UrlFoto = await _storageServies.SubirStorage(Foto,
+                    usuarioOriginal.UrlFoto = await _storageServies.SubirStorage(Foto,
                                                                          almacenamientoEmpresa.CarpetaUsuario,
                                                                          NombreFoto);
                 }
 
-                var urlPantillaCorreo = cabeceraUrlCorreo;
-
-                if (correoModificado)
+                // Lógica de correo para cambio de clave si el correo fue modificado
+                if (cambios.Any(c => c.StartsWith("Correo:")))
                 {
-                    urlPantillaCorreo += $"/Plantilla/RestablecerClave?clave=[clave]";
+                    string urlPantillaCorreo = cabeceraUrlCorreo + $"/Plantilla/RestablecerClave?clave=[clave]";
                     string claveGenerada = _utilidadesServices.GenerarClave(8);
-                    usuario.Clave = _utilidadesServices.ConvertirSha256(claveGenerada);
-                    urlPantillaCorreo = await EnviarCorreoConPlantilla(urlPantillaCorreo, usuario, almacenamientoEmpresa.SecEmpresaNavigation, true, claveGenerada);
+                    usuarioOriginal.Clave = _utilidadesServices.ConvertirSha256(claveGenerada);
+                    await EnviarCorreoConPlantilla(urlPantillaCorreo, usuarioOriginal, almacenamientoEmpresa.SecEmpresaNavigation, true, claveGenerada);
+                    cambios.Add("Clave: Restablecida por cambio de correo");
                 }
 
-                await _repositorio.Editar(usuario);
+                bool respuesta = await _repositorio.Editar(usuarioOriginal);
 
-                var usuarioQuery
-                            = await _repositorio
-                             .Consultar(x => x.Secuencial == usuario.Secuencial);
-                var usuarioModificado = usuarioQuery.Include(x => x.SecRolNavigation).First();
+                if (!respuesta)
+                    throw new TaskCanceledException("No se pudo editar el usuario");
+
+                // Auditoría: Registro de edición de usuario
+                if (cambios.Any())
+                {
+                    await _auditService.RegistrarEventoAsync(
+                        "EDICION_USUARIO",
+                        idUsuarioAuditoria,
+                        nombreUsuarioAuditoria,
+                        $"Usuario {usuarioOriginal.Nombre} (ID: {usuarioOriginal.Secuencial}) editado. Cambios: {string.Join("; ", cambios)}",
+                        direccionIpAuditoria
+                    );
+                }
+
+                var usuarioModificado = await _repositorio.Obtener(x => x.Secuencial == usuarioOriginal.Secuencial, "SecRolNavigation");
 
                 return usuarioModificado;
             }
             catch (Exception)
             {
-
                 throw;
             }
-
         }
-        public async Task<bool> Eliminar(int secuencialUsuario)
+        public async Task<bool> Eliminar(int secuencialUsuario, int? idUsuarioAuditoria = null, string? nombreUsuarioAuditoria = null, string? direccionIpAuditoria = null)
         {
             try
             {
-                var seElimino = false;
-                var usuario
-                    = await _repositorio
-                             .Consultar(x => x.Secuencial == secuencialUsuario);
+                var usuarioAEliminar = await _repositorio.Obtener(u => u.Secuencial == secuencialUsuario);
+                if (usuarioAEliminar == null)
+                    throw new TaskCanceledException("Usuario no encontrado");
 
-                var user = usuario.FirstOrDefault();
-                if (user != null)
+                bool respuesta = await _repositorio.Eliminar(usuarioAEliminar);
+
+                if (respuesta)
                 {
-                    var usuarioGenerado = await _repositorio.Eliminar(user);
-                    seElimino = true;
+                    // Auditoría: Registro de eliminación de usuario
+                    await _auditService.RegistrarEventoAsync(
+                        "ELIMINACION_USUARIO",
+                        idUsuarioAuditoria,
+                        nombreUsuarioAuditoria,
+                        $"Usuario eliminado: {usuarioAEliminar.Nombre} (ID: {usuarioAEliminar.Secuencial})",
+                        direccionIpAuditoria
+                    );
                 }
-                return seElimino;
+
+                return respuesta;
             }
             catch (Exception)
             {
                 throw;
             }
-
         }
         public async Task<bool> GuardarPerfil(Usuario entidad)
         {

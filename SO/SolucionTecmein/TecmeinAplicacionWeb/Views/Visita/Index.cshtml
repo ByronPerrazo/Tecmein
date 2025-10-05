@@ -128,23 +128,21 @@
 												<div class="form-row form-row-compact">
 
 													<div class="form-group col-sm-4">
-														<i class="cab_i_sm">Etapa</i>
-														<select class="form-control form-control-sm text-xs" 
-																id="cboEtapaObra"	
-																name="Etapa" 
-																onchange="mostrarDiv()">
-														</select>
-													</div>
+														                                        <i class="cab_i_sm">Etapa</i>
+                                        <select class="form-control form-control-sm text-xs" 
+                                                id="cboEtapaObra"	
+                                                name="Etapa" 
+                                                onchange="mostrarDiv()" disabled>
+                                        </select>
+                                    </div>
 
-													<div class="form-group col-sm-4">
-														<i class="cab_i_sm">Estado Obra</i>
-														<select class="form-control form-control-sm text-xs" id="cboEstado">
-															<option value="1">Activo</option>
-															<option value="0">Inactivo</option>
-														</select>
-													</div>
-
-													<div class="form-group col-sm-4">
+                                    <div class="form-group col-sm-4" style="display:none">
+                                        <i class="cab_i_sm">Estado Obra</i>
+                                        <select class="form-control form-control-sm text-xs" id="cboEstado">
+                                            <option value="1">Activo</option>
+                                            <option value="0">Inactivo</option>
+                                        </select>
+                                    </div>													<div class="form-group col-sm-4">
 														<i class="cab_i_sm">Próxima Visita</i>
 														<input type="checkbox" name="esSigVisita" id="chkEsSigVisita">
 														<input type="date"

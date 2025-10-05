@@ -1,4 +1,4 @@
-﻿const MODELO_BASEVISITA = {
+const MODELO_BASEVISITA = {
     secuencial: "",
     nombre: "",
     secProvincia: "",
@@ -20,6 +20,8 @@ let tablaData;
 let listaCompletaProvincias;
 let listaCompletaCanton;
 let listaCompletaParroquia;
+let listaCompletaEtapas;
+let idEtapaVisita;
 
 function cargarOperadores() {
     fetch("/Visita/Operadores")
@@ -41,6 +43,12 @@ $(document).ready(function () {
         .then(response => response.ok ? response.json() : Promise.reject(response))
         .then(respuestaJson => {
             const data = respuestaJson.$values || respuestaJson;
+            listaCompletaEtapas = data;
+            const etapaVisita = listaCompletaEtapas.find(e => e.codigo === "VIS");
+            if (etapaVisita) {
+                idEtapaVisita = etapaVisita.id;
+            }
+
             data.forEach(item => {
                 $("#cboEtapaObra").append($("<option>").val(item.id).text(item.descripcion));
             });
@@ -191,7 +199,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    data: "EstaActivo", render: function (data) {
+                    data: "EstaActivo", visible: false, render: function (data) {
                         if (data == 1)
                             return '<span class="badge badge-info">Activo</span>';
                         else
@@ -340,12 +348,17 @@ function limpiarFormularioModal() {
     document.getElementById('chkEsSigVisita').checked = false;
     $("#dtpkFechaSigVisita").val('');
 }
-function mostrarModalVisita(modeloVisita = MODELO_BASEVISITA) {
+function mostrarModalVisita(esEdicion, modeloVisita = MODELO_BASEVISITA) {
     limpiarFormularioModal();
     $("#txtId").val(modeloVisita.Secuencial)
     $("#txtNombreObra").val(modeloVisita.Nombre)
     $("#cboOperador").val(modeloVisita.SecEmpresa);
-    $("#cboEtapaObra").val(modeloVisita.IdEtapa);
+    
+    if (esEdicion) {
+        $("#cboEtapaObra").val(modeloVisita.IdEtapa).prop('disabled', true);
+    } else {
+        $("#cboEtapaObra").val(idEtapaVisita).prop('disabled', true);
+    }
     
     // Carga y selección de combos en cascada
     if (modeloVisita.SecProvincia) {
@@ -402,7 +415,6 @@ function loadDateFromString(dateString) {
 
 let esEdicion;
 $("#btnNuevo").click(function () {
-    limpiarFormularioModal();
     esEdicion = false;
 
     obtenerGeoubicacion()
@@ -416,7 +428,7 @@ $("#btnNuevo").click(function () {
             toastr.warning("", mensaje);
         });
 
-    mostrarModalVisita(MODELO_BASEVISITA)
+    mostrarModalVisita(false, MODELO_BASEVISITA)
 })
 
 $("#btnGuardarVisitas").click(function () {
@@ -473,8 +485,9 @@ $("#btnGuardarVisitas").click(function () {
     modeloVisita["geoUbicacion"] = $("#txtGeolocallizacion").val().trim();
     modeloVisita["fechaSiguienteVisita"] = $("#dtpkFechaSigVisita").val();
     modeloVisita["detalle"] = $("#txtDescripcion").val();
-    modeloVisita["esActivo"] = $("#cboEstado").val();
+    modeloVisita["estaActivo"] = $("#cboEstado").val();
     modeloVisita["secEmpresa"] = $("#cboOperador").val();
+    modeloVisita["idEtapa"] = parseInt($("#cboEtapaObra").val());
 
     const datosFormulario = new FormData();
     datosFormulario.append("modelo", JSON.stringify(modeloVisita));
@@ -498,6 +511,31 @@ $("#btnGuardarVisitas").click(function () {
             })
             .then(responseJson => {
                 if (responseJson.estado) {
+
+                    responseJson.objeto.Secuencial = responseJson.objeto.secuencial;
+                    responseJson.objeto.Nombre = responseJson.objeto.nombre;
+                    responseJson.objeto.SecProvincia = responseJson.objeto.secProvincia;
+                    responseJson.objeto.NombreProvincia = $("#cboProvincia option:selected").text();
+                    responseJson.objeto.SecCanton = responseJson.objeto.secCanton;
+                    responseJson.objeto.NombreCanton = $("#cboCanton option:selected").text();
+                    responseJson.objeto.SecParroquia = responseJson.objeto.secParroquia;
+                    responseJson.objeto.NombreParroquia = responseJson.objeto.nombreParroquia;
+                    responseJson.objeto.Direccion = responseJson.objeto.direccion;
+                    responseJson.objeto.FechaRegistro = responseJson.objeto.fechaRegistro;
+                    responseJson.objeto.GeoUbicacion = responseJson.objeto.geoUbicacion;
+                    responseJson.objeto.EstaActivo = responseJson.objeto.estaActivo;
+                    responseJson.objeto.SecUsuario = responseJson.objeto.secUsuario;
+                    responseJson.objeto.FechaSiguienteVisita = responseJson.objeto.fechaSiguienteVisita;
+                    responseJson.objeto.Detalle = responseJson.objeto.detalle;
+                    responseJson.objeto.IdEtapa = responseJson.objeto.idEtapa;
+                    responseJson.objeto.DescripcionEtapa = $("#cboEtapaObra option:selected").text();
+                    responseJson.objeto.CodigoEtapa = responseJson.objeto.codigoEtapa;
+                    responseJson.objeto.SecEmpresa = responseJson.objeto.secEmpresa;
+                    responseJson.objeto.NombreEmpresa = $("#cboOperador option:selected").text();
+                    responseJson.objeto.SecConstructora = responseJson.objeto.secConstructora;
+                    responseJson.objeto.NombreConstructora = responseJson.objeto.nombreConstructora;
+
+
                     tablaData.row.add(responseJson.objeto).draw(false);
                     $("#modalData").modal("hide");
                     Swal.fire("Listo!",
@@ -526,9 +564,29 @@ $("#btnGuardarVisitas").click(function () {
             .then(responseJson => {
                 if (responseJson.estado) {
 
-                    // Obtener los nombres desde los combos para actualizar la tabla
-                    responseJson.objeto.nombreProvincia = $("#cboProvincia option:selected").text();
-                    responseJson.objeto.nombreCanton = $("#cboCanton option:selected").text();
+                    // Convertir propiedades a PascalCase para DataTables
+                    responseJson.objeto.Secuencial = responseJson.objeto.secuencial;
+                    responseJson.objeto.Nombre = responseJson.objeto.nombre;
+                    responseJson.objeto.SecProvincia = responseJson.objeto.secProvincia;
+                    responseJson.objeto.NombreProvincia = $("#cboProvincia option:selected").text();
+                    responseJson.objeto.SecCanton = responseJson.objeto.secCanton;
+                    responseJson.objeto.NombreCanton = $("#cboCanton option:selected").text();
+                    responseJson.objeto.SecParroquia = responseJson.objeto.secParroquia;
+                    responseJson.objeto.NombreParroquia = responseJson.objeto.nombreParroquia;
+                    responseJson.objeto.Direccion = responseJson.objeto.direccion;
+                    responseJson.objeto.FechaRegistro = responseJson.objeto.fechaRegistro;
+                    responseJson.objeto.GeoUbicacion = responseJson.objeto.geoUbicacion;
+                    responseJson.objeto.EstaActivo = responseJson.objeto.estaActivo;
+                    responseJson.objeto.SecUsuario = responseJson.objeto.secUsuario;
+                    responseJson.objeto.FechaSiguienteVisita = responseJson.objeto.fechaSiguienteVisita;
+                    responseJson.objeto.Detalle = responseJson.objeto.detalle;
+                    responseJson.objeto.IdEtapa = responseJson.objeto.idEtapa;
+                    responseJson.objeto.DescripcionEtapa = $("#cboEtapaObra option:selected").text();
+                    responseJson.objeto.CodigoEtapa = responseJson.objeto.codigoEtapa;
+                    responseJson.objeto.SecEmpresa = responseJson.objeto.secEmpresa;
+                    responseJson.objeto.NombreEmpresa = $("#cboOperador option:selected").text();
+                    responseJson.objeto.SecConstructora = responseJson.objeto.secConstructora;
+                    responseJson.objeto.NombreConstructora = responseJson.objeto.nombreConstructora;
 
                     tablaData
                         .row(filaSeleccionada)
@@ -561,7 +619,7 @@ $("#tbdata tbody").on("click", ".btn-editar", function () {
 
     const data = tablaData.row(filaSeleccionada).data();
 
-    mostrarModalVisita(data);
+    mostrarModalVisita(true, data);
 })
 
 $("#tbdata tbody").on("click", ".btn-eliminar", function () {

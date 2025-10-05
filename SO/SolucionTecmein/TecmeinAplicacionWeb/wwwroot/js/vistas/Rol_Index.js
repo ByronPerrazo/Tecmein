@@ -168,9 +168,9 @@ $("#btnGuardar").click(function () {
                         tablaData.row.add(respuestaJson.objeto).draw(false);
                     }
                     $("#modalData").modal("hide");
-                    swal("Listo!", `Rol ${esEdicion ? 'editado' : 'creado'} correctamente`, "success");
+                    Swal.fire("Listo!", `Rol ${esEdicion ? 'editado' : 'creado'} correctamente`, "success");
                 } else {
-                    swal("Fallo!", respuestaJson.mensajes, "error");
+                    Swal.fire("Fallo!", respuestaJson.mensajes, "error");
                 }
             }
         ).catch(error => {
@@ -212,44 +212,40 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
 
     const data = tablaData.row(fila).data();
 
-    swal({
+    Swal.fire({
         title: "¿Está Seguro de Eliminar?",
         text: `Eliminar el rol "${data.Descripcion}"`, 
-        type: "warning",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonClass: "btn-danger",
+        confirmButtonColor: "#DD6B55",
         confirmButtonText: "Si, eliminar",
         cancelButtonText: "No, cancelar",
-        closeOnConfirm: false,
-        closeOnCancel: true
-    },
-        function (respuesta) {
-            if (respuesta) {
-                $(".showSweetAlert").LoadingOverlay("show");
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $(".showSweetAlert").LoadingOverlay("show");
 
-                fetch(`Eliminar?secuencial=${data.Secuencial}`, {
-                    method: "DELETE"
-                })
-                    .then(response => {
-                        $(".showSweetAlert").LoadingOverlay("hide");
-                        return response.ok
-                            ? response.json()
-                            : Promise.reject(response);
-                    }).then(responseJson => {
-                        if (responseJson.estado) {
-                            tablaData.row(fila).remove().draw(false);
+            fetch(`Eliminar?secuencial=${data.Secuencial}`, {
+                method: "DELETE"
+            })
+                .then(response => {
+                    $(".showSweetAlert").LoadingOverlay("hide");
+                    return response.ok
+                        ? response.json()
+                        : Promise.reject(response);
+                }).then(responseJson => {
+                    if (responseJson.estado) {
+                        tablaData.row(fila).remove().draw(false);
 
-                            swal("Listo!", "El rol " + data.Descripcion + " Fue Eliminado", "success");
-                        }
-                        else {
-                            swal("Fallo!", respuestaJson.mensajes, "error");
-                        }
-                    });
+                        Swal.fire("Listo!", "El rol " + data.Descripcion + " Fue Eliminado", "success");
+                    }
+                    else {
+                        Swal.fire("Fallo!", respuestaJson.mensajes, "error");
+                    }
+                });
 
-            }
         }
-
-    )
+    });
 
 })
 

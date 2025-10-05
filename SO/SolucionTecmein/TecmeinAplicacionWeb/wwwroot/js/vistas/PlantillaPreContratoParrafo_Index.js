@@ -33,17 +33,17 @@ $(document).ready(function () {
         })
         .then(responseJson => {
             if (responseJson.estado) {
-                swal("Listo!", "El párrafo ha sido guardado", "success");
+                Swal.fire(, "El párrafo ha sido guardado", "success");
                 // Optionally, update the hidden SecPlantillaPreContratoParrafo if it was a creation
                 if (modelo.SecPlantillaPreContratoParrafo == 0 || modelo.SecPlantillaPreContratoParrafo == "") {
                     $("#SecPlantillaPreContratoParrafo").val(responseJson.objeto.secPlantillaPreContratoParrafo);
                 }
             } else {
-                swal("Error!", responseJson.mensajes, "error");
+                Swal.fire("Error!", responseJson.mensajes, "error");
             }
         })
         .catch((error) => {
-            swal("Error!", "No se pudo guardar el párrafo", "error");
+            Swal.fire("Error!", "No se pudo guardar el párrafo", "error");
         });
     });
 });

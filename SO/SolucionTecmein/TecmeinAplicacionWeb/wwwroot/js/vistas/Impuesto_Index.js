@@ -164,9 +164,9 @@ $("#btnGuardar").click(function () {
                 tablaData.row.add(responseJson.objeto).draw(false);
             }
             $("#modalData").modal("hide");
-            swal("Listo!", `Impuesto ${esEdicion ? 'editado' : 'creado'} correctamente`, "success");
+            Swal.fire("Listo!", `Impuesto ${esEdicion ? 'editado' : 'creado'} correctamente`, "success");
         } else {
-            swal("Fallo!", responseJson.mensajes, "error");
+            Swal.fire("Fallo!", responseJson.mensajes, "error");
         }
     })
     .catch(error => {
@@ -186,19 +186,17 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
 
     const data = tablaData.row(fila).data();
 
-    swal({
+    Swal.fire({
         title: "Está Seguro de Eliminar?",
         text: `Eliminar el impuesto "${data.descripcion}"`, // Changed to descripcion
-        type: "warning",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonClass: "btn-danger",
+        confirmButtonColor: "#DD6B55",
         confirmButtonText: "Si, eliminar",
         cancelButtonText: "No, cancelar",
-        closeOnConfirm: false,
-        closeOnCancel: true
-    },
-    function (respuesta) {
-        if (respuesta) {
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
             $(".showSweetAlert").LoadingOverlay("show");
 
             fetch(`Eliminar?id=${data.id}`, {
@@ -211,9 +209,9 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
             .then(responseJson => {
                 if (responseJson.estado) {
                     tablaData.row(fila).remove().draw();
-                    swal("Listo!", "El Impuesto fue eliminado", "success");
+                    Swal.fire("Listo!", "El Impuesto fue eliminado", "success");
                 } else {
-                    swal("Fallo!", responseJson.mensajes, "error");
+                    Swal.fire("Fallo!", responseJson.mensajes, "error");
                 }
             });
         }

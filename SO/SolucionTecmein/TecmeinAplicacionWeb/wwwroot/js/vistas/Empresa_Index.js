@@ -146,9 +146,9 @@ $("#btnGuardar").click(function () {
                             $("#imgLogo").attr("src", d.urlLogo);
                             tablaData.row.add(responseJson.objeto).draw(false);
                             $("#modalData").modal("hide");
-                            swal("Listo!", "Información Guardada con Éxito", "success");
+                            Swal.fire("Listo!", "Información Guardada con Éxito", "success");
                         } else {
-                            swal("Fallo!", respuestaJson.mensajes, "error");
+                            Swal.fire("Fallo!", respuestaJson.mensajes, "error");
                         }
                     }
                 ).catch(error => {
@@ -173,10 +173,10 @@ $("#btnGuardar").click(function () {
                         tablaData.row(filaSeleccionada).data(responseJson.objeto).draw(false);
                         $("#modalData").modal("hide");
                         $("#imgLogo").attr("src", responseJson.objeto.urlLogo);
-                        swal("Listo!", "Empresa " + responseJson.objeto.nombre + " Editada ", "success");
+                        Swal.fire("Listo!", "Empresa " + responseJson.objeto.nombre + " Editada ", "success");
                     }
                     else {
-                        swal("Fallo!", responseJson.mensajes, "error");
+                        Swal.fire("Fallo!", responseJson.mensajes, "error");
                     }
                 });
 
@@ -211,45 +211,41 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
 
     const data = tablaData.row(fila).data();
 
-    swal({
-        title: "Está Seguro de Eliminar?",
+    Swal.fire({
+        title: "¿Está Seguro de Eliminar?",
         text: `Eliminar La Empresa "${data.nombre}"`,
-        type: "warning",
+        icon: "warning", // 'type' is deprecated, use 'icon'
         showCancelButton: true,
-        confirmButtonClass: "btn-danger",
+        confirmButtonColor: "#DD6B55",
         confirmButtonText: "Si, eliminar",
         cancelButtonText: "No, cancelar",
-        closeOnConfirm: false,
-        closeOnCancel: true
-    },
-        function (respuesta) {
-            if (respuesta) {
-                $(".showSweetAlert").LoadingOverlay("show");
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $(".showSweetAlert").LoadingOverlay("show");
 
-                fetch(`Eliminar?secuencial=${data.secuencial}`, {
-                    method: "DELETE"
-                })
-                    .then(response => {
-                        $(".showSweetAlert").LoadingOverlay("hide");
-                        return response.ok
-                            ? response.json()
-                            : Promise.reject(response);
-                    }).then(responseJson => {
-                        debugger;
-                        if (responseJson.estado) {
-                            tablaData.row(fila).remove().draw(false);
+            fetch(`Eliminar?secuencial=${data.secuencial}`, {
+                method: "DELETE"
+            })
+                .then(response => {
+                    $(".showSweetAlert").LoadingOverlay("hide");
+                    return response.ok
+                        ? response.json()
+                        : Promise.reject(response);
+                }).then(responseJson => {
+                    debugger;
+                    if (responseJson.estado) {
+                        tablaData.row(fila).remove().draw(false);
 
-                            swal("Listo!", " La Empresa " + data.nombre + " Fue Eliminada", "success");
-                        }
-                        else {
-                            swal("Fallo!", responseJson.mensajes, "error");
-                        }
-                    });
+                        Swal.fire("Listo!", " La Empresa " + data.nombre + " Fue Eliminada", "success");
+                    }
+                    else {
+                        Swal.fire("Fallo!", responseJson.mensajes, "error");
+                    }
+                });
 
-            }
         }
-
-    )
+    })
 
 })
 

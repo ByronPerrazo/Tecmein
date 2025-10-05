@@ -4,6 +4,7 @@ using Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Security.Claims; // AÑADIDO
 using TecmeinAplicacionWeb.Models.ViewModels; // Añadido para encontrar RolVM
 using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
@@ -23,13 +24,17 @@ namespace TecmeinWebApp.Controllers
 
                                   IUsuarioServices usuarioServices,
                                   IRolServices rolServices,
-                                  IMapper mapper
+                                  IMapper mapper,
+                                  IAuditService auditService // AUDITORÍA
             )
         {
             _usuarioServices = usuarioServices;
             _rolServices = rolServices;
             _mapper = mapper;
+            _auditService = auditService; // AUDITORÍA
         }
+
+        private readonly IAuditService _auditService; // AUDITORÍA
 
         public IActionResult Index()
         {
@@ -94,10 +99,9 @@ namespace TecmeinWebApp.Controllers
 
 
         [HttpPost]
-        [Authorize(Policy = "CanModify")]
+        [Authorize(Policy = "CanCreate")] // Asumiendo que CanCreate es la política para crear
         public async Task<IActionResult> Crear([FromForm] IFormFile imagen, [FromForm] string modelo)
         {
-
             var genericResponse = new GenericResponse<UsuarioVM>();
             try
             {
@@ -117,13 +121,25 @@ namespace TecmeinWebApp.Controllers
                 var urlPantallaCorreo = $"{this.Request.Scheme}://" +
                                         $"{this.Request.Host}" +
                                         $"/Plantilla/EnviarClave?correo=[correo]&clave=[clave]";
-                var usurioGenerado = await _usuarioServices.Crear(_mapper.Map<Usuario>(usuariosVM), imagenStream, nombreFoto, urlPantallaCorreo);
+
+                // Datos de auditoría
+                var idUsuarioAuditoria = User.FindFirstValue(ClaimTypes.NameIdentifier) != null ? int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)) : (int?)null;
+                var nombreUsuarioAuditoria = User.FindFirstValue(ClaimTypes.Name);
+                var direccionIpAuditoria = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+                var usurioGenerado = await _usuarioServices.Crear(
+                    _mapper.Map<Usuario>(usuariosVM),
+                    imagenStream,
+                    nombreFoto,
+                    urlPantallaCorreo,
+                    idUsuarioAuditoria,
+                    nombreUsuarioAuditoria,
+                    direccionIpAuditoria
+                );
                 usuariosVM = _mapper.Map<UsuarioVM>(usurioGenerado);
 
                 genericResponse.Estado = true;
                 genericResponse.Objeto = usuariosVM;
-
-
             }
             catch (Exception ex)
             {
@@ -137,7 +153,6 @@ namespace TecmeinWebApp.Controllers
         [HttpPut]
         public async Task<IActionResult> Editar([FromForm] IFormFile Foto, [FromForm] string modelo, string cabeceraUrlCorreo = "")
         {
-
             var genericResponse = new GenericResponse<UsuarioVM>();
             try
             {
@@ -155,11 +170,23 @@ namespace TecmeinWebApp.Controllers
                 }
                 var cabecera = $"{this.Request.Scheme}://{this.Request.Host}";
 
-                Usuario usuarioEditado = await _usuarioServices.Editar(_mapper.Map<Usuario>(usuariosVM), imagenStream, nombreFoto, cabecera);
+                // Datos de auditoría
+                var idUsuarioAuditoria = User.FindFirstValue(ClaimTypes.NameIdentifier) != null ? int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)) : (int?)null;
+                var nombreUsuarioAuditoria = User.FindFirstValue(ClaimTypes.Name);
+                var direccionIpAuditoria = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+                Usuario usuarioEditado = await _usuarioServices.Editar(
+                    _mapper.Map<Usuario>(usuariosVM),
+                    imagenStream,
+                    nombreFoto,
+                    cabecera,
+                    idUsuarioAuditoria,
+                    nombreUsuarioAuditoria,
+                    direccionIpAuditoria
+                );
                 usuariosVM = _mapper.Map<UsuarioVM>(usuarioEditado);
                 genericResponse.Estado = true;
                 genericResponse.Objeto = usuariosVM;
-
             }
             catch (Exception ex)
             {
@@ -175,7 +202,12 @@ namespace TecmeinWebApp.Controllers
             var gResponse = new GenericResponse<string>();
             try
             {
-                gResponse.Estado = await _usuarioServices.Eliminar(secuencialUsuario);
+                // Datos de auditoría
+                var idUsuarioAuditoria = User.FindFirstValue(ClaimTypes.NameIdentifier) != null ? int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)) : (int?)null;
+                var nombreUsuarioAuditoria = User.FindFirstValue(ClaimTypes.Name);
+                var direccionIpAuditoria = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+                gResponse.Estado = await _usuarioServices.Eliminar(secuencialUsuario, idUsuarioAuditoria, nombreUsuarioAuditoria, direccionIpAuditoria);
             }
             catch (Exception ex)
             {
