@@ -177,12 +177,12 @@ function mostrarModal(modelo = MODELO_BASE) {
     if (Array.isArray(detalles) && detalles.length > 0) {
         detalles.forEach(detalle => {
             const fila = `
-                <tr data-id-equipo="${detalle.secuencial}" data-sec-equipo-visita="${detalle.secEquipoVisita || ''}" data-esta-activo="${detalle.estaActivo || 1}">
-                    <td>${detalle.detalleEquipo}</td>
-                    <td><input type="number" class="form-control form-control-sm cantidad" value="${detalle.cantidad || 1}" min="1" step="1"></td>
-                    <td><input type="number" class="form-control form-control-sm valor-compra" value="${detalle.valorCompra || 0}" min="0" step="0.01"></td>
-                    <td><input type="number" class="form-control form-control-sm margen-ganancia" value="${detalle.margenGanancia || 0}" min="0" max="100" step="0.01"></td>
-                    <td class="total-fila">${detalle.total || '0.00'}</td>
+                <tr class="text-xs" data-id-equipo="${detalle.secuencial}" data-sec-equipo-visita="${detalle.secEquipoVisita || ''}" data-esta-activo="${detalle.estaActivo || 1}">
+                    <td class="text-xs">${detalle.detalleEquipo}</td>
+                    <td><input type="number" class="form-control form-control-sm text-xs cantidad" value="${detalle.cantidad || 1}" min="1" step="1"></td>
+                    <td><input type="number" class="form-control form-control-sm text-xs valor-compra" value="${detalle.valorCompra || 0}" min="0" step="0.01"></td>
+                    <td><input type="number" class="form-control form-control-sm text-xs margen-ganancia" value="${detalle.margenGanancia || 0}" min="0" max="100" step="0.01"></td>
+                    <td class="total-fila text-xs">${detalle.total || '0.00'}</td>
                     <td><button type="button" class="btn btn-danger btn-sm btn-eliminar-detalle"><i class="fas fa-trash-alt"></i></button></td>
                 </tr>`;
             $("#tbDetalles tbody").append(fila);
@@ -614,8 +614,17 @@ function mostrarModalDataSeguimiento(modelo = MODELO_SEGUIMIENTO_BASE) {
     $("#modalDataSeguimiento").modal("show");
 }
 
-function abrirModalSeguimientos(cotizacionId) {
+function abrirModalSeguimientos(cotizacionId, enviadoProveedorStatus) {
     $("#hiddenCotizacionId").val(cotizacionId); // Almacenar el ID de la cotización actual
+
+    // Habilitar/deshabilitar el botón "Nuevo Seguimiento"
+    if (enviadoProveedorStatus) {
+        $("#btnNuevoSeguimiento").prop('disabled', false);
+        $("#btnNuevoSeguimiento").attr('title', 'Crear nuevo seguimiento');
+    } else {
+        $("#btnNuevoSeguimiento").prop('disabled', true);
+        $("#btnNuevoSeguimiento").attr('title', 'Debe enviar la cotización al proveedor para crear seguimientos');
+    }
 
     // Destruir DataTable existente si ya está inicializada
     if ($.fn.DataTable.isDataTable('#tbSeguimiento')) {
@@ -657,7 +666,7 @@ $(document).ready(function () {
     $("#tbdata tbody").on("click", ".btn-seguimiento", function () {
         const filaSeleccionada = $(this).closest("tr").hasClass("child") ? $(this).closest("tr").prev() : $(this).closest("tr");
         const data = tablaData.row(filaSeleccionada).data();
-        abrirModalSeguimientos(data.secuencial); // Pasar el ID de la cotización
+        abrirModalSeguimientos(data.secuencial, data.enviadoProveedor); // Pasar el ID de la cotización y el estado de enviadoProveedor
     });
 
     // Evento para el botón "Nuevo Seguimiento" dentro del modal de seguimientos
@@ -685,6 +694,16 @@ $(document).ready(function () {
         // Validación básica
         if (modelo.accion.trim() === "" || modelo.detalle.trim() === "" || modelo.fechaAccion.trim() === "") {
             toastr.warning("Por favor, complete todos los campos obligatorios.", "Campos Incompletos");
+            return;
+        }
+
+        // Validación de fecha: no puede ser mayor a la fecha actual
+        const fechaAccion = new Date(modelo.fechaAccion);
+        const fechaActual = new Date();
+        fechaActual.setHours(0, 0, 0, 0); // Comparar solo la fecha, ignorar la hora
+
+        if (fechaAccion > fechaActual) {
+            toastr.warning("La fecha de acción no puede ser mayor a la fecha actual.", "Fecha Inválida");
             return;
         }
 

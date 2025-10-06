@@ -8,11 +8,23 @@
      <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/responsive.dataTables.min.css">
      <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/buttons.dataTables.min.css">
      <link rel="stylesheet" href="~/css/styleGenerales.css">
+     <style>
+         .bg-pale-blue {
+             background-color: #e0f2f7 !important; /* A light blue color */
+         }
+         #tbDetalles th:nth-child(3),
+         #tbDetalles td:nth-child(3),
+         #tbDetalles th:nth-child(4),
+         #tbDetalles td:nth-child(4),
+         #tbDetalles th:nth-child(5),
+         #tbDetalles td:nth-child(5) {
+             min-width: 70px;
+         }
+     </style>
  }
  
  <!-- Grilla inicial de proceso -->
- <div class="card shadow-sm mb-2">
-     <div class="card-header py-3 bg-second-primary">
+                                             <div class="card shadow-sm mb-1">     <div class="card-header py-3 bg-second-primary">
          <h6 class="m-0 font-weight-bold text-white">Lista de Cotizaciones</h6>
      </div>
      <div class="card-body">
@@ -79,37 +91,50 @@
                                 </div>
 
                                     <div class="collapse show" id="collapseGeneralInfo">
-                                        <div class="card-body">
-                                            <!-- "Seleccionar Visita" alone -->
-                                            <div class="form-group mb-3">
-                                                <label for="cboVisita" class="text-sm">Seleccionar Visita</label>
-                                                <select id="cboVisita" class="form-control form-control-sm text-sm"></select>
+                                        <div class="card-body py-0">
+                                            <div class="form-row">
+                                                <div class="form-group col-sm-6 mb-2">
+                                                    <label for="cboVisita" class="text-xs">Seleccionar Visita</label>
+                                                    <select id="cboVisita" class="form-control form-control-sm text-xs"></select>
+                                                </div>
+                                                <div class="form-group col-sm-6 mb-2">
+                                                    <label class="text-xs">Nombre de la Obra</label>
+                                                    <input type="text" id="txtNombreObra" class="form-control form-control-sm text-xs" readonly>
+                                                </div>
                                             </div>
-                                            <hr class="my-2"/>
-                                            <!-- "Nombre de la Obra" -->
-                                            <div class="form-group mb-3">
-                                                <label class="text-sm">Nombre de la Obra</label>
-                                                <input type="text" id="txtNombreObra" class="form-control form-control-sm text-sm" readonly>
-                                            </div>
-                                            <hr class="my-2"/>
-                                            <!-- Detailed Visit Info (rearranged) -->
-                                            <div class="row" id="visitDetailsContent" style="display:none;">
-                                                <div class="col-sm-4 mb-1 text-sm"><strong class="d-inline-block mr-1">Provincia:</strong><span id="pProvincia"></span></div>
-                                                <div class="col-sm-4 mb-1 text-sm"><strong class="d-inline-block mr-1">Cantón:</strong><span id="pCanton"></span></div>
-                                                <div class="col-sm-4 mb-1 text-sm"><strong class="d-inline-block mr-1">Parroquia:</strong><span id="pParroquia"></span></div>
-                                                <div class="col-sm-12 mb-1 text-sm"><strong class="d-inline-block mr-1">Dirección:</strong><span id="pDireccionProyecto"></span></div>
-                                            </div>
-                                            <hr class="my-2" id="hrContactDetails" style="display:none;"/>
-                                            <div class="row" id="contactDetailsContent" style="display:none;">
-                                                <div class="col-sm-6 mb-1 text-sm"><strong class="d-inline-block mr-1">Constructora:</strong><span id="pConstructora"></span></div>
-                                                <div class="col-sm-6 mb-1 text-sm"><strong class="d-inline-block mr-1">Contacto:</strong><span id="pContacto"></span></div>
-                                                <div class="col-sm-6 mb-1 text-sm"><strong class="d-inline-block mr-1">Correo:</strong><span id="pCorreoContacto"></span></div>
-                                                <div class="col-sm-6 mb-1 text-sm"><strong class="d-inline-block mr-1">Teléfono:</strong><span id="pTelefonoContacto"></span></div>
-                                            </div>
-                                            <hr class="my-2" id="hrUserGenerator" style="display:none;"/>
-                                            <div class="row" id="userGeneratorContent" style="display:none;">
-                                                <div class="col-sm-6 mb-1 text-sm"><strong class="d-inline-block mr-1">Usuario Visita:</strong><span id="pUsuarioGenerador"></span></div>
-                                                <div class="col-sm-6 mb-1 text-sm"><strong class="d-inline-block mr-1">Usuario Cotizador:</strong><span id="pUsuarioCotizador"></span></div>
+                                            <div class="card py-0 shadow-sm mb-3">
+                                                <div class="card-header py-sm-1 bg-second-primary">
+                                                    <a href="#collapseDetailedInfo" class="d-block card-header-link text-white" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseDetailedInfo">
+                                                        <h6 class="m-0 font-weight-bold text-white">
+                                                            <i class="fas fa-info-circle"></i> Detalles de la Visita y Contacto
+                                                            <i class="fas fa-chevron-down float-right"></i>
+                                                        </h6>
+                                                    </a>
+                                                </div>
+                                                <div class="collapse show" id="collapseDetailedInfo">
+                                                   @*  <div class="card-body p-sm-3"> *@
+                                                        <!-- Detailed Visit Info (rearranged) -->
+                                                    <div class="form-row py-sm-1" id="visitDetailsContent" style="display:none;">
+                                                            <div class="col-sm-3 mb-0 text-xs"><strong class="d-inline-block mr-1">Provincia:</strong><span id="pProvincia"></span></div>
+                                                            <div class="col-sm-3 mb-0 text-xs"><strong class="d-inline-block mr-1">Cantón:</strong><span id="pCanton"></span></div>
+                                                            <div class="col-sm-3 mb-0 text-xs"><strong class="d-inline-block mr-1">Parroquia:</strong><span id="pParroquia"></span></div>
+                                                       @*  </div>
+                                                        <div class ="form-row" id="contactDetailsContent" style="display:none;">*@
+                                                            <div class="col-sm-3 mb-0 text-xs"><strong class="d-inline-block mr-1">Constructora:</strong><span id="pConstructora"></span></div>
+                                                            <div class="col-sm-3 mb-0 text-xs"><strong class="d-inline-block mr-1">Contacto:</strong><span id="pContacto"></span></div>
+                                                            <div class="col-sm-3 mb-0 text-xs"><strong class="d-inline-block mr-1">Correo:</strong><span id="pCorreoContacto"></span></div>
+                                                            <div class="col-sm-3 mb-0 text-xs"><strong class="d-inline-block mr-1">Teléfono:</strong><span id="pTelefonoContacto"></span></div>
+                                                            @* </div>
+                                                        <div class="form-row" id="userGeneratorContent" style="display:none;">
+                                                            *@
+                                                            <div class="col-sm-3 mb-0 text-xs"><strong class="d-inline-block mr-1">Usuario Visita:</strong><span id="pUsuarioGenerador"></span></div>
+                                                            <div class="col-sm-3 mb-0 text-xs"><strong class="d-inline-block mr-1">Usuario Cotizador:</strong><span id="pUsuarioCotizador"></span></div>
+                                                            <div class="col-sm-3 mb-0 text-xs"></div>
+                                                            <div class="col-sm-3 mb-0 text-xs"></div>
+                                                            <div class="col-sm-12 mb-0 text-xs"><strong class="d-inline-block mr-1">Dirección:</strong><span id="pDireccionProyecto"></span></div>
+                                                        </div>
+                                                    @* </div> *@
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -124,14 +149,14 @@
                                     </div>
                                     <div class="card-body">
                                         <table class="table table-sm table-bordered" id="tbDetalles">
-                                            <thead>
+                                            <thead class="bg-pale-blue text-dark">
                                                 <tr>
-                                                    <th>Detalle Equipo</th>
-                                                    <th>Cantidad</th>
-                                                    <th>Valor Compra</th>
-                                                    <th>Margen (%)</th>
-                                                    <th>Total</th>
-                                                    <th></th>
+                                                    <th class="text-xs">Detalle Equipo</th>
+                                                    <th class="text-xs">Cant</th>
+                                                    <th class="text-xs">Valor Compra</th>
+                                                    <th class="text-xs">Margen (%)</th>
+                                                    <th class="text-xs">Total</th>
+                                                    <th class="text-xs"></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -140,52 +165,46 @@
                                         </table>
                                     </div>
                                     <div class="card-footer">
-                                        <div class="text-right">
-                                            <strong>Subtotal: </strong><span id="spanSubtotal">0.00</span>
-                                            <div id="divImpuestosDetalle"></div> <!-- Contenedor para el desglose dinámico de impuestos -->
-                                            <br>
-                                            <strong>Total Impuestos: </strong><span id="spanImpuestos">0.00</span>
-                                            <br>
-                                            <strong>Total: </strong><span id="spanTotal">0.00</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Sección de Generación de PDF y Envío -->
-                            <div class="col-sm-12 mt-3">
-                                <div class="card shadow-sm">
-                                    <div class="card-header py-2 bg-second-primary">
-                                        <h6 class="m-0 font-weight-bold text-white"><i class="fas fa-file-pdf"></i> Generación y Envío de PDF</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row align-items-center">
-                                            <div class="col-sm-3">
-                                                <button class="btn btn-info btn-block" type="button" id="btnGenerarPdf">
-                                                    <i class="fas fa-file-pdf"></i> Generar PDF Proveedor
-                                                </button>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" id="chkEnviadoProveedor">
-                                                    <label class="form-check-label" for="chkEnviadoProveedor">
-                                                        Enviado a Proveedor
-                                                    </label>
+                                        <div class="row">
+                                            <div class="col-sm-6 bg-light p-2">
+                                                <div class="row align-items-center">
+                                                    <div class="col-sm-6">
+                                                        <button class="btn btn-info btn-block btn-sm" type="button" id="btnGenerarPdf">
+                                                            <i class="fas fa-file-pdf"></i> PDF Proveedor
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="" id="chkEnviadoProveedor">
+                                                            <label class="form-check-label text-xs" for="chkEnviadoProveedor">
+                                                                Enviado a Proveedor
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 mt-2">
+                                                        <span class="d-inline-block btn-block" tabindex="0" data-toggle="tooltip" title="">
+                                                            <button class="btn btn-success btn-block btn-sm" type="button" id="btnGenerarPdfCliente">
+                                                                <i class="fas fa-file-pdf"></i> PDF Cliente
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-6 mt-2">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="" id="chkEnviadoCliente">
+                                                            <label class="form-check-label text-xs" for="chkEnviadoCliente">
+                                                                Enviado al Cliente
+                                                            </label>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-3">
-                                                <span class="d-inline-block btn-block" tabindex="0" data-toggle="tooltip" title="">
-                                                    <button class="btn btn-success btn-block" type="button" id="btnGenerarPdfCliente">
-                                                        <i class="fas fa-file-pdf"></i> Genera Cotización Cliente
-                                                    </button>
-                                                </span>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" id="chkEnviadoCliente">
-                                                    <label class="form-check-label" for="chkEnviadoCliente">
-                                                        Enviado al Cliente
-                                                    </label>
-                                                </div>
+                                            <div class="col-sm-6 text-right p-2">
+                                                <strong>Subtotal: </strong><span id="spanSubtotal">0.00</span>
+                                                <div id="divImpuestosDetalle"></div> <!-- Contenedor para el desglose dinámico de impuestos -->
+                                                <br>
+                                                <strong>Total Impuestos: </strong><span id="spanImpuestos">0.00</span>
+                                                <br>
+                                                <strong>Total: </strong><span id="spanTotal">0.00</span>
                                             </div>
                                         </div>
                                     </div>

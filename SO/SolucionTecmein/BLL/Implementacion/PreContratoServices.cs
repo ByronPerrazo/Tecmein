@@ -16,17 +16,20 @@ namespace BLL.Implementacion
         private readonly ICotizacionServices _cotizacionServices;
         private readonly IGenericRepository<PreContratoParrafo> _repositorioPreContratoParrafo;
         private readonly IPreContratoGeneratorService _preContratoGeneratorService;
+        private readonly IVisitaServices _visitaServices; // Added
 
         public PreContratoServices(
             IGenericRepository<PreContrato> repositorio,
             ICotizacionServices cotizacionServices,
             IGenericRepository<PreContratoParrafo> repositorioPreContratoParrafo,
-            IPreContratoGeneratorService preContratoGeneratorService)
+            IPreContratoGeneratorService preContratoGeneratorService,
+            IVisitaServices visitaServices) // Added
         {
             _repositorio = repositorio;
             _cotizacionServices = cotizacionServices;
             _repositorioPreContratoParrafo = repositorioPreContratoParrafo;
             _preContratoGeneratorService = preContratoGeneratorService;
+            _visitaServices = visitaServices; // Added
         }
 
         public async Task<List<PreContrato>> Lista()
@@ -97,6 +100,9 @@ namespace BLL.Implementacion
                 throw new Exception("No se pudo crear el pre-contrato.");
             }
             
+            // Cambiar etapa de la visita a "PRE" después de crear el pre-contrato
+            await _visitaServices.CambiarEtapa(cotizacion.SecVisita, "PRE");
+
             return preContratoCreado;
         }
 

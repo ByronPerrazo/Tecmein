@@ -177,54 +177,71 @@ namespace BLL.Implementacion
             try
             {
                 var visita = await _visitaServices.ConsultaVisita(entidad.SecVisita);
-                if (visita.IdEtapaNavigation.Codigo == "PRE" || visita.IdEtapaNavigation.Codigo == "SEG")
+                if (visita.IdEtapaNavigation.Codigo == "PRE" || visita.IdEtapaNavigation.Codigo == "CON")
                 {
-                    throw new InvalidOperationException("No se puede editar una cotización de una visita que ya está en etapa de pre-contrato o seguimiento.");
+                    throw new InvalidOperationException("No se puede editar una cotización de una visita que ya ha avanzado a la etapa de pre-contrato o contrato.");
                 }
 
-                var cotizacionOriginal = await _repositorio.Obtener(c => c.Secuencial == entidad.Secuencial, "Cotizaciondetalles,ImpuestoCotizaciones");
+                // Obtener la cotización actual de la base de datos
+                var cotizacionActual = await _repositorio.Obtener(c => c.Secuencial == entidad.Secuencial, "Cotizaciondetalles,ImpuestoCotizaciones");
 
-                if (cotizacionOriginal == null)
+                if (cotizacionActual == null)
                     throw new KeyNotFoundException($"No se encontró la cotización con el secuencial {entidad.Secuencial}");
 
-                // 1. Inactivar la cotización original
-                cotizacionOriginal.EstaActivo = 0;
-                cotizacionOriginal.FechaModificacion = DateTime.Now;
-                bool seInactivo = await _repositorio.Editar(cotizacionOriginal);
-                if (!seInactivo)
-                    throw new Exception("No se pudo inactivar la cotización original.");
+                // Determinar si se debe crear una nueva versión o actualizar el registro existente
+                bool crearNuevaVersion = cotizacionActual.EnviadoCliente; // Si ya fue enviada al cliente, se crea una nueva versión
 
-                // 2. Crear una nueva versión de la cotización
-                Cotizacion newCotizacion = new Cotizacion
+                Cotizacion cotizacionAfectada;
+
+                if (crearNuevaVersion)
                 {
-                    Secuencial = 0, // Para que EF la inserte como nueva
-                    SecVisita = entidad.SecVisita,
-                    EnviadoProveedor = entidad.EnviadoProveedor,
-                    EnviadoCliente = entidad.EnviadoCliente,
-                    Confirmacion = entidad.Confirmacion,
-                    EstaActivo = 1, // La nueva versión siempre está activa
-                    FechaRegistro = DateTime.Now,
-                    FechaModificacion = DateTime.Now,
-                    SecUsuario = cotizacionOriginal.SecUsuario, // Creador original
-                    SecUsuarioModifica = secUsuarioActual, // Último editor
-                    SecCotizacionOriginal = cotizacionOriginal.SecCotizacionOriginal ?? cotizacionOriginal.Secuencial // Enlazar a la versión original
-                };
+                    // 1. Inactivar la cotización original (actual)
+                    cotizacionActual.EstaActivo = 0;
+                    cotizacionActual.FechaModificacion = DateTime.Now;
+                    bool seInactivo = await _repositorio.Editar(cotizacionActual);
+                    if (!seInactivo)
+                        throw new Exception("No se pudo inactivar la cotización original.");
 
-                // Clonar y limpiar detalles e impuestos para la nueva cotización
-                newCotizacion.Cotizaciondetalles = new List<Cotizaciondetalle>();
-                newCotizacion.ImpuestoCotizaciones = new List<ImpuestoCotizacion>();
+                    // 2. Crear una nueva versión de la cotización
+                    cotizacionAfectada = new Cotizacion
+                    {
+                        Secuencial = 0, // Para que EF la inserte como nueva
+                        SecVisita = entidad.SecVisita,
+                        EnviadoProveedor = entidad.EnviadoProveedor,
+                        EnviadoCliente = entidad.EnviadoCliente,
+                        Confirmacion = entidad.Confirmacion,
+                        EstaActivo = 1, // La nueva versión siempre está activa
+                        FechaRegistro = DateTime.Now,
+                        FechaModificacion = DateTime.Now,
+                        SecUsuario = cotizacionActual.SecUsuario, // Creador original
+                        SecUsuarioModifica = secUsuarioActual, // Último editor
+                        SecCotizacionOriginal = cotizacionActual.SecCotizacionOriginal ?? cotizacionActual.Secuencial // Enlazar a la versión original
+                    };
+                }
+                else
+                {
+                    // Actualizar el registro existente (modo borrador)
+                    cotizacionAfectada = cotizacionActual;
+                    cotizacionAfectada.SecVisita = entidad.SecVisita;
+                    cotizacionAfectada.EnviadoProveedor = entidad.EnviadoProveedor;
+                    cotizacionAfectada.EnviadoCliente = entidad.EnviadoCliente;
+                    cotizacionAfectada.Confirmacion = entidad.Confirmacion;
+                    cotizacionAfectada.FechaModificacion = DateTime.Now;
+                    cotizacionAfectada.SecUsuarioModifica = secUsuarioActual;
+                    // Limpiar detalles e impuestos existentes para reemplazarlos
+                    cotizacionAfectada.Cotizaciondetalles.Clear();
+                    cotizacionAfectada.ImpuestoCotizaciones.Clear();
+                }
 
+                // Recalcular detalles y totales
                 decimal subtotalCalculado = 0;
                 foreach (var detalleFromFrontend in entidad.Cotizaciondetalles)
                 {
-                    var originalDetalle = cotizacionOriginal.Cotizaciondetalles
-                                                            .FirstOrDefault(cd => cd.Secuencial == detalleFromFrontend.Secuencial);
-
                     var newCotizacionDetalle = new Cotizaciondetalle
                     {
-                        Secuencial = 0, // For EF to insert as new
+                        Secuencial = 0, // For EF to insert as new (or update if existing and not versioning)
                         SecCotizacion = 0, // Will be assigned by EF
-                        SecEquipoVisita = originalDetalle?.SecEquipoVisita ?? detalleFromFrontend.SecEquipoVisita, // Preserve link
+                        SecEquipoVisita = detalleFromFrontend.SecEquipoVisita, // Preserve link
                         DetalleEquipo = detalleFromFrontend.DetalleEquipo,
                         ValorCompra = detalleFromFrontend.ValorCompra,
                         MargenGanancia = detalleFromFrontend.MargenGanancia,
@@ -233,12 +250,12 @@ namespace BLL.Implementacion
                         FechaRegistro = DateTime.Now,
                         Total = detalleFromFrontend.ValorCompra * detalleFromFrontend.Cantidad * (1 + detalleFromFrontend.MargenGanancia / 100)
                     };
-                    newCotizacion.Cotizaciondetalles.Add(newCotizacionDetalle);
+                    cotizacionAfectada.Cotizaciondetalles.Add(newCotizacionDetalle);
                     subtotalCalculado += newCotizacionDetalle.Total;
                 }
-                newCotizacion.Subtotal = subtotalCalculado;
+                cotizacionAfectada.Subtotal = subtotalCalculado;
 
-                // Recalcular impuestos para la nueva cotización
+                // Recalcular impuestos
                 decimal valorIVACalculado = 0;
                 decimal valorImportacionCalculado = 0;
                 var impuestosActivos = await _impuestoServices.Lista();
@@ -246,11 +263,11 @@ namespace BLL.Implementacion
                 var ivaImpuesto = impuestosActivos.FirstOrDefault(i => i.Vigente && i.SecTipoImpuestoNavigation.EsIva);
                 if (ivaImpuesto != null && ivaImpuesto.Porcentaje.HasValue)
                 {
-                    valorIVACalculado = newCotizacion.Subtotal * (ivaImpuesto.Porcentaje.Value / 100m);
-                    newCotizacion.ImpuestoCotizaciones.Add(new ImpuestoCotizacion
+                    valorIVACalculado = cotizacionAfectada.Subtotal * (ivaImpuesto.Porcentaje.Value / 100m);
+                    cotizacionAfectada.ImpuestoCotizaciones.Add(new ImpuestoCotizacion
                     {
                         ImpuestoId = ivaImpuesto.Id,
-                        BaseImponible = newCotizacion.Subtotal,
+                        BaseImponible = cotizacionAfectada.Subtotal,
                         ValorImpuesto = valorIVACalculado,
                         Exento = false,
                         FechaRegistro = DateTime.Now
@@ -262,19 +279,19 @@ namespace BLL.Implementacion
                 {
                     if (importacionImpuesto.Porcentaje.HasValue)
                     {
-                        valorImportacionCalculado = newCotizacion.Subtotal * (importacionImpuesto.Porcentaje.Value / 100m);
+                        valorImportacionCalculado = cotizacionAfectada.Subtotal * (importacionImpuesto.Porcentaje.Value / 100m);
                     }
                     else if (importacionImpuesto.ValorFijo.HasValue)
                     {
-                        valorImportacionCalculado = importacionImpuesto.ValorFijo.Value;
+                        valorImportacionCalculado = importacionImpuesto.ValorFijo.Value; // Corrected typo
                     }
                     
                     if (valorImportacionCalculado > 0)
                     {
-                        newCotizacion.ImpuestoCotizaciones.Add(new ImpuestoCotizacion
+                        cotizacionAfectada.ImpuestoCotizaciones.Add(new ImpuestoCotizacion
                         {
                             ImpuestoId = importacionImpuesto.Id,
-                            BaseImponible = newCotizacion.Subtotal,
+                            BaseImponible = cotizacionAfectada.Subtotal,
                             ValorImpuesto = valorImportacionCalculado,
                             Exento = false,
                             FechaRegistro = DateTime.Now
@@ -282,22 +299,33 @@ namespace BLL.Implementacion
                     }
                 }
 
-                newCotizacion.ValorIVA = valorIVACalculado;
-                newCotizacion.ValorImportacion = valorImportacionCalculado;
-                newCotizacion.ValorImpuestos = valorIVACalculado + valorImportacionCalculado;
-                newCotizacion.TotalConImpuestos = newCotizacion.Subtotal + newCotizacion.ValorImpuestos;
+                cotizacionAfectada.ValorIVA = valorIVACalculado;
+                cotizacionAfectada.ValorImportacion = valorImportacionCalculado;
+                cotizacionAfectada.ValorImpuestos = valorIVACalculado + valorImportacionCalculado;
+                cotizacionAfectada.TotalConImpuestos = cotizacionAfectada.Subtotal + cotizacionAfectada.ValorImpuestos;
 
-                Cotizacion cotizacionCreada = await _repositorio.Crear(newCotizacion);
-                if (cotizacionCreada.Secuencial == 0)
-                    throw new Exception("No se pudo crear la nueva versión de la cotización.");
-
-                // Cambiar etapa de la visita a "COT" si la nueva versión de la cotización tiene detalles
-                if (newCotizacion.Cotizaciondetalles.Any())
+                Cotizacion cotizacionResult;
+                if (crearNuevaVersion)
                 {
-                    await _visitaServices.CambiarEtapa(newCotizacion.SecVisita, "COT");
+                    cotizacionResult = await _repositorio.Crear(cotizacionAfectada);
+                    if (cotizacionResult.Secuencial == 0)
+                        throw new Exception("No se pudo crear la nueva versión de la cotización.");
+                }
+                else
+                {
+                    bool seEdito = await _repositorio.Editar(cotizacionAfectada);
+                    if (!seEdito)
+                        throw new Exception("No se pudo actualizar la cotización.");
+                    cotizacionResult = cotizacionAfectada; // Devolver la misma entidad actualizada
                 }
 
-                return cotizacionCreada;
+                // Cambiar etapa de la visita a "COT" si la cotización tiene detalles
+                if (cotizacionAfectada.Cotizaciondetalles.Any())
+                {
+                    await _visitaServices.CambiarEtapa(cotizacionAfectada.SecVisita, "COT");
+                }
+
+                return cotizacionResult;
             }
             catch
             {

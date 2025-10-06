@@ -1,6 +1,6 @@
 <!--  Modal-->
 <div class="modal fade" id="modalPreContrato" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
             <div class="card shadow-sm">
                 <div class="card-header py-2 bg-second-primary">
@@ -16,92 +16,60 @@
                         <input type="hidden" value="0" id="txtId">
                         <div class="row">
                             <div class="col-sm-12">
-                                <div class="form-group mb-0">
-                                    <label for="cboCotizacionesAceptadas">Crear Pre-Contrato desde Cotización Aceptada</label>
-                                    <div class="input-group">
-                                        <select id="cboCotizacionesAceptadas" class="form-control">
-                                            <option value="">Seleccionar...</option>
-                                        </select>
-                                    </div>
+                                <div class="form-group mb-2">
+                                    <select id="cboCotizacionesAceptadas" class="form-control form-control-sm" title="Crear Pre-Contrato desde Cotización Aceptada">
+                                        <option value="" disabled selected>Crear Pre-Contrato desde Cotización Aceptada</option>
+                                    </select>
                                     <small class="form-text text-muted">Seleccione una cotización para llenar los datos del pre-contrato.</small>
                                 </div>
                             </div>
                         </div>
-                        <hr/>
                         <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="SecFormaPago">Forma de Pago</label>
-                                    <select id="SecFormaPago" class="form-control form-control-sm"></select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="ValorContrato">Valor del Contrato</label>
-                                    <input type="number" class="form-control form-control-sm" id="ValorContrato" value="0" min="0">
-                                </div>
-                                <div class="form-group">
-                                    <label for="ValorAnticipo">Valor del Anticipo</label>
-                                    <input type="number" class="form-control form-control-sm" id="ValorAnticipo" value="0" min="0">
-                                </div>
-                                <div class="form-group">
-                                    <label for="FechaAnticipo">Fecha del Anticipo</label>
-                                    <input type="date" class="form-control form-control-sm" id="FechaAnticipo">
-                                </div>
-                                <div class="form-group">
-                                    <label for="NumeroCuotas">Número de Cuotas</label>
-                                    <input type="number" class="form-control form-control-sm" id="NumeroCuotas" value="0" min="0">
-                                </div>
-                                <div class="form-group">
-                                    <label for="FechaPrimeraCuota">Fecha Primera Cuota</label>
-                                    <input type="date" class="form-control form-control-sm" id="FechaPrimeraCuota">
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-12">
                                 <div class="form-row">
                                     <div class="form-group col-sm-6">
-                                        <label for="Dias">Días de Entrega</label>
-                                        <input type="number" class="form-control form-control-sm" id="Dias" value="0" min="0">
+                                        <input type="number" class="form-control form-control-sm" id="Dias" min="0" placeholder="Días de Entrega" title="Días de Entrega">
                                     </div>
                                     <div class="form-group col-sm-6">
-                                        <label for="TipoDias">Tipo de Días</label>
-                                        <select id="TipoDias" class="form-control form-control-sm">
+                                        <select id="TipoDias" class="form-control form-control-sm" title="Tipo de Días">
+                                            <option value="" disabled selected>Tipo de Días</option>
                                             <option value="Hábiles">Hábiles</option>
                                             <option value="Calendario">Calendario</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="PeriodoMantenimiento">Periodo de Mantenimiento</label>
-                                    <select id="PeriodoMantenimiento" class="form-control form-control-sm">
-                                        <option value="semanal">Semanal</option>
-                                        <option value="quincenal">Quincenal</option>
-                                        <option value="mensual">Mensual</option>
-                                        <option value="trimestral">Trimestral</option>
-                                        <option value="semestral">Semestral</option>
-                                        <option value="anual">Anual</option>
-                                    </select>
-                                </div>
                                 <div class="form-row">
                                     <div class="form-group col-sm-6">
-                                        <label for="AniosGarantia">Años Garantía</label>
-                                        <input type="number" class="form-control form-control-sm" id="AniosGarantia" value="0" min="0">
+                                        <select id="PeriodoMantenimiento" class="form-control form-control-sm" title="Periodo de Mantenimiento">
+                                            <option value="" disabled selected>Periodo de Mantenimiento</option>
+                                            <option value="semanal">Semanal</option>
+                                            <option value="quincenal">Quincenal</option>
+                                            <option value="mensual">Mensual</option>
+                                            <option value="trimestral">Trimestral</option>
+                                            <option value="semestral">Semestral</option>
+                                            <option value="anual">Anual</option>
+                                        </select>
                                     </div>
-                                    <div class="form-group col-sm-6">
-                                        <label for="MesesGarantia">Meses Garantía</label>
-                                        <input type="number" class="form-control form-control-sm" id="MesesGarantia" value="0" min="0">
+                                    <div class="form-group col-sm-3">
+                                        <input type="number" class="form-control form-control-sm" id="AniosGarantia" min="0" placeholder="Años Garantía" title="Años Garantía">
+                                    </div>
+                                    <div class="form-group col-sm-3">
+                                        <input type="number" class="form-control form-control-sm" id="MesesGarantia" min="0" placeholder="Meses Garantía" title="Meses Garantía">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="PolizaGarantia">Póliza de Garantía</label>
-                                    <select id="PolizaGarantia" class="form-control form-control-sm"></select>
+                                    <select id="PolizaGarantia" class="form-control form-control-sm" title="Seleccione la garantía">
+                                        <option value="" disabled selected>Seleccione la garantía</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
-                        <hr/>
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <label for="SecPlantillaPreContrato">Seleccionar Plantilla</label>
-                                    <select id="SecPlantillaPreContrato" class="form-control"></select>
+                                    <select id="SecPlantillaPreContrato" class="form-control" title="Seleccionar Plantilla">
+                                        <option value="" disabled selected>Seleccionar Plantilla</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>

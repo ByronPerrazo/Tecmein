@@ -63,7 +63,7 @@ namespace BLL.Implementacion
 
             if (entidad.AceptacionCliente)
             {
-                await _visitaServices.CambiarEtapa(cotizacion.SecVisita, "PRE");
+                await _visitaServices.CambiarEtapa(cotizacion.SecVisita, "ACE");
 
                 cotizacion.Confirmacion = true;
                 await _repositorioCotizacion.Editar(cotizacion);
@@ -111,7 +111,7 @@ namespace BLL.Implementacion
                 {
                     cotizacion.Confirmacion = true;
                     await _repositorioCotizacion.Editar(cotizacion);
-                    await _visitaServices.CambiarEtapa(cotizacion.SecVisita, "PRE");
+                    await _visitaServices.CambiarEtapa(cotizacion.SecVisita, "ACE");
                 }
             }
 
