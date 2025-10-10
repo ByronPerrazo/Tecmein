@@ -14,14 +14,14 @@ $(document).ready(function () {
             "url": "/Permiso/Lista",
             "type": "GET",
             "datatype": "json",
-            "dataSrc": "listaObjeto.$values"
+            "dataSrc": function(json) { return json.listaObjeto ? json.listaObjeto.$values : []; }
         },
         "columns": [
             { "data": "idPermiso" },
             { "data": "descripcion" },
             {
-                "defaultContent": '<button class="btn btn-primary btn-sm btn-editar"><i class="fas fa-pencil-alt"></i></button>' +
-                                  '<button class="btn btn-danger btn-sm ms-2 btn-eliminar"><i class="fas fa-trash-alt"></i></button>',
+                "defaultContent": '<div class="btn-group" role="group"><button class="btn btn-primary btn-sm btn-editar"><i class="fas fa-pencil-alt"></i></button>' +
+                                  '<button class="btn btn-danger btn-sm btn-eliminar"><i class="fas fa-trash-alt"></i></button></div>',
                 "orderable": false,
                 "searchable": false,
                 "width": "80px"

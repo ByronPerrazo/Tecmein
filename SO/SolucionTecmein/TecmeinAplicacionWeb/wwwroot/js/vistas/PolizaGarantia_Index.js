@@ -29,7 +29,7 @@ $(document).ready(function () {
             { "data": "secuencial", "visible": false, "searchable": false },
             { "data": "descripcion" },
             { "data": "estaActivo", "render": function (data) { return data == 1 ? '<span class="badge badge-info">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>'; } },
-            { "defaultContent": '<button class="btn btn-primary btn-editar btn-sm"><i class="fas fa-pencil-alt"></i></button><button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button>', "orderable": false, "searchable": false, "width": "80px" }
+            { "defaultContent": '<div class="btn-group" role="group"><button class="btn btn-primary btn-editar btn-sm"><i class="fas fa-pencil-alt"></i></button><button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button></div>', "orderable": false, "searchable": false, "width": "80px" }
         ],
         order: [[0, "desc"]],
         dom: "Bfrtip",

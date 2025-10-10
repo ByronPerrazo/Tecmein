@@ -42,8 +42,10 @@ $(document).ready(function () {
             },
             {
                 "defaultContent":
-                    '<button class="btn btn-primary btn-editar btn-sm mr-2"><i class="fas fa-pencil-alt"></i></button>' +
-                    '<button class="btn btn-danger btn-eliminar btn-sm mr-2"><i class="fas fa-trash-alt"></i></button>',
+                    '<div class="btn-group" role="group">' +
+                    '<button class="btn btn-primary btn-editar btn-sm"><i class="fas fa-pencil-alt"></i></button>' +
+                    '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button>' +
+                    '</div>',
                 "orderable": false,
                 "searchable": false,
                 "width": "120px"

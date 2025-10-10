@@ -14,28 +14,27 @@ $(document).ready(function () {
             "url": '/DiccionarioParametro/Lista',
             "type": "GET",
             "datatype": "json",
-            "dataSrc": "data.$values" // Adaptado para el serializador de .NET
-        },
-        "columns": [
-            {
-                data: "parametro", render: function (data) {
-                    // Se quitan las llaves solo para la visualización en la tabla
-                    return data.replace(/{{|}}/g, "");
-                }
-            },
-            { data: "descripcion" },
-            {
-                data: "estaActivo", render: function (data) {
-                    if (data == 1)
-                        return '<span class="badge badge-info">Activo</span>';
-                    else
-                        return '<span class="badge badge-danger">Inactivo</span>';
-                }
-            },
-            {
-                "defaultContent": '<button class="btn btn-primary btn-editar btn-sm mr-2"><i class="fas fa-pencil-alt"></i></button>' +
-                                  '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button>',
-                "orderable": false,
+                            "dataSrc": function(json) { return json.data ? json.data.$values : []; } // Corregido para procesar la respuesta
+                    },
+                    "columns": [
+                        {
+                            data: "parametro", render: function (data) {
+                                // Se quitan las llaves solo para la visualización en la tabla
+                                return data.replace(/{{|}}/g, "");
+                            }
+                        },
+                        { data: "descripcion" },
+                        {
+                            data: "estaActivo", render: function (data) {
+                                if (data == 1)
+                                    return '<span class="badge badge-info">Activo</span>';
+                                else
+                                    return '<span class="badge badge-danger">Inactivo</span>';
+                            }
+                        },
+                        {
+                            "defaultContent": '<div class="btn-group" role="group"><button class="btn btn-primary btn-editar btn-sm"><i class="fas fa-pencil-alt"></i></button>' +
+                                              '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button></div>',                "orderable": false,
                 "searchable": false,
                 "width": "80px"
             }

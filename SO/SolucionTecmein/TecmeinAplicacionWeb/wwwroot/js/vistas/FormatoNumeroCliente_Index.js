@@ -36,7 +36,7 @@ $(document).ready(function () {
             { "data": "numeroInicio" },
             { "data": "longitudNumero" },
             {
-                "defaultContent": '<button class="btn btn-primary btn-editar btn-sm mr-2"><i class="fas fa-pencil-alt"></i></button>',
+                "defaultContent": '<div class="btn-group" role="group"><button class="btn btn-primary btn-editar btn-sm"><i class="fas fa-pencil-alt"></i></button></div>',
                 "orderable": false,
                 "searchable": false,
                 "width": "40px"

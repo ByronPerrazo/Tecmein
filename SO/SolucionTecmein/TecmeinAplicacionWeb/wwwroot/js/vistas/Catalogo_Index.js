@@ -44,8 +44,10 @@ $(document).ready(function () {
 
                 {
                     "defaultContent":
+                        '<div class="btn-group" role="group">' +
                         /* '<button class="btn btn-primary btn-editar btn-sm mr-2"><i class="fas fa-pencil-alt"></i></button>' +*/
-                        '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button>',
+                        '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button>' +
+                        '</div>',
 
                     "orderable": false,
                     "searchable": false,
@@ -125,7 +127,7 @@ $("#btnGuardarCat").click(function () {
                     : Promise.reject(response);
             }).then(responseJson => {
                 if (responseJson.estado) {
-                    tablaData.row.add(responseJson.objeto).draw(false);
+                    tablaData.ajax.reload();
                     $("#modalData").modal("hide");
                     Swal.fire("Listo!", "Catalogo " + responseJson.objeto.nombre + " Creado ", "success");
                 }

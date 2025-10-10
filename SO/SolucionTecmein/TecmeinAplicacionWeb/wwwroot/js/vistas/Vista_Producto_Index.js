@@ -188,7 +188,7 @@ async function ProcesoCargaLista(secuencialVisita) {
                     { data: "detalleEspecifico", searchable: true, width: "80%" },
                     {
                         "defaultContent":
-                            '<button class="btn btn-danger btn-eliminar-equipo btn-sm mr-2"><i class="fas fa-trash-alt"></i></button>',
+                            '<div class="btn-group" role="group"><button class="btn btn-danger btn-eliminar-equipo btn-sm"><i class="fas fa-trash-alt"></i></button></div>',
                         "orderable": true,
                         "searchable": false,
                         "width": "10%",

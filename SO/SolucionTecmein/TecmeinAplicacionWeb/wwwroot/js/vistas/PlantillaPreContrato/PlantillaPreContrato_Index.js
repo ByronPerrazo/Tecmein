@@ -7,7 +7,7 @@ $(document).ready(function () {
             "url": "/PlantillaPreContrato/Lista",
             "type": "GET",
             "datatype": "json",
-            "dataSrc": "data.$values"
+            "dataSrc": function(json) { return json.data ? json.data.$values : []; },
         },
         "columns": [
             { "data": "secPlantillaPreContrato", "visible": false, "searchable": false },
@@ -25,9 +25,11 @@ $(document).ready(function () {
                 }
             },
             {
-                "defaultContent": '<button class="btn btn-primary btn-editar btn-sm mr-2"><i class="fas fa-pencil-alt"></i></button>' +
+                "defaultContent": '<div class="btn-group" role="group">' +
+                    '<button class="btn btn-primary btn-editar btn-sm"><i class="fas fa-pencil-alt"></i></button>' +
+                    '<button class="btn btn-info btn-parrafos btn-sm"><i class="fas fa-list"></i></button>' +
                     '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button>' +
-                    '<button class="btn btn-info btn-parrafos btn-sm ml-2"><i class="fas fa-list"></i></button>',
+                    '</div>',
                 "orderable": false,
                 "searchable": false,
                 "width": "120px"

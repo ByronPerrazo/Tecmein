@@ -88,8 +88,8 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    "defaultContent": '<button class="btn btn-success btn-marcar-pagada btn-sm mr-2"><i class="fas fa-check"></i> Marcar Pagada</button>' +
-                                      '<button class="btn btn-danger btn-marcar-vencida btn-sm"><i class="fas fa-exclamation-triangle"></i> Marcar Vencida</button>',
+                    "defaultContent": '<div class="btn-group" role="group"><button class="btn btn-success btn-marcar-pagada btn-sm"><i class="fas fa-check"></i> Marcar Pagada</button>' +
+                                      '<button class="btn btn-danger btn-marcar-vencida btn-sm"><i class="fas fa-exclamation-triangle"></i> Marcar Vencida</button></div>',
                     "orderable": false,
                     "searchable": false,
                     "width": "150px"

@@ -49,9 +49,11 @@ $(document).ready(function () {
 
                 {
                     "defaultContent":
-                        '<button class="btn btn-primary btn-editar btn-sm mr-2"><i class="fas fa-pencil-alt"></i></button>' +
-                        '<button class="btn btn-danger btn-eliminar btn-sm mr-2"><i class="fas fa-trash-alt"></i></button>' +
-                        '<a class="btn btn-info btn-sm" href="#"><i class="fas fa-user-shield"></i></a>', // Botón Gestionar Permisos
+                        '<div class="btn-group" role="group">' +
+                        '<button class="btn btn-primary btn-editar btn-sm"><i class="fas fa-pencil-alt"></i></button>' +
+                        '<a class="btn btn-info btn-sm" href="#"><i class="fas fa-user-shield"></i></a>' +
+                        '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button>' +
+                        '</div>', // Botón Gestionar Permisos
                     "orderable": false,
                     "searchable": false,
                     "width": "160px"
