@@ -102,7 +102,9 @@ namespace IOC
                     provider.GetRequiredService<ICotizacionServices>(),
                     provider.GetRequiredService<IGenericRepository<PreContratoParrafo>>(),
                     provider.GetRequiredService<IPreContratoGeneratorService>(),
-                    provider.GetRequiredService<IVisitaServices>() // Added IVisitaServices
+                    provider.GetRequiredService<IVisitaServices>(), // Added IVisitaServices
+                    provider.GetRequiredService<IGenericRepository<TipoDocumento>>(), // Added
+                    provider.GetRequiredService<IGenericRepository<PlantillaPreContrato>>() // Added
                 ));
             services.AddScoped<IFormaPagoServices, FormaPagoServices>();
             services.AddScoped<IPreContratoGeneratorService, PreContratoGeneratorService>(provider =>

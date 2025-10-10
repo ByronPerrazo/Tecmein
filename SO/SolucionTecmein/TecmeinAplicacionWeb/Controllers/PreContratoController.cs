@@ -238,13 +238,6 @@ namespace TecmeinAplicacionWeb.Controllers
                 var preContratoData = new BLL.DTOs.PreContratoGeneratorDTO
                 {
                     SecCotizacion = request.SecCotizacion,
-                    SecFormaPago = request.SecFormaPago,
-                    SecPlantillaPreContrato = request.SecPlantillaPreContrato,
-                    ValorContrato = request.ValorContrato,
-                    ValorAnticipo = request.ValorAnticipo,
-                    FechaAnticipo = string.IsNullOrEmpty(request.FechaAnticipo) ? (DateTime?)null : DateTime.Parse(request.FechaAnticipo),
-                    NumeroCuotas = request.NumeroCuotas,
-                    FechaPrimeraCuota = string.IsNullOrEmpty(request.FechaPrimeraCuota) ? (DateTime?)null : DateTime.Parse(request.FechaPrimeraCuota),
                     Dias = request.Dias,
                     TipoDias = request.TipoDias,
                     PeriodoMantenimiento = request.PeriodoMantenimiento,
@@ -279,13 +272,13 @@ namespace TecmeinAplicacionWeb.Controllers
                 var entidad = new PreContrato
                 {
                     SecCotizacion = request.SecCotizacion,
-                    SecFormaPago = request.SecFormaPago,
+                    //SecFormaPago = request.SecFormaPago,
                     SecPlantillaPreContrato = request.SecPlantillaPreContrato,
-                    ValorContrato = request.ValorContrato,
-                    ValorAnticipo = request.ValorAnticipo,
-                    FechaAnticipo = string.IsNullOrEmpty(request.FechaAnticipo) ? (DateTime?)null : DateTime.Parse(request.FechaAnticipo),
-                    NumeroCuotas = request.NumeroCuotas,
-                    FechaPrimeraCuota = string.IsNullOrEmpty(request.FechaPrimeraCuota) ? (DateTime?)null : DateTime.Parse(request.FechaPrimeraCuota),
+                    //ValorContrato = request.ValorContrato,
+                    //ValorAnticipo = request.ValorAnticipo,
+                    //FechaAnticipo = string.IsNullOrEmpty(request.FechaAnticipo) ? (DateTime?)null : DateTime.Parse(request.FechaAnticipo),
+                    //NumeroCuotas = request.NumeroCuotas,
+                    //FechaPrimeraCuota = string.IsNullOrEmpty(request.FechaPrimeraCuota) ? (DateTime?)null : DateTime.Parse(request.FechaPrimeraCuota),
                     Dias = request.Dias,
                     TipoDias = request.TipoDias,
                     PeriodoMantenimiento = request.PeriodoMantenimiento,

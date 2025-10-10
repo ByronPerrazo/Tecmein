@@ -14,8 +14,9 @@ const modeloBaseContrato = {
 function abrirModalContrato(modelo = modeloBaseContrato) {
     // Limpiar y resetear el formulario
     $("#txtIdContratoDirecto").val(modelo.idContrato);
+    $("#txtNombreProyecto").val(modelo.nombreObra);
     $("#cboEstadoDirecto").val(modelo.esActivo ? '1' : '0');
-    $("#txtNombreProyecto").val(modelo.nombreProyecto);
+   // $("#txtNombreProyecto").val(modelo.nombreProyecto);
     $("#txtFechaFirmaDirecto").val(modelo.fechaFirma);
     $("#fileContratoDirecto").val("");
 
@@ -128,9 +129,11 @@ $(document).ready(function () {
             { "data": "rutaArchivo", render: data => data ? `<a href="${data}" target="_blank">Ver Archivo</a>` : "Sin archivo" },
             { "data": "esActivo", render: data => data ? '<span class="badge badge-success">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>' },
             {
-                "defaultContent": '<button class="btn btn-primary btn-editar btn-sm mr-2"><i class="fas fa-pencil-alt"></i></button>' +
-                                  '<button class="btn btn-info btn-plan-pagos btn-sm mr-2"><i class="fas fa-dollar-sign"></i></button>' +
-                                  '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button>',
+                "defaultContent": '<div class="btn-group" role="group">' +
+                                      '<button class="btn btn-primary btn-editar btn-sm"><i class="fas fa-pencil-alt"></i></button>' +
+                                      '<button class="btn btn-info btn-plan-pagos btn-sm"><i class="fas fa-dollar-sign"></i></button>' +
+                                      '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button>' +
+                                  '</div>',
                 "orderable": false, "searchable": false, "width": "120px"
             }
         ],
@@ -185,7 +188,7 @@ $(document).ready(function () {
         } else {
             $('#divPreContrato').hide();
             $('#divCliente').show();
-            $('#txtNombreProyecto').prop('readonly', false).val('');
+            //$('#txtNombreProyecto').prop('readonly', false).val('');
         }
     });
 

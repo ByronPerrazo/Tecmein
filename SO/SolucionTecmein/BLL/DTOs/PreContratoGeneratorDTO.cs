@@ -5,13 +5,7 @@ namespace BLL.DTOs
     public class PreContratoGeneratorDTO
     {
         public int SecCotizacion { get; set; }
-        public int? SecFormaPago { get; set; }
-        public int SecPlantillaPreContrato { get; set; }
-        public decimal ValorContrato { get; set; }
-        public decimal ValorAnticipo { get; set; }
-        public DateTime? FechaAnticipo { get; set; }
-        public int NumeroCuotas { get; set; }
-        public DateTime? FechaPrimeraCuota { get; set; }
+        // Campos relacionados con pagos y plantilla se manejan en el backend o post-contrato
         public int Dias { get; set; }
         public string TipoDias { get; set; }
         public string PeriodoMantenimiento { get; set; }

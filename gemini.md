@@ -1,0 +1,1 @@
+la primera tarea es buscar los archivos .md del directorio donde se inicia la sesion y revisarlos para crear el contexto del proyecto con el que se va a trabajar

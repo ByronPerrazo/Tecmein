@@ -17,19 +17,25 @@ namespace BLL.Implementacion
         private readonly IGenericRepository<PreContratoParrafo> _repositorioPreContratoParrafo;
         private readonly IPreContratoGeneratorService _preContratoGeneratorService;
         private readonly IVisitaServices _visitaServices; // Added
+        private readonly IGenericRepository<TipoDocumento> _repositorioTipoDocumento; // Added
+        private readonly IGenericRepository<PlantillaPreContrato> _repositorioPlantillaPreContrato; // Added
 
         public PreContratoServices(
             IGenericRepository<PreContrato> repositorio,
             ICotizacionServices cotizacionServices,
             IGenericRepository<PreContratoParrafo> repositorioPreContratoParrafo,
             IPreContratoGeneratorService preContratoGeneratorService,
-            IVisitaServices visitaServices) // Added
+            IVisitaServices visitaServices,
+            IGenericRepository<TipoDocumento> repositorioTipoDocumento, // Added
+            IGenericRepository<PlantillaPreContrato> repositorioPlantillaPreContrato) // Added
         {
             _repositorio = repositorio;
             _cotizacionServices = cotizacionServices;
             _repositorioPreContratoParrafo = repositorioPreContratoParrafo;
             _preContratoGeneratorService = preContratoGeneratorService;
             _visitaServices = visitaServices; // Added
+            _repositorioTipoDocumento = repositorioTipoDocumento; // Added
+            _repositorioPlantillaPreContrato = repositorioPlantillaPreContrato; // Added
         }
 
         public async Task<List<PreContrato>> Lista()
@@ -59,13 +65,6 @@ namespace BLL.Implementacion
             var dto = new PreContratoGeneratorDTO
             {
                 SecCotizacion = preContrato.SecCotizacion,
-                SecFormaPago = preContrato.SecFormaPago,
-                SecPlantillaPreContrato = preContrato.SecPlantillaPreContrato,
-                ValorContrato = preContrato.ValorContrato,
-                ValorAnticipo = preContrato.ValorAnticipo,
-                FechaAnticipo = preContrato.FechaAnticipo,
-                NumeroCuotas = preContrato.NumeroCuotas,
-                FechaPrimeraCuota = preContrato.FechaPrimeraCuota,
                 Dias = preContrato.Dias,
                 TipoDias = preContrato.TipoDias,
                 PeriodoMantenimiento = preContrato.PeriodoMantenimiento,
@@ -120,16 +119,12 @@ namespace BLL.Implementacion
 
             preContratoExistente.Dias = entidad.Dias;
             preContratoExistente.TipoDias = entidad.TipoDias;
-            preContratoExistente.ValorContrato = entidad.ValorContrato;
+            // ValorContrato movido a PlanDePago
             preContratoExistente.AniosGarantia = entidad.AniosGarantia;
             preContratoExistente.MesesGarantia = entidad.MesesGarantia;
             preContratoExistente.PeriodoMantenimiento = entidad.PeriodoMantenimiento;
             preContratoExistente.PolizaGarantia = entidad.PolizaGarantia;
-            preContratoExistente.ValorAnticipo = entidad.ValorAnticipo;
-            preContratoExistente.FechaAnticipo = entidad.FechaAnticipo;
-            preContratoExistente.SecFormaPago = entidad.SecFormaPago;
-            preContratoExistente.NumeroCuotas = entidad.NumeroCuotas;
-            preContratoExistente.FechaPrimeraCuota = entidad.FechaPrimeraCuota;
+            // ValorAnticipo, FechaAnticipo, SecFormaPago, NumeroCuotas, FechaPrimeraCuota movidos a PlanDePago
             preContratoExistente.EstaActivo = entidad.EstaActivo;
             preContratoExistente.SecPlantillaPreContrato = entidad.SecPlantillaPreContrato;
 
@@ -202,13 +197,12 @@ namespace BLL.Implementacion
                 FechaRegistro = DateTime.Now,
                 Dias = 0,
                 TipoDias = "N/A",
-                ValorContrato = (decimal)(cotizacion.Subtotal + cotizacion.ValorImpuestos),
+                // ValorContrato movido a PlanDePago
                 AniosGarantia = 0,
                 MesesGarantia = 0,
                 PeriodoMantenimiento = "N/A",
                 PolizaGarantia = "N/A",
-                ValorAnticipo = 0,
-                NumeroCuotas = 0
+                // ValorAnticipo, NumeroCuotas movidos a PlanDePago
             };
 
             var preContratoCreado = await _repositorio.Crear(nuevoPreContrato);
@@ -248,12 +242,7 @@ namespace BLL.Implementacion
                 
                 // Copiamos los datos de la versión anterior para no perderlos en la nueva versión.
                 SecPlantillaPreContrato = ultimaVersion?.SecPlantillaPreContrato ?? 0,
-                SecFormaPago = ultimaVersion?.SecFormaPago,
-                ValorContrato = ultimaVersion?.ValorContrato ?? 0,
-                ValorAnticipo = ultimaVersion?.ValorAnticipo ?? 0,
-                FechaAnticipo = ultimaVersion?.FechaAnticipo,
-                NumeroCuotas = ultimaVersion?.NumeroCuotas ?? 0,
-                FechaPrimeraCuota = ultimaVersion?.FechaPrimeraCuota,
+                // SecFormaPago, ValorContrato, ValorAnticipo, FechaAnticipo, NumeroCuotas, FechaPrimeraCuota movidos a PlanDePago
                 Dias = ultimaVersion?.Dias ?? 0,
                 TipoDias = ultimaVersion?.TipoDias,
                 PeriodoMantenimiento = ultimaVersion?.PeriodoMantenimiento,
@@ -287,7 +276,7 @@ namespace BLL.Implementacion
             var query = await _repositorio.Consultar(p => p.SecCotizacion == preContratoActual.SecCotizacion);
 
             return await query.Include(p => p.SecUsuarioCreaNavigation)
-                                .OrderByDescending(p => p.Version)
+                                .OrderByDescending(p => p.FechaRegistro)
                                 .ToListAsync();
         }
 
@@ -299,11 +288,31 @@ namespace BLL.Implementacion
 
         public async Task<PreContrato> CrearDesdeModal(PreContrato entidad, int usuarioId, string contenidoHtml)
         {
+            // Obtener el TipoDocumento para Pre-Contrato
+            var tipoDocumentoPreContrato = await _repositorioTipoDocumento.Obtener(td => td.Codigo == "PRE-CONTRATO");
+            if (tipoDocumentoPreContrato == null)
+            {
+                throw new Exception("No se encontró el tipo de documento 'PRE-CONTRATO'.");
+            }
+
+            // Obtener la plantilla por defecto activa para Pre-Contrato
+            var plantillaPorDefecto = await _repositorioPlantillaPreContrato.Obtener(
+                p => p.SecTipoDocumento == tipoDocumentoPreContrato.SecTipoDocumento && p.EstaActivo == 1); // Assuming EstaActivo is short for bool
+            
+            if (plantillaPorDefecto == null)
+            {
+                throw new Exception("No se encontró una plantilla de Pre-Contrato activa por defecto. Por favor, configure una.");
+            }
+
+            entidad.SecPlantillaPreContrato = plantillaPorDefecto.SecPlantillaPreContrato; // Asignar la plantilla encontrada
             entidad.SecUsuarioCrea = usuarioId;
             entidad.Version = 1; // Siempre 1 para la creación inicial
             entidad.Estado = "Borrador"; // O el estado inicial que corresponda
             entidad.EstaActivo = true;
             entidad.FechaRegistro = DateTime.Now; // Asegurar que FechaCreacion se establezca
+
+            // Los campos de pago y fechas se manejan en la entidad PlanDePago, no en PreContrato.
+            // Por lo tanto, no se asignan valores aquí.
 
             var preContratoCreado = await _repositorio.Crear(entidad);
             if (preContratoCreado == null || preContratoCreado.SecPreContrato == 0)
@@ -388,22 +397,22 @@ namespace BLL.Implementacion
                 SecCotizacion = ultimaVersion.SecCotizacion,
                 SecPlantillaPreContrato = ultimaVersion.SecPlantillaPreContrato,
                 SecUsuarioCrea = usuarioId,
-                SecFormaPago = ultimaVersion.SecFormaPago,
+                //SecFormaPago = ultimaVersion.SecFormaPago,
                 Version = ultimaVersion.Version + 1,
                 Estado = "Guardado", // O el estado que corresponda después de editar
                 EstaActivo = true,
                 FechaRegistro = DateTime.Now,
                 Dias = ultimaVersion.Dias,
                 TipoDias = ultimaVersion.TipoDias,
-                ValorContrato = ultimaVersion.ValorContrato,
+                //ValorContrato = ultimaVersion.ValorContrato,
                 AniosGarantia = ultimaVersion.AniosGarantia,
                 MesesGarantia = ultimaVersion.MesesGarantia,
                 PeriodoMantenimiento = ultimaVersion.PeriodoMantenimiento,
                 PolizaGarantia = ultimaVersion.PolizaGarantia,
-                ValorAnticipo = ultimaVersion.ValorAnticipo,
-                FechaAnticipo = ultimaVersion.FechaAnticipo,
-                NumeroCuotas = ultimaVersion.NumeroCuotas,
-                FechaPrimeraCuota = ultimaVersion.FechaPrimeraCuota
+                //ValorAnticipo = ultimaVersion.ValorAnticipo,
+                //FechaAnticipo = ultimaVersion.FechaAnticipo,
+                //NumeroCuotas = ultimaVersion.NumeroCuotas,
+                //FechaPrimeraCuota = ultimaVersion.FechaPrimeraCuota
             };
 
             var preContratoCreado = await _repositorio.Crear(nuevaVersionPreContrato);

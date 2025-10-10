@@ -103,9 +103,8 @@ namespace BLL.Utilidades.PDF
                 // Definición de columnas
                 table.ColumnsDefinition(columns =>
                 {
-                    columns.RelativeColumn(3); // Descripción
+                    columns.RelativeColumn(4); // Descripción (ajustado para ocupar más espacio)
                     columns.RelativeColumn();    // Cantidad
-                    columns.RelativeColumn();    // Precio Unitario
                     columns.RelativeColumn();    // Total
                 });
 
@@ -114,7 +113,6 @@ namespace BLL.Utilidades.PDF
                 {
                     header.Cell().Element(CellStyle).Text("Descripción");
                     header.Cell().Element(CellStyle).AlignCenter().Text("Cantidad");
-                    header.Cell().Element(CellStyle).AlignRight().Text("P. Unitario");
                     header.Cell().Element(CellStyle).AlignRight().Text("Total");
 
                     static IContainer CellStyle(IContainer container)
@@ -128,7 +126,6 @@ namespace BLL.Utilidades.PDF
                 {
                     table.Cell().Element(CellStyle).Text(item.DetalleEquipo);
                     table.Cell().Element(CellStyle).AlignCenter().Text(item.Cantidad.ToString());
-                    table.Cell().Element(CellStyle).AlignRight().Text(item.ValorCompra.ToString("C")); // Asumiendo que el precio unitario es ValorCompra
                     table.Cell().Element(CellStyle).AlignRight().Text(item.Total.ToString("C"));
 
                     static IContainer CellStyle(IContainer container)

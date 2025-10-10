@@ -741,13 +741,13 @@ public partial class TecmeindbContext : DbContext
             entity.HasIndex(e => e.SecCotizacion, "FK_PreContrato_Cotizacion_idx");
             entity.HasIndex(e => e.SecPlantillaPreContrato, "FK_PreContrato_Plantilla_idx");
             entity.HasIndex(e => e.SecUsuarioCrea, "FK_PreContrato_Usuario_idx");
-            entity.HasIndex(e => e.SecFormaPago, "FK_PreContrato_FormaPago_idx");
+            // entity.HasIndex(e => e.SecFormaPago, "FK_PreContrato_FormaPago_idx"); // Removed
 
             entity.Property(e => e.SecPreContrato).HasColumnName("SecPreContrato");
             entity.Property(e => e.SecCotizacion).HasColumnName("SecCotizacion");
             entity.Property(e => e.SecPlantillaPreContrato).HasColumnName("SecPlantillaPreContrato");
             entity.Property(e => e.SecUsuarioCrea).HasColumnName("SecUsuarioCrea");
-            entity.Property(e => e.SecFormaPago).HasColumnName("SecFormaPago");
+            // entity.Property(e => e.SecFormaPago).HasColumnName("SecFormaPago"); // Removed
             entity.Property(e => e.Version).HasColumnName("Version");
             entity.Property(e => e.Estado).HasMaxLength(50).HasColumnName("Estado");
             entity.Property(e => e.EstaActivo).HasColumnName("EstaActivo");
@@ -755,15 +755,15 @@ public partial class TecmeindbContext : DbContext
 
             entity.Property(e => e.Dias).HasColumnName("Dias");
             entity.Property(e => e.TipoDias).HasMaxLength(50).HasColumnName("TipoDias");
-            entity.Property(e => e.ValorContrato).HasPrecision(18, 2).HasColumnName("ValorContrato");
+            // entity.Property(e => e.ValorContrato).HasPrecision(18, 2).HasColumnName("ValorContrato"); // Removed
             entity.Property(e => e.AniosGarantia).HasColumnName("AniosGarantia");
             entity.Property(e => e.MesesGarantia).HasColumnName("MesesGarantia");
             entity.Property(e => e.PeriodoMantenimiento).HasMaxLength(255).HasColumnName("PeriodoMantenimiento");
             entity.Property(e => e.PolizaGarantia).HasMaxLength(255).HasColumnName("PolizaGarantia");
-            entity.Property(e => e.ValorAnticipo).HasPrecision(18, 2).HasColumnName("ValorAnticipo");
-            entity.Property(e => e.FechaAnticipo).HasColumnType("datetime").HasColumnName("FechaAnticipo");
-            entity.Property(e => e.NumeroCuotas).HasColumnName("NumeroCuotas");
-            entity.Property(e => e.FechaPrimeraCuota).HasColumnType("datetime").HasColumnName("FechaPrimeraCuota");
+            // entity.Property(e => e.ValorAnticipo).HasPrecision(18, 2).HasColumnName("ValorAnticipo"); // Removed
+            // entity.Property(e => e.FechaAnticipo).HasColumnType("datetime").HasColumnName("FechaAnticipo"); // Removed
+            // entity.Property(e => e.NumeroCuotas).HasColumnName("NumeroCuotas"); // Removed
+            // entity.Property(e => e.FechaPrimeraCuota).HasColumnType("datetime").HasColumnName("FechaPrimeraCuota"); // Removed
 
             entity.HasOne(d => d.SecCotizacionNavigation)
                 .WithMany()
@@ -783,11 +783,11 @@ public partial class TecmeindbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PreContrato_Usuario");
 
-            entity.HasOne(d => d.SecFormaPagoNavigation)
-                .WithMany()
-                .HasForeignKey(d => d.SecFormaPago)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_PreContrato_FormaPago");
+            // entity.HasOne(d => d.SecFormaPagoNavigation) // Removed
+            //     .WithMany()
+            //     .HasForeignKey(d => d.SecFormaPago)
+            //     .OnDelete(DeleteBehavior.ClientSetNull)
+            //     .HasConstraintName("FK_PreContrato_FormaPago"); // Removed
         });
 
         modelBuilder.Entity<Cotizacion>(entity =>

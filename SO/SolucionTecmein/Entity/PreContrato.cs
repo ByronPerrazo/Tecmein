@@ -18,7 +18,7 @@ namespace Entity
         public int SecCotizacion { get; set; }
         public int SecPlantillaPreContrato { get; set; }
         public int SecUsuarioCrea { get; set; }
-        public int? SecFormaPago { get; set; } // Añadido
+        // Campos de pago y forma de pago movidos a PlanDePago
 
         public int Version { get; set; }
         [Required]
@@ -30,17 +30,14 @@ namespace Entity
         public int Dias { get; set; }
         [Required]
         public string TipoDias { get; set; }
-        public decimal ValorContrato { get; set; }
+        // ValorContrato movido a PlanDePago
         public int AniosGarantia { get; set; }
         public int MesesGarantia { get; set; }
         [Required]
         public string PeriodoMantenimiento { get; set; }
         [Required]
         public string PolizaGarantia { get; set; }
-        public decimal ValorAnticipo { get; set; }
-        public DateTime? FechaAnticipo { get; set; }
-        public int NumeroCuotas { get; set; }
-        public DateTime? FechaPrimeraCuota { get; set; }
+        // ValorAnticipo, FechaAnticipo, NumeroCuotas, FechaPrimeraCuota movidos a PlanDePago
 
 
         [ForeignKey("SecCotizacion")]
@@ -52,8 +49,8 @@ namespace Entity
         [ForeignKey("SecUsuarioCrea")]
         public virtual Usuario SecUsuarioCreaNavigation { get; set; }
 
-        [ForeignKey("SecFormaPago")]
-        public virtual FormaPago SecFormaPagoNavigation { get; set; } // Añadido
+        // [ForeignKey("SecFormaPago")]
+        // public virtual FormaPago SecFormaPagoNavigation { get; set; } // Añadido // Removed
 
         public virtual ICollection<PreContratoParrafo> PreContratoParrafos { get; set; }
     }

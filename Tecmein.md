@@ -33,3 +33,18 @@ Este archivo contiene los principios arquitectónicos, convenciones de código y
 
 - **Ruta de Logs:** `C:\Proyectos\Tecmein\SO\SolucionTecmein\TecmeinAplicacionWeb\logs`
 - **Contexto del Asistente:** Si el directorio de trabajo es `C:\Proyectos\Tecmein`, el enfoque debe ser exclusivo a este proyecto.
+
+
+## Reglas y Patrones Específicos (Memorizados por Gemini)
+
+1.  **Seguimiento de Pagos:** Implementar un sistema para `PlanDePago` y `Pago`, separado de `PreContrato`.
+2.  **Ciclo de Vida Contrato/Cliente:** Un plan de 3 fases (actualmente en pausa) para crear las entidades `Contrato` y `Cliente` y migrar datos históricos.
+3.  **Verificación Manual de Contratos:** Implementar a futuro una pantalla para que un administrador compare el precontrato del sistema con el PDF firmado.
+4.  **Convenciones de Nomenclatura:** Usar el formato `[NombreEntidad]VM` para ViewModels y `camelCase` para variables y métodos.
+5.  **Flujo de Planes de Pago:** La información en `PreContrato` es una propuesta; el `PlanDePago` formal y opcional se vincula solo al `Contrato`.
+6.  **Gestión de Clientes y Contratos:** Definición de las fuentes de clientes, CRUD de clientes y los dos flujos para la creación de contratos.
+7.  **Patrón para DataTables:** Al usar DataTables, la API devuelve un `GenericResponse`, y se debe usar la opción `dataSrc` en el frontend para apuntar a `response.objeto.$values`.
+8.  **Patrón de Consumo de API (Listas):** Al consumir listas desde el frontend, siempre acceder al array de datos a través de `response.objeto.$values`.
+9.  **Contexto del Proyecto:** Al iniciar una sesión en el directorio de Tecmein, debo revisar todos los archivos `.md` para cargar el contexto completo.
+10. **Patrón de Botones en Tablas:** El orden de los botones de acción debe ser: Editar (izquierda), otros, Eliminar (derecha).
+11. **Patrón de Versionamiento de Cotizaciones:** Se define un proceso específico para editar cotizaciones antes y después de ser enviadas al cliente.

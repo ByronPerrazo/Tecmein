@@ -483,11 +483,12 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
 
             CreateMap<PolizaGarantia, PolizaGarantiaVM>().ReverseMap();
 
-            CreateMap<PreContratoModalVM, PreContrato>()
-                .ForMember(dest => dest.FechaAnticipo, opt => opt.MapFrom(src =>
-                    !string.IsNullOrEmpty(src.FechaAnticipo.ToString()) ? (DateTime?)DateTime.Parse(src.FechaAnticipo.ToString(), System.Globalization.CultureInfo.InvariantCulture) : null))
-                .ForMember(dest => dest.FechaPrimeraCuota, opt => opt.MapFrom(src =>
-                    !string.IsNullOrEmpty(src.FechaPrimeraCuota.ToString()) ? (DateTime?)DateTime.Parse(src.FechaPrimeraCuota.ToString(), System.Globalization.CultureInfo.InvariantCulture) : null));
+            //CreateMap<PreContratoModalVM, PreContrato>()
+            //    .ForMember(dest => dest.FechaAnticipo, opt => opt.MapFrom(src =>
+            //        !string.IsNullOrEmpty(src.FechaAnticipo.ToString()) ? (DateTime?)DateTime.Parse(src.FechaAnticipo.ToString(), System.Globalization.CultureInfo.InvariantCulture) : null))
+            //    .ForMember(dest => dest.FechaPrimeraCuota, opt => opt.MapFrom(src =>
+            //        !string.IsNullOrEmpty(src.FechaPrimeraCuota.ToString()) ? (DateTime?)DateTime.Parse(src.FechaPrimeraCuota.ToString(), System.Globalization.CultureInfo.InvariantCulture) : null));
+
             CreateMap<PreContrato, PreContratoVM>()
                 .ForMember(destino => destino.NombreUsuarioCrea,
                            opt => opt.MapFrom(origen => origen.SecUsuarioCreaNavigation.Nombre))

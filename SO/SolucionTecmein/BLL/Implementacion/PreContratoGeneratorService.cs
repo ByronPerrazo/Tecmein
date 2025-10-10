@@ -28,7 +28,7 @@ namespace BLL.Implementacion
             var plantilla = await _context.PlantillaPreContratos
                                           .Include(p => p.PlantillaPreContratoParrafos)
                                           .AsNoTracking()
-                                          .FirstOrDefaultAsync(p => p.SecPlantillaPreContrato == preContratoData.SecPlantillaPreContrato);
+                                          .FirstOrDefaultAsync(p => p.SecTipoDocumentoNavigation.Codigo == "PRE-CONTRATO");
 
             if (plantilla == null || !plantilla.PlantillaPreContratoParrafos.Any())
             {
@@ -104,7 +104,7 @@ namespace BLL.Implementacion
             var contactoVisita = visita?.Contactovisita?.FirstOrDefault()?.SecContactoNavigation;
             var constructora = contactoVisita?.SecConstructoraNavigation;
             var usuarioCreaCotizacion = cotizacion.SecUsuarioNavigation;
-            var formaPago = preContratoData.SecFormaPago.HasValue ? await _context.FormasPago.FindAsync(preContratoData.SecFormaPago.Value) : null;
+            //var formaPago = preContratoData.SecFormaPago.HasValue ? await _context.FormasPago.FindAsync(preContratoData.SecFormaPago.Value) : null;
 
             var diccionario = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             var parametros = await (await _repositorioDiccionario.Consultar(p => p.EstaActivo)).ToListAsync();
@@ -122,18 +122,18 @@ namespace BLL.Implementacion
                 string valor = "";
                 switch (parametro.Parametro.ToLower())
                 {
-                    case "{{valor_contrato}}": valor = preContratoData.ValorContrato.ToString("N2"); break;
-                    case "{{valor_anticipo}}": valor = preContratoData.ValorAnticipo.ToString("N2"); break;
-                    case "{{fecha_anticipo}}": valor = preContratoData.FechaAnticipo?.ToString("dd/MM/yyyy"); break;
-                    case "{{numero_cuotas}}": valor = preContratoData.NumeroCuotas.ToString(); break;
-                    case "{{fecha_primera_cuota}}": valor = preContratoData.FechaPrimeraCuota?.ToString("dd/MM/yyyy"); break;
+                    //case "{{valor_contrato}}": valor = preContratoData.ValorContrato.ToString("N2"); break;
+                    //case "{{valor_anticipo}}": valor = preContratoData.ValorAnticipo.ToString("N2"); break;
+                    //case "{{fecha_anticipo}}": valor = preContratoData.FechaAnticipo?.ToString("dd/MM/yyyy"); break;
+                    //case "{{numero_cuotas}}": valor = preContratoData.NumeroCuotas.ToString(); break;
+                    //case "{{fecha_primera_cuota}}": valor = preContratoData.FechaPrimeraCuota?.ToString("dd/MM/yyyy"); break;
                     case "{{dias}}": valor = preContratoData.Dias.ToString(); break;
                     case "{{tipo_dias}}": valor = preContratoData.TipoDias; break;
                     case "{{periodo_mantenimiento}}": valor = preContratoData.PeriodoMantenimiento; break;
                     case "{{anios_garantia}}": valor = preContratoData.AniosGarantia.ToString(); break;
                     case "{{meses_garantia}}": valor = preContratoData.MesesGarantia.ToString(); break;
                     case "{{poliza_garantia}}": valor = preContratoData.PolizaGarantia; break;
-                    case "{{forma_pago}}": valor = formaPago?.Descripcion; break;
+                    //case "{{forma_pago}}": valor = formaPago?.Descripcion; break;
                     case "{{cotizacion_numero}}": valor = cotizacion.Secuencial.ToString(); break;
                     case "{{cotizacion_fecha}}": valor = cotizacion.FechaRegistro?.ToString("dd/MM/yyyy"); break;
                     case "{{cotizacion_subtotal}}": valor = cotizacion.Subtotal.ToString("N2"); break;

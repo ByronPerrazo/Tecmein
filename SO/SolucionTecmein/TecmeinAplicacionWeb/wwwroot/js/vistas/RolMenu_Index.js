@@ -120,7 +120,7 @@ $("#btnGuardar").on("click", function () {
     })
     .then(responseJson => {
         if (responseJson.estado) {
-            tablaData.row.add(responseJson.objeto).draw(false);
+            tablaData.ajax.reload();
             Swal.fire("Listo!", "Rol-Menú fue registrado", "success");
         } else {
             Swal.fire("Error", "No se pudo registrar el Rol-Menú", "error");

@@ -42,7 +42,7 @@ $(document).ready(function () {
                         if (row.estado !== "Aprobado") {
                             btnAprobar = `<button class="btn btn-success btn-sm btn-aprobar" data-id="${data}" title="Aprobar"><i class="fas fa-check"></i></button>`;
                         }
-                        return `<div class="btn-group" role="group">${btnEditar}${btnHistorial}${btnEliminar}${btnAprobar}</div>`;
+                        return `<div class="btn-group" role="group">${btnEditar}${btnHistorial}${btnAprobar}${btnEliminar}</div>`;
                     },
                     "orderable": false,
                     "searchable": false,
@@ -113,13 +113,8 @@ $(document).ready(function () {
     $("#btnGenerarPreContrato").click(function() {
         const modelo = {
             SecCotizacion: parseInt($("#cboCotizacionesAceptadas").val()),
-            SecFormaPago: parseInt($("#SecFormaPago").val()),
-            SecPlantillaPreContrato: parseInt($("#SecPlantillaPreContrato").val()),
-            ValorContrato: parseFloat($("#ValorContrato").val()),
-            ValorAnticipo: parseFloat($("#ValorAnticipo").val()),
-            FechaAnticipo: $("#FechaAnticipo").val(),
-            NumeroCuotas: parseInt($("#NumeroCuotas").val()),
-            FechaPrimeraCuota: $("#FechaPrimeraCuota").val(),
+            // SecFormaPago, ValorContrato, ValorAnticipo, FechaAnticipo, NumeroCuotas, FechaPrimeraCuota son manejados post-contrato
+            // SecPlantillaPreContrato es seleccionado automáticamente por el backend
             Dias: parseInt($("#Dias").val()),
             TipoDias: $("#TipoDias").val(),
             PeriodoMantenimiento: $("#PeriodoMantenimiento").val(),
@@ -128,8 +123,8 @@ $(document).ready(function () {
             PolizaGarantia: $("#PolizaGarantia").val()
         };
 
-        if (!modelo.SecCotizacion || !modelo.SecPlantillaPreContrato) {
-            Swal.fire("Atención", "Por favor, seleccione una cotización y una plantilla.", "warning");
+        if (!modelo.SecCotizacion) {
+            Swal.fire("Atención", "Por favor, seleccione una cotización.", "warning");
             return;
         }
         datosFormularioParaGuardar = modelo;

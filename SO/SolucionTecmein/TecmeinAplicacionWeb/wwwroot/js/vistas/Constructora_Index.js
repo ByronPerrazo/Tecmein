@@ -21,7 +21,13 @@ $(document).ready(function () {
                 "url": 'Lista',
                 "type": "GET",
                 "datatype": "json",
-                "dataSrc": "data.$values"
+                "dataSrc": function(json) {
+                    // El endpoint de Constructora devuelve { data: { $values: [...] } }
+                    if (json && json.data && json.data.$values) {
+                        return json.data.$values;
+                    }
+                    return [];
+                }
             },
             "columns": [
                 { data: "secuencial", visible: false, searchable: false },
@@ -145,7 +151,7 @@ $("#btnGuardar").click(function () {
                 if (responseJson.estado) {
                     tablaData.row.add(responseJson.objeto).draw(false);
                     $("#modalData").modal("hide");
-                else {
+                } else {
                     Swal.fire("Fallo!", responseJson.mensajes, "error");
                 }
             });
