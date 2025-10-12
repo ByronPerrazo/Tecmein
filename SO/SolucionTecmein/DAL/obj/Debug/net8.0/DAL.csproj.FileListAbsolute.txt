@@ -1,4 +1,5 @@
 C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\bin\Debug\net8.0\DAL.deps.json
+C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\bin\Debug\net8.0\DAL.runtimeconfig.json
 C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\bin\Debug\net8.0\DAL.dll
 C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\bin\Debug\net8.0\DAL.pdb
 C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\bin\Debug\net8.0\Entity.dll
@@ -13,4 +14,5 @@ C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\obj\Debug\net8.0\DAL.csproj.Up2Date
 C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\obj\Debug\net8.0\DAL.dll
 C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\obj\Debug\net8.0\refint\DAL.dll
 C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\obj\Debug\net8.0\DAL.pdb
+C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\obj\Debug\net8.0\DAL.genruntimeconfig.cache
 C:\Proyectos\Tecmein\SO\SolucionTecmein\DAL\obj\Debug\net8.0\ref\DAL.dll

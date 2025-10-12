@@ -21,7 +21,7 @@ $(document).ready(function () {
                     $("#txTelefono").val(d.telefono);
                     $("#txtRol").val(d.nombreRol);
                     secuencialUserLog = parseInt(d.secuencial);
-                    Swal.fire("Fallo!", respuestaJson.mensajes, "error");
+                }
             }
         ).catch(error => {
             console.error('Error al obtener los datos:', error);

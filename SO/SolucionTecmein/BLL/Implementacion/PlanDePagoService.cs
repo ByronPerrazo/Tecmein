@@ -69,25 +69,44 @@ namespace BLL.Implementacion
 
                     if (planDePagoEntity == null) throw new Exception("Plan de Pago no encontrado.");
 
-                    _mapper.Map(modelo, planDePagoEntity); // Actualizar propiedades
-                    await _repositorioPlanDePago.Editar(planDePagoEntity);
+                    // Antes de mapear, nos aseguramos de que las cuotas existentes se eliminen
+                    if (planDePagoEntity.Cuotas.Any())
+                    {
+                        _dbContext.Cuotas.RemoveRange(planDePagoEntity.Cuotas);
+                        await _dbContext.SaveChangesAsync();
+                    }
 
-                    // Eliminar cuotas antiguas
-                    _dbContext.Cuotas.RemoveRange(planDePagoEntity.Cuotas);
-                    await _dbContext.SaveChangesAsync(); // Guardar cambios para eliminar cuotas
+                    _mapper.Map(modelo, planDePagoEntity);
+                    await _repositorioPlanDePago.Editar(planDePagoEntity);
                 }
 
-                // Crear nuevas cuotas
-                foreach (var cuotaDto in modelo.Cuotas)
+                // *** Lógica de negocio centralizada para generar cuotas ***
+                if (modelo.NumeroCuotas > 0)
                 {
-                    var cuotaEntity = _mapper.Map<Cuota>(cuotaDto);
-                    cuotaEntity.IdPlanDePago = planDePagoEntity.IdPlanDePago;
-                    cuotaEntity.FechaRegistro = DateTime.Now;
-                    await _repositorioCuota.Crear(cuotaEntity);
+                    decimal saldoPendiente = planDePagoEntity.ValorContrato - (planDePagoEntity.ValorAnticipo);
+                    decimal montoPorCuota = Math.Round(saldoPendiente / planDePagoEntity.NumeroCuotas, 2);
+
+                    for (int i = 0; i < modelo.Cuotas.Count; i++)
+                    {
+                        var cuotaDto = modelo.Cuotas[i];
+                        var cuotaEntity = new Cuota
+                        {
+                            IdPlanDePago = planDePagoEntity.IdPlanDePago,
+                            NumeroCuota = cuotaDto.NumeroCuota,
+                            FechaVencimiento = cuotaDto.FechaVencimiento,
+                            MontoEsperado = montoPorCuota, // Usar el monto calculado en el backend
+                            MontoPagado = 0, // Siempre 0 al crear/regenerar
+                            Estado = "Pendiente", // Estado inicial
+                            FechaRegistro = DateTime.Now
+                        };
+                        await _repositorioCuota.Crear(cuotaEntity);
+                    }
                 }
 
                 await transaction.CommitAsync();
-                return _mapper.Map<PlanDePagoDTO>(planDePagoEntity);
+                var dtoResult = _mapper.Map<PlanDePagoDTO>(planDePagoEntity);
+                dtoResult.Cuotas = _mapper.Map<List<CuotaDTO>>((await _repositorioCuota.Consultar(c => c.IdPlanDePago == dtoResult.IdPlanDePago)).OrderBy(c => c.NumeroCuota));
+                return dtoResult;
             }
             catch (Exception ex)
             {

@@ -1,1 +1,0 @@
-Implementar ciclo de vida de Contrato y refactorizar ViewModels

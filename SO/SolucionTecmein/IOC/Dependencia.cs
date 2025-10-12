@@ -120,6 +120,7 @@ namespace IOC
             services.AddScoped<IPolizaGarantiaServices, PolizaGarantiaServices>();
             services.AddScoped<IGenericRepository<PolizaGarantia>, GenericRepository<PolizaGarantia>>();
             services.AddScoped<IPlanDePagoService, PlanDePagoService>(); // Nuevo
+            services.AddScoped<IPagoService, PagoService>();
             services.AddScoped<IContratoService, ContratoService>(provider =>
                 new ContratoService(
                     provider.GetRequiredService<IGenericRepository<Contrato>>(),

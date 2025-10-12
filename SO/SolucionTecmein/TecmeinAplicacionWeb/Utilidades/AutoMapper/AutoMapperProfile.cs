@@ -1,4 +1,5 @@
 using AutoMapper;
+using BLL.DTOs;
 using Entity;
 using TecmeinAplicacionWeb.Models.ViewModels;
 
@@ -543,6 +544,14 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
                 .ForMember(destino => destino.FechaRegistro,
                            opt => opt.MapFrom(origen => origen.FechaRegistro.ToString("dd/MM/yyyy")));
             CreateMap<CuotaVM, Cuota>();
+
+            #region Plan de Pago DTO
+            CreateMap<PlanDePago, PlanDePagoDTO>().ReverseMap();
+            CreateMap<Cuota, CuotaDTO>().ReverseMap();
+            CreateMap<Pago, PagoDTO>().ReverseMap();
+
+            #endregion
+
 
         }
     }

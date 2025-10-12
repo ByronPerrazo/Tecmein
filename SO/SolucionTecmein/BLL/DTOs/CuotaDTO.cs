@@ -8,6 +8,7 @@ namespace BLL.DTOs
         public int NumeroCuota { get; set; }
         public DateTime FechaVencimiento { get; set; }
         public decimal MontoEsperado { get; set; }
+        public decimal? MontoPagado { get; set; }
         public string Estado { get; set; }
     }
 }

@@ -15,6 +15,7 @@ namespace Entity
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal MontoEsperado { get; set; }
+        public decimal? MontoPagado { get; set; }
 
         public DateTime FechaVencimiento { get; set; }
 
