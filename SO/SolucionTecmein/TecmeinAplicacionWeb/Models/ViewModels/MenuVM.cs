@@ -20,6 +20,8 @@
 
         public bool MostrarEnMenu { get; set; }
 
+        public int Orden { get; set; }
+
         public virtual ICollection<MenuVM>? SubMenu { get; set; }
 
 

@@ -148,6 +148,7 @@ namespace BLL.Implementacion
                 menuEncontrado.PaginaAccion = entidad.PaginaAccion;
                 menuEncontrado.EsActivo = entidad.EsActivo;
                 menuEncontrado.MostrarEnMenu = entidad.MostrarEnMenu;
+                menuEncontrado.Orden = entidad.Orden;
 
                 bool respuesta = await _repositorioMenu.Editar(menuEncontrado);
 

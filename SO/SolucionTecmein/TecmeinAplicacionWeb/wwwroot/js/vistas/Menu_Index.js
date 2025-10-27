@@ -6,7 +6,8 @@ const MODELO_BASE = {
     controlador: "",
     paginaAccion: "",
     esActivo: 1,
-    mostrarEnMenu: true
+    mostrarEnMenu: true,
+    orden: 0
 }
 
 let tablaData;
@@ -30,6 +31,7 @@ $(document).ready(function () {
         },
         "columns": [
             { "data": "secuencial", "visible": true, "searchable": false },
+            { "data": "orden", "visible": false, "searchable": false },
             { "data": "descripcion" },
             { "data": "descripcionMenuPadre" },
             { "data": "icono", render: function (data) { return `<i class="${data}"></i>`; } },
@@ -78,6 +80,7 @@ $(document).ready(function () {
 function mostrarModal(modelo = MODELO_BASE, listaMenusPadre = [], iconosDisponibles = []) {
     $("#txtId").val(modelo.secuencial);
     $("#txtDescripcion").val(modelo.descripcion);
+    $("#txtOrden").val(modelo.orden);
     //$("#txtIcono").val(modelo.icono);
     $("#txtControlador").val(modelo.controlador);
     $("#txtPaginaAccion").val(modelo.paginaAccion);
@@ -163,6 +166,7 @@ $("#btnGuardar").click(function () {
     const modelo = {
         secuencial: parseInt($("#txtId").val()),
         descripcion: $("#txtDescripcion").val(),
+        orden: parseInt($("#txtOrden").val()),
         secMenuPadre: $("#cboMenuPadre").val() === "" ? null : parseInt($("#cboMenuPadre").val()),
         icono: $("#txtIcono").val(),
         controlador: $("#txtControlador").val(),

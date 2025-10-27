@@ -10,5 +10,6 @@ namespace TecmeinAplicacionWeb.Models.ViewModels
         public string? PaginaAccion { get; set; }
         public short? EsActivo { get; set; }
         public bool MostrarEnMenu { get; set; }
+        public int Orden { get; set; }
     }
 }

@@ -61,10 +61,10 @@ namespace TecmeinWebApp.Utilidades.ViewComponents
 
                 foreach (var menuVM in menusVM)
                 {
-                    menuVM.SubMenu = menuLookup[menuVM.Secuencial].ToList();
+                    menuVM.SubMenu = menuLookup[menuVM.Secuencial].OrderBy(m => m.Orden).ToList();
                 }
 
-                listaMenu = menuLookup[null].ToList();
+                listaMenu = menuLookup[null].OrderBy(m => m.Orden).ToList();
             }
             else
             {

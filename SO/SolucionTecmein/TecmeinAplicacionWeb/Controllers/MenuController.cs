@@ -464,6 +464,7 @@ namespace TecmeinAplicacionWeb.Controllers
                     var menuTableVM = new MenuTableVM
                     {
                         Secuencial = menu.Secuencial,
+                        Orden = menu.Orden,
                         Descripcion = menu.Descripcion,
                         Icono = menu.Icono,
                         Controlador = menu.Controlador,
