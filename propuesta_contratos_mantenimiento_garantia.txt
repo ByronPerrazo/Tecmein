@@ -1,0 +1,56 @@
+Hola. He revisado los archivos de contexto del proyecto. Basado en la información de `CONTRATO_TECMEIN.md`, `ERD.md` y `ArchitectureMap.md`, entiendo que el flujo actual se centra en la generación de contratos de venta o servicio a partir de una visita inicial, pasando por una cotización y un pre-contrato.
+
+Para integrar los contratos de **Mantenimiento** y **Garantía** a la estructura existente, te propongo el siguiente enfoque:
+
+### 1. Adaptación de la Estructura de Datos
+
+Podemos extender la entidad `Contrato` para diferenciar los tipos de contrato.
+
+*   **Opción A (Recomendada): Usar `TipoDocumento`:** La entidad `TipoDocumento` parece ideal para esto. Podríamos añadir nuevos tipos como "Contrato de Mantenimiento" y "Contrato de Garantía". Esto nos permitiría reutilizar la estructura existente de `Contrato` y `PreContrato` añadiendo una simple referencia.
+*   **Opción B: Nuevo Campo en `Contrato`:** Añadir un campo `TipoContrato` a la tabla `Contrato` (ej. 'Venta', 'Mantenimiento', 'Garantía').
+
+Además, sugiero una nueva entidad: `ActivoCliente`.
+
+*   **`ActivoCliente`**: Esta tabla almacenaría los equipos o servicios específicos del cliente que están cubiertos por un contrato de mantenimiento o garantía. Tendría campos como:
+    *   `IdActivoCliente` (PK)
+    *   `SecCliente` (FK a `Cliente`)
+    *   `SecEquipo` (FK a una futura tabla de `Equipos` o `Productos`)
+    *   `Descripcion` (ej. "Torno CNC-3000, Serie #XYZ")
+    *   `FechaInstalacion`
+    *   `SecContratoOrigen` (FK a `Contrato`, para saber qué contrato de venta generó este activo)
+
+### 2. Flujo de Contratos de Garantía
+
+Los contratos de garantía normalmente no se generan de forma independiente, sino que son una consecuencia de la venta de un equipo.
+
+1.  **Generación Automática:** Al aprobar un `Contrato` de venta que incluye equipos, el sistema podría generar automáticamente un `Contrato` de tipo "Garantía".
+2.  **Vinculación:** Este nuevo contrato de garantía estaría vinculado al contrato de venta original y a los `ActivoCliente` correspondientes.
+3.  **Términos de la Garantía:** La duración y términos (qué cubre y qué no) podrían definirse en una `PlantillaPreContrato` específica para garantías o heredarse de la información del producto vendido.
+
+### 3. Flujo de Contratos de Mantenimiento
+
+Estos contratos pueden surgir de dos maneras:
+
+*   **Post-Garantía:** Al vencer un contrato de garantía, el sistema podría notificar al equipo de ventas para ofrecer un contrato de mantenimiento. Se podría generar un `PreContrato` de tipo "Mantenimiento" a partir del contrato de garantía vencido.
+*   **Venta Directa:** Un cliente puede solicitar un contrato de mantenimiento para equipos existentes (incluso si no los vendimos nosotros). En este caso:
+    1.  Se iniciaría desde una `Visita` de tipo "Evaluación para Mantenimiento".
+    2.  El técnico registraría los equipos a mantener en la visita.
+    3.  Se generaría una `Cotizacion` con los servicios de mantenimiento (visitas periódicas, repuestos, etc.).
+    4.  El flujo continuaría con `PreContrato` y `Contrato` de tipo "Mantenimiento", vinculando los `ActivoCliente` correspondientes.
+
+### 4. Adaptación del Sistema
+
+*   **Entidades:**
+    *   Modificar `Contrato` para incluir el tipo o usar `TipoDocumento`.
+    *   Crear la tabla `ActivoCliente`.
+    *   (Opcional) Crear una tabla `Equipos` o `Productos` si no existe, para estandarizar los activos.
+*   **Lógica de Negocio (BLL):**
+    *   Actualizar `ContratoService` para manejar la creación y lógica de los nuevos tipos de contrato.
+    *   Crear un nuevo `ActivoClienteService`.
+    *   Implementar la lógica para la generación automática de contratos de garantía.
+*   **UI (TecmeinAplicacionWeb):**
+    *   Añadir vistas para gestionar los `ActivoCliente`.
+    *   Modificar los formularios de `Contrato` y `PreContrato` para reflejar el tipo.
+    *   Crear dashboards o vistas que permitan ver el estado de las garantías y contratos de mantenimiento (ej. "Garantías a punto de vencer").
+
+Este enfoque reutiliza la mayor parte de la estructura existente, minimizando el retrabajo y manteniendo la coherencia del sistema.

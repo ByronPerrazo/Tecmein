@@ -2,7 +2,6 @@
 using BLL.Interfaces;
 using Entity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using TecmeinAplicacionWeb.Models.ViewModels;
@@ -24,6 +23,8 @@ namespace TecmeinWebApp.Controllers
         private readonly IEquiposVisitaServices _equiposVisitaServices;
         private readonly IEtapaServices _etapaServices;
         private readonly ILogger<VisitaController> _logger;
+        private readonly IPermisoServices _permisoServices; // New field
+        private readonly IRolServices _rolServices; // New field
 
         private readonly IMapper _mapper;
         public VisitaController(IVisitaServices visitaServices,
@@ -37,7 +38,9 @@ namespace TecmeinWebApp.Controllers
                                 IContactoVisitaServices contactoVistaServices,
                                 IEquiposVisitaServices equiposVisitaServices,
                                 IEtapaServices etapaServices,
-                                ILogger<VisitaController> logger
+                                ILogger<VisitaController> logger,
+                                IPermisoServices permisoServices, // New parameter
+                                IRolServices rolServices // New parameter
             )
         {
             _visitaServices = visitaServices;
@@ -52,6 +55,8 @@ namespace TecmeinWebApp.Controllers
             _equiposVisitaServices = equiposVisitaServices;
             _etapaServices = etapaServices;
             _logger = logger;
+            _permisoServices = permisoServices; // Assign it
+            _rolServices = rolServices; // Assign it
         }
 
         [HttpGet]
@@ -139,16 +144,31 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetClaims()
+        public async Task<IActionResult> GetClaims() // Make it async
         {
             ClaimsPrincipal claimsUser = HttpContext.User;
             string idUsuario = claimsUser.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).SingleOrDefault();
-            string rol = claimsUser.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).SingleOrDefault();
+            string rolName = claimsUser.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).SingleOrDefault();
 
-            return StatusCode(StatusCodes.Status200OK, new { idUsuario, rol });
+            List<string> permissionNames = new List<string>();
+            if (!string.IsNullOrEmpty(rolName))
+            {
+                // Get all roles and find the one matching the rolName
+                List<Rol> allRoles = await _rolServices.Lista();
+                Rol? userRole = allRoles.FirstOrDefault(r => r.Descripcion.ToLower() == rolName.ToLower());
+
+                if (userRole != null)
+                {
+                    List<Permiso> permisos = await _permisoServices.ObtenerPermisosPorRol(userRole.Secuencial);
+                    permissionNames = permisos.Select(p => p.IdPermiso).ToList(); // Assuming IdPermiso is the permission name
+                }
+            }
+
+            return StatusCode(StatusCodes.Status200OK, new { idUsuario, rol = rolName, permisos = permissionNames });
         }
 
         [HttpPost]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> CambiarEtapa([FromForm] int secVisita, [FromForm] string nuevoCodigoEtapa)
         {
             var gResponse = new GenericResponse<string>();
@@ -165,6 +185,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("CREAR")]
         public async Task<IActionResult> CrearVisita([FromForm] string modelo)
         {
             var genericResponse = new GenericResponse<VisitaVM>();
@@ -205,6 +226,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> EditarVisita([FromForm] string modelo)
         {
             var genericResponse = new GenericResponse<VisitaVM>();
@@ -231,6 +253,7 @@ namespace TecmeinWebApp.Controllers
 
 
         [HttpPost]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> ProcesoGuardasContactoVisita([FromForm] string modelo)
         {
             var genericResponse = new GenericResponse<ContactoVisitaVM>();
@@ -262,6 +285,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpDelete]
+        [ValidatePermission("ELIMINAR")]
         public async Task<IActionResult> Eliminar(int secuencial)
         {
             var gResponse = new GenericResponse<string>();
@@ -288,6 +312,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> VisitaContacto(int secuencialVisita)
         {
             var contactoVisitaVM
@@ -309,6 +334,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> EquiposDeVisita(int secuencialVisita)
         {
             var resultadoConsulta = await _equiposVisitaServices.ConsultaListaPorVisita(secuencialVisita);
@@ -318,6 +344,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> ProcesoGuardasEquipoVisita([FromForm] string modelo)
         {
             var genericResponse = new GenericResponse<EquiposVisitaVM>();
@@ -380,6 +407,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ObtenerDetalleVisita(int secuencialVisita)
         {
             var response = new GenericResponse<VisitaDetalleVM>();
@@ -422,6 +450,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> SincronizarEquipos([FromQuery] int secuencialVisita)
         {
             var gResponse = new GenericResponse<bool>();

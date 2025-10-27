@@ -72,7 +72,7 @@ namespace TecmeinWebApp.Controllers
 
             // 2. Obtener los menús asignados al rol
             var idsMenusAsignados = (await _repositorioRolMenu.Consultar(rm => rm.SecRol == rolId))
-                                        .Select(rm => rm.SecMenu.Value).ToHashSet();
+                                        .Select(rm => rm.SecMenu).ToHashSet();
 
             var menusAsignados = await _menuServices.ObtieneMenusPorIdsAsync(idsMenusAsignados);
 

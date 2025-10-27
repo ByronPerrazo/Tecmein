@@ -21,7 +21,8 @@ $(document).ready(function () {
             "type": "GET",
             "datatype": "json",
             "dataSrc": function (json) {
-                return json.data.$values;
+                // Manejo de la respuesta del servidor que puede venir con $values
+                return json.data && json.data.$values ? json.data.$values : json.data;
             }
         },
         "columns": [
@@ -60,7 +61,7 @@ $(document).ready(function () {
                 title: 'Contactos',
                 filename: 'Reporte de Contactos',
                 exportOptions: {
-                    columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                    columns: [1, 2, 3, 4, 5, 6, 7]
                 }
             }, 'pageLength'
         ],
@@ -95,6 +96,7 @@ function mostrarModal(modelo = MODELO_CONTACTO, listaConstructoras = []) {
 
     const cboEmpresa = $("#cboEmpresa");
     cboEmpresa.empty();
+    cboEmpresa.append($("<option disabled selected>-- Seleccione una --</option>"));
     if (listaConstructoras.length > 0) {
         listaConstructoras.forEach(item => {
             cboEmpresa.append(
@@ -102,7 +104,9 @@ function mostrarModal(modelo = MODELO_CONTACTO, listaConstructoras = []) {
             )
         });
     }
-    cboEmpresa.val(modelo.secConstructora);
+    if (modelo.secConstructora) {
+        cboEmpresa.val(modelo.secConstructora);
+    }
 
     $("#modalData").modal("show")
 };
@@ -113,14 +117,23 @@ $("#btnNuevoContacto").click(function () {
     limpiarModal();
     esEdicion = false;
 
-    // Para un nuevo contacto, necesitamos la lista de constructoras
     fetch("/Contacto/EmpresaConstructora")
-        .then(response => response.ok ? response.json() : Promise.reject(response))
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorJson => Promise.reject(errorJson));
+            }
+            return response.json();
+        })
         .then(responseJson => {
             mostrarModal(MODELO_CONTACTO, responseJson);
         })
         .catch(error => {
-            console.error('Error al obtener la lista de constructoras para nuevo contacto:', error);
+            if (error && error.mensajes) {
+                Swal.fire("Fallo!", error.mensajes, "error");
+            } else {
+                console.error('Error al obtener la lista de constructoras:', error);
+                Swal.fire("Fallo!", "Ocurrió un error al cargar los datos iniciales.", "error");
+            }
         });
 });
 
@@ -136,17 +149,8 @@ $("#btnGuardarContacto").click(function () {
         return;
     }
 
-    const selects = document.querySelectorAll("select.input-validar");
-
-    const selectsConValorDeshabilitado = Array.from(selects).filter(select => {
-        const selectedOption = select.options[select.selectedIndex];
-        return selectedOption.disabled && selectedOption.selected;
-    });
-
-    if (selectsConValorDeshabilitado.length > 0) {
-        const mensaje = `Debe seleccionar una opción válida en : "${selectsConValorDeshabilitado[0].name}"`;
-        toastr.warning("", mensaje);
-        selectsConValorDeshabilitado[0].focus();
+    if ($('#cboEmpresa').val() === null || $('#cboEmpresa').val() === "") {
+        toastr.warning("", "Debe seleccionar una empresa");
         return;
     }
 
@@ -157,7 +161,7 @@ $("#btnGuardarContacto").click(function () {
     modeloContacto["correo"] = $("#txtCorreo").val();
     modeloContacto["telefono"] = $("#txTelefono").val();
     modeloContacto["secConstructora"] = parseInt($("#cboEmpresa").val());
-    modeloContacto["titulo"] = $("#titulo").val(); // Asumiendo que #titulo es el input para el título
+    modeloContacto["titulo"] = $("#titulo").val();
     modeloContacto["estaActivo"] = $("#cboEstado").val();
 
     const datosFormulario = new FormData();
@@ -174,7 +178,10 @@ $("#btnGuardarContacto").click(function () {
     })
     .then(response => {
         $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-        return response.ok ? response.json() : Promise.reject(response);
+        if (!response.ok) {
+            return response.json().then(errorJson => Promise.reject(errorJson));
+        }
+        return response.json();
     })
     .then(responseJson => {
         if (responseJson.estado) {
@@ -191,7 +198,12 @@ $("#btnGuardarContacto").click(function () {
     })
     .catch(error => {
         $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-        console.error("Error al guardar:", error);
+        if (error && error.mensajes) {
+            Swal.fire("Fallo!", error.mensajes, "error");
+        } else {
+            console.error("Error al guardar:", error);
+            Swal.fire("Fallo!", "Ocurrió un error inesperado al guardar.", "error");
+        }
     });
 });
 
@@ -212,7 +224,10 @@ $("#tbdata tbody").on("click", ".btn-editar", function () {
     fetch(`/Contacto/ObtenerParaEditar?secuencial=${secuencialContacto}`)
         .then(response => {
             $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-            return response.ok ? response.json() : Promise.reject(response);
+            if (!response.ok) {
+                return response.json().then(errorJson => Promise.reject(errorJson));
+            }
+            return response.json();
         })
         .then(responseJson => {
             if (responseJson.estado) {
@@ -223,7 +238,12 @@ $("#tbdata tbody").on("click", ".btn-editar", function () {
         })
         .catch(error => {
             $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-            console.error("Error en la llamada fetch para editar:", error);
+            if (error && error.mensajes) {
+                Swal.fire("Fallo!", error.mensajes, "error");
+            } else {
+                console.error("Error en la llamada fetch para editar:", error);
+                Swal.fire("Fallo!", "Ocurrió un error inesperado al cargar los datos.", "error");
+            }
         });
 });
 
@@ -256,7 +276,10 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
             })
             .then(response => {
                 $(".showSweetAlert").LoadingOverlay("hide");
-                return response.ok ? response.json() : Promise.reject(response);
+                if (!response.ok) {
+                    return response.json().then(errorJson => Promise.reject(errorJson));
+                }
+                return response.json();
             })
             .then(responseJson => {
                 if (responseJson.estado) {
@@ -264,6 +287,15 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
                     Swal.fire("Listo!", "El Contacto fue eliminado", "success");
                 } else {
                     Swal.fire("Fallo!", responseJson.mensajes, "error");
+                }
+            })
+            .catch(error => {
+                $(".showSweetAlert").LoadingOverlay("hide");
+                if (error && error.mensajes) {
+                    Swal.fire("Fallo!", error.mensajes, "error");
+                } else {
+                    console.error("Error al eliminar:", error);
+                    Swal.fire("Fallo!", "Ocurrió un error inesperado al eliminar.", "error");
                 }
             });
         }

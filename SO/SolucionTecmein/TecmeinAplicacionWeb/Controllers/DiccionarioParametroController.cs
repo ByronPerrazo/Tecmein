@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using TecmeinWebApp.Utilidades.Response;
+using TecmeinWebApp.Utilidades.ViewComponents;
 
 namespace TecmeinAplicacionWeb.Controllers
 {
@@ -20,12 +22,14 @@ namespace TecmeinAplicacionWeb.Controllers
             _diccionarioParametroServicio = diccionarioParametroServicio;
         }
 
+        [ValidatePermission("VER_MENU")]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Lista()
         {
             try
@@ -41,6 +45,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("CREAR")]
         public async Task<IActionResult> Crear([FromBody] DiccionarioParametro entidad)
         {
             try
@@ -55,6 +60,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpPut]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> Editar([FromBody] DiccionarioParametro entidad)
         {
             try
@@ -69,6 +75,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpDelete]
+        [ValidatePermission("ELIMINAR")]
         public async Task<IActionResult> Eliminar(int secuencial)
         {
             try
@@ -83,6 +90,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ListaActivos()
         {
             try

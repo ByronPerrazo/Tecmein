@@ -8,8 +8,17 @@ const MODELO_BASE = {
 
 let tablaData;
 
-$(document).ready(function () {
+function manejarErrorFetch(error, operacion, overlayElement) {
+    if (overlayElement) $(overlayElement).LoadingOverlay("hide");
+    console.error(`Error en ${operacion}:`, error);
+    if (error && error.mensajes) {
+        Swal.fire("Error", error.mensajes, "error");
+    } else {
+        Swal.fire("Error", `Ocurrió un error inesperado durante: ${operacion}.`, "error");
+    }
+}
 
+$(document).ready(function () {
     tablaData = $('#tbdata').DataTable({
         responsive: true,
         "ajax": {
@@ -21,32 +30,22 @@ $(document).ready(function () {
                     return json.objeto.$values;
                 }
                 return [];
-            }
+            },
+            "error": function (jqXHR) { manejarErrorFetch(jqXHR.responseJSON, "Cargar Formato"); }
         },
         "columns": [
-            {
-                "data": "usaFormato", render: function (data) {
-                    if (data)
-                        return '<span class="badge badge-info">Si</span>';
-                    else
-                        return '<span class="badge badge-danger">No</span>';
-                }
-            },
+            { "data": "usaFormato", render: data => data ? '<span class="badge badge-info">Si</span>' : '<span class="badge badge-danger">No</span>' },
             { "data": "formato" },
             { "data": "numeroInicio" },
             { "data": "longitudNumero" },
             {
                 "defaultContent": '<div class="btn-group" role="group"><button class="btn btn-primary btn-editar btn-sm"><i class="fas fa-pencil-alt"></i></button></div>',
-                "orderable": false,
-                "searchable": false,
-                "width": "40px"
+                "orderable": false, "searchable": false, "width": "40px"
             }
         ],
         "processing": true,
-        "language": {
-            "url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
-        },
-        "drawCallback": function( settings ) {
+        "language": { "url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json" },
+        "drawCallback": function(settings) {
             if (this.api().data().count() > 0) {
                 $('#btnNuevo').hide();
             } else {
@@ -54,7 +53,7 @@ $(document).ready(function () {
             }
         }
     });
-})
+});
 
 function mostrarModal(modelo = MODELO_BASE) {
     $("#txtId").val(modelo.secFormatoNumeroCliente);
@@ -65,33 +64,25 @@ function mostrarModal(modelo = MODELO_BASE) {
     $("#modalData").modal("show");
 }
 
-$("#btnNuevo").click(function () {
-    mostrarModal(MODELO_BASE);
-})
+$("#btnNuevo").click(() => mostrarModal(MODELO_BASE));
 
 $("#tbdata tbody").on("click", ".btn-editar", function () {
-    let filaSeleccionada;
-    if ($(this).closest("tr").hasClass("child")) {
-        filaSeleccionada = $(this).closest("tr").prev();
-    } else {
-        filaSeleccionada = $(this).closest("tr");
-    }
+    let filaSeleccionada = $(this).closest("tr").hasClass("child") ? $(this).closest("tr").prev() : $(this).closest("tr");
     const data = tablaData.row(filaSeleccionada).data();
     mostrarModal(data);
-})
-
+});
 
 $("#btnGuardar").click(function () {
-
     const modelo = {
         secFormatoNumeroCliente: parseInt($("#txtId").val()),
         usaFormato: $("#checkUsaFormato").is(":checked"),
         formato: $("#txtFormato").val(),
         numeroInicio: parseInt($("#txtNumeroInicio").val()),
         longitudNumero: parseInt($("#txtLongitudNumero").val())
-    }
+    };
 
-    $("#modalData").find(".modal-content").LoadingOverlay("show");
+    const modalContent = $("#modalData .modal-content");
+    modalContent.LoadingOverlay("show");
 
     fetch("/FormatoNumeroCliente/Guardar", {
         method: "POST",
@@ -99,16 +90,20 @@ $("#btnGuardar").click(function () {
         body: JSON.stringify(modelo)
     })
     .then(response => {
-        $("#modalData").find(".modal-content").LoadingOverlay("hide");
-        return response.ok ? response.json() : Promise.reject(response);
+        if (!response.ok) return response.json().then(err => Promise.reject(err));
+        return response.json();
     })
     .then(responseJson => {
+        modalContent.LoadingOverlay("hide");
         if (responseJson.estado) {
-            tablaData.ajax.reload(null, false); // No resetear paginación
+            tablaData.ajax.reload(null, false);
             $("#modalData").modal("hide");
             Swal.fire("Listo!", "La configuración fue guardada", "success");
         } else {
             Swal.fire("Lo sentimos", responseJson.mensajes, "error");
         }
     })
-})
+    .catch(error => {
+        manejarErrorFetch(error, "Guardar Configuración", modalContent);
+    });
+});

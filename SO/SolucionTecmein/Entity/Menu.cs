@@ -19,6 +19,8 @@ public partial class Menu
 
     public short? EsActivo { get; set; }
 
+    public bool MostrarEnMenu { get; set; }
+
     public DateTime? FechaRegistro { get; set; }
 
     public virtual ICollection<Menu?> InverseSecMenuPadreNavigation { get; set; } = new List<Menu?>();

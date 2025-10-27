@@ -18,6 +18,8 @@
 
         public short? EsActivo { get; set; }
 
+        public bool MostrarEnMenu { get; set; }
+
         public virtual ICollection<MenuVM>? SubMenu { get; set; }
 
 

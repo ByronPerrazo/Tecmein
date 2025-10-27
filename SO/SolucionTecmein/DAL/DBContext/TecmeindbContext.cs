@@ -53,6 +53,7 @@ public partial class TecmeindbContext : DbContext
     public virtual DbSet<Cotizacion> Cotizacion { get; set; }
 
     public virtual DbSet<PreContrato> PreContratos { get; set; }
+    public virtual DbSet<PreContratoCompromisoPago> PreContratoCompromisoPagos { get; set; }
     public virtual DbSet<FormaPago> FormasPago { get; set; }
     public virtual DbSet<PlantillaPreContrato> PlantillaPreContratos { get; set; }
     public virtual DbSet<PlantillaPreContratoParrafo> PlantillaPreContratoParrafos { get; set; }
@@ -434,28 +435,32 @@ public partial class TecmeindbContext : DbContext
 
         modelBuilder.Entity<RolMenu>(entity =>
         {
-            entity.HasKey(e => e.Secuencial).HasName("PRIMARY");
+            // Define la clave primaria compuesta por SecRol y SecMenu.
+            entity.HasKey(e => new { e.SecRol, e.SecMenu });
+
             entity.ToTable("rolmenu");
 
             entity.HasIndex(e => e.SecMenu, "FK_Menu_Rol_idx");
 
             entity.HasIndex(e => e.SecRol, "FK_Rol_Menu_idx");
 
-            entity.Property(e => e.Secuencial).HasColumnName("secuencial");
-            entity.Property(e => e.EsActivo).HasColumnName("esActivo");
-            entity.Property(e => e.FechaRegistro)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime")
-                .HasColumnName("fechaRegistro");
             entity.Property(e => e.SecMenu).HasColumnName("secMenu");
             entity.Property(e => e.SecRol).HasColumnName("secRol");
 
+            // Mapeo de las nuevas propiedades de permisos
+            entity.Property(e => e.Crear).HasColumnName("Crear");
+            entity.Property(e => e.Leer).HasColumnName("Leer");
+            entity.Property(e => e.Actualizar).HasColumnName("Actualizar");
+            entity.Property(e => e.Eliminar).HasColumnName("Eliminar");
+
             entity.HasOne(d => d.SecMenuNavigation).WithMany(p => p.Rolmenus)
                 .HasForeignKey(d => d.SecMenu)
+                .OnDelete(DeleteBehavior.ClientSetNull) // Se cambió a ClientSetNull para evitar borrados en cascada no deseados
                 .HasConstraintName("FK_Menu_Rol");
 
             entity.HasOne(d => d.SecRolNavigation).WithMany(p => p.Rolmenus)
                 .HasForeignKey(d => d.SecRol)
+                .OnDelete(DeleteBehavior.ClientSetNull) // Se cambió a ClientSetNull
                 .HasConstraintName("FK_Rol_Menu");
         });
 
@@ -516,7 +521,9 @@ public partial class TecmeindbContext : DbContext
             entity.HasIndex(e => e.SecUsuario, "Fk_Visita_Usuario_idx");
 
 
-            entity.Property(e => e.Secuencial).HasColumnName("secuencial");
+            entity.Property(e => e.Secuencial)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("secuencial");
             entity.Property(e => e.Detalle)
                 .HasMaxLength(500)
                 .HasColumnName("detalle");

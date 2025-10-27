@@ -1,3 +1,12 @@
+function manejarErrorFetch(error, operacion) {
+    console.error(`Error en ${operacion}:`, error);
+    if (error && error.mensajes) {
+        Swal.fire("Error", error.mensajes, "error");
+    } else {
+        Swal.fire("Error", `Ocurrió un error inesperado durante: ${operacion}.`, "error");
+    }
+}
+
 $(document).ready(function () {
     $("#seguimientoForm").submit(function (event) {
         event.preventDefault();
@@ -11,40 +20,37 @@ $(document).ready(function () {
             AceptacionCliente: $("#AceptacionCliente").is(":checked")
         };
 
-        let url = "";
-        let method = "";
-
-        if (modelo.SecSeguimiento == 0 || modelo.SecSeguimiento == "") {
-            url = "/Seguimiento/Crear";
-            method = "POST";
-        } else {
-            url = "/Seguimiento/Editar";
-            method = "PUT";
+        if (modelo.Accion.trim() === "" || modelo.Detalle.trim() === "" || modelo.FechaAccion.trim() === "") {
+            Swal.fire("Validación", "Acción, Detalle y Fecha son campos obligatorios.", "warning");
+            return;
         }
+
+        const esNuevo = modelo.SecSeguimiento == 0 || modelo.SecSeguimiento == "";
+        const url = esNuevo ? "/Seguimiento/Crear" : "/Seguimiento/Editar";
+        const method = esNuevo ? "POST" : "PUT";
 
         fetch(url, {
             method: method,
-            headers: {
-                "Content-Type": "application/json; charset=utf-8",
-            },
-            body: JSON.stringify({ modelo: JSON.stringify(modelo) })
+            headers: { "Content-Type": "application/json; charset=utf-8" },
+            body: JSON.stringify(modelo) // Corregido: no doble serialización
         })
         .then(response => {
-            return response.ok ? response.json() : Promise.reject(response);
+            if (!response.ok) return response.json().then(err => Promise.reject(err));
+            return response.json();
         })
         .then(responseJson => {
             if (responseJson.estado) {
-                Swal.fire("Listo!", "El seguimiento ha sido guardado", "success");
-                // Optionally, update the hidden SecSeguimiento if it was a creation
-                if (modelo.SecSeguimiento == 0 || modelo.SecSeguimiento == "") {
+                Swal.fire("Guardado", "El seguimiento ha sido guardado con éxito.", "success");
+                if (esNuevo) {
                     $("#SecSeguimiento").val(responseJson.objeto.secSeguimiento);
                 }
+                // Aquí podrías agregar lógica para recargar la tabla de seguimientos si estuviera en la misma página
             } else {
-                Swal.fire("Error!", responseJson.mensajes, "error");
+                Swal.fire("Error", responseJson.mensajes, "error");
             }
         })
         .catch((error) => {
-            Swal.fire("Error!", "No se pudo guardar el seguimiento", "error");
+            manejarErrorFetch(error, "Guardar Seguimiento");
         });
     });
 });

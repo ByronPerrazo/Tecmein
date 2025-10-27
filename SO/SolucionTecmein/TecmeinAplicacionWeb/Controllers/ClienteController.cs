@@ -7,6 +7,7 @@ using TecmeinAplicacionWeb.Models.ViewModels;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using TecmeinWebApp.Utilidades.Response;
+using TecmeinWebApp.Utilidades.ViewComponents;
 
 namespace TecmeinAplicacionWeb.Controllers
 {
@@ -23,12 +24,14 @@ namespace TecmeinAplicacionWeb.Controllers
             _constructoraServices = constructoraServices; // Asignación
         }
 
+        [ValidatePermission("VER_MENU")]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Lista()
         {
             var gResponse = new GenericResponse<List<ClienteVM>>();
@@ -48,6 +51,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ListarConstructoras()
         {
             var gResponse = new GenericResponse<List<ConstructoraVM>>();
@@ -74,6 +78,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("CREAR")]
         public async Task<IActionResult> Crear([FromBody] ClienteVM vmCliente)
         {
             var gResponse = new GenericResponse<ClienteVM>();
@@ -93,6 +98,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpPut]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> Editar([FromBody] ClienteVM vmCliente)
         {
             var gResponse = new GenericResponse<ClienteVM>();
@@ -112,6 +118,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpDelete]
+        [ValidatePermission("ELIMINAR")]
         public async Task<IActionResult> Eliminar(int secCliente)
         {
             var gResponse = new GenericResponse<string>();

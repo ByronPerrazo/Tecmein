@@ -1,4 +1,3 @@
-﻿
 const MODELO_BASE = {
     secuencial: 0,
     nombre: "",
@@ -12,8 +11,10 @@ const MODELO_BASE = {
     estaActivo: 1,
 }
 
+let tablaData;
+let filaSeleccionada;
+
 $(document).ready(function () {
-    debugger
     tablaData =
         $('#tbdata').DataTable({
             responsive: true,
@@ -22,7 +23,6 @@ $(document).ready(function () {
                 "type": "GET",
                 "datatype": "json",
                 "dataSrc": function(json) {
-                    // El endpoint de Constructora devuelve { data: { $values: [...] } }
                     if (json && json.data && json.data.$values) {
                         return json.data.$values;
                     }
@@ -37,7 +37,6 @@ $(document).ready(function () {
                 { data: "administrador", searchable: true },
                 { data: "telefonoAdministrador", searchable: true },
                 { data: "correoAdministrador", searchable: true },
-
                 {
                     data: "estaActivo", render: function (data) {
                         if (data == 1)
@@ -46,7 +45,6 @@ $(document).ready(function () {
                             return '<span class="badge badge-danger">Inactivo</span>';
                     }
                 },
-
                 {
                     "defaultContent": '<button class="btn btn-primary btn-editar btn-sm mr-2"><i class="fas fa-pencil-alt"></i></button>' +
                         '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button>',
@@ -64,7 +62,7 @@ $(document).ready(function () {
                     title: 'Constructoras',
                     filename: 'Reporte Constructoras Registradas',
                     exportOptions: {
-                        columns: [0, 1, 2]
+                        columns: [1, 2, 3, 4, 5, 6]
                     }
                 }, 'pageLength'
             ],
@@ -74,7 +72,6 @@ $(document).ready(function () {
         });
 });
 
-
 function mostrarModal(modelo = MODELO_BASE) {
     $("#txtId").val(modelo.secuencial)
     $("#txtNombre").val(modelo.nombre)
@@ -82,104 +79,85 @@ function mostrarModal(modelo = MODELO_BASE) {
     $("#txtAtencion").val(modelo.atencion)
     $("#txtTelefono").val(modelo.telefono)
     $("#txtCorreo").val(modelo.correo)
-
     $("#txtAdministrador").val(modelo.administrador)
     $("#txtTelefonoAdmin").val(modelo.telefonoAdministrador)
     $("#txtCorreoAdmin").val(modelo.correoAdministrador)
-
     $("#cboEstado").val(modelo.estaActivo)
-
     $("#modalData").modal("show")
 };
 
-let esEdicion;
+let esEdicion = false;
+
 $("#btnNuevo").click(function () {
     esEdicion = false;
     mostrarModal()
 })
-
 
 $("#btnGuardar").click(function () {
 
     const inputs = $("input.input-validar").serializeArray();
     const inputs_vacios = inputs.filter(item => item.value.trim() == "");
 
-    inputs_vacios.forEach(x => {
-        const mensaje = `Debe llenar el campo: "${x.name}"`;
-        toastr.warning("", mensaje);
-    });
-
     if (inputs_vacios.length > 0) {
+        const mensaje = `Debe llenar el campo: "${inputs_vacios[0].name}"`;
+        toastr.warning("", mensaje);
         $(`input[name="${inputs_vacios[0].name}"]`).focus();
         return;
     }
 
     const modelo = structuredClone(MODELO_BASE);
-    modelo["secuencial"] = $("#txtId").val().trim();
-    modelo["nombre"] = $("#txtNombre").val().trim();
+    modelo["secuencial"] = $("#txtId").val();
     modelo["nombre"] = $("#txtNombre").val();
     modelo["direccion"] = $("#txtDireccion").val();
     modelo["atencion"] = $("#txtAtencion").val();
     modelo["telefono"] = $("#txtTelefono").val();
     modelo["correo"] = $("#txtCorreo").val();
-
-
     modelo["administrador"]  = $("#txtAdministrador").val()
     modelo["telefonoAdministrador"] = $("#txtTelefonoAdmin").val()
     modelo["correoAdministrador"] = $("#txtCorreoAdmin").val()
-
-
     modelo["estaActivo"] = $("#cboEstado").val();
 
     const datosFormulario = new FormData();
     datosFormulario.append("modelo", JSON.stringify(modelo));
 
+    const url = esEdicion ? "Editar" : "Crear";
+    const method = esEdicion ? "PUT" : "POST";
+
     $("#modalData").find("div.modal-content").LoadingOverlay("show");
 
-    if (!esEdicion) {
-
-        fetch("Crear", {
-            method: "POST",
-            body: datosFormulario
-        })
-            .then(response => {
-                $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-                return response.ok
-                    ? response.json()
-                    : Promise.reject(response);
-            }).then(responseJson => {
-                if (responseJson.estado) {
-                    tablaData.row.add(responseJson.objeto).draw(false);
-                    $("#modalData").modal("hide");
-                } else {
-                    Swal.fire("Fallo!", responseJson.mensajes, "error");
-                }
-            });
-    } else {
-
-        fetch("Editar", {
-            method: "PUT",
-            body: datosFormulario
-        })
-            .then(response => {
-                $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-                return response.ok
-                    ? response.json()
-                    : Promise.reject(response);
-            }).then(responseJson => {
-                if (responseJson.estado) {
-                    debugger;
-                    tablaData.row(filaSeleccionada).data(responseJson.objeto).draw(false);
-                    $("#modalData").modal("hide");
-                    Swal.fire("Listo!", "Constructora " + responseJson.objeto.nombre + " Editada ", "success");
-                }
-                else {
-                    Swal.fire("Fallo!", responseJson.mensajes, "error");
-                }
-            });
-
-    }
-
+    fetch(url, {
+        method: method,
+        body: datosFormulario
+    })
+    .then(response => {
+        $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+        if (!response.ok) {
+            return response.json().then(errorJson => Promise.reject(errorJson));
+        }
+        return response.json();
+    })
+    .then(responseJson => {
+        if (responseJson.estado) {
+            if (esEdicion) {
+                tablaData.row(filaSeleccionada).data(responseJson.objeto).draw(false);
+            } else {
+                tablaData.row.add(responseJson.objeto).draw(false);
+            }
+            $("#modalData").modal("hide");
+            Swal.fire("Listo!", `Constructora ${esEdicion ? 'editada' : 'creada'} correctamente.`, "success");
+        } else {
+            Swal.fire("Fallo!", responseJson.mensajes, "error");
+        }
+    })
+    .catch(error => {
+        $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+        if (error && error.mensajes) {
+            Swal.fire("Fallo!", error.mensajes, "error");
+        } else {
+            console.error('Error al guardar:', error);
+            Swal.fire("Fallo!", "Ocurrió un error inesperado.", "error");
+        }
+    });
 });
 
 $("#tbdata tbody").on("click", ".btn-editar", function () {
@@ -189,28 +167,24 @@ $("#tbdata tbody").on("click", ".btn-editar", function () {
     } else {
         filaSeleccionada = $(this).closest("tr");
     }
-
     const data = tablaData.row(filaSeleccionada).data();
-    data.nombreImagen
     mostrarModal(data);
-
 })
 
 $("#tbdata tbody").on("click", ".btn-eliminar", function () {
 
-    let fila
+    let fila;
     if ($(this).closest("tr").hasClass("child")) {
         fila = $(this).closest("tr").prev();
     } else {
         fila = $(this).closest("tr");
     }
-
     const data = tablaData.row(fila).data();
 
     Swal.fire({
         title: "¿Está Seguro de Eliminar?",
         text: `Eliminar La Constructora "${data.nombre}"`,
-        icon: "warning", // 'type' is deprecated, use 'icon'
+        icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",
         confirmButtonText: "Si, eliminar",
@@ -223,24 +197,30 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
             fetch(`Eliminar?secuencial=${data.secuencial}`, {
                 method: "DELETE"
             })
-                .then(response => {
-                    $(".showSweetAlert").LoadingOverlay("hide");
-                    return response.ok
-                        ? response.json()
-                        : Promise.reject(response);
-                }).then(responseJson => {
-                    debugger;
-                    if (responseJson.estado) {
-                        tablaData.row(fila).remove().draw(false);
-
-                        Swal.fire("Listo!", " La Constructora " + data.nombre + " fue Eliminada", "success");
-                    }
-                    else {
-                        Swal.fire("Fallo!", responseJson.mensajes, "error");
-                    }
-                });
-
+            .then(response => {
+                $(".showSweetAlert").LoadingOverlay("hide");
+                if (!response.ok) {
+                    return response.json().then(errorJson => Promise.reject(errorJson));
+                }
+                return response.json();
+            })
+            .then(responseJson => {
+                if (responseJson.estado) {
+                    tablaData.row(fila).remove().draw(false);
+                    Swal.fire("Listo!", `La Constructora "${data.nombre}" fue eliminada.`, "success");
+                } else {
+                    Swal.fire("Fallo!", responseJson.mensajes, "error");
+                }
+            })
+            .catch(error => {
+                $(".showSweetAlert").LoadingOverlay("hide");
+                if (error && error.mensajes) {
+                    Swal.fire("Fallo!", error.mensajes, "error");
+                } else {
+                    console.error('Error al eliminar:', error);
+                    Swal.fire("Fallo!", "Ocurrió un error inesperado al eliminar.", "error");
+                }
+            });
         }
-    })
-
-})
+    });
+});

@@ -4,6 +4,7 @@ using BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using TecmeinWebApp.Utilidades.Response;
+using TecmeinWebApp.Utilidades.ViewComponents;
 
 namespace TecmeinAplicacionWeb.Controllers
 {
@@ -19,6 +20,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpPost("Registrar")]
+        [ValidatePermission("CREAR")]
         public async Task<IActionResult> Registrar([FromBody] PagoDTO modelo)
         {
             var gResponse = new GenericResponse<PagoDTO>();
@@ -48,6 +50,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpGet("ListarPorPlan/{idPlanDePago}")]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ListarPorPlanDePago(int idPlanDePago)
         {
             var gResponse = new GenericResponse<IEnumerable<PagoDTO>>();

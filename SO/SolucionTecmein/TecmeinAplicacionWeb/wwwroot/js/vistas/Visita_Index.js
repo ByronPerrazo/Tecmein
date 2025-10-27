@@ -22,6 +22,7 @@ let listaCompletaCanton;
 let listaCompletaParroquia;
 let listaCompletaEtapas;
 let idEtapaVisita;
+let userPermissions = []; // Moved to top
 
 function cargarOperadores() {
     fetch("/Visita/Operadores")
@@ -171,12 +172,16 @@ $(document).ready(function () {
         });
 
 
+let userPermissions = []; // Global variable to store permissions
+
      Promise.all([
         fetch("Lista").then(response => response.text()).then(text => JSON.parse(text)),
         fetch("GetClaims").then(response => response.json())
     ]).then(([listaResponse, claimsResponse]) => {
 
         const claims = claimsResponse;
+        userPermissions = claims.permisos || []; // Store permissions
+        console.log("User Permissions after loading:", userPermissions); // Added console log
         let data = listaResponse.data;
 
         if (claims.rol.toLowerCase() !== "administrador") {
@@ -189,11 +194,11 @@ $(document).ready(function () {
             "columns": [
                 { data: "Secuencial", visible: false },
                 { data: "Nombre", searchable: true },
-                { data: "DescripcionEtapa", searchable: true },
-                { data: "NombreCanton", searchable: true, width: "80px" },
+                { data: "DescripcionEtapa", searchable: false },
+                { data: "NombreCanton", searchable: true, width: "60px" },
                 { data: "Direccion", searchable: true },
                 {
-                    data: 'GeoUbicacion', width: "20px",
+                    data: 'GeoUbicacion', "orderable": false, "searchable": false, width: "20px",
                     render: function (data) {
                         return '<button onclick="initMap(\'" + data + "\')" class="btn btn-success btn-mapa btn-sm mr-1"><i class="fas fa-search-location"></i></button>';
                     }
@@ -414,23 +419,22 @@ function loadDateFromString(dateString) {
 }
 
 let esEdicion;
-$("#btnNuevo").click(function () {
-    esEdicion = false;
+    $("#btnNuevo").click(function () {
+        esEdicion = false;
 
-    obtenerGeoubicacion()
-        .then((ubicacion) => {
-            var geo = ubicacion.toString();
-            $("#txtGeolocallizacion").val(geo)
-        })
-        .catch((error) => {
-            geo = "";
-            const mensaje = `Error al obtener la ubicación : "${error}"\n`;
-            toastr.warning("", mensaje);
-        });
+        obtenerGeoubicacion()
+            .then((ubicacion) => {
+                var geo = ubicacion.toString();
+                $("#txtGeolocallizacion").val(geo)
+            })
+            .catch((error) => {
+                geo = "";
+                const mensaje = `Error al obtener la ubicación : "${error}"\n`;
+                toastr.warning("", mensaje);
+            });
 
-    mostrarModalVisita(false, MODELO_BASEVISITA)
-})
-
+        mostrarModalVisita(false, MODELO_BASEVISITA)
+    })
 $("#btnGuardarVisitas").click(function () {
 
     const inputs = $("input.input-validar").serializeArray();
@@ -545,6 +549,14 @@ $("#btnGuardarVisitas").click(function () {
                 else {
                     Swal.fire("Fallo!", responseJson.mensajes, "error");
                 }
+            })
+            .catch(error => {
+                $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+                if (error.status === 403) {
+                    Swal.fire("Acceso Denegado", "No tiene permisos para crear visitas.", "error");
+                } else {
+                    Swal.fire("Error", "Ocurrió un error al crear la visita.", "error");
+                }
             });
     }
     else {
@@ -600,6 +612,14 @@ $("#btnGuardarVisitas").click(function () {
                 else {
                     Swal.fire("Fallo!", responseJson.mensajes, "error");
                 }
+            })
+            .catch(error => {
+                $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+                if (error.status === 403) {
+                    Swal.fire("Acceso Denegado", "No tiene permisos para editar visitas.", "error");
+                } else {
+                    Swal.fire("Error", "Ocurrió un error al editar la visita.", "error");
+                }
             });
 
     }
@@ -609,118 +629,125 @@ $("#btnGuardarVisitas").click(function () {
 });
 
 let filaSeleccionada;
-$("#tbdata tbody").on("click", ".btn-editar", function () {
-    esEdicion = true;
-    if ($(this).closest("tr").hasClass("child")) {
-        filaSeleccionada = $(this).closest("tr").prev();
-    } else {
-        filaSeleccionada = $(this).closest("tr");
-    }
+    $("#tbdata tbody").on("click", ".btn-editar", function () {
+        esEdicion = true;
+        if ($(this).closest("tr").hasClass("child")) {
+            filaSeleccionada = $(this).closest("tr").prev();
+        } else {
+            filaSeleccionada = $(this).closest("tr");
+        }
 
-    const data = tablaData.row(filaSeleccionada).data();
+        const data = tablaData.row(filaSeleccionada).data();
 
-    mostrarModalVisita(true, data);
-})
+        mostrarModalVisita(true, data);
+    })
+    $("#tbdata tbody").on("click", ".btn-eliminar", function () {
+        let fila
+        if ($(this).closest("tr").hasClass("child")) {
+            fila = $(this).closest("tr").prev();
+        } else {
+            fila = $(this).closest("tr");
+        }
 
-$("#tbdata tbody").on("click", ".btn-eliminar", function () {
+        const data = tablaData.row(fila).data();
 
-    let fila
-    if ($(this).closest("tr").hasClass("child")) {
-        fila = $(this).closest("tr").prev();
-    } else {
-        fila = $(this).closest("tr");
-    }
+        Swal.fire({
+            title: "Está Seguro de Eliminar?",
+            text: `Eliminar la visita "${data.Nombre}"`, 
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, eliminar",
+            cancelButtonText: "No, cancelar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(".showSweetAlert").LoadingOverlay("show");
 
-    const data = tablaData.row(fila).data();
+                fetch(`Eliminar?secuencial=${data.Secuencial}`, { 
+                    method: "DELETE"
+                })
+                    .then(response => {
+                        $(".showSweetAlert").LoadingOverlay("hide");
+                        return response.ok
+                            ? response.json()
+                            : Promise.reject(response);
+                    }).then(responseJson => {
+                        if (responseJson.estado) {
+                            tablaData.row(fila).remove().draw(false);
 
-    Swal.fire({
-        title: "Está Seguro de Eliminar?",
-        text: `Eliminar la visita "${data.Nombre}"`, 
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Si, eliminar",
-        cancelButtonText: "No, cancelar"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $(".showSweetAlert").LoadingOverlay("show");
+                            Swal.fire("Listo!", " La Visita a " + data.Nombre + " fue Eliminada", "success");
+                        }
+                        else {
+                            Swal.fire("Fallo!", responseJson.mensajes, "error");
+                        }
+                    })
+                    .catch(error => {
+                        $(".showSweetAlert").LoadingOverlay("hide");
+                        if (error.status === 403) {
+                            Swal.fire("Acceso Denegado", "No tiene permisos para eliminar visitas.", "error");
+                        } else {
+                            Swal.fire("Error", "Ocurrió un error al eliminar la visita.", "error");
+                        }
+                    });
+            }
+        })
+    })
+    $("#tbdata tbody").on("click", ".btn-avanzar-etapa", function () {
+        // Check for "AVANZAR_ETAPA" permission
+        if (!userPermissions.includes("AVANZAR_ETAPA")) { // Assuming "AVANZAR_ETAPA" is the permission name
+            Swal.fire("Acceso Denegado", "No tiene permisos para avanzar la etapa de visitas.", "error");
+            return; // Stop execution if no permission
+        }
 
-            fetch(`Eliminar?secuencial=${data.Secuencial}`, { 
-                method: "DELETE"
-            })
+        let fila;
+        if ($(this).closest("tr").hasClass("child")) {
+            fila = $(this).closest("tr").prev();
+        } else {
+            fila = $(this).closest("tr");
+        }
+        const data = tablaData.row(fila).data();
+
+        Swal.fire({
+            title: "Avanzar Etapa",
+            text: `¿Está seguro de avanzar la etapa de la visita "${data.Nombre}"?`,
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sí, avanzar",
+            cancelButtonText: "No, cancelar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(".showSweetAlert").LoadingOverlay("show");
+
+                const formData = new FormData();
+                formData.append("secVisita", data.Secuencial);
+                formData.append("nuevoCodigoEtapa", ""); // Dejamos el código vacío para que el backend decida la siguiente etapa
+
+                fetch("/Visita/CambiarEtapa", {
+                    method: "POST",
+                    body: formData
+                })
                 .then(response => {
                     $(".showSweetAlert").LoadingOverlay("hide");
-                    return response.ok
-                        ? response.json()
-                        : Promise.reject(response);
-                }).then(responseJson => {
+                    return response.ok ? response.json() : Promise.reject(response);
+                })
+                .then(responseJson => {
                     if (responseJson.estado) {
-                        tablaData.row(fila).remove().draw(false);
-
-                        Swal.fire("Listo!", " La Visita a " + data.Nombre + " fue Eliminada", "success");
-                    }
-                    else {
-                        Swal.fire("Fallo!", responseJson.mensajes, "error");
+                        tablaData.ajax.reload(null, false); // Recargar la tabla sin resetear la paginación
+                        Swal.fire("Listo!", "La etapa de la visita fue actualizada.", "success");
+                    } else {
+                        Swal.fire("Error", responseJson.mensajes, "error");
                     }
                 })
-                .catch(error => {
-                    $(".showSweetAlert").LoadingOverlay("hide");
-                    Swal.fire("Error de Conexión", "No se pudo conectar con el servidor o hubo un error inesperado.", "error");
+                .catch(err => {
+                     $(".showSweetAlert").LoadingOverlay("hide");
+                     Swal.fire("Error", "No se pudo conectar con el servidor.", "error");
                 });
-        }
-    })
-})
-
-$("#tbdata tbody").on("click", ".btn-avanzar-etapa", function () {
-    let fila;
-    if ($(this).closest("tr").hasClass("child")) {
-        fila = $(this).closest("tr").prev();
-    } else {
-        fila = $(this).closest("tr");
-    }
-    const data = tablaData.row(fila).data();
-
-    Swal.fire({
-        title: "Avanzar Etapa",
-        text: `¿Está seguro de avanzar la etapa de la visita "${data.Nombre}"?`,
-        icon: "info",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Sí, avanzar",
-        cancelButtonText: "No, cancelar"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $(".showSweetAlert").LoadingOverlay("show");
-
-            const formData = new FormData();
-            formData.append("secVisita", data.Secuencial);
-            formData.append("nuevoCodigoEtapa", ""); // Dejamos el código vacío para que el backend decida la siguiente etapa
-
-            fetch("/Visita/CambiarEtapa", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => {
-                $(".showSweetAlert").LoadingOverlay("hide");
-                return response.ok ? response.json() : Promise.reject(response);
-            })
-            .then(responseJson => {
-                if (responseJson.estado) {
-                    tablaData.ajax.reload(null, false); // Recargar la tabla sin resetear la paginación
-                    Swal.fire("Listo!", "La etapa de la visita fue actualizada.", "success");
-                } else {
-                    Swal.fire("Error", responseJson.mensajes, "error");
-                }
-            })
-            .catch(err => {
-                 $(".showSweetAlert").LoadingOverlay("hide");
-                 Swal.fire("Error", "No se pudo conectar con el servidor.", "error");
-            });
-        }
+            }
+        });
     });
-});
 
 $("#tbdata tbody").on("click", ".btn-mapa", function () {
     esEdicion = true;

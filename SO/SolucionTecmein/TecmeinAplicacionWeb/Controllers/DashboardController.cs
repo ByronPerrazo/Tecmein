@@ -1,9 +1,9 @@
 ﻿using BLL.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
-using System.Text.Json;
+using TecmeinWebApp.Utilidades.ViewComponents;
 
 namespace TecmeinWebApp.Controllers
 {
@@ -14,13 +14,15 @@ namespace TecmeinWebApp.Controllers
         {
             _dashBoarServicio = dashBoarServicio;
         }
+        
+        [ValidatePermission("VER_MENU")]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
-        [Authorize(Policy = "CanConsult")]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ObtenerResumen()
         {
 

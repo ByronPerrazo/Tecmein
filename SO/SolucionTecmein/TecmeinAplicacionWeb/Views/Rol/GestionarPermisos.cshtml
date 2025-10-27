@@ -1,78 +1,78 @@
-@model TecmeinAplicacionWeb.Models.ViewModels.GestionRolPermisoVM
+@model TecmeinAplicacionWeb.Models.ViewModels.GestionRolMenuVM
 
-@{ 
-    ViewData["Title"] = "Gestionar Permisos de Rol";
+@{
+    ViewData["Title"] = "Gestionar Permisos";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@section Estilos {
-    <link rel="stylesheet" href="~/css/vistas/gestionar_permisos.css" />
-}
-
-<div class="card shadow-sm mb-2">
+<div class="card shadow mb-4">
     <div class="card-header py-3 bg-second-primary">
-        <h6 class="m-0 font-weight-bold text-white">Gestión de Permisos para el Rol: @Model.NombreRol</h6>
+        <h6 class="m-0 font-weight-bold text-white">Gestionar Permisos para Rol: @Model.NombreRol</h6>
     </div>
     <div class="card-body">
-
         <input type="hidden" id="secRol" value="@Model.SecRol" />
-
-        <!-- Sección de Permisos Genéricos -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <h5><i class="fas fa-cogs mr-2"></i>Permisos Genéricos Globales</h5>
-                <p class="text-muted">Define las acciones que este rol puede realizar en los módulos a los que tiene acceso.</p>
-                <div class="permisos-globales-container">
-                    @foreach (var permiso in Model.TodosLosPermisos)
-                    {
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input permiso-check" type="checkbox" id="perm-@permiso.IdPermiso" value="@permiso.IdPermiso" 
-                                   @(Model.PermisosAsignados.Contains(permiso.IdPermiso) ? "checked" : "")>
-                            <label class="form-check-label" for="perm-@permiso.IdPermiso">@permiso.Descripcion</label>
-                        </div>
-                    }
-                </div>
+        <input type="hidden" id="nombreRol" value="@Model.NombreRol" />
+        <div class="row">
+            <div class="col-sm-12">
+                <div id="menuTreeContainer"></div>
             </div>
         </div>
-
-        <hr/>
-
-        <!-- Sección de Acceso a Menús -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <h5><i class="fas fa-list-ul mr-2"></i>Acceso a Módulos del Sistema</h5>
-                <p class="text-muted">Define los módulos o secciones del sistema que este rol podrá ver.</p>
-                <div class="menus-container">
-                    @foreach (var menu in Model.TodosLosMenus.Where(m => m.SecMenuPadre == null)) // Menús Padre
-                    {
-                        <div class="menu-group">
-                            <div class="form-check parent-menu">
-                                <input class="form-check-input menu-check" type="checkbox" id="menu-@menu.Secuencial" value="@menu.Secuencial"
-                                       @(Model.MenusAsignados.Contains(menu.Secuencial) ? "checked" : "")>
-                                <label class="form-check-label font-weight-bold" for="menu-@menu.Secuencial">@menu.Descripcion</label>
-                            </div>
-                            
-                            @foreach (var submenu in Model.TodosLosMenus.Where(m => m.SecMenuPadre == menu.Secuencial))
-                            {
-                                <div class="form-check child-menu ml-4">
-                                    <input class="form-check-input menu-check" type="checkbox" id="menu-@submenu.Secuencial" value="@submenu.Secuencial"
-                                           @(Model.MenusAsignados.Contains(submenu.Secuencial) ? "checked" : "")>
-                                    <label class="form-check-label" for="menu-@submenu.Secuencial">@submenu.Descripcion</label>
-                                </div>
-                            }
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-
-    </div>
-    <div class="card-footer bg-light d-flex justify-content-end">
-        <a class="btn btn-secondary mr-2" href="@Url.Action("Index", "Rol")">Volver a la Lista</a>
-        <button class="btn btn-primary" id="btnGuardarCambios"><i class="fas fa-save mr-2"></i>Guardar Cambios</button>
+        <hr />
+        <button class="btn btn-primary" id="btnGuardarPermisos">Guardar Permisos</button>
     </div>
 </div>
 
-@section Scripts {
+@section Scripts{
     <script src="~/js/vistas/gestionar_permisos.js"></script>
+    <script>
+        $(document).ready(function () {
+            const rawMenusData = @Html.Raw(Json.Serialize(Model.Menus));
+            console.log("Raw Menus Data:", rawMenusData);
+
+            const menusData = rawMenusData && rawMenusData.$values ? rawMenusData.$values : rawMenusData;
+            console.log("Processed Menus Data:", menusData);
+
+            if (Array.isArray(menusData)) {
+                renderMenuTree(menusData, $('#menuTreeContainer'));
+            } else {
+                console.error("menusData no es un array después de procesar. No se puede renderizar el árbol de menús.", menusData);
+                $('#menuTreeContainer').html('<p>No se pudieron cargar los menús para este rol.</p>');
+            }
+
+            $('#btnGuardarPermisos').on('click', function () {
+                const secRol = $('#secRol').val();
+                const nombreRol = $('#nombreRol').val();
+                const modelo = collectPermissions(parseInt(secRol), nombreRol);
+                
+                // Muestra un overlay de carga
+                $("div.card").LoadingOverlay("show");
+
+                fetch("/Rol/GuardarPermisos", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                    },
+                    body: JSON.stringify(modelo)
+                })
+                .then(response => {
+                    $("div.card").LoadingOverlay("hide");
+                    return response.ok ? response.json() : Promise.reject(response);
+                })
+                .then(responseJson => {
+                    if (responseJson.estado) {
+                        Swal.fire("¡Listo!", "Los permisos se han actualizado correctamente", "success").then(() => {
+                            window.location.href = "/Rol/Index";
+                        });
+                    } else {
+                        Swal.fire("Error", responseJson.mensajes, "error");
+                    }
+                })
+                .catch(error => {
+                    $("div.card").LoadingOverlay("hide");
+                    Swal.fire("Error", "No se pudo comunicar con el servidor", "error");
+                    console.error("Error en la solicitud fetch:", error);
+                });
+            });
+        });
+    </script>
 }

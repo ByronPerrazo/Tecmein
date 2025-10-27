@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using TecmeinWebApp.Utilidades.Response;
+using TecmeinWebApp.Utilidades.ViewComponents;
 
 namespace TecmeinWebApp.Controllers
 {
@@ -15,6 +17,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet("tinymce-key")]
+        [ValidatePermission("LEER")]
         public IActionResult GetTinyMceApiKey()
         {
             var apiKey = _configuration["ApiKeys:TinyMCE"];

@@ -10,6 +10,7 @@ namespace Entity
         public PreContrato()
         {
             PreContratoParrafos = new HashSet<PreContratoParrafo>();
+            PreContratoCompromisoPagos = new HashSet<PreContratoCompromisoPago>();
         }
 
         [Key]
@@ -53,5 +54,6 @@ namespace Entity
         // public virtual FormaPago SecFormaPagoNavigation { get; set; } // Añadido // Removed
 
         public virtual ICollection<PreContratoParrafo> PreContratoParrafos { get; set; }
+        public virtual ICollection<PreContratoCompromisoPago> PreContratoCompromisoPagos { get; set; }
     }
 }

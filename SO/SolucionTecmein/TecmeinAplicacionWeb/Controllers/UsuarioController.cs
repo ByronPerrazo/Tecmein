@@ -8,6 +8,7 @@ using System.Security.Claims; // AÑADIDO
 using TecmeinAplicacionWeb.Models.ViewModels; // Añadido para encontrar RolVM
 using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
+using TecmeinWebApp.Utilidades.ViewComponents;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -36,12 +37,14 @@ namespace TecmeinWebApp.Controllers
 
         private readonly IAuditService _auditService; // AUDITORÍA
 
+        [ValidatePermission("VER_MENU")]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ListaRol()
         {
             List<RolVM> listaPerfilesVM
@@ -52,6 +55,7 @@ namespace TecmeinWebApp.Controllers
 
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Lista()
         {
             var usuarioListaVM = _mapper.Map<List<UsuarioVM>>(await _usuarioServices.Lista());
@@ -59,6 +63,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ExisteUsuario(int secuencialUsuario)
         {
             var existe = _mapper.Map<UsuarioVM>(await _usuarioServices.ExistePorSecuencial(secuencialUsuario));
@@ -67,6 +72,7 @@ namespace TecmeinWebApp.Controllers
 
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ObtenerParaEditar(int secuencialUsuario)
         {
             var gResponse = new GenericResponse<UsuarioEditarVM>();
@@ -99,7 +105,7 @@ namespace TecmeinWebApp.Controllers
 
 
         [HttpPost]
-        [Authorize(Policy = "CanCreate")] // Asumiendo que CanCreate es la política para crear
+        [ValidatePermission("CREAR")]
         public async Task<IActionResult> Crear([FromForm] IFormFile imagen, [FromForm] string modelo)
         {
             var genericResponse = new GenericResponse<UsuarioVM>();
@@ -151,6 +157,7 @@ namespace TecmeinWebApp.Controllers
 
 
         [HttpPut]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> Editar([FromForm] IFormFile Foto, [FromForm] string modelo, string cabeceraUrlCorreo = "")
         {
             var genericResponse = new GenericResponse<UsuarioVM>();
@@ -197,6 +204,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpDelete]
+        [ValidatePermission("ELIMINAR")]
         public async Task<IActionResult> Eliminar(int secuencialUsuario)
         {
             var gResponse = new GenericResponse<string>();

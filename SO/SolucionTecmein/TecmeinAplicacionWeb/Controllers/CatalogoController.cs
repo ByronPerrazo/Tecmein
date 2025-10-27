@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
+using TecmeinWebApp.Utilidades.ViewComponents;
 
 namespace TecmeinWebApp.Controllers
 {
@@ -29,12 +30,14 @@ namespace TecmeinWebApp.Controllers
             _mapper = mapper;
         }
 
+        [ValidatePermission("VER_MENU")]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Lista()
         {
             var listaCatalogoVM
@@ -43,6 +46,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> CatalogoPorSecuencial(int secuencial)
         {
             var catalogo = _mapper.Map<CatalogoVM>(await _catalogoServices.CatalogoPorSecuencial(secuencial));
@@ -50,7 +54,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "CanModify")]
+        [ValidatePermission("CREAR")]
         public async Task<IActionResult> CrearCatalogo([FromForm] IFormFile archivoPDF, [FromForm] string modelo)
         {
             var genericResponse = new GenericResponse<CatalogoVM>();
@@ -87,7 +91,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Policy = "CanDelete")]
+        [ValidatePermission("ELIMINAR")]
         public async Task<IActionResult> Eliminar(int secuencial)
         {
             var gResponse = new GenericResponse<string>();

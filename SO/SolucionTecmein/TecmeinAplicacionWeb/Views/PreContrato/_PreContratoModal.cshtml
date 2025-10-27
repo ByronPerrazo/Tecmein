@@ -1,6 +1,7 @@
 <!--  Modal-->
 <div class="modal fade" id="modalPreContrato" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
-    <div class="modal-dialog modal-md" role="document">
+    <div class="modal-dialog modal-lg" role="document">
+        <!-- Aumentado a modal-lg para más espacio -->
         <div class="modal-content">
             <div class="card shadow-sm">
                 <div class="card-header py-2 bg-second-primary">
@@ -14,32 +15,38 @@
                 <div class="card-body p-2">
                     <form>
                         <input type="hidden" value="0" id="txtId">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="form-group mb-2">
+                        <input type="hidden" value="0" id="SecPreContrato"> <!-- Nuevo campo oculto para el ID del PreContrato -->
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-8">
                                     <select id="cboCotizacionesAceptadas" class="form-control form-control-sm" title="Crear Pre-Contrato desde Cotización Aceptada">
                                         <option value="" disabled selected>Crear Pre-Contrato desde Cotización Aceptada</option>
                                     </select>
                                     <small class="form-text text-muted">Seleccione una cotización para llenar los datos del pre-contrato.</small>
                                 </div>
+                                <div class="col-md-4">
+                                    <div id="totalCotizacionDisplay" class="form-control form-control-sm bg-light text-right font-weight-bold">0.00</div>
+                                    <small class="form-text text-muted">Valor total de la cotización.</small>
+                                </div>
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-row">
-                                    <div class="form-group col-sm-6">
+                                    <div class="form-group col-md-4">
                                         <input type="number" class="form-control form-control-sm" id="Dias" min="0" placeholder="Días de Entrega" title="Días de Entrega">
+                                        <small class="form-text text-muted">Días para la entrega del proyecto.</small>
                                     </div>
-                                    <div class="form-group col-sm-6">
+                                    <div class="form-group col-md-4">
                                         <select id="TipoDias" class="form-control form-control-sm" title="Tipo de Días">
                                             <option value="" disabled selected>Tipo de Días</option>
                                             <option value="Hábiles">Hábiles</option>
                                             <option value="Calendario">Calendario</option>
                                         </select>
+                                        <small class="form-text text-muted">Tipo de días: Hábiles o Calendario.</small>
                                     </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group col-sm-6">
+                                    <div class="form-group col-md-4">
                                         <select id="PeriodoMantenimiento" class="form-control form-control-sm" title="Periodo de Mantenimiento">
                                             <option value="" disabled selected>Periodo de Mantenimiento</option>
                                             <option value="semanal">Semanal</option>
@@ -49,30 +56,92 @@
                                             <option value="semestral">Semestral</option>
                                             <option value="anual">Anual</option>
                                         </select>
+                                        <small class="form-text text-muted">Frecuencia del mantenimiento.</small>
                                     </div>
-                                    <div class="form-group col-sm-3">
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
                                         <input type="number" class="form-control form-control-sm" id="AniosGarantia" min="0" placeholder="Años Garantía" title="Años Garantía">
+                                        <small class="form-text text-muted">Años de garantía técnica.</small>
                                     </div>
-                                    <div class="form-group col-sm-3">
+                                    <div class="form-group col-md-4">
                                         <input type="number" class="form-control form-control-sm" id="MesesGarantia" min="0" placeholder="Meses Garantía" title="Meses Garantía">
+                                        <small class="form-text text-muted">Meses de garantía técnica.</small>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <select id="PolizaGarantia" class="form-control form-control-sm" title="Seleccione la garantía">
+                                            <option value="" disabled selected>Seleccione la garantía</option>
+                                        </select>
+                                        <small class="form-text text-muted">Póliza de garantía del trabajo.</small>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <select id="PolizaGarantia" class="form-control form-control-sm" title="Seleccione la garantía">
-                                        <option value="" disabled selected>Seleccione la garantía</option>
-                                    </select>
+                            </div>
+                        </div>
+
+                        <!-- Sección de Compromisos de Pago -->
+                        <hr>
+                        <div class="card">
+                            <div class="card-header py-2 bg-second-primary" id="headingCompromisos">
+                                <h6 class="mb-0">
+                                    <a href="#collapseCompromisos" class="text-white font-weight-bold" data-toggle="collapse" aria-expanded="true" aria-controls="collapseCompromisos">
+                                        Compromisos de Pago
+                                    </a>
+                                </h6>
+                            </div>
+                            <div id="collapseCompromisos" class="collapse show" aria-labelledby="headingCompromisos">
+                                <div class="card-body p-2">
+                                    <!-- Sección para Generar Cuotas -->
+                                    <div class="card p-2 mb-3">
+                                        <div class="form-row align-items-end">
+                                            <div class="form-group col-md-3 mb-0">
+                                                <label for="numCuotas" class="small mb-0"># Cuotas</label>
+                                                <input type="number" class="form-control form-control-sm" id="numCuotas" min="1" placeholder="Ej: 12">
+                                            </div>
+                                            <div class="form-group col-md-3 mb-0">
+                                                <label for="montoCuota" class="small mb-0">Monto Cuota</label>
+                                                <input type="number" class="form-control form-control-sm" id="montoCuota" min="0" step="0.01" placeholder="Ej: 500.00">
+                                            </div>
+                                            <div class="form-group col-md-3 mb-0">
+                                                <label for="fechaPrimeraCuota" class="small mb-0">Fecha Inicio</label>
+                                                <input type="date" class="form-control form-control-sm" id="fechaPrimeraCuota">
+                                            </div>
+                                            <div class="form-group col-md-3 mb-0 text-right">
+                                                <button type="button" class="btn btn-primary btn-sm" id="btnGenerarCuotas">Generar Cuotas</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <table id="tablaCompromisos" class="table table-sm table-bordered">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th style="width: 50px;">Nro.</th>
+                                                        <th>Tipo</th>
+                                                        <th>Monto</th>
+                                                        <th>Fecha Vencimiento</th>
+                                                        <th style="width: 50px;"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <!-- Las filas se agregarán dinámicamente aquí -->
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td colspan="2" class="text-right font-weight-bold">TOTAL:</td>
+                                                        <td id="sumaCompromisosDisplay" class="font-weight-bold text-right">0.00</td>
+                                                        <td colspan="2"></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                            <button type="button" class="btn btn-info btn-sm" id="btnAnadirCompromiso"><i class="fas fa-plus"></i> Añadir Compromiso</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row" style="display:none;">
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <select id="SecPlantillaPreContrato" class="form-control" title="Seleccionar Plantilla">
-                                        <option value="" disabled selected>Seleccionar Plantilla</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
+                        <!-- Fin Sección de Compromisos de Pago -->
+
                         <div class="row mt-3">
                             <div class="col-sm-12 text-center">
                                 <button class="btn btn-success" type="button" id="btnGenerarPreContrato"><i class="fas fa-file-signature"></i> Generar Pre-Contrato</button>
@@ -81,9 +150,32 @@
                     </form>
                 </div>
                 <div class="card-body p-0 d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary btn-sm m-1" id="btnGuardarBorrador">Guardar</button>
                     <button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Plantilla para nueva fila de compromiso (oculta) -->
+<table style="display:none;">
+    <tr id="plantillaCompromiso">
+        <td><span class="numero-cuota"></span></td>
+        <td>
+            <select class="form-control form-control-sm tipo-compromiso">
+                <option value="Anticipo">Anticipo</option>
+                <option value="Cuota">Cuota</option>
+            </select>
+        </td>
+        <td>
+            <input type="number" class="form-control form-control-sm monto-compromiso" min="0" step="0.01" placeholder="Monto">
+        </td>
+        <td>
+            <input type="date" class="form-control form-control-sm fecha-compromiso">
+        </td>
+        <td>
+            <button type="button" class="btn btn-danger btn-sm btn-eliminar-compromiso"><i class="fas fa-trash-alt"></i></button>
+        </td>
+    </tr>
+</table>

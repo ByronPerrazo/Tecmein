@@ -3,9 +3,9 @@ using BLL.DTOs;
 using BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using TecmeinWebApp.Utilidades.Response;
-using System.Threading.Tasks;
+using TecmeinWebApp.Utilidades.ViewComponents;
 
-namespace TecmeinWebApp.Controllers
+namespace TecmeinAplicacionWeb.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -21,6 +21,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet("ObtenerPorContratoId/{idContrato}")]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ObtenerPorContratoId(int idContrato)
         {
             var gResponse = new GenericResponse<PlanDePagoDTO>();
@@ -38,6 +39,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPost("Guardar")]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> Guardar([FromBody] PlanDePagoDTO modelo)
         {
             var gResponse = new GenericResponse<PlanDePagoDTO>();

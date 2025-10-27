@@ -10,5 +10,6 @@ namespace BLL.Interfaces
         Task<Permiso> Crear(Permiso entidad);
         Task<Permiso> Editar(Permiso entidad);
         Task<bool> Eliminar(string idPermiso);
+        Task<List<Permiso>> ObtenerPermisosPorRol(int secRol); // New method
     }
 }

@@ -7,6 +7,15 @@ const MODELO_BASE = {
 
 let tablaData;
 
+function manejarErrorFetch(error, operacion) {
+    console.error(`Error en ${operacion}:`, error);
+    if (error && error.mensajes) {
+        Swal.fire("Error", error.mensajes, "error");
+    } else {
+        Swal.fire("Error", `Ocurrió un error inesperado durante: ${operacion}.`, "error");
+    }
+}
+
 $(document).ready(function () {
     tablaData = $('#tbdata').DataTable({
         responsive: true,
@@ -14,27 +23,27 @@ $(document).ready(function () {
             "url": '/DiccionarioParametro/Lista',
             "type": "GET",
             "datatype": "json",
-                            "dataSrc": function(json) { return json.data ? json.data.$values : []; } // Corregido para procesar la respuesta
-                    },
-                    "columns": [
-                        {
-                            data: "parametro", render: function (data) {
-                                // Se quitan las llaves solo para la visualización en la tabla
-                                return data.replace(/{{|}}/g, "");
-                            }
-                        },
-                        { data: "descripcion" },
-                        {
-                            data: "estaActivo", render: function (data) {
-                                if (data == 1)
-                                    return '<span class="badge badge-info">Activo</span>';
-                                else
-                                    return '<span class="badge badge-danger">Inactivo</span>';
-                            }
-                        },
-                        {
-                            "defaultContent": '<div class="btn-group" role="group"><button class="btn btn-primary btn-editar btn-sm"><i class="fas fa-pencil-alt"></i></button>' +
-                                              '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button></div>',                "orderable": false,
+            "dataSrc": function(json) { return json.data ? json.data.$values : []; },
+            "error": function (jqXHR, textStatus, errorThrown) {
+                 manejarErrorFetch(jqXHR.responseJSON || { mensajes: "No se pudo cargar la lista de parámetros." }, "Cargar Lista");
+            }
+        },
+        "columns": [
+            {
+                data: "parametro", render: function (data) {
+                    return data.replace(/{{|}}/g, "");
+                }
+            },
+            { data: "descripcion" },
+            {
+                data: "estaActivo", render: function (data) {
+                    return data == 1 ? '<span class="badge badge-info">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>';
+                }
+            },
+            {
+                "defaultContent": '<div class="btn-group" role="group"><button class="btn btn-primary btn-editar btn-sm"><i class="fas fa-pencil-alt"></i></button>' +
+                                  '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button></div>',
+                "orderable": false,
                 "searchable": false,
                 "width": "80px"
             }
@@ -47,9 +56,7 @@ $(document).ready(function () {
 });
 
 function mostrarModal(modelo = MODELO_BASE) {
-    // Si el parámetro viene de la BD (ej: {{nombre}}), se quitan las llaves para mostrarlo en el input
     const parametroParaMostrar = modelo.parametro.replace(/{{|}}/g, "");
-
     $("#txtSecuencial").val(modelo.secuencial);
     $("#txtParametro").val(parametroParaMostrar);
     $("#txtDescripcion").val(modelo.descripcion);
@@ -65,7 +72,6 @@ $("#btnGuardar").click(function () {
     const esNuevo = $("#txtSecuencial").val() == "0";
     const parametroSinFormato = $("#txtParametro").val().trim();
 
-    // Simple validación para campos no vacíos
     if (parametroSinFormato === "" || $("#txtDescripcion").val().trim() === "") {
         Swal.fire("Oops!", "Los campos Parámetro y Descripción no pueden estar vacíos.", "warning");
         return;
@@ -73,7 +79,7 @@ $("#btnGuardar").click(function () {
 
     const modelo = {
         secuencial: parseInt($("#txtSecuencial").val()),
-        parametro: `{{${parametroSinFormato}}}`, // Se añaden las llaves automáticamente
+        parametro: `{{${parametroSinFormato}}}`, 
         descripcion: $("#txtDescripcion").val(),
         estaActivo: $("#cboEstado").val() == "1"
     };
@@ -86,45 +92,38 @@ $("#btnGuardar").click(function () {
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify(modelo)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) return response.json().then(err => Promise.reject(err));
+        return response.json();
+    })
     .then(responseJson => {
         if (responseJson.estado) {
             tablaData.ajax.reload(null, false);
             $("#modalData").modal("hide");
             Swal.fire("¡Listo!", `El parámetro fue ${esNuevo ? 'creado' : 'actualizado'} correctamente.`, "success");
         } else {
-            Swal.fire("Error", "No se pudo guardar el parámetro.", "error");
+            Swal.fire("Error", responseJson.mensajes, "error");
         }
     })
     .catch(error => {
-        console.error("Error al guardar:", error);
-        Swal.fire("Error", "Ocurrió un error al intentar guardar.", "error");
+        manejarErrorFetch(error, "Guardar Parámetro");
     });
 });
 
 let filaSeleccionada;
 $("#tbdata tbody").on("click", ".btn-editar", function () {
-    if ($(this).closest("tr").hasClass("child")) {
-        filaSeleccionada = $(this).closest("tr").prev();
-    } else {
-        filaSeleccionada = $(this).closest("tr");
-    }
+    filaSeleccionada = $(this).closest("tr").hasClass("child") ? $(this).closest("tr").prev() : $(this).closest("tr");
     const data = tablaData.row(filaSeleccionada).data();
     mostrarModal(data);
 });
 
 $("#tbdata tbody").on("click", ".btn-eliminar", function () {
-    let fila;
-    if ($(this).closest("tr").hasClass("child")) {
-        fila = $(this).closest("tr").prev();
-    } else {
-        fila = $(this).closest("tr");
-    }
+    let fila = $(this).closest("tr").hasClass("child") ? $(this).closest("tr").prev() : $(this).closest("tr");
     const data = tablaData.row(fila).data();
 
     Swal.fire({
         title: '¿Está seguro?',
-        text: `¿Desea eliminar el parámetro "${data.parametro}"?`,
+        text: `¿Desea eliminar el parámetro "${data.parametro.replace(/{{|}}/g, "")}"?`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
@@ -136,18 +135,20 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
             fetch(`/DiccionarioParametro/Eliminar?secuencial=${data.secuencial}`, {
                 method: "DELETE"
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) return response.json().then(err => Promise.reject(err));
+                return response.json();
+            })
             .then(responseJson => {
                 if (responseJson.estado) {
                     tablaData.row(fila).remove().draw();
                     Swal.fire('¡Eliminado!', 'El parámetro ha sido eliminado.', 'success');
                 } else {
-                    Swal.fire('Error', 'No se pudo eliminar el parámetro.', 'error');
+                    Swal.fire('Error', responseJson.mensajes, 'error');
                 }
             })
             .catch(error => {
-                console.error("Error al eliminar:", error);
-                Swal.fire("Error", "Ocurrió un error al intentar eliminar.", "error");
+                manejarErrorFetch(error, "Eliminar Parámetro");
             });
         }
     });

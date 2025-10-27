@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System.Threading.Tasks;
 using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
+using TecmeinWebApp.Utilidades.ViewComponents;
 
 namespace TecmeinWebApp.Controllers
 {
@@ -20,12 +21,14 @@ namespace TecmeinWebApp.Controllers
             _mapper = mapper;
         }
 
+        [ValidatePermission("LEER")]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Lista()
         {
             var lista = await _cotizacionServices.Lista();
@@ -51,6 +54,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Detalle(int id)
         {
             var cotizacion = await _cotizacionServices.Detalle(id);
@@ -59,6 +63,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> VerificarVisita(int visitaId)
         {
             bool tieneCotizacion = await _cotizacionServices.VisitaTieneCotizacionActiva(visitaId);
@@ -66,6 +71,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> GenerarPDF(int idCotizacion)
         {
             try
@@ -87,6 +93,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> GenerarPDFSolicitud(int idCotizacion)
         {
             try
@@ -108,6 +115,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("CREAR")]
         public async Task<IActionResult> Crear([FromForm] string modelo)
         {
             var response = new GenericResponse<CotizacionVM>();
@@ -142,6 +150,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPut]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> Editar([FromForm] string modelo)
         {
             var response = new GenericResponse<CotizacionVM>();
@@ -176,6 +185,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpDelete]
+        [ValidatePermission("ELIMINAR")]
         public async Task<IActionResult> Eliminar(int id)
         {
             var response = new GenericResponse<string>();

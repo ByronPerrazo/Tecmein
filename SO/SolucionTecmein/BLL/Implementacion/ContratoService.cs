@@ -21,6 +21,9 @@ namespace BLL.Implementacion
         private readonly IGenericRepository<PreContrato> _repositorioPreContrato;
         private readonly IGenericRepository<Etapa> _repositorioEtapa;
         private readonly TecmeindbContext _dbContext;
+        private readonly IGenericRepository<PlanDePago> _repositorioPlanDePago;
+        private readonly IGenericRepository<Cuota> _repositorioCuota;
+        private readonly IGenericRepository<PreContratoCompromisoPago> _repositorioCompromisoPago;
 
         public ContratoService(
             IGenericRepository<Contrato> repositorioContrato,
@@ -30,7 +33,10 @@ namespace BLL.Implementacion
             IStorageServices storageServices,
             IGenericRepository<PreContrato> repositorioPreContrato,
             IGenericRepository<Etapa> repositorioEtapa,
-            TecmeindbContext dbContext)
+            TecmeindbContext dbContext,
+            IGenericRepository<PlanDePago> repositorioPlanDePago,
+            IGenericRepository<Cuota> repositorioCuota,
+            IGenericRepository<PreContratoCompromisoPago> repositorioCompromisoPago)
         {
             _repositorioContrato = repositorioContrato;
             _repositorioCotizacion = repositorioCotizacion;
@@ -40,6 +46,9 @@ namespace BLL.Implementacion
             _repositorioPreContrato = repositorioPreContrato;
             _repositorioEtapa = repositorioEtapa;
             _dbContext = dbContext;
+            _repositorioPlanDePago = repositorioPlanDePago;
+            _repositorioCuota = repositorioCuota;
+            _repositorioCompromisoPago = repositorioCompromisoPago;
         }
 
         public async Task<Contrato> Crear(ContratoCreacionDTO dto)
@@ -62,12 +71,7 @@ namespace BLL.Implementacion
                     idCotizacionFinal = cotizacion.Secuencial;
                     secClienteFinal = cliente.SecCliente;
 
-                    var preContrato = await _repositorioPreContrato.Obtener(p => p.SecCotizacion == cotizacion.Secuencial && p.Estado == "Aprobado");
-                    if (preContrato != null)
-                    {
-                        preContrato.Estado = "Procesado";
-                        preContrato.EstaActivo = false;
-                    }
+
                 }
                 else if (dto.SecCliente.HasValue && dto.SecCliente > 0)
                 {
@@ -100,6 +104,51 @@ namespace BLL.Implementacion
 
                 var contratoCreado = await _repositorioContrato.Crear(contrato);
                 if (contratoCreado.IdContrato == 0) throw new Exception("No se pudo crear el registro del contrato.");
+
+                // <<< START: NEW LOGIC >>>
+                var preContrato = await _repositorioPreContrato.Obtener(p => p.SecCotizacion == idCotizacionFinal && p.Estado == "Aprobado");
+                if (preContrato != null)
+                {
+                    var compromisos = await _repositorioCompromisoPago.Consultar(c => c.SecPreContrato == preContrato.SecPreContrato);
+                    if (compromisos.Any())
+                    {
+                        var anticipo = compromisos.FirstOrDefault(c => c.Tipo == "Anticipo");
+                        var cuotas = compromisos.Where(c => c.Tipo == "Cuota").OrderBy(c => c.NumeroCuota).ToList();
+
+                        var nuevoPlanDePago = new PlanDePago
+                        {
+                            IdContrato = contratoCreado.IdContrato,
+                            SecFormaPago = 1, // TODO: Hacer que la forma de pago sea dinámica o venga del pre-contrato.
+                            ValorContrato = compromisos.Sum(c => c.Monto),
+                            ValorAnticipo = anticipo?.Monto ?? 0,
+                            FechaAnticipo = anticipo?.FechaVencimiento,
+                            NumeroCuotas = cuotas.Count(),
+                            FechaPrimeraCuota = cuotas.FirstOrDefault()?.FechaVencimiento,
+                            EstaActivo = true,
+                            FechaRegistro = DateTime.Now
+                        };
+
+                        var planDePagoCreado = await _repositorioPlanDePago.Crear(nuevoPlanDePago);
+
+                        foreach (var c in cuotas)
+                        {
+                            var nuevaCuota = new Cuota
+                            {
+                                IdPlanDePago = planDePagoCreado.IdPlanDePago,
+                                NumeroCuota = c.NumeroCuota,
+                                MontoEsperado = c.Monto,
+                                FechaVencimiento = c.FechaVencimiento,
+                                Estado = "Pendiente",
+                                FechaRegistro = DateTime.Now
+                            };
+                            await _repositorioCuota.Crear(nuevaCuota);
+                        }
+                    }
+
+                    preContrato.Estado = "Procesado";
+                    preContrato.EstaActivo = false;
+                }
+                // <<< END: NEW LOGIC >>>
 
                 if (dto.ArchivoStream != null && !string.IsNullOrEmpty(dto.NombreArchivo))
                 {

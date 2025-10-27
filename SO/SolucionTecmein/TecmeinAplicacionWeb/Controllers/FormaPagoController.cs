@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
+using TecmeinWebApp.Utilidades.ViewComponents;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -21,12 +22,14 @@ namespace TecmeinWebApp.Controllers
             _formaPagoServices = formaPagoServices;
         }
 
+        [ValidatePermission("VER_MENU")]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ListaActivas()
         {
             var gResponse = new GenericResponse<List<FormaPagoVM>>();
@@ -47,6 +50,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Lista()
         {
             var gResponse = new GenericResponse<List<FormaPagoVM>>();
@@ -66,6 +70,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("CREAR")]
         public async Task<IActionResult> Crear([FromForm] string modelo)
         {
             var gResponse = new GenericResponse<FormaPagoVM>();
@@ -86,6 +91,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPut]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> Editar([FromForm] string modelo)
         {
             var gResponse = new GenericResponse<FormaPagoVM>();
@@ -106,6 +112,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpDelete]
+        [ValidatePermission("ELIMINAR")]
         public async Task<IActionResult> Eliminar(int secuencial)
         {
             var gResponse = new GenericResponse<string>();
@@ -123,6 +130,7 @@ namespace TecmeinWebApp.Controllers
             }
         }
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ListaParaDropdown()
         {
             try

@@ -7,7 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TecmeinAplicacionWeb.Models.ViewModels;
-using TecmeinWebApp.Utilidades.Response; // Corregido
+using TecmeinWebApp.Utilidades.Response;
+using TecmeinWebApp.Utilidades.ViewComponents;
 
 namespace TecmeinAplicacionWeb.Controllers
 {
@@ -24,12 +25,14 @@ namespace TecmeinAplicacionWeb.Controllers
             _logger = logger;
         }
 
+        [ValidatePermission("VER_MENU")]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Lista()
         {
             var gResponse = new GenericResponse<PermisoVM>();
@@ -49,6 +52,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("CREAR")]
         public async Task<IActionResult> Crear([FromBody] PermisoVM modelo)
         {
             var gResponse = new GenericResponse<PermisoVM>();
@@ -70,6 +74,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpPut]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> Editar([FromBody] PermisoVM modelo)
         {
             var gResponse = new GenericResponse<PermisoVM>();
@@ -91,6 +96,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpDelete]
+        [ValidatePermission("ELIMINAR")]
         public async Task<IActionResult> Eliminar(string idPermiso)
         {
             var gResponse = new GenericResponse<object>();

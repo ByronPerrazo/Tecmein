@@ -1,12 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 using BLL.Interfaces;
 using Entity;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using TecmeinAplicacionWeb.Models.ViewModels;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Linq;
-using AutoMapper;
+using TecmeinWebApp.Utilidades.ViewComponents;
 
 namespace TecmeinAplicacionWeb.Controllers
 {
@@ -21,12 +18,14 @@ namespace TecmeinAplicacionWeb.Controllers
             _mapper = mapper;
         }
 
+        [ValidatePermission("VER_MENU")]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<JsonResult> Lista()
         {
             List<TipoDocumento> listaEntidades = await _tipoDocumentoServices.Lista();
@@ -35,6 +34,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("CREAR")]
         public async Task<JsonResult> Crear([FromBody] TipoDocumentoVM model)
         {
             bool resultado = true;
@@ -55,6 +55,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpPut]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<JsonResult> Editar([FromBody] TipoDocumentoVM model)
         {
             bool resultado = true;
@@ -75,6 +76,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpDelete]
+        [ValidatePermission("ELIMINAR")]
         public async Task<JsonResult> Eliminar(int SecTipoDocumento)
         {
             bool resultado = true;

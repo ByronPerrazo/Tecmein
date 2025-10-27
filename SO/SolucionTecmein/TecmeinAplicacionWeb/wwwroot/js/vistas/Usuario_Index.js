@@ -98,14 +98,23 @@ let esEdicion = false;
 
 $("#btnNuevo").click(function () {
     esEdicion = false;
-    // Para un nuevo usuario, necesitamos la lista de roles
     fetch("/Usuario/ListaRol")
-        .then(response => response.ok ? response.json() : Promise.reject(response))
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorJson => Promise.reject(errorJson));
+            }
+            return response.json();
+        })
         .then(responseJson => {
             mostrarModal(MODELO_BASE, responseJson);
         })
         .catch(error => {
-            console.error('Error al obtener la lista de perfiles para nuevo usuario:', error);
+            if (error && error.mensajes) {
+                Swal.fire("Fallo!", error.mensajes, "error");
+            } else {
+                console.error('Error al obtener la lista de roles:', error);
+                Swal.fire("Fallo!", "Ocurrió un error al cargar los roles.", "error");
+            }
         });
 })
 
@@ -126,7 +135,10 @@ $("#tbdata tbody").on("click", ".btn-editar", function () {
     fetch(`/Usuario/ObtenerParaEditar?secuencialUsuario=${secuencialUsuario}`)
         .then(response => {
             $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-            return response.ok ? response.json() : Promise.reject(response);
+            if (!response.ok) {
+                return response.json().then(errorJson => Promise.reject(errorJson));
+            }
+            return response.json();
         })
         .then(responseJson => {
             if (responseJson.estado) {
@@ -137,7 +149,12 @@ $("#tbdata tbody").on("click", ".btn-editar", function () {
         })
         .catch(error => {
             $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-            console.error("Error en la llamada fetch para editar:", error);
+            if (error && error.mensajes) {
+                Swal.fire("Fallo!", error.mensajes, "error");
+            } else {
+                console.error("Error en la llamada fetch para editar:", error);
+                Swal.fire("Fallo!", "Ocurrió un error inesperado al cargar los datos.", "error");
+            }
         });
 });
 
@@ -177,7 +194,12 @@ $("#btnGuardar").click(function () {
     })
     .then(response => {
         $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-        return response.ok ? response.json() : Promise.reject(response);
+        if (!response.ok) {
+            return response.json().then(errorJson => {
+                return Promise.reject(errorJson);
+            });
+        }
+        return response.json();
     })
     .then(responseJson => {
         if (responseJson.estado) {
@@ -194,7 +216,12 @@ $("#btnGuardar").click(function () {
     })
     .catch(error => {
         $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-        console.error("Error al guardar:", error);
+        if (error && error.mensajes) {
+            Swal.fire("Fallo!", error.mensajes, "error");
+        } else {
+            console.error("Error al guardar:", error);
+            Swal.fire("Fallo!", "Ocurrió un error inesperado.", "error");
+        }
     });
 });
 
@@ -227,7 +254,10 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
             })
             .then(response => {
                 $(".showSweetAlert").LoadingOverlay("hide");
-                return response.ok ? response.json() : Promise.reject(response);
+                if (!response.ok) {
+                    return response.json().then(errorJson => Promise.reject(errorJson));
+                }
+                return response.json();
             })
             .then(responseJson => {
                 if (responseJson.estado) {
@@ -235,6 +265,15 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
                     Swal.fire("Listo!", "El Usuario fue eliminado", "success");
                 } else {
                     Swal.fire("Fallo!", responseJson.mensajes, "error");
+                }
+            })
+            .catch(error => {
+                $(".showSweetAlert").LoadingOverlay("hide");
+                if (error && error.mensajes) {
+                    Swal.fire("Fallo!", error.mensajes, "error");
+                } else {
+                    console.error("Error al eliminar:", error);
+                    Swal.fire("Fallo!", "Ocurrió un error inesperado al eliminar.", "error");
                 }
             });
         }

@@ -6,11 +6,20 @@ const MODELO_BASE = {
 
 let tablaData;
 
+function manejarErrorFetch(error, operacion, overlayElement) {
+    if (overlayElement) $(overlayElement).LoadingOverlay("hide");
+    console.error(`Error en ${operacion}:`, error);
+    if (error && error.mensajes) {
+        Swal.fire("Error", error.mensajes, "error");
+    } else {
+        Swal.fire("Error", `Ocurrió un error inesperado durante: ${operacion}.`, "error");
+    }
+}
+
 function mostrarModal(modelo = MODELO_BASE) {
     $("#txtId").val(modelo.secuencial);
     $("#txtDescripcion").val(modelo.descripcion);
     $("#cboEstado").val(modelo.estaActivo ? "1" : "0");
-
     $("#modalData").modal("show");
 }
 
@@ -21,31 +30,29 @@ $(document).ready(function () {
             "url": '/PolizaGarantia/Lista',
             "type": "GET",
             "datatype": "json",
-            "dataSrc": function(json) {
-                return json.data.$values || json.data;
-            }
+            "dataSrc": function(json) { return json.data && json.data.$values ? json.data.$values : json.data; },
+            "error": function(jqXHR) { manejarErrorFetch(jqXHR.responseJSON, "Cargar Pólizas"); }
         },
         "columns": [
-            { "data": "secuencial", "visible": false, "searchable": false },
+            { "data": "secuencial", "visible": false },
             { "data": "descripcion" },
-            { "data": "estaActivo", "render": function (data) { return data == 1 ? '<span class="badge badge-info">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>'; } },
+            { "data": "estaActivo", "render": data => data ? '<span class="badge badge-info">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>' },
             { "defaultContent": '<div class="btn-group" role="group"><button class="btn btn-primary btn-editar btn-sm"><i class="fas fa-pencil-alt"></i></button><button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button></div>', "orderable": false, "searchable": false, "width": "80px" }
         ],
         order: [[0, "desc"]],
         dom: "Bfrtip",
-        buttons: [ { text: 'Exportar Excel', extend: 'excelHtml5', title: 'Reporte de Pólizas de Garantía', exportOptions: { columns: [1, 2] } }, 'pageLength' ],
+        buttons: ['excelHtml5', 'pageLength'],
         language: { url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json" }
     });
 
-    $("#btnNuevo").click(function () {
-        mostrarModal();
-    });
+    $("#btnNuevo").click(() => mostrarModal());
 
     $("#btnGuardar").click(function () {
-        const modelo = structuredClone(MODELO_BASE);
-        modelo.secuencial = parseInt($("#txtId").val()) || 0;
-        modelo.descripcion = $("#txtDescripcion").val();
-        modelo.estaActivo = $("#cboEstado").val() == "1";
+        const modelo = {
+            secuencial: parseInt($("#txtId").val()) || 0,
+            descripcion: $("#txtDescripcion").val(),
+            estaActivo: $("#cboEstado").val() == "1"
+        };
 
         if (!modelo.descripcion || modelo.descripcion.trim() === "") {
             toastr.warning("Por favor, ingrese la descripción.", "Campo Requerido");
@@ -55,34 +62,26 @@ $(document).ready(function () {
         const esNuevo = modelo.secuencial === 0;
         const url = esNuevo ? '/PolizaGarantia/Crear' : '/PolizaGarantia/Editar';
         const method = esNuevo ? 'POST' : 'PUT';
+        const modalContent = $("#modalData .modal-content");
 
-        $("#modalData .modal-content").LoadingOverlay("show");
+        modalContent.LoadingOverlay("show");
 
-        fetch(url, {
-            method: method,
-            headers: {
-                "Content-Type": "application/json; charset=utf-8",
-            },
-            data: JSON.stringify(modelo),
-            body: JSON.stringify(modelo)
-        })
-        .then(response => {
-            $("#modalData .modal-content").LoadingOverlay("hide");
-            return response.ok ? response.json() : Promise.reject(response);
-        })
-        .then(responseJson => {
-            if (responseJson.estado) {
-                tablaData.ajax.reload();
-                $("#modalData").modal("hide");
-                Swal.fire('Listo!', `La póliza de garantía fue ${esNuevo ? 'creada' : 'editada'} exitosamente.`, 'success');
-            } else {
-                Swal.fire('Error', responseJson.mensajes, 'error');
-            }
-        })
-        .catch(err => {
-            $("#modalData .modal-content").LoadingOverlay("hide");
-            Swal.fire('Error', 'No se pudo conectar con el servidor', 'error');
-        });
+        fetch(url, { method: method, headers: { "Content-Type": "application/json; charset=utf-8" }, body: JSON.stringify(modelo) })
+            .then(response => {
+                if (!response.ok) return response.json().then(err => Promise.reject(err));
+                return response.json();
+            })
+            .then(responseJson => {
+                modalContent.LoadingOverlay("hide");
+                if (responseJson.estado) {
+                    tablaData.ajax.reload();
+                    $("#modalData").modal("hide");
+                    Swal.fire('Listo!', `La póliza de garantía fue ${esNuevo ? 'creada' : 'editada'} exitosamente.`, 'success');
+                } else {
+                    Swal.fire('Error', responseJson.mensajes, 'error');
+                }
+            })
+            .catch(err => manejarErrorFetch(err, "Guardar Póliza", modalContent));
     });
 
     $("#tbdata tbody").on("click", ".btn-editar", function () {
@@ -95,24 +94,17 @@ $(document).ready(function () {
         const fila = $(this).closest("tr").hasClass("child") ? $(this).closest("tr").prev() : $(this).closest("tr");
         const data = tablaData.row(fila).data();
 
-        Swal.fire({
-            title: '¿Está Seguro de Eliminar?',
-            text: `Eliminar la póliza de garantía: "${data.descripcion}"`, 
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'No, cancelar'
-        }).then((result) => {
+        Swal.fire({ /* ... */ }).then((result) => {
             if (result.isConfirmed) {
-                $(".showSweetAlert").LoadingOverlay("show");
+                const sweetAlertOverlay = $(".swal2-container");
+                sweetAlertOverlay.LoadingOverlay("show");
                 fetch(`/PolizaGarantia/Eliminar?id=${data.secuencial}`, { method: "DELETE" })
                     .then(response => {
-                        $(".showSweetAlert").LoadingOverlay("hide");
-                        return response.ok ? response.json() : Promise.reject(response);
+                        if (!response.ok) return response.json().then(err => Promise.reject(err));
+                        return response.json();
                     })
                     .then(responseJson => {
+                        sweetAlertOverlay.LoadingOverlay("hide");
                         if (responseJson.estado) {
                             tablaData.row(fila).remove().draw();
                             Swal.fire('Listo!', 'La póliza de garantía fue eliminada.', 'success');
@@ -120,10 +112,7 @@ $(document).ready(function () {
                             Swal.fire('Error', responseJson.mensajes, 'error');
                         }
                     })
-                    .catch(err => {
-                        $(".showSweetAlert").LoadingOverlay("hide");
-                        Swal.fire('Error', 'No se pudo conectar con el servidor.', 'error');
-                    });
+                    .catch(err => manejarErrorFetch(err, "Eliminar Póliza", sweetAlertOverlay));
             }
         });
     });

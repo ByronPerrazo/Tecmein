@@ -7,7 +7,10 @@ using TecmeinAplicacionWeb.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Linq;
 using AutoMapper;
-using System;
+using TecmeinWebApp.Utilidades.Response;
+using TecmeinWebApp.Utilidades.ViewComponents;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace TecmeinAplicacionWeb.Controllers
 {
@@ -36,12 +39,14 @@ namespace TecmeinAplicacionWeb.Controllers
             _generadorDocumentoService = generadorDocumentoService;
         }
 
+        [ValidatePermission("VER_MENU")]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<JsonResult> Lista()
         {
             List<PlantillaPreContrato> listaEntidades = await _plantillaPreContratoServices.Lista();
@@ -50,6 +55,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<JsonResult> ListaTiposDocumento()
         {
             List<TipoDocumento> listaTipos = await _tipoDocumentoServices.Lista();
@@ -62,6 +68,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("CREAR")]
         public async Task<JsonResult> Crear([FromBody] PlantillaPreContrato entidad)
         {
             bool resultado = true;
@@ -81,6 +88,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpPut]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<JsonResult> Editar([FromBody] PlantillaPreContrato entidad)
         {
             bool resultado = true;
@@ -100,6 +108,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpDelete]
+        [ValidatePermission("ELIMINAR")]
         public async Task<JsonResult> Eliminar(int SecPlantillaPreContrato)
         {
             bool resultado = true;
@@ -114,6 +123,7 @@ namespace TecmeinAplicacionWeb.Controllers
             return Json(new { resultado = resultado });
         }
 
+        [ValidatePermission("LEER")]
         public IActionResult Parrafos(int id)
         {
             ViewBag.IdPlantilla = id;
@@ -121,6 +131,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> GenerarDocumento(int secPreContrato)
         {
             try

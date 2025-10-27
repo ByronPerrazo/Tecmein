@@ -4,6 +4,7 @@ using Entity;
 using Microsoft.AspNetCore.Mvc;
 using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
+using TecmeinWebApp.Utilidades.ViewComponents;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http; // Required for StatusCode
@@ -21,6 +22,7 @@ namespace TecmeinWebApp.Controllers
             _parrafoServices = parrafoServices;
         }
 
+        [ValidatePermission("LEER")]
         public IActionResult Parrafos(int id)
         {
             ViewBag.IdPlantilla = id;
@@ -28,6 +30,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Lista(int secPlantillaPreContrato)
         {
             var listaParrafos = await _parrafoServices.Lista(secPlantillaPreContrato);
@@ -36,6 +39,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Obtener(int secPlantillaPreContratoParrafo)
         {
             var gResponse = new GenericResponse<PlantillaPreContratoParrafoVM>();
@@ -55,6 +59,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("CREAR")]
         public async Task<IActionResult> Crear([FromBody] PlantillaPreContratoParrafoVM modelo)
         {
             var gResponse = new GenericResponse<PlantillaPreContratoParrafoVM>();
@@ -75,6 +80,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPut]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> Editar([FromBody] PlantillaPreContratoParrafoVM modelo)
         {
             var gResponse = new GenericResponse<PlantillaPreContratoParrafoVM>();
@@ -95,6 +101,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpDelete]
+        [ValidatePermission("ELIMINAR")]
         public async Task<IActionResult> Eliminar(int secPlantillaPreContratoParrafo)
         {
             var gResponse = new GenericResponse<string>();

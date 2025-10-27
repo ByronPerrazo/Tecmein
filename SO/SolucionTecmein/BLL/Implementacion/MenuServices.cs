@@ -30,7 +30,7 @@ namespace BLL.Implementacion
 
         public async Task<List<Menu>> ObtenerTodosPadre()
         {
-            IQueryable<Menu> query = await _repositorioMenu.Consultar(m => m.SecMenuPadre == null || m.SecMenuPadre == m.Secuencial);
+            IQueryable<Menu> query = await _repositorioMenu.Consultar();
             return await query.ToListAsync();
         }
 
@@ -53,7 +53,7 @@ namespace BLL.Implementacion
 
             // 2. Obtener los IDs de menús asignados al rol
             var idsMenusAsignados = (await _repositorioRolMenu.Consultar(rm => rm.SecRol == usuario.SecRol))
-                                        .Select(rm => rm.SecMenu.Value).ToHashSet();
+                                        .Select(rm => rm.SecMenu).ToHashSet();
 
             // 3. Obtener todos los menús activos que coinciden con los permisos y están asignados al rol
             var menusConPermisoYRol = await (await _repositorioMenu.Consultar(m =>
@@ -104,11 +104,17 @@ namespace BLL.Implementacion
 
         public async Task<List<Menu>> ObtieneMenuTotal()
         {
-            IQueryable<Menu> query = await _repositorioMenu.Consultar(m => m.EsActivo == 1);
+            IQueryable<Menu> query = await _repositorioMenu.Consultar(m => m.EsActivo == 1 && m.MostrarEnMenu);
             return await query.ToListAsync();
         }
 
         public async Task<List<Menu>> ObtenerTodosParaAdministracion()
+        {
+            IQueryable<Menu> query = await _repositorioMenu.Consultar();
+            return await query.ToListAsync();
+        }
+
+        public async Task<List<Menu>> ObtenerTodosLosMenusParaGestion()
         {
             IQueryable<Menu> query = await _repositorioMenu.Consultar();
             return await query.ToListAsync();
@@ -141,6 +147,7 @@ namespace BLL.Implementacion
                 menuEncontrado.Controlador = entidad.Controlador;
                 menuEncontrado.PaginaAccion = entidad.PaginaAccion;
                 menuEncontrado.EsActivo = entidad.EsActivo;
+                menuEncontrado.MostrarEnMenu = entidad.MostrarEnMenu;
 
                 bool respuesta = await _repositorioMenu.Editar(menuEncontrado);
 
@@ -185,6 +192,12 @@ namespace BLL.Implementacion
             {
                 throw;
             }
+        }
+
+        public async Task<List<RolMenu>> ObtenerRolMenusPorRol(int idRol)
+        {
+            IQueryable<RolMenu> query = await _repositorioRolMenu.Consultar(rm => rm.SecRol == idRol);
+            return await query.ToListAsync();
         }
     }
 }

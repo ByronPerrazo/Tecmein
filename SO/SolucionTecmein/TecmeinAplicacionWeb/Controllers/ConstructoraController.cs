@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
+using TecmeinWebApp.Utilidades.ViewComponents;
 
 namespace TecmeinWebApp.Controllers
 {
@@ -20,12 +21,14 @@ namespace TecmeinWebApp.Controllers
             _constructoraServices = constructoraServices;
         }
 
+        [ValidatePermission("VER_MENU")]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Lista()
         {
             var listaConstructoraVM
@@ -34,6 +37,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ListaActivas()
         {
             var gResponse = new GenericResponse<List<ConstructoraVM>>();
@@ -54,6 +58,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ObtenerPorSecuencial(int secuencial)
         {
             var gResponse = new GenericResponse<ConstructoraVM>();
@@ -72,6 +77,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("CREAR")]
         public async Task<IActionResult> Crear([FromForm] string modelo)
         {
             try
@@ -93,6 +99,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPut]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> Editar([FromForm] string modelo)
         {
             try
@@ -114,7 +121,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Policy = "CanDelete")]
+        [ValidatePermission("ELIMINAR")]
         public async Task<IActionResult> Eliminar(int secuencial)
         {
             try
@@ -131,6 +138,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ListaParaDropdown()
         {
             try

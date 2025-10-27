@@ -6,6 +6,7 @@ using Entity;
 using TecmeinAplicacionWeb.Models.ViewModels;
 using AutoMapper;
 using TecmeinWebApp.Utilidades.Response;
+using TecmeinWebApp.Utilidades.ViewComponents;
 using System.Collections.Generic;
 
 namespace TecmeinAplicacionWeb.Controllers
@@ -21,12 +22,14 @@ namespace TecmeinAplicacionWeb.Controllers
             _mapper = mapper;
         }
 
+        [ValidatePermission("VER_MENU")]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Lista()
         {
             var gResponse = new GenericResponse<List<FormatoNumeroClienteVM>>();
@@ -51,6 +54,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> Guardar([FromBody] FormatoNumeroClienteVM modelo)
         {
             var gResponse = new GenericResponse<FormatoNumeroClienteVM>();

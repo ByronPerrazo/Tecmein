@@ -1461,6 +1461,40 @@ namespace DAL.Migrations
                     b.ToTable("precontrato", (string)null);
                 });
 
+            modelBuilder.Entity("Entity.PreContratoCompromisoPago", b =>
+                {
+                    b.Property<int>("Secuencial")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Secuencial"));
+
+                    b.Property<DateTime>("FechaRegistro")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("FechaVencimiento")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<decimal>("Monto")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("NumeroCuota")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SecPreContrato")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Tipo")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Secuencial");
+
+                    b.HasIndex("SecPreContrato");
+
+                    b.ToTable("PreContratoCompromisoPagos");
+                });
+
             modelBuilder.Entity("Entity.PreContratoParrafo", b =>
                 {
                     b.Property<int>("Secuencial")
@@ -1547,33 +1581,34 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("Entity.RolMenu", b =>
                 {
-                    b.Property<int>("Secuencial")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("secuencial");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Secuencial"));
-
-                    b.Property<short?>("EsActivo")
-                        .HasColumnType("smallint")
-                        .HasColumnName("esActivo");
-
-                    b.Property<DateTime?>("FechaRegistro")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("fechaRegistro")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<int?>("SecMenu")
-                        .HasColumnType("int")
-                        .HasColumnName("secMenu");
-
-                    b.Property<int?>("SecRol")
+                    b.Property<int>("SecRol")
                         .HasColumnType("int")
                         .HasColumnName("secRol");
 
-                    b.HasKey("Secuencial")
-                        .HasName("PRIMARY");
+                    b.Property<int>("SecMenu")
+                        .HasColumnType("int")
+                        .HasColumnName("secMenu");
+
+                    b.Property<bool>("Actualizar")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("Actualizar");
+
+                    b.Property<bool>("Crear")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("Crear");
+
+                    b.Property<bool>("Eliminar")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("Eliminar");
+
+                    b.Property<bool>("Leer")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("Leer");
+
+                    b.Property<bool>("VerMenu")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasKey("SecRol", "SecMenu");
 
                     b.HasIndex(new[] { "SecMenu" }, "FK_Menu_Rol_idx");
 
@@ -2180,6 +2215,17 @@ namespace DAL.Migrations
                     b.Navigation("SecUsuarioCreaNavigation");
                 });
 
+            modelBuilder.Entity("Entity.PreContratoCompromisoPago", b =>
+                {
+                    b.HasOne("Entity.PreContrato", "PreContratoNavigation")
+                        .WithMany("PreContratoCompromisoPagos")
+                        .HasForeignKey("SecPreContrato")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PreContratoNavigation");
+                });
+
             modelBuilder.Entity("Entity.PreContratoParrafo", b =>
                 {
                     b.HasOne("Entity.PreContrato", "SecPreContratoNavigation")
@@ -2196,11 +2242,13 @@ namespace DAL.Migrations
                     b.HasOne("Entity.Menu", "SecMenuNavigation")
                         .WithMany("Rolmenus")
                         .HasForeignKey("SecMenu")
+                        .IsRequired()
                         .HasConstraintName("FK_Menu_Rol");
 
                     b.HasOne("Entity.Rol", "SecRolNavigation")
                         .WithMany("Rolmenus")
                         .HasForeignKey("SecRol")
+                        .IsRequired()
                         .HasConstraintName("FK_Rol_Menu");
 
                     b.Navigation("SecMenuNavigation");
@@ -2385,6 +2433,8 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("Entity.PreContrato", b =>
                 {
+                    b.Navigation("PreContratoCompromisoPagos");
+
                     b.Navigation("PreContratoParrafos");
                 });
 

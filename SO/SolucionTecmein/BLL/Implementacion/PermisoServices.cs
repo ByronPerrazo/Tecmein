@@ -13,11 +13,15 @@ namespace BLL.Implementacion
     public class PermisoServices : IPermisoServices
     {
         private readonly IGenericRepository<Permiso> _repositorio;
+        private readonly IGenericRepository<RolPermiso> _rolPermisoRepositorio; // New field
         private readonly ILogger<PermisoServices> _logger;
 
-        public PermisoServices(IGenericRepository<Permiso> repositorio, ILogger<PermisoServices> logger)
+        public PermisoServices(IGenericRepository<Permiso> repositorio,
+                               IGenericRepository<RolPermiso> rolPermisoRepositorio, // New parameter
+                               ILogger<PermisoServices> logger)
         {
             _repositorio = repositorio;
+            _rolPermisoRepositorio = rolPermisoRepositorio; // Assign it
             _logger = logger;
         }
 
@@ -39,7 +43,7 @@ namespace BLL.Implementacion
         {
             if (entidad == null)
                 throw new ArgumentNullException(nameof(entidad));
-            
+
             try
             {
                 var permisoExistente = await _repositorio.Obtener(p => p.IdPermiso == entidad.IdPermiso);
@@ -69,15 +73,15 @@ namespace BLL.Implementacion
                 {
                     throw new InvalidOperationException($"No se encontró el permiso con ID '{entidad.IdPermiso}'.");
                 }
-                
+
                 permisoExistente.Descripcion = entidad.Descripcion;
-                
+
                 bool resultado = await _repositorio.Editar(permisoExistente);
                 if (!resultado)
                 {
                     throw new Exception("No se pudo editar el permiso.");
                 }
-                
+
                 return permisoExistente;
             }
             catch (Exception ex)
@@ -105,5 +109,19 @@ namespace BLL.Implementacion
                 throw;
             }
         }
+
+        public async Task<List<Permiso>> ObtenerPermisosPorRol(int secRol)
+        {
+            try
+            {
+                IQueryable<RolPermiso> query = await _rolPermisoRepositorio.Consultar(rp => rp.SecRol == secRol);
+                return await query.Include(rp => rp.Permiso).Select(rp => rp.Permiso).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al obtener permisos para el rol con SecRol: {secRol}.");
+                throw;
+            }
+        } 
     }
 }

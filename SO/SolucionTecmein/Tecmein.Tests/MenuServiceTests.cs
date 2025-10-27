@@ -109,8 +109,8 @@ namespace Tecmein.Tests
             var menu = new Menu { Secuencial = menuId, Descripcion = "Menu de Prueba" };
             var rolMenus = new List<RolMenu>
             {
-                new RolMenu { Secuencial = 1, SecMenu = menuId, SecRol = 1 },
-                new RolMenu { Secuencial = 2, SecMenu = menuId, SecRol = 2 }
+                new RolMenu {  SecMenu = menuId, SecRol = 1 },
+                new RolMenu {  SecMenu = menuId, SecRol = 2 }
             };
             var asyncRolMenus = new TestAsyncEnumerable<RolMenu>(rolMenus);
 

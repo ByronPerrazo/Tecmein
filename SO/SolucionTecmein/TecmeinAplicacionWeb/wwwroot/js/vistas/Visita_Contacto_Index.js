@@ -243,7 +243,14 @@ async function crearContactoVisita() {
                 Swal.fire("Fallo!", responseJson.mensajes, "error");
             }
         } else {
-            throw new Error("Error en la respuesta del servidor");
+            // Handle non-OK responses
+            if (response.status === 403) {
+                Swal.fire("Acceso Denegado", "No tiene permisos para actualizar contactos de visita.", "error");
+            } else {
+                // For other non-OK responses, try to get a more specific message if available
+                const errorText = await response.text();
+                Swal.fire("Error!", `Error en la respuesta del servidor: ${errorText || response.statusText}`, "error");
+            }
         }
     } catch (error) {
         Swal.fire("Error!", error.message, "error");

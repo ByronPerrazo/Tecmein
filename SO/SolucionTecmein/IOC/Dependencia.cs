@@ -25,6 +25,7 @@ namespace IOC
 
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IGenericRepository<Cuota>, GenericRepository<Cuota>>(); // Nuevo
+            services.AddScoped<IGenericRepository<RolPermiso>, GenericRepository<RolPermiso>>(); // New: Register RolPermiso repository
             services.AddSingleton<IDatosGlobalesServices, DatosGlobalesServicio>();
 
             services.AddScoped<IUsuarioServices, UsuarioServices>();
@@ -36,6 +37,7 @@ namespace IOC
             services.AddScoped<IEmpresaStorageServices, EmpresaStorageServices>();
             services.AddScoped<IEmpresaServices, EmpresaServices>();
             services.AddScoped<IMenuServices, MenuServices>();
+            services.AddScoped<IMenuDiscoveryService, MenuDiscoveryService>();
             services.AddScoped<IProvinciaServices, ProvinciaServices>();
             services.AddScoped<ICantonServices, CantonServices>();
             services.AddScoped<IParroquiaServices, ParroquiaServices>();
@@ -51,7 +53,6 @@ namespace IOC
                 ));
 
             services.AddScoped<IPermisoServices, PermisoServices>();
-            services.AddScoped<IRolMenuServices, RolMenuServices>();
             services.AddScoped<IValidacionServices, ValidacionServices>();
             services.AddScoped<IMenusHijosDesplegables, MenusHijosDesplegables>();
             services.AddScoped<IImpuestoServices, ImpuestoServices>();
@@ -104,7 +105,8 @@ namespace IOC
                     provider.GetRequiredService<IPreContratoGeneratorService>(),
                     provider.GetRequiredService<IVisitaServices>(), // Added IVisitaServices
                     provider.GetRequiredService<IGenericRepository<TipoDocumento>>(), // Added
-                    provider.GetRequiredService<IGenericRepository<PlantillaPreContrato>>() // Added
+                    provider.GetRequiredService<IGenericRepository<PlantillaPreContrato>>(), // Added
+                    provider.GetRequiredService<IGenericRepository<PreContratoCompromisoPago>>()
                 ));
             services.AddScoped<IFormaPagoServices, FormaPagoServices>();
             services.AddScoped<IPreContratoGeneratorService, PreContratoGeneratorService>(provider =>
@@ -130,7 +132,10 @@ namespace IOC
                     provider.GetRequiredService<IStorageServices>(),
                     provider.GetRequiredService<IGenericRepository<PreContrato>>(),
                     provider.GetRequiredService<IGenericRepository<Etapa>>(),
-                    provider.GetRequiredService<TecmeindbContext>()
+                    provider.GetRequiredService<TecmeindbContext>(),
+                    provider.GetRequiredService<IGenericRepository<PlanDePago>>(),
+                    provider.GetRequiredService<IGenericRepository<Cuota>>(),
+                    provider.GetRequiredService<IGenericRepository<PreContratoCompromisoPago>>()
                 ));
 
             // Registro del patrón Strategy para la generación de documentos

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
+using TecmeinWebApp.Utilidades.ViewComponents;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -21,12 +22,14 @@ namespace TecmeinWebApp.Controllers
             _seguimientoServices = seguimientoServices;
         }
 
+        [ValidatePermission("VER_MENU")]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Lista(int secCotizacion)
         {
             var listaSeguimientoVM
@@ -35,6 +38,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("CREAR")]
         public async Task<IActionResult> Crear([FromForm] string modelo)
         {
             var gResponse = new GenericResponse<SeguimientoVM>();
@@ -55,6 +59,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPut]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> Editar([FromForm] string modelo)
         {
             var gResponse = new GenericResponse<SeguimientoVM>();
@@ -75,6 +80,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpDelete]
+        [ValidatePermission("ELIMINAR")]
         public async Task<IActionResult> Eliminar(int secuencial)
         {
             var gResponse = new GenericResponse<string>();

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
+using TecmeinWebApp.Utilidades.ViewComponents;
 
 namespace TecmeinWebApp.Controllers
 {
@@ -20,12 +21,14 @@ namespace TecmeinWebApp.Controllers
             _empresaServices = empresaServices;
         }
 
+        [ValidatePermission("VER_MENU")]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Lista()
         {
             var listaEmpresaVM
@@ -34,6 +37,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Obtener()
         {
             var gResponse = new GenericResponse<EmpresaVM>();
@@ -52,6 +56,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> GuardarCambios([FromForm] IFormFile logo, [FromForm] string modelo)
         {
             var gResponse = new GenericResponse<EmpresaVM>();
@@ -87,6 +92,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPut]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> Editar([FromForm] IFormFile logo, [FromForm] string modelo)
         {
             var genericResponse = new GenericResponse<EmpresaVM>();
@@ -109,7 +115,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Policy = "CanDelete")]
+        [ValidatePermission("ELIMINAR")]
         public async Task<IActionResult> Eliminar(int secuencial)
         {
             var gResponse = new GenericResponse<string>();

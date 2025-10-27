@@ -159,6 +159,16 @@ $("#btnAgregarItem").click(function () {
             else {
                 Swal.fire("Fallo!", responseJson.mensajes, "error");
             }
+        })
+        .catch(async error => {
+            $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+            if (error.status === 403) {
+                Swal.fire("Acceso Denegado", "No tiene permisos para actualizar equipos de visita.", "error");
+            } else {
+                // For other non-OK responses, try to get a more specific message if available
+                const errorText = await error.text(); // error is the Response object here
+                Swal.fire("Error!", `Error en la respuesta del servidor: ${errorText || error.statusText}`, "error");
+            }
         });
 
 });
@@ -556,9 +566,14 @@ $(document).on("click", ".btn-eliminar-equipo", function () {
                     Swal.fire("Error", responseJson.mensajes, "error");
                 }
             })
-            .catch(err => {
+            .catch(async error => {
                 $(".showSweetAlert").LoadingOverlay("hide");
-                Swal.fire("Error", "No se pudo conectar con el servidor.", "error");
+                if (error.status === 403) {
+                    Swal.fire("Acceso Denegado", "No tiene permisos para eliminar equipos de visita.", "error");
+                } else {
+                    const errorText = await error.text();
+                    Swal.fire("Error", `Ocurrió un error al eliminar el equipo: ${errorText || error.statusText}`, "error");
+                }
             });
         }
     });

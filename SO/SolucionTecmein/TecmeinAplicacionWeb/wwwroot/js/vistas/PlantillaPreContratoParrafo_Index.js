@@ -1,3 +1,12 @@
+function manejarErrorFetch(error, operacion) {
+    console.error(`Error en ${operacion}:`, error);
+    if (error && error.mensajes) {
+        Swal.fire("Error", error.mensajes, "error");
+    } else {
+        Swal.fire("Error", `Ocurrió un error inesperado durante: ${operacion}.`, "error");
+    }
+}
+
 $(document).ready(function () {
     $("#parrafoForm").submit(function (event) {
         event.preventDefault();
@@ -6,44 +15,40 @@ $(document).ready(function () {
             SecPlantillaPreContratoParrafo: $("#SecPlantillaPreContratoParrafo").val(),
             SecPlantillaPreContrato: $("#SecPlantillaPreContrato").val(),
             Orden: $("#Orden").val(),
-            Contenido: $("#Contenido").val(),
-            EstaActivo: $("#EstaActivo").is(":checked") ? 1 : 0
+            Contenido: $("#Contenido").val(), // Asumiendo que es un textarea simple, no TinyMCE
+            EstaActivo: $("#EstaActivo").is(":checked")
         };
 
-        let url = "";
-        let method = "";
-
-        if (modelo.SecPlantillaPreContratoParrafo == 0 || modelo.SecPlantillaPreContratoParrafo == "") {
-            url = "/PlantillaPreContratoParrafo/Crear";
-            method = "POST";
-        } else {
-            url = "/PlantillaPreContratoParrafo/Editar";
-            method = "PUT";
+        if (!modelo.Orden || !modelo.Contenido || modelo.Contenido.trim() === "") {
+            Swal.fire("Validación", "El orden y el contenido son campos obligatorios.", "warning");
+            return;
         }
+
+        const esNuevo = modelo.SecPlantillaPreContratoParrafo == 0 || modelo.SecPlantillaPreContratoParrafo == "";
+        const url = esNuevo ? "/PlantillaPreContratoParrafo/Crear" : "/PlantillaPreContratoParrafo/Editar";
+        const method = esNuevo ? "POST" : "PUT";
 
         fetch(url, {
             method: method,
-            headers: {
-                "Content-Type": "application/json; charset=utf-8",
-            },
-            body: JSON.stringify({ modelo: JSON.stringify(modelo) })
+            headers: { "Content-Type": "application/json; charset=utf-8" },
+            body: JSON.stringify(modelo) // Corregido: no doble serialización
         })
         .then(response => {
-            return response.ok ? response.json() : Promise.reject(response);
+            if (!response.ok) return response.json().then(err => Promise.reject(err));
+            return response.json();
         })
         .then(responseJson => {
             if (responseJson.estado) {
-                Swal.fire(, "El párrafo ha sido guardado", "success");
-                // Optionally, update the hidden SecPlantillaPreContratoParrafo if it was a creation
-                if (modelo.SecPlantillaPreContratoParrafo == 0 || modelo.SecPlantillaPreContratoParrafo == "") {
+                Swal.fire("Guardado", "El párrafo ha sido guardado con éxito.", "success");
+                if (esNuevo) {
                     $("#SecPlantillaPreContratoParrafo").val(responseJson.objeto.secPlantillaPreContratoParrafo);
                 }
             } else {
-                Swal.fire("Error!", responseJson.mensajes, "error");
+                Swal.fire("Error", responseJson.mensajes, "error");
             }
         })
         .catch((error) => {
-            Swal.fire("Error!", "No se pudo guardar el párrafo", "error");
+            manejarErrorFetch(error, "Guardar Párrafo");
         });
     });
 });

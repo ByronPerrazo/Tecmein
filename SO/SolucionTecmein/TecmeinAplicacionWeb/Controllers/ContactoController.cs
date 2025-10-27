@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System.Security.Claims;
 using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
+using TecmeinWebApp.Utilidades.ViewComponents;
 
 namespace TecmeinWebApp.Controllers
 {
@@ -32,6 +33,7 @@ namespace TecmeinWebApp.Controllers
 
         // La página principal del módulo de Contactos
         // Se puede ver si se tiene acceso al menú de contactos.
+        [ValidatePermission("VER_MENU")]
         public IActionResult Index()
         {
             return View();
@@ -40,6 +42,7 @@ namespace TecmeinWebApp.Controllers
         // La lista de datos para la tabla
         // Se puede ver si se tiene el permiso específico para ver contactos.
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Lista()
         {
             var listaContactosVM
@@ -48,6 +51,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> EmpresaConstructora()
         {
             var listaConstructorasVM
@@ -63,6 +67,7 @@ namespace TecmeinWebApp.Controllers
 
         
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ObtenerParaEditar(int secuencial)
         {
             var gResponse = new GenericResponse<ContactoEditarVM>();
@@ -95,6 +100,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("CREAR")]
         public async Task<IActionResult> CrearContacto([FromForm] string modelo)
         {
             var genericResponse = new GenericResponse<ContactoVM>();
@@ -129,6 +135,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPut]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> Editar([FromForm] string modelo)
         {
             var genericResponse = new GenericResponse<ContactoVM>();
@@ -154,6 +161,7 @@ namespace TecmeinWebApp.Controllers
         }
 
        [HttpDelete]
+        [ValidatePermission("ELIMINAR")]
         public async Task<IActionResult> Eliminar(int secuencial)
         {
             var gResponse = new GenericResponse<string>();
@@ -171,6 +179,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ObtenerContactoPrincipal(int secuencialVisita)
         {
             GenericResponse<ContactoVM> gResponse = new GenericResponse<ContactoVM>();

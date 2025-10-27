@@ -4,6 +4,7 @@ using Entity;
 using Microsoft.AspNetCore.Mvc;
 using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
+using TecmeinWebApp.Utilidades.ViewComponents;
 
 namespace TecmeinWebApp.Controllers
 {
@@ -18,12 +19,14 @@ namespace TecmeinWebApp.Controllers
             _mapper = mapper;
         }
 
+        [ValidatePermission("VER_MENU")]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Lista()
         {
             try
@@ -39,6 +42,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("CREAR")]
         public async Task<IActionResult> Crear([FromBody] PolizaGarantiaVM modelo)
         {
             var response = new GenericResponse<PolizaGarantiaVM>();
@@ -58,6 +62,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPut]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> Editar([FromBody] PolizaGarantiaVM modelo)
         {
             var response = new GenericResponse<PolizaGarantiaVM>();
@@ -77,6 +82,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpDelete]
+        [ValidatePermission("ELIMINAR")]
         public async Task<IActionResult> Eliminar(int id)
         {
             var response = new GenericResponse<string>();
@@ -93,6 +99,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ListaParaDropdown()
         {
             try

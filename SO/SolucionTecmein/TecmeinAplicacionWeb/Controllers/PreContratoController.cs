@@ -7,6 +7,9 @@ using AutoMapper;
 using TecmeinAplicacionWeb.Models.ViewModels;
 using Newtonsoft.Json;
 using System.Security.Claims;
+using TecmeinWebApp.Utilidades.Response;
+using TecmeinWebApp.Utilidades.ViewComponents;
+using BLL.DTOs;
 
 namespace TecmeinAplicacionWeb.Controllers
 {
@@ -33,12 +36,14 @@ namespace TecmeinAplicacionWeb.Controllers
             _preContratoGeneratorService = preContratoGeneratorService;
         }
 
+        [ValidatePermission("VER_MENU")]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Listar()
         {
             var lista = await _preContratoService.Lista();
@@ -47,6 +52,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> Aprobar(int id)
         {
             try
@@ -61,6 +67,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpDelete]
+        [ValidatePermission("ELIMINAR")]
         public async Task<IActionResult> Eliminar(int id)
         {
             try
@@ -75,6 +82,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Historial(int id)
         {
             try
@@ -90,6 +98,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ContenidoParrafo(int id)
         {
             try
@@ -108,6 +117,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Editor(int id)
         {
             try
@@ -139,6 +149,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ListaCotizacionesAprobadas()
         {
             try
@@ -162,6 +173,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ListaFormasPago()
         {
             try
@@ -177,6 +189,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ListaPlantillas()
         {
             try
@@ -192,6 +205,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ListaParaDropdown()
         {
             try
@@ -207,6 +221,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> GuardarPreContrato([FromBody] GuardarPreContratoRequest request)
         {
             try
@@ -230,6 +245,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("LEER")] // Generar vista previa es una acción de lectura
         public async Task<IActionResult> GenerarVistaPrevia([FromBody] GenerarVistaPreviaRequest request)
         {
             try
@@ -257,6 +273,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("CREAR")]
         public async Task<IActionResult> CrearDesdeModal([FromBody] CrearPreContratoRequest request)
         {
             try
@@ -294,6 +311,88 @@ namespace TecmeinAplicacionWeb.Controllers
                 }
 
                 return Json(new { estado = true, mensajes = "Pre-contrato creado exitosamente." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { estado = false, mensajes = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [ValidatePermission("LEER")] // Generar vista previa es una acción de lectura
+        public async Task<IActionResult> GenerarVistaPreviaConPagos([FromBody] BLL.DTOs.PreContratoConPagosDTO dto)
+        {
+            try
+            {
+                string htmlPreview = await _preContratoService.GenerarVistaPreviaConPagos(dto);
+                return Json(new { estado = true, objeto = htmlPreview });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { estado = false, mensajes = $"Error al generar la vista previa: {ex.Message}" });
+            }
+        }
+
+        [HttpPost]
+        [ValidatePermission("CREAR")]
+        public async Task<IActionResult> CrearDesdeModalConPagos([FromBody] BLL.DTOs.PreContratoConPagosDTO dto)
+        {
+            try
+            {
+                var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (usuarioIdClaim == null || !int.TryParse(usuarioIdClaim.Value, out int usuarioId))
+                {
+                    return Json(new { estado = false, mensajes = "Usuario no autenticado o ID de usuario inválido." });
+                }
+
+                var preContratoCreado = await _preContratoService.CrearDesdeModalConPagos(dto, usuarioId);
+                if (preContratoCreado == null || preContratoCreado.SecPreContrato == 0)
+                {
+                    return Json(new { estado = false, mensajes = "No se pudo crear el pre-contrato." });
+                }
+
+                return Json(new { estado = true, mensajes = "Pre-contrato creado exitosamente." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { estado = false, mensajes = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [ValidatePermission("ACTUALIZAR")]
+        public async Task<IActionResult> GuardarBorrador([FromBody] BLL.DTOs.PreContratoConPagosDTO dto)
+        {
+            try
+            {
+                var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (usuarioIdClaim == null || !int.TryParse(usuarioIdClaim.Value, out int usuarioId))
+                {
+                    return Json(new { estado = false, mensajes = "Usuario no autenticado o ID de usuario inválido." });
+                }
+
+                var preContratoGuardado = await _preContratoService.GuardarBorrador(dto, usuarioId);
+                if (preContratoGuardado == null || preContratoGuardado.SecPreContrato == 0)
+                {
+                    return Json(new { estado = false, mensajes = "No se pudo guardar el borrador del pre-contrato." });
+                }
+
+                return Json(new { estado = true, mensajes = "Borrador guardado exitosamente." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { estado = false, mensajes = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        [ValidatePermission("LEER")]
+        public async Task<IActionResult> DetallesParaEdicion(int id)
+        {
+            try
+            {
+                var dto = await _preContratoService.ObtenerParaEdicion(id);
+                return Json(new { estado = true, objeto = dto });
             }
             catch (Exception ex)
             {

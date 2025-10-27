@@ -1,5 +1,14 @@
 var tablaClientes;
 $(document).ready(function () {
+    // Función de manejo de errores centralizada para AJAX
+    function manejarErrorAjax(jqXHR, textStatus, errorThrown) {
+        if (jqXHR.responseJSON && jqXHR.responseJSON.mensajes) {
+            Swal.fire("Error", jqXHR.responseJSON.mensajes, "error");
+        } else {
+            Swal.fire("Error de Comunicación", "No se pudo conectar con el servidor o procesar la respuesta.", "error");
+        }
+    }
+
     // Inicializar DataTable de Clientes
     tablaClientes = $('#tbdataClientes').DataTable({
         responsive: true,
@@ -9,14 +18,14 @@ $(document).ready(function () {
             "datatype": "json",
             "dataSrc": function (response) {
                 if (response.estado) {
-                    // DataTables espera un array, que se encuentra en la propiedad $values del objeto
                     return response.objeto.$values;
                 } else {
-                    // Si hubo un error, devuelve un array vacío para que la tabla no falle
                     console.error("Error al cargar la lista de clientes: " + response.mensajes);
+                    Swal.fire("Error", "No se pudo cargar la lista de clientes: " + response.mensajes, "error");
                     return [];
                 }
-            }
+            },
+            "error": manejarErrorAjax
         },
         "columns": [
             { "data": "numeroCliente" },
@@ -63,7 +72,6 @@ $(document).ready(function () {
 
     // Evento para el botón 'Guardar Cliente' en el modal de Cliente
     $('#btnGuardarCliente').on('click', function () {
-        // Validación básica de campos
         if ($('#modalCliente #cboConstructoraCliente').val() === "") {
             Swal.fire("Atención", "Debe seleccionar una constructora", "warning");
             return;
@@ -72,7 +80,7 @@ $(document).ready(function () {
         var cliente = {
             secCliente: $('#modalCliente #txtSecCliente').val(),
             secConstructora: $('#modalCliente #cboConstructoraCliente').val(),
-            numeroCliente: $('#modalCliente #txtNumeroCliente').val(), // Añadido
+            numeroCliente: $('#modalCliente #txtNumeroCliente').val(),
             estaActivo: $('#modalCliente #chkEstaActivo').prop('checked')
         };
 
@@ -93,9 +101,7 @@ $(document).ready(function () {
                     Swal.fire("Error", response.mensajes, "error");
                 }
             },
-            error: function (error) {
-                Swal.fire("Error de Comunicación", "No se pudo conectar con el servidor.", "error");
-            }
+            error: manejarErrorAjax
         });
     });
 
@@ -132,9 +138,7 @@ $(document).ready(function () {
                             Swal.fire("Error", response.mensajes, "error");
                         }
                     },
-                    error: function (error) {
-                        Swal.fire("Error de Comunicación", "No se pudo conectar con el servidor.", "error");
-                    }
+                    error: manejarErrorAjax
                 });
             }
         });
@@ -142,13 +146,11 @@ $(document).ready(function () {
 
     // Función para abrir el modal de Cliente (Crear/Editar)
     function abrirModalCliente(data = null) {
-        // Limpiar formulario
         $('#modalCliente #txtSecCliente').val('0');
         $('#modalCliente #cboConstructoraCliente').val('');
         $('#modalCliente #txtNumeroCliente').val('');
         $('#modalCliente #chkEstaActivo').prop('checked', true);
 
-        // Cargar constructoras en el combo (solo las que no son clientes)
         $.ajax({
             url: '/Cliente/ListarConstructoras',
             type: 'GET',
@@ -162,7 +164,6 @@ $(document).ready(function () {
                     });
 
                     if (data) { // Modo edición
-                        // Asegurarse de que la constructora del cliente actual esté en la lista para poder seleccionarla
                         if ($('#modalCliente #cboConstructoraCliente option[value="' + data.secConstructora + '"]').length === 0) {
                             $('#modalCliente #cboConstructoraCliente').append($('<option>', {
                                 value: data.secConstructora,
@@ -172,21 +173,19 @@ $(document).ready(function () {
 
                         $('#modalCliente #txtSecCliente').val(data.secCliente);
                         $('#modalCliente #cboConstructoraCliente').val(data.secConstructora);
-                        $('#modalCliente #txtNumeroCliente').val(data.numeroCliente).prop('readonly', true); // No se edita el número de cliente
+                        $('#modalCliente #txtNumeroCliente').val(data.numeroCliente).prop('readonly', true);
                         $('#modalCliente #chkEstaActivo').prop('checked', data.estaActivo == 1);
-                        combo.prop('disabled', true); // No se cambia la constructora en edición
+                        combo.prop('disabled', true);
                     } else { // Modo creación
-                        $('#modalCliente #txtNumeroCliente').prop('readonly', false); // Se puede generar o dejar vacío para que el backend lo genere
+                        $('#modalCliente #txtNumeroCliente').prop('readonly', false);
                         combo.prop('disabled', false);
                     }
                     $('#modalCliente').modal('show');
                 } else {
-                    alert('Error al cargar constructoras: ' + response.mensajes);
+                    Swal.fire('Error al cargar constructoras', response.mensajes, 'error');
                 }
             },
-            error: function (error) {
-                alert('Error de comunicación al cargar constructoras: ' + error.responseText);
-            }
+            error: manejarErrorAjax
         });
     }
 });

@@ -58,9 +58,8 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
             #region Menu
 
             CreateMap<Menu, MenuVM>()
-                           .ForMember(destino => destino.SubMenu,
-                                      opt => opt.MapFrom(origen => origen.InverseSecMenuPadreNavigation))
-                           ;
+                           .ForMember(destino => destino.SecMenuPadre, opt => opt.MapFrom(origen => origen.SecMenuPadre))
+                           .ForMember(destino => destino.SubMenu, opt => opt.Ignore());
 
             CreateMap<MenuVM, Menu>()
                 .ForMember(destino =>
@@ -317,35 +316,9 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
 
             CreateMap<PlantillaPreContratoParrafoVM, PlantillaPreContratoParrafo>();
 
-            CreateMap<RolPermiso, RolPermisoVM>()
-                .ForMember(dest => dest.NombreRol, opt => opt.MapFrom(src => src.Rol.Descripcion))
-                .ForMember(dest => dest.DescripcionPermiso, opt => opt.MapFrom(src => src.Permiso.Descripcion));
 
-            CreateMap<RolPermisoVM, RolPermiso>();
 
-            CreateMap<Permiso, TecmeinAplicacionWeb.Models.ViewModels.PermisoVM>().ReverseMap();
 
-            CreateMap<RolMenu, RolMenuVM>()
-                .ForMember(destino =>
-                           destino.DescripcionRol,
-                                   opt =>
-                                   opt.MapFrom(origen =>
-                                               origen.SecRolNavigation.Descripcion))
-                .ForMember(destino =>
-                           destino.DescripcionMenu,
-                                   opt =>
-                                   opt.MapFrom(origen =>
-                                               origen.SecMenuNavigation.Descripcion));
-
-            CreateMap<RolMenuVM, RolMenu>()
-                .ForMember(destino =>
-                           destino.SecRolNavigation,
-                                   opt =>
-                                   opt.Ignore())
-                .ForMember(destino =>
-                           destino.SecMenuNavigation,
-                                   opt =>
-                                   opt.Ignore());
 
             #region Cotizacion
             CreateMap<Cotizacion, CotizacionVM>()

@@ -1,4 +1,3 @@
-﻿
 const MODELO_BASE = {
     secuencial: "0",
     urlLogo: "",
@@ -9,66 +8,54 @@ const MODELO_BASE = {
     direccion: "",
     telefono: "",
     codigoOperador: "",
-    estaActivo: ""
+    estaActivo: 1
+}
+
+let tablaData;
+let filaSeleccionada;
+let esEdicion = false;
+
+function manejarErrorFetch(error, operacion, overlayElement) {
+    if (overlayElement) $(overlayElement).LoadingOverlay("hide");
+    console.error(`Error en ${operacion}:`, error);
+    if (error && error.mensajes) {
+        Swal.fire("Error", error.mensajes, "error");
+    } else {
+        Swal.fire("Error", `Ocurrió un error inesperado durante: ${operacion}.`, "error");
+    }
 }
 
 $(document).ready(function () {
+    tablaData = $('#tbdata').DataTable({
+        responsive: true,
+        "ajax": {
+            "url": 'Lista',
+            "type": "GET",
+            "datatype": "json",
+            "dataSrc": function (json) { return json.data ? json.data.$values : []; },
+            "error": function (jqXHR) { manejarErrorFetch(jqXHR.responseJSON, "Cargar Lista de Empresas"); }
+        },
+        "columns": [
+            { data: "secuencial", visible: false },
+            { data: "nombre" },
+            { data: "identificacion" },
+            { data: "correo" },
+            { data: "direccion" },
+            { data: "telefono" },
+            { data: "estaActivo", render: function (data) { return data == 1 ? '<span class="badge badge-info">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>'; } },
+            {
+                "defaultContent": '<div class="btn-group" role="group"><button class="btn btn-primary btn-editar btn-sm"><i class="fas fa-pencil-alt"></i></button>' +
+                                  '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button></div>',
+                "orderable": false, "searchable": false, "width": "80px"
+            }
+        ],
+        order: [[0, "desc"]],
+        dom: "Bfrtip",
+        buttons: ['excelHtml5', 'pageLength'],
+        language: { url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json" },
+    });
+});
 
-    tablaData =
-        $('#tbdata').DataTable({
-            responsive: true,
-            "ajax": {
-                "url": 'Lista',
-                "type": "GET",
-                "datatype": "json",
-                 "dataSrc": function (json) {
-                    return json.data.$values;
-                }
-            },
-            "columns": [
-                { data: "secuencial", visible: false, searchable: true },
-                { data: "nombre", searchable: true },
-                { data: "identificacion", searchable: true },
-                { data: "correo", searchable: true },
-                { data: "direccion", searchable: true },
-                { data: "telefono", searchable: true },
-
-                {
-                    data: "estaActivo", render: function (data) {
-                        if (data == 1)
-                            return '<span class="badge badge-info">Activo</span>';
-                        else
-                            return '<span class="badge badge-danger">Inactivo</span>';
-                    }
-                },
-
-                {
-                    "defaultContent": '<div class="btn-group" role="group"><button class="btn btn-primary btn-editar btn-sm"><i class="fas fa-pencil-alt"></i></button>' +
-                        '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button></div>',
-                    "orderable": false,
-                    "searchable": false,
-                    "width": "80px"
-                }
-            ],
-            order: [[0, "desc"]],
-            dom: "Bfrtip",
-            buttons: [
-                {
-                    text: 'Exportar Excel',
-                    extend: 'excelHtml5',
-                    title: 'Tipo de Productos',
-                    filename: 'Reporte Tipo Productos',
-                    exportOptions: {
-                        columns: [0, 1, 2]
-                    }
-                }, 'pageLength'
-            ],
-            language: {
-                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
-            },
-        });
-
-})
 function mostrarModal(modelo = MODELO_BASE) {
     $("#txtId").val(modelo.secuencial);
     $("#txtIndentificacion").val(modelo.identificacion);
@@ -77,32 +64,26 @@ function mostrarModal(modelo = MODELO_BASE) {
     $("#txtDireccion").val(modelo.direccion);
     $("#txTelefono").val(modelo.telefono);
     $("#txtCodigoOperador").val(modelo.codigoOperador);
-    $("#cboEstado").val(modelo.estaActivo)
+    $("#cboEstado").val(modelo.estaActivo);
     $("#imgLogo").attr("src", modelo.urlLogo);
+    $("#txtLogo").val(''); // Limpiar el input de archivo
+    $("#modalData").modal("show");
+}
 
-    $("#modalData").modal("show")
-    }
-
-let esEdicion;
 $("#btnNuevaEmpresa").click(function () {
-        esEdicion = false;
-        mostrarModal();
-    })
+    esEdicion = false;
+    mostrarModal();
+});
 
 $("#btnGuardar").click(function () {
+    const inputs = $("input.input-validar").serializeArray();
+    const inputs_vacios = inputs.filter(item => item.value.trim() == "");
 
-        const inputs = $("input.input-validar").serializeArray();
-        const inputs_vacios = inputs.filter(item => item.value.trim() == "");
-
-        inputs_vacios.forEach(x => {
-            const mensaje = `Debe llenar el campo: "${x.name}"`;
-            toastr.warning("", mensaje);
-        });
-
-        if (inputs_vacios.length > 0) {
-            $(`input[name="${inputs_vacios[0].name}"]`).focus();
-            return;
-        }
+    if (inputs_vacios.length > 0) {
+        toastr.warning(`Debe llenar el campo: "${inputs_vacios[0].name}"`);
+        $(`input[name="${inputs_vacios[0].name}"]`).focus();
+        return;
+    }
 
     const modelo = {
         secuencial: $("#txtId").val(),
@@ -114,107 +95,58 @@ $("#btnGuardar").click(function () {
         codigoOperador: $("#txtCodigoOperador").val(),
         estaActivo: $("#cboEstado").val(),
         simboloMoneda: $("#txtSimboloMoneda").val()
-        }
+    };
 
-        const inputImagen = document.getElementById("txtLogo");
-        const datosFormulario = new FormData();
-        datosFormulario.append("logo", inputImagen.files[0]);
-        datosFormulario.append("modelo", JSON.stringify(modelo));
+    const inputImagen = document.getElementById("txtLogo");
+    const datosFormulario = new FormData();
+    datosFormulario.append("logo", inputImagen.files[0]);
+    datosFormulario.append("modelo", JSON.stringify(modelo));
 
-        
-        $("#modalData").find("div.modal-content").LoadingOverlay("show");
+    const url = esEdicion ? "Editar" : "GuardarCambios";
+    const method = esEdicion ? "PUT" : "POST";
+    const modalContent = $("#modalData .modal-content");
 
-        if (!esEdicion) {
+    modalContent.LoadingOverlay("show");
 
-            fetch("GuardarCambios", {
-                method: "POST",
-                body: datosFormulario
-            })
-            
-                .then(
-                    respuesta => {
-                        $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-                        return respuesta.ok
-                            ? respuesta.json()
-                            : Promise.reject(respuesta);
-                    }
-                ).then(
-                    respuestaJson => {
-                        if (respuestaJson.estado) {
-                            const d = respuestaJson.objeto;
-
-                            $("#imgLogo").attr("src", d.urlLogo);
-                            tablaData.row.add(responseJson.objeto).draw(false);
-                            $("#modalData").modal("hide");
-                            Swal.fire("Listo!", "Información Guardada con Éxito", "success");
-                        } else {
-                            Swal.fire("Fallo!", respuestaJson.mensajes, "error");
-                        }
-                    }
-                ).catch(error => {
-                    console.error('Error al Procesar Guardar Cambios:', error);
-                });
-
-            
-        } else {
-
-            fetch("Editar", {
-                method: "PUT",
-                body: datosFormulario
-            })
-                .then(response => {
-                    $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-                    return response.ok
-                        ? response.json()
-                        : Promise.reject(response);
-                }).then(responseJson => {
-                    if (responseJson.estado) {
-                        debugger;
-                        tablaData.row(filaSeleccionada).data(responseJson.objeto).draw(false);
-                        $("#modalData").modal("hide");
-                        $("#imgLogo").attr("src", responseJson.objeto.urlLogo);
-                        Swal.fire("Listo!", "Empresa " + responseJson.objeto.nombre + " Editada ", "success");
-                    }
-                    else {
-                        Swal.fire("Fallo!", responseJson.mensajes, "error");
-                    }
-                });
-
-        }
-
-    });
+    fetch(url, { method: method, body: datosFormulario })
+        .then(response => {
+            if (!response.ok) return response.json().then(err => Promise.reject(err));
+            return response.json();
+        })
+        .then(responseJson => {
+            modalContent.LoadingOverlay("hide");
+            if (responseJson.estado) {
+                if (esEdicion) {
+                    tablaData.row(filaSeleccionada).data(responseJson.objeto).draw(false);
+                } else {
+                    tablaData.row.add(responseJson.objeto).draw(false);
+                }
+                $("#modalData").modal("hide");
+                Swal.fire("Listo!", `Empresa ${esEdicion ? 'editada' : 'guardada'} con éxito.`, "success");
+            } else {
+                Swal.fire("Fallo!", responseJson.mensajes, "error");
+            }
+        })
+        .catch(error => {
+            manejarErrorFetch(error, "Guardar Empresa", modalContent);
+        });
+});
 
 $("#tbdata tbody").on("click", ".btn-editar", function () {
     esEdicion = true;
-    if ($(this).closest("tr").hasClass("child")) {
-        filaSeleccionada = $(this).closest("tr").prev();
-    } else {
-        filaSeleccionada = $(this).closest("tr");
-    }
-
+    filaSeleccionada = $(this).closest("tr").hasClass("child") ? $(this).closest("tr").prev() : $(this).closest("tr");
     const data = tablaData.row(filaSeleccionada).data();
-    data.nombreImagen
     mostrarModal(data);
-
-})
-
-
+});
 
 $("#tbdata tbody").on("click", ".btn-eliminar", function () {
-
-    let fila
-    if ($(this).closest("tr").hasClass("child")) {
-        fila = $(this).closest("tr").prev();
-    } else {
-        fila = $(this).closest("tr");
-    }
-
+    let fila = $(this).closest("tr").hasClass("child") ? $(this).closest("tr").prev() : $(this).closest("tr");
     const data = tablaData.row(fila).data();
 
     Swal.fire({
         title: "¿Está Seguro de Eliminar?",
         text: `Eliminar La Empresa "${data.nombre}"`,
-        icon: "warning", // 'type' is deprecated, use 'icon'
+        icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",
         confirmButtonText: "Si, eliminar",
@@ -222,30 +154,26 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
         reverseButtons: true
     }).then((result) => {
         if (result.isConfirmed) {
-            $(".showSweetAlert").LoadingOverlay("show");
+            const sweetAlertOverlay = $(".showSweetAlert");
+            sweetAlertOverlay.LoadingOverlay("show");
 
-            fetch(`Eliminar?secuencial=${data.secuencial}`, {
-                method: "DELETE"
-            })
+            fetch(`Eliminar?secuencial=${data.secuencial}`, { method: "DELETE" })
                 .then(response => {
-                    $(".showSweetAlert").LoadingOverlay("hide");
-                    return response.ok
-                        ? response.json()
-                        : Promise.reject(response);
-                }).then(responseJson => {
-                    debugger;
+                    if (!response.ok) return response.json().then(err => Promise.reject(err));
+                    return response.json();
+                })
+                .then(responseJson => {
+                    sweetAlertOverlay.LoadingOverlay("hide");
                     if (responseJson.estado) {
                         tablaData.row(fila).remove().draw(false);
-
-                        Swal.fire("Listo!", " La Empresa " + data.nombre + " Fue Eliminada", "success");
-                    }
-                    else {
+                        Swal.fire("Listo!", `La Empresa "${data.nombre}" fue eliminada.`, "success");
+                    } else {
                         Swal.fire("Fallo!", responseJson.mensajes, "error");
                     }
+                })
+                .catch(error => {
+                    manejarErrorFetch(error, "Eliminar Empresa", sweetAlertOverlay);
                 });
-
         }
-    })
-
-})
-
+    });
+});

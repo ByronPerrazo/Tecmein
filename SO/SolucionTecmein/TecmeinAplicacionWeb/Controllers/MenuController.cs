@@ -4,25 +4,50 @@ using Entity;
 using AutoMapper;
 using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
+using TecmeinWebApp.Utilidades.ViewComponents;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Reflection;
 
 namespace TecmeinAplicacionWeb.Controllers
 {
     public class MenuController : Controller
     {
         private readonly IMenuServices _menuServices;
+        private readonly IMenuDiscoveryService _menuDiscoveryService;
         private readonly IMapper _mapper;
 
-        public MenuController(IMenuServices menuServices, IMapper mapper)
+        public MenuController(IMenuServices menuServices, IMapper mapper, IMenuDiscoveryService menuDiscoveryService)
         {
             _menuServices = menuServices;
             _mapper = mapper;
+            _menuDiscoveryService = menuDiscoveryService;
         }
 
+        [ValidatePermission("VER_MENU")]
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpPost]
+        [ValidatePermission("ACTUALIZAR")]
+        public async Task<IActionResult> SincronizarModulos()
+        {
+            var gResponse = new GenericResponse<string>();
+            try
+            {
+                var assembly = typeof(MenuController).Assembly;
+                var resultado = await _menuDiscoveryService.DiscoverAndRegisterMenusAsync(assembly);
+                gResponse.Estado = true;
+                gResponse.Objeto = resultado;
+            }
+            catch (Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+            }
+            return StatusCode(StatusCodes.Status200OK, gResponse);
         }
 
         private static readonly List<string> _iconosFontAwesome = new List<string>()
@@ -387,6 +412,7 @@ namespace TecmeinAplicacionWeb.Controllers
         };
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ObtenerParaEditar(int secuencial)
         {
             var gResponse = new GenericResponse<MenuEditarVM>();
@@ -420,6 +446,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Lista()
         {
             var gResponse = new GenericResponse<List<MenuTableVM>>();
@@ -441,7 +468,8 @@ namespace TecmeinAplicacionWeb.Controllers
                         Icono = menu.Icono,
                         Controlador = menu.Controlador,
                         PaginaAccion = menu.PaginaAccion,
-                        EsActivo = menu.EsActivo
+                        EsActivo = menu.EsActivo,
+                        MostrarEnMenu = menu.MostrarEnMenu
                     };
 
                     if (menu.SecMenuPadre.HasValue && menu.SecMenuPadre.Value != menu.Secuencial)
@@ -470,6 +498,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> ProcesaGuardarMenu([FromBody] MenuVM menuVM)
         {
             var gResponse = new GenericResponse<MenuVM>();
@@ -506,6 +535,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpDelete]
+        [ValidatePermission("ELIMINAR")]
         public async Task<IActionResult> Eliminar(int secuencial)
         {
             var gResponse = new GenericResponse<string>();
@@ -522,6 +552,7 @@ namespace TecmeinAplicacionWeb.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ObtenerMenusPadre()
         {
             var gResponse = new GenericResponse<List<MenuVM>>();

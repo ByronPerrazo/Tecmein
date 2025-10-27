@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
+using TecmeinWebApp.Utilidades.ViewComponents;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -25,12 +26,14 @@ namespace TecmeinWebApp.Controllers
             _mapper = mapper;
         }
 
+        [ValidatePermission("VER_MENU")]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Lista()
         {
             var impuestoLista = await _impuestoServices.Lista();
@@ -45,6 +48,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ListaTipoImpuesto()
         {
             var listaTipoImpuestoVM = _mapper.Map<List<TipoImpuestoVM>>(await _tipoImpuestoServices.Lista());
@@ -56,6 +60,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> ListaActivos()
         {
             var impuestoLista = await _impuestoServices.ListaActivos();
@@ -70,6 +75,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPost]
+        [ValidatePermission("CREAR")]
         public async Task<IActionResult> Crear([FromBody] ImpuestoVM modelo)
         {
             var genericResponse = new GenericResponse<ImpuestoVM>();
@@ -90,6 +96,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPut]
+        [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> Editar([FromBody] ImpuestoVM modelo)
         {
             var genericResponse = new GenericResponse<ImpuestoVM>();
@@ -110,6 +117,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpDelete]
+        [ValidatePermission("ELIMINAR")]
         public async Task<IActionResult> Eliminar(int id)
         {
             var gResponse = new GenericResponse<string>();

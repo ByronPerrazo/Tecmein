@@ -5,7 +5,8 @@ const MODELO_BASE = {
     icono: "",
     controlador: "",
     paginaAccion: "",
-    esActivo: 1
+    esActivo: 1,
+    mostrarEnMenu: true
 }
 
 let tablaData;
@@ -36,10 +37,15 @@ $(document).ready(function () {
             { "data": "paginaAccion" },
             {
                 "data": "esActivo", render: function (data) {
-                    if (data == 1)
-                        return '<span class="badge badge-info">Activo</span>';
+                    return data == 1 ? '<span class="badge badge-info">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>';
+                }
+            },
+            {
+                "data": "mostrarEnMenu", render: function (data) {
+                    if (data)
+                        return '<span class="badge badge-success">Visible</span>';
                     else
-                        return '<span class="badge badge-danger">Inactivo</span>';
+                        return '<span class="badge badge-secondary">Oculto</span>';
                 }
             },
             {
@@ -76,6 +82,7 @@ function mostrarModal(modelo = MODELO_BASE, listaMenusPadre = [], iconosDisponib
     $("#txtControlador").val(modelo.controlador);
     $("#txtPaginaAccion").val(modelo.paginaAccion);
     $("#cboEstado").val(modelo.esActivo);
+    $("#checkMostrarEnMenu").prop("checked", modelo.mostrarEnMenu);
 
     const cboMenuPadre = $("#cboMenuPadre");
     cboMenuPadre.empty();
@@ -126,7 +133,14 @@ function mostrarModal(modelo = MODELO_BASE, listaMenusPadre = [], iconosDisponib
 $("#btnNuevo").click(function () {
     // Para un nuevo menú, necesitamos la lista de menús padre y los iconos disponibles
     fetch("/Menu/ObtenerParaEditar?secuencial=0") // Usamos 0 para obtener solo la lista de iconos y menús padre
-        .then(response => response.ok ? response.json() : Promise.reject(response))
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorJson => {
+                    return Promise.reject(errorJson);
+                });
+            }
+            return response.json();
+        })
         .then(responseJson => {
             if (responseJson.estado) {
                 mostrarModal(MODELO_BASE, responseJson.objeto.listaMenusPadre, responseJson.objeto.iconosDisponibles);
@@ -136,6 +150,11 @@ $("#btnNuevo").click(function () {
         })
         .catch(error => {
             console.error('Error al obtener la lista de menús padre e iconos para nuevo menú:', error);
+            if (error && error.mensajes) {
+                Swal.fire("Fallo!", error.mensajes, "error");
+            } else {
+                Swal.fire("Fallo!", "Ocurrió un error inesperado al cargar datos para nuevo menú.", "error");
+            }
         });
 })
 
@@ -148,7 +167,8 @@ $("#btnGuardar").click(function () {
         icono: $("#txtIcono").val(),
         controlador: $("#txtControlador").val(),
         paginaAccion: $("#txtPaginaAccion").val(),
-        esActivo: $("#cboEstado").val()
+        esActivo: $("#cboEstado").val(),
+        mostrarEnMenu: $("#checkMostrarEnMenu").is(":checked")
     }
 
     $("#modalData").find(".modal-content").LoadingOverlay("show");
@@ -160,7 +180,12 @@ $("#btnGuardar").click(function () {
     })
         .then(response => {
             $("#modalData").find(".modal-content").LoadingOverlay("hide");
-            return response.ok ? response.json() : Promise.reject(response);
+            if (!response.ok) {
+                return response.json().then(errorJson => {
+                    return Promise.reject(errorJson);
+                });
+            }
+            return response.json();
         })
         .then(responseJson => {
             if (responseJson.estado) {
@@ -171,6 +196,15 @@ $("#btnGuardar").click(function () {
                 Swal.fire("Lo sentimos", responseJson.mensajes, "error");
             }
         })
+        .catch(error => {
+            $("#modalData").find(".modal-content").LoadingOverlay("hide");
+            if (error && error.mensajes) {
+                Swal.fire("Fallo!", error.mensajes, "error");
+            } else {
+                console.error('Error al guardar el menú:', error);
+                Swal.fire("Fallo!", "Ocurrió un error inesperado al guardar el menú.", "error");
+            }
+        });
 })
 
 let esEdicion;
@@ -190,7 +224,12 @@ $("#tbdata tbody").on("click", ".btn-editar", function () {
     fetch(`/Menu/ObtenerParaEditar?secuencial=${secuencialMenu}`)
         .then(response => {
             $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-            return response.ok ? response.json() : Promise.reject(response);
+            if (!response.ok) {
+                return response.json().then(errorJson => {
+                    return Promise.reject(errorJson);
+                });
+            }
+            return response.json();
         })
         .then(responseJson => {
             if (responseJson.estado) {
@@ -201,7 +240,12 @@ $("#tbdata tbody").on("click", ".btn-editar", function () {
         })
         .catch(error => {
             $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-            console.error("Error en la llamada fetch para editar:", error);
+            if (error && error.mensajes) {
+                Swal.fire("Fallo!", error.mensajes, "error");
+            } else {
+                console.error("Error en la llamada fetch para editar:", error);
+                Swal.fire("Fallo!", "Ocurrió un error inesperado al cargar datos para edición.", "error");
+            }
         });
 })
 
@@ -231,7 +275,12 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
                 method: "DELETE"
             })
                 .then(response => {
-                    return response.ok ? response.json() : Promise.reject(response);
+                    if (!response.ok) {
+                        return response.json().then(errorJson => {
+                            return Promise.reject(errorJson);
+                        });
+                    }
+                    return response.json();
                 })
                 .then(responseJson => {
                     if (responseJson.estado) {
@@ -241,9 +290,69 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
                         Swal.fire("Lo sentimos", responseJson.mensajes, "error");
                     }
                 })
+                .catch(error => {
+                    if (error && error.mensajes) {
+                        Swal.fire("Fallo!", error.mensajes, "error");
+                    } else {
+                        console.error('Error al eliminar:', error);
+                        Swal.fire("Fallo!", "Ocurrió un error inesperado al eliminar el menú.", "error");
+                    }
+                });
         }
     })
 })
+
+$("#btnSincronizar").click(function () {
+    Swal.fire({
+        title: "¿Está seguro?",
+        text: "Se buscarán nuevos módulos (controladores) en el sistema y se agregarán al menú. ¿Desea continuar?",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, sincronizar",
+        cancelButtonText: "No, cancelar"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Sincronizando...',
+                text: 'Por favor espere.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+
+            fetch("/Menu/SincronizarModulos", {
+                method: "POST",
+                headers: { "Content-Type": "application/json; charset=utf-8" }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorJson => Promise.reject(errorJson));
+                }
+                return response.json();
+            })
+            .then(responseJson => {
+                if (responseJson.estado) {
+                    tablaData.ajax.reload();
+                    Swal.fire("Sincronización Completa", responseJson.objeto, "success");
+                } else {
+                    Swal.fire("Lo sentimos", responseJson.mensajes, "error");
+                }
+            })
+            .catch(error => {
+                Swal.close();
+                if (error && error.mensajes) {
+                    Swal.fire("Fallo!", error.mensajes, "error");
+                } else {
+                    console.error('Error al sincronizar:', error);
+                    Swal.fire("Fallo!", "Ocurrió un error inesperado al sincronizar los módulos.", "error");
+                }
+            });
+        }
+    });
+});
 
 function formatIcon(icon) {
     if (!icon.id) {
