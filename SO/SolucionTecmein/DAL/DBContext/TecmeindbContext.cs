@@ -536,7 +536,6 @@ public partial class TecmeindbContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("fechaRegistro");
             entity.Property(e => e.FechaSiguienteVisita)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime")
                 .HasColumnName("fechaSiguienteVisita");
             entity.Property(e => e.GeoUbicacion)

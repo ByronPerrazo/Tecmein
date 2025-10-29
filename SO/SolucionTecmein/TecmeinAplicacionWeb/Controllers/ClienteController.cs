@@ -144,5 +144,30 @@ namespace TecmeinAplicacionWeb.Controllers
             return StatusCode(200, gResponse);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Obtener(int idConstructora)
+        {
+            var gResponse = new GenericResponse<ConstructoraVM>();
+            try
+            {
+                var constructora = await _constructoraServices.ConstructoraPorSecuencial(idConstructora);
+                if (constructora != null)
+                {
+                    gResponse.Estado = true;
+                    gResponse.Objeto = _mapper.Map<ConstructoraVM>(constructora);
+                }
+                else
+                {
+                    gResponse.Estado = false;
+                    gResponse.Mensajes = "No se encontró la constructora";
+                }
+            }
+            catch (System.Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+            }
+            return StatusCode(200, gResponse);
+        }
     }
 }

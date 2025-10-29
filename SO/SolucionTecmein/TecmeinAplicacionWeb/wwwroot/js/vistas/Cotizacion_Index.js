@@ -164,8 +164,55 @@ $(document).ready(function () {
                 }
             }).catch(err => manejarErrorFetch(err, "Verificación de Visita"));
         
-        // Cadenas de fetch para obtener datos de la visita y equipos
-        // ... todas usando .catch(err => manejarErrorFetch(err, "Operación Específica"))
+        fetch(`/Visita/ObtenerDetalleVisita?secuencialVisita=${visitaId}`)
+            .then(response => response.ok ? response.json() : Promise.reject(response))
+            .then(responseJson => {
+                if (responseJson.estado) {
+                    const visita = responseJson.objeto;
+                    $('#txtNombreObra').val(visita.nombre);
+                    $('#pDireccionProyecto').text(visita.direccion);
+                    $('#pProvincia').text(visita.nombreProvincia);
+                    $('#pCanton').text(visita.nombreCanton);
+                    $('#pParroquia').text(visita.nombreParroquia);
+                    $('#pConstructora').text(visita.nombreConstructora);
+                    $('#pContacto').text(visita.nombreContacto);
+                    $('#pCorreoContacto').text(visita.correoContacto);
+                    $('#pTelefonoContacto').text(visita.telefonoContacto);
+                    $('#pUsuarioGenerador').text(visita.nombreUsuario);
+
+                    $('#visitDetailsContent, #hrContactDetails, #contactDetailsContent, #hrUserGenerator, #userGeneratorContent').show();
+                } else {
+                    toastr.error("No se pudieron cargar los detalles de la visita.");
+                }
+            }).catch(err => manejarErrorFetch(err, "Cargar Detalles de Visita"));
+
+        fetch(`/Visita/EquiposDeVisita?secuencialVisita=${visitaId}`)
+            .then(response => response.ok ? response.json() : Promise.reject(response))
+            .then(responseJson => {
+                const tbody = $("#tbDetalles tbody");
+                tbody.empty();
+                if (responseJson.data && responseJson.data.$values && responseJson.data.$values.length > 0) {
+                    responseJson.data.$values.forEach(equipo => {
+                        const fila = `
+                            <tr class="text-xs" data-id-equipo="0" data-sec-equipo-visita="${equipo.secuencial}" data-esta-activo="1">
+                                <td>${equipo.descripcionImpresa}</td>
+                                <td><input type="number" class="form-control form-control-sm cantidad" value="1" min="1"></td>
+                                <td><input type="text" class="form-control form-control-sm valor-compra" value="0"></td>
+                                <td><input type="text" class="form-control form-control-sm margen-ganancia" value="0"></td>
+                                <td class="valor-venta-unitario">0.00</td>
+                                <td class="total-fila">0.00</td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm btn-eliminar-item" data-toggle="tooltip" title="Eliminar Equipo">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>`;
+                        tbody.append(fila);
+                    });
+                } else {
+                    tbody.append('<tr><td colspan="7">No hay equipos registrados para esta visita.</td></tr>');
+                }
+            }).catch(err => manejarErrorFetch(err, "Cargar Equipos de Visita"));
     });
 
     $('#btnGuardar').click(function () {

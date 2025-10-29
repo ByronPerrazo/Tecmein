@@ -236,9 +236,57 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
                                  opt =>
                                  opt.MapFrom(origen =>
                                              origen.Cantidad))
-              .ForMember(destino => 
-                         destino.DetalleEspecifico,
-                             opt =>
+                                          .ForMember(destino =>
+                                                     destino.DetalleEspecifico,
+                                                         opt =>
+                                                         opt.MapFrom(origen => $"Sistema:{origen.Sistema} -" +
+                                                                               $" Tipo Eq:{origen.TipoEquipo} -" +
+                                                                               $" Marca:{origen.Marca} -" +
+                                                                               $" Capacidad:{origen.Capacidad} -" +
+                                                                               $" Velocidad:{origen.Velocidad} -" +
+                                                                               $" Sala Maq:{origen.SalaMaquinas} -" +
+                                                                               $" Motor:{origen.TipoMotor} -" +
+                                                                               $" Embarque:{origen.Embarque} -" +
+                                                                               $" Ducto:{origen.TipoDucto} -" +
+                                                                               $" MedidasAF:{origen.MedidasAfducto} -" +
+                                                                               $" Foso:{origen.Foso} -" +
+                                                                               $" Recorrido: {origen.Recorrido} -" +
+                                                                               $" Sbr. Recorrido: {origen.SobreRecorrido} -" +
+                                                                               $" Ing. Frontales: {origen.IngresosFrontales} -" +
+                                                                               $" Ing. Posteriores: {origen.IngresosPosteriores} -" +
+                                                                               $" Dime Entrada: {origen.DimencionEntrada} -" +
+                                                                               $" Alt Entre Pisos: {origen.AlturaEntrePisos} -" +
+                                                                               $" Energia: {origen.Energia} -" +
+                                                                               $" Puertas: {origen.MaterialPuertas} -" +
+                                                                               $" Num. Paradas{origen.NumeroParadas}-" +
+                                                                               $" Nomb. Paradas{origen.NombresParadas}-" +
+                                                                               $" Num Personas:{origen.NumeroPersonas} "))
+                                          .ForMember(destino =>
+                                                     destino.DescripcionImpresa,                                           opt =>
+                                           opt.MapFrom(origen => $"Sistema: { (origen.Sistema == "Tri" ? "Triplex" : origen.Sistema) } -" +
+                                                                 $" Tipo Eq: {origen.TipoEquipo} -" +
+                                                                 $" Marca: {origen.Marca} -" +
+                                                                 $" Capacidad: {origen.Capacidad} -" +
+                                                                 $" Velocidad: {origen.Velocidad} -" +
+                                                                 $" Sala Maq: {origen.SalaMaquinas} -" +
+                                                                 $" Motor: {origen.TipoMotor} -" +
+                                                                 $" Embarque: {origen.Embarque} -" +
+                                                                 $" Ducto: {origen.TipoDucto} -" +
+                                                                 $" MedidasAF: {origen.MedidasAfducto} -" +
+                                                                 $" Foso: {origen.Foso} -" +
+                                                                 $" Recorrido: {origen.Recorrido} -" +
+                                                                 $" Sbr. Recorrido: {origen.SobreRecorrido} -" +
+                                                                 $" Ing. Frontales: {origen.IngresosFrontales} -" +
+                                                                 $" Ing. Posteriores: {origen.IngresosPosteriores} -" +
+                                                                 $" Dime Entrada: {origen.DimencionEntrada} -" +
+                                                                 $" Alt Entre Pisos: {origen.AlturaEntrePisos} -" +
+                                                                 $" Energia: {origen.Energia} -" +
+                                                                 $" Puertas: {origen.MaterialPuertas} -" +
+                                                                 $" Num. Paradas: {origen.NumeroParadas}-" +
+                                                                 $" Nomb. Paradas: {origen.NombresParadas}-" +
+                                                                 $" Num Personas: {origen.NumeroPersonas} "))
+                            .ForMember(destino =>
+                                       destino.DetalleEspecifico,                             opt =>
                              opt.MapFrom(origen => $"Sistema:{origen.Sistema} -" +
                                                    $" Tipo Eq:{origen.TipoEquipo} -" +
                                                    $" Marca:{origen.Marca} -" +

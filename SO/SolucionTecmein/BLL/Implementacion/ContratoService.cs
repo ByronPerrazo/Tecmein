@@ -226,7 +226,7 @@ namespace BLL.Implementacion
                 FechaRegistro = DateTime.Now,
                 Direccion = "N/A",
                 GeoUbicacion = "N/A",
-                FechaSiguienteVisita = DateTime.Now,
+                FechaSiguienteVisita = null,
                 SecConstructora = cliente.SecConstructora
             };
             return await _repositorioVisita.Crear(visita);

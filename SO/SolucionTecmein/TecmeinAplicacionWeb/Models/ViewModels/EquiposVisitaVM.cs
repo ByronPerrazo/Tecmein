@@ -56,6 +56,8 @@
 
         public short EstaActivo { get; set; }
 
+        public string? Descripcion { get; set; }
+        public string? DescripcionImpresa { get; set; }
         public string? DetalleEspecifico { get; set; }
     }
 }

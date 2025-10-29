@@ -1,8 +1,9 @@
-﻿using AutoMapper;
+using AutoMapper;
 using BLL.Interfaces;
 using Entity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Security.Claims;
 using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
@@ -195,6 +196,11 @@ namespace TecmeinWebApp.Controllers
                     = JsonConvert
                       .DeserializeObject<VisitaVM>(modelo);
 
+                if (visitaIngresadaVM.FechaSiguienteVisita == DateTime.MinValue)
+                {
+                    visitaIngresadaVM.FechaSiguienteVisita = null;
+                }
+
                 _logger.LogInformation("Creando visita: {@Visita}", visitaIngresadaVM);
 
                 ClaimsPrincipal claimsUser = HttpContext.User;
@@ -233,6 +239,11 @@ namespace TecmeinWebApp.Controllers
             try
             {
                 VisitaVM? visitaVM = JsonConvert.DeserializeObject<VisitaVM>(modelo);
+
+                if (visitaVM.FechaSiguienteVisita == DateTime.MinValue)
+                {
+                    visitaVM.FechaSiguienteVisita = null;
+                }
 
                 var visitaObtenida
                     = await _visitaServices

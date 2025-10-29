@@ -178,19 +178,35 @@ function cargarContactosPorConstructora(constructoraSeleccionada, contactoSelecc
 
         let listaFiltrada = contactosCombo.filter(x => x.secConstructora == constructoraSeleccionada)
 
-        if (!listaFiltrada)
-            return;
-
         $("#cboContactos").empty();
+        $("#txtDescripcionContacto").val("");
 
-        listaFiltrada.forEach(contacto => {
-            $("#cboContactos")
-                .append(
-                    $("<option>")
-                        .val(contacto.secuencial)
-                        .text(`${contacto.nombres} ${contacto.apellidos}`)
-                );
-        });
+        if (listaFiltrada.length > 0) {
+            listaFiltrada.forEach(contacto => {
+                $("#cboContactos")
+                    .append(
+                        $("<option>")
+                            .val(contacto.secuencial)
+                            .text(`${contacto.nombres} ${contacto.apellidos}`)
+                    );
+            });
+        } else {
+            $("#cboContactos").append($("<option>").val(-1).text("No definido"));
+            fetch(`/Cliente/Obtener?idConstructora=${constructoraSeleccionada}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.estado) {
+                        const constructora = data.objeto;
+                        const textoDetalle =
+                            `     ${constructora.nombre}\n` +
+                            `     Email: ${constructora.correo}\n` +
+                            `     Telef: ${constructora.telefono}`;
+                        $("#txtDescripcionContacto").val(textoDetalle);
+                        let textarea = document.getElementById('txtDescripcionContacto');
+                        ajustarAlturaTextarea(textarea);
+                    }
+                });
+        }
 
 
         const selectElement = document.getElementById('cboContactos');

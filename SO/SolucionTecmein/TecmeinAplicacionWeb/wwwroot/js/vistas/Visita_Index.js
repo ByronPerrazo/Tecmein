@@ -261,7 +261,7 @@ let validaFecha = false;
 
 tieneSigVisita.addEventListener('change', function () {
     if (this.checked) {
-        fechaSiguienteVisita.style.display = 'block';
+        fechaSiguienteVisita.style.display = '';
         validaFecha = true;
     } else {
         var minDate = new Date(-8640000000000); 
@@ -352,6 +352,7 @@ function limpiarFormularioModal() {
     $("#cboEstado").val(1);
     document.getElementById('chkEsSigVisita').checked = false;
     $("#dtpkFechaSigVisita").val('');
+    fechaSiguienteVisita.style.display = 'none';
 }
 function mostrarModalVisita(esEdicion, modeloVisita = MODELO_BASEVISITA) {
     limpiarFormularioModal();
@@ -394,27 +395,29 @@ function mostrarModalVisita(esEdicion, modeloVisita = MODELO_BASEVISITA) {
     $("#modalData").modal("show")
 };
 function loadDateFromString(dateString) {
-    if( !(!dateString || dateString.trim() === "")) {
-    
-    var dateParts = dateString.split('-'); 
+    if (!dateString || dateString.trim() === "" || dateString === "0001-01-01T00:00:00") {
+        document.getElementById('chkEsSigVisita').checked = false;
+        fechaSiguienteVisita.style.display = 'none';
+        $("#dtpkFechaSigVisita").val('');
+        return;
+    }
+
+    var dateParts = dateString.split('-');
     var day = parseInt(dateParts[2], 10);
-    var month = parseInt(dateParts[1], 10) - 1; 
+    var month = parseInt(dateParts[1], 10) - 1;
     var year = parseInt(dateParts[0], 10);
 
-    var dateObject = new Date(year, month, day); 
+    var dateObject = new Date(year, month, day);
 
-    var minDate = new Date(-8640000000000); 
+    var minDate = new Date(-8640000000000);
     if (dateObject <= minDate) {
         document.getElementById('chkEsSigVisita').checked = false;
         fechaSiguienteVisita.style.display = 'none';
     } else {
-        
         document.getElementById('chkEsSigVisita').checked = true;
         fechaSiguienteVisita.style.display = 'block';
         var formattedDate = dateObject.toISOString().split('T')[0];
-        
         $("#dtpkFechaSigVisita").val(formattedDate);
-    }
     }
 }
 
@@ -487,7 +490,9 @@ $("#btnGuardarVisitas").click(function () {
     modeloVisita["secParroquia"] = parseInt($("#cboParroquia").val());
     modeloVisita["direccion"] = $("#txtDireccion").val().trim();
     modeloVisita["geoUbicacion"] = $("#txtGeolocallizacion").val().trim();
-    modeloVisita["fechaSiguienteVisita"] = $("#dtpkFechaSigVisita").val();
+    if ($('#chkEsSigVisita').is(':checked')) {
+        modeloVisita["fechaSiguienteVisita"] = $("#dtpkFechaSigVisita").val();
+    }
     modeloVisita["detalle"] = $("#txtDescripcion").val();
     modeloVisita["estaActivo"] = $("#cboEstado").val();
     modeloVisita["secEmpresa"] = $("#cboOperador").val();

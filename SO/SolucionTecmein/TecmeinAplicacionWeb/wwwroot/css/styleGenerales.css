@@ -104,3 +104,8 @@ div {
     margin-left: 0.1rem; /* Small margin between buttons */
     margin-right: 0.1rem;
 }
+
+.cab_i_sm_equipos {
+    font-size: x-small;
+    color: darkslateblue;
+}
