@@ -535,12 +535,12 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
 
             #region Contrato
             CreateMap<Contrato, ContratoVM>()
-                .ForMember(dest => dest.NombreObra,
+                .ForMember(dest => dest.NombreProyecto,
                            opt => opt.MapFrom(src => src.IdCotizacionNavigation.SecVisitaNavigation.Nombre ?? "Sin Obra Asociada"))
                 .ForMember(dest => dest.NombreUsuarioCarga,
                            opt => opt.MapFrom(src => src.IdUsuarioCargaNavigation.Nombre))
                 .ForMember(dest => dest.FechaFirma,
-                           opt => opt.MapFrom(src => src.FechaFirma.ToString("dd/MM/yyyy")));
+                           opt => opt.MapFrom(src => src.FechaFirma.ToString("yyyy-MM-dd")));
 
             CreateMap<ContratoVM, Contrato>()
                 .ForMember(dest => dest.FechaFirma, 

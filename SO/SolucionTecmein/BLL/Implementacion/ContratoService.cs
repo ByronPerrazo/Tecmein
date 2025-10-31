@@ -59,19 +59,24 @@ namespace BLL.Implementacion
                 int idCotizacionFinal;
                 int secClienteFinal;
 
+                // Determinar el cliente y la cotización a asociar
                 if (dto.IdCotizacion.HasValue && dto.IdCotizacion > 0)
                 {
-                    var cotizacion = await _dbContext.Cotizacion.Include(c => c.SecVisitaNavigation).FirstOrDefaultAsync(c => c.Secuencial == dto.IdCotizacion.Value);
+                    var cotizacion = await _dbContext.Cotizacion.Include(c => c.SecVisitaNavigation).ThenInclude(v => v.SecConstructoraNavigation).FirstOrDefaultAsync(c => c.Secuencial == dto.IdCotizacion.Value);
                     if (cotizacion == null) throw new Exception("La cotización especificada no fue encontrada.");
-                    if (cotizacion.SecVisitaNavigation?.SecConstructora == null) throw new Exception("La visita de la cotización debe tener una constructora.");
+                    if (cotizacion.SecVisitaNavigation?.SecConstructora == null) throw new Exception("La visita de la cotización debe tener una constructora asociada.");
 
                     var cliente = await _clienteServices.ObtenerOCrearPorConstructora(cotizacion.SecVisitaNavigation.SecConstructora.Value);
-                    if (cliente == null) throw new Exception("No se pudo obtener o crear el cliente.");
+                    if (cliente == null) throw new Exception("No se pudo obtener o crear el cliente a partir de la constructora.");
+
+                    // Actualizar el nombre de la obra en la visita si se proporciona
+                    if (cotizacion.SecVisitaNavigation != null && !string.IsNullOrEmpty(dto.NombreProyecto))
+                    {
+                        cotizacion.SecVisitaNavigation.Nombre = dto.NombreProyecto;
+                    }
 
                     idCotizacionFinal = cotizacion.Secuencial;
                     secClienteFinal = cliente.SecCliente;
-
-
                 }
                 else if (dto.SecCliente.HasValue && dto.SecCliente > 0)
                 {
@@ -87,9 +92,10 @@ namespace BLL.Implementacion
                 }
                 else
                 {
-                    throw new Exception("Datos insuficientes. Se requiere un IdCotizacion o un SecCliente.");
+                    throw new Exception("Datos insuficientes. Se requiere una IdCotizacion o un SecCliente.");
                 }
 
+                // Crear la entidad Contrato
                 var contrato = new Contrato
                 {
                     IdCotizacion = idCotizacionFinal,
@@ -97,7 +103,7 @@ namespace BLL.Implementacion
                     FechaFirma = dto.FechaFirma,
                     IdUsuarioCarga = dto.IdUsuarioCarga,
                     NombreArchivo = dto.NombreArchivo,
-                    RutaArchivo = "",
+                    RutaArchivo = "", // Se actualizará después de subir el archivo
                     FechaCreacion = DateTime.Now,
                     EsActivo = true
                 };
@@ -105,24 +111,26 @@ namespace BLL.Implementacion
                 var contratoCreado = await _repositorioContrato.Crear(contrato);
                 if (contratoCreado.IdContrato == 0) throw new Exception("No se pudo crear el registro del contrato.");
 
-                // <<< START: NEW LOGIC >>>
+                // --- LÓGICA PARA CREAR PLAN DE PAGO AUTOMÁTICAMENTE ---
                 var preContrato = await _repositorioPreContrato.Obtener(p => p.SecCotizacion == idCotizacionFinal && p.Estado == "Aprobado");
                 if (preContrato != null)
                 {
                     var compromisos = await _repositorioCompromisoPago.Consultar(c => c.SecPreContrato == preContrato.SecPreContrato);
-                    if (compromisos.Any())
+                    var listaCompromisos = await compromisos.ToListAsync();
+
+                    if (listaCompromisos.Any())
                     {
-                        var anticipo = compromisos.FirstOrDefault(c => c.Tipo == "Anticipo");
-                        var cuotas = compromisos.Where(c => c.Tipo == "Cuota").OrderBy(c => c.NumeroCuota).ToList();
+                        var anticipo = listaCompromisos.FirstOrDefault(c => c.Tipo == "Anticipo");
+                        var cuotas = listaCompromisos.Where(c => c.Tipo == "Cuota").OrderBy(c => c.NumeroCuota).ToList();
 
                         var nuevoPlanDePago = new PlanDePago
                         {
                             IdContrato = contratoCreado.IdContrato,
-                            SecFormaPago = 1, // TODO: Hacer que la forma de pago sea dinámica o venga del pre-contrato.
-                            ValorContrato = compromisos.Sum(c => c.Monto),
+                            SecFormaPago = 1, // TODO: La forma de pago debe ser dinámica.
+                            ValorContrato = listaCompromisos.Sum(c => c.Monto),
                             ValorAnticipo = anticipo?.Monto ?? 0,
                             FechaAnticipo = anticipo?.FechaVencimiento,
-                            NumeroCuotas = cuotas.Count(),
+                            NumeroCuotas = cuotas.Count,
                             FechaPrimeraCuota = cuotas.FirstOrDefault()?.FechaVencimiento,
                             EstaActivo = true,
                             FechaRegistro = DateTime.Now
@@ -130,14 +138,14 @@ namespace BLL.Implementacion
 
                         var planDePagoCreado = await _repositorioPlanDePago.Crear(nuevoPlanDePago);
 
-                        foreach (var c in cuotas)
+                        foreach (var compromisoCuota in cuotas)
                         {
                             var nuevaCuota = new Cuota
                             {
                                 IdPlanDePago = planDePagoCreado.IdPlanDePago,
-                                NumeroCuota = c.NumeroCuota,
-                                MontoEsperado = c.Monto,
-                                FechaVencimiento = c.FechaVencimiento,
+                                NumeroCuota = compromisoCuota.NumeroCuota,
+                                MontoEsperado = compromisoCuota.Monto,
+                                FechaVencimiento = compromisoCuota.FechaVencimiento,
                                 Estado = "Pendiente",
                                 FechaRegistro = DateTime.Now
                             };
@@ -145,19 +153,22 @@ namespace BLL.Implementacion
                         }
                     }
 
+                    // Actualizar el estado del pre-contrato para que no se vuelva a usar
                     preContrato.Estado = "Procesado";
                     preContrato.EstaActivo = false;
+                    await _repositorioPreContrato.Editar(preContrato);
                 }
-                // <<< END: NEW LOGIC >>>
+                // --- FIN LÓGICA PLAN DE PAGO ---
 
+                // Subir el archivo a Firebase
                 if (dto.ArchivoStream != null && !string.IsNullOrEmpty(dto.NombreArchivo))
                 {
                     string numeroCliente = (await _dbContext.Clientes.FindAsync(secClienteFinal)).NumeroCliente;
                     string carpetaDestino = $"Contratos/{numeroCliente}/{contratoCreado.IdContrato}";
                     contratoCreado.RutaArchivo = await _storageServices.SubirStorage(dto.ArchivoStream, carpetaDestino, dto.NombreArchivo);
+                    await _repositorioContrato.Editar(contratoCreado); // Guardar la ruta del archivo
                 }
 
-                await _dbContext.SaveChangesAsync();
                 await transaction.CommitAsync();
                 return contratoCreado;
             }
@@ -271,15 +282,47 @@ namespace BLL.Implementacion
 
         public async Task<bool> Eliminar(int id)
         {
-            var contrato = await _repositorioContrato.Obtener(c => c.IdContrato == id);
-            if (contrato == null) 
+            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            try
             {
-                throw new TaskCanceledException("Contrato no encontrado");
-            }
+                var contrato = await _repositorioContrato.Obtener(c => c.IdContrato == id);
+                if (contrato == null)
+                {
+                    throw new KeyNotFoundException("Contrato no encontrado.");
+                }
 
-            contrato.EsActivo = false;
-            bool response = await _repositorioContrato.Editar(contrato);
-            return response;
+                // Revert PreContrato status if it exists
+                if (contrato.IdCotizacion != 0)
+                {
+                    var preContrato = await _repositorioPreContrato.Obtener(p => p.SecCotizacion == contrato.IdCotizacion && p.Estado == "Procesado");
+                    if (preContrato != null)
+                    {
+                        preContrato.Estado = "Aprobado";
+                        preContrato.EstaActivo = true;
+                        await _repositorioPreContrato.Editar(preContrato);
+                    }
+                }
+
+                // Soft delete the Contrato
+                contrato.EsActivo = false;
+                bool resultado = await _repositorioContrato.Editar(contrato);
+
+                if(resultado)
+                {
+                    await transaction.CommitAsync();
+                    return true;
+                }
+                else
+                {
+                    await transaction.RollbackAsync();
+                    throw new Exception("No se pudo actualizar el estado del contrato a inactivo.");
+                }
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         public async Task<List<PreContrato>> ListarPreContratosParaContrato()

@@ -9,6 +9,7 @@ using System.Security.Claims;
 using Newtonsoft.Json;
 using TecmeinWebApp.Utilidades.Response;
 using TecmeinWebApp.Utilidades.ViewComponents;
+using System.Globalization;
 using BLL.DTOs;
 
 namespace TecmeinAplicacionWeb.Controllers
@@ -78,7 +79,6 @@ namespace TecmeinAplicacionWeb.Controllers
                 ContratoVM vm = _mapper.Map<ContratoVM>(contrato);
 
                 // Mapeo manual de campos que no están en el mapeo automático
-                vm.NombreProyecto = contrato.IdCotizacionNavigation?.SecVisitaNavigation?.Nombre;
                 vm.SecCliente = contrato.SecCliente;
 
                 gResponse.Estado = true;
@@ -114,7 +114,8 @@ namespace TecmeinAplicacionWeb.Controllers
                 {
                     IdCotizacion = vmContrato.IdCotizacion > 0 ? vmContrato.IdCotizacion : null,
                     SecCliente = vmContrato.SecCliente > 0 ? vmContrato.SecCliente : null,
-                    FechaFirma = DateTime.Parse(vmContrato.FechaFirma), // Asegurarse que el formato sea correcto
+                    NombreProyecto = vmContrato.NombreProyecto, // Añadido para pasar el nombre del proyecto
+                    FechaFirma = DateTime.ParseExact(vmContrato.FechaFirma, "yyyy-MM-dd", CultureInfo.InvariantCulture),
                     IdUsuarioCarga = int.Parse(idUsuario),
                     ArchivoStream = archivo.OpenReadStream(),
                     NombreArchivo = archivo.FileName

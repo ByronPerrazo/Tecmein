@@ -193,6 +193,7 @@ $(document).ready(function () {
         $("#tablaCompromisos tbody").empty();
         $("#numCuotas, #montoCuota, #fechaPrimeraCuota").val("");
         $("#SecPreContrato").val("0"); // Limpiar SecPreContrato al crear uno nuevo
+        $("#btnGenerarPreContrato").prop("disabled", true); // Deshabilitar botón para nuevos registros
         validarSumaCompromisos();
 
         $.when(
@@ -213,7 +214,7 @@ $(document).ready(function () {
                     if (!response || typeof response.subtotal === 'undefined' || typeof response.valorImpuestos === 'undefined') {
                         totalCotizacion = 0;
                         $("#totalCotizacionDisplay").text("0.00");
-                        Swal.fire("Error de Datos", "La respuesta no contiene los datos esperados.", "error");
+                        Swal.fire("Error", "La respuesta no contiene los datos esperados.", "error");
                         return;
                     }
                     totalCotizacion = parseFloat(response.subtotal) + parseFloat(response.valorImpuestos);
@@ -223,7 +224,7 @@ $(document).ready(function () {
                 error: () => {
                     totalCotizacion = 0;
                     $("#totalCotizacionDisplay").text("0.00");
-                    Swal.fire("Error de Comunicación", "No se pudieron obtener los detalles de la cotización.", "error");
+                    Swal.fire("Error", "No se pudieron obtener los detalles de la cotización.", "error");
                 }
             });
         } else {
@@ -259,11 +260,11 @@ $(document).ready(function () {
 
     function recolectarYValidarDatos() {
         if (!validarPrimerCompromiso()) {
-            Swal.fire("Regla de Negocio", "El primer compromiso de pago debe ser de tipo 'Anticipo'.", "error");
+            Swal.fire("Error", "El primer compromiso de pago debe ser de tipo 'Anticipo'.", "error");
             return null;
         }
         if (validarFechasEnConflicto()) {
-            Swal.fire("Fechas en Conflicto", "Por favor, revise las fechas marcadas en rojo. Una fecha no puede ser anterior o igual a la precedente.", "error");
+            Swal.fire("Error", "Por favor, revise las fechas marcadas en rojo. Una fecha no puede ser anterior o igual a la precedente.", "error");
             return null;
         }
 
@@ -374,10 +375,10 @@ $(document).ready(function () {
                     tablaPreContratos.ajax.reload(null, false);
                     Swal.fire("¡Guardado!", "El pre-contrato ha sido creado exitosamente.", "success");
                 } else {
-                    Swal.fire("Error al guardar", response.mensajes, "error");
+                    Swal.fire("Error", response.mensajes, "error");
                 }
             },
-            error: () => Swal.fire("Error de comunicación", "No se pudo comunicar con el servidor.", "error")
+            error: () => Swal.fire("Error", "No se pudo comunicar con el servidor.", "error")
         });
     });
 
@@ -436,6 +437,7 @@ $(document).ready(function () {
                         validarSumaCompromisos();
                         validarFechasEnConflicto();
 
+                        $("#btnGenerarPreContrato").prop("disabled", false); // Habilitar botón para registros existentes
                         $('#modalPreContrato').modal('show');
                     } else {
                         Swal.fire("Error", response.mensajes, "error");
@@ -553,7 +555,7 @@ $(document).ready(function () {
             } else {
                 Swal.fire("Error", response.mensajes, "error");
             }
-        }).fail(() => Swal.fire("Error de Comunicación", "No se pudo obtener el contenido de la versión.", "error"));
+        }).fail(() => Swal.fire("Error", "No se pudo obtener el contenido de la versión.", "error"));
     });
 
     $("#btnCerrarVerVersion").click(() => $('#modalVerVersion').modal('hide'));

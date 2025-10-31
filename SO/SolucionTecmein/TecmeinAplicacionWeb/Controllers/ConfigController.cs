@@ -17,7 +17,6 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpGet("tinymce-key")]
-        [ValidatePermission("LEER")]
         public IActionResult GetTinyMceApiKey()
         {
             var apiKey = _configuration["ApiKeys:TinyMCE"];
