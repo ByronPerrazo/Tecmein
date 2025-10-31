@@ -67,6 +67,18 @@ function calcularImpuestosEnFrontend(subtotal) {
     return { valorImpuestos: valorImpuestosTotal, totalConImpuestos: subtotal + valorImpuestosTotal, impuestosAplicados };
 }
 
+function calcularFilaDetalle(fila) {
+    const cantidad = parseFloat(String(fila.find('.cantidad').val()).replace(',', '.')) || 0;
+    const valorCompra = parseFloat(String(fila.find('.valor-compra').val()).replace(',', '.')) || 0;
+    const margenGanancia = parseFloat(String(fila.find('.margen-ganancia').val()).replace(',', '.')) || 0;
+
+    const valorVentaUnitario = valorCompra * (1 + margenGanancia / 100);
+    const totalFila = valorVentaUnitario * cantidad;
+
+    fila.find('.valor-venta-unitario').text(valorVentaUnitario.toFixed(2));
+    fila.find('.total-fila').text(totalFila.toFixed(2));
+}
+
 function calcularTotalesGenerales() {
     let subtotal = 0;
     $('.total-fila').each(function() { subtotal += parseFloat($(this).text()) || 0; });
@@ -76,7 +88,68 @@ function calcularTotalesGenerales() {
     $('#spanImpuestos').text(calculosImpuestos.valorImpuestos.toFixed(2));
     $('#spanTotal').text(calculosImpuestos.totalConImpuestos.toFixed(2));
     mostrarDesgloseImpuestos(calculosImpuestos.impuestosAplicados);
+} // End of calcularTotalesGenerales
+
+function handleVisitaChange(visitaId, idCotizacionActual) {
+    if (!visitaId) { limpiarModal(); return; }
+
+    // Only fetch equipment if it's a new quotation (idCotizacionActual === 0)
+    if (idCotizacionActual === 0) {
+        $('#btnGuardar').prop('disabled', true);
+        fetch(`/Cotizacion/VerificarVisita?visitaId=${visitaId}`)
+            .then(response => response.ok ? response.json() : Promise.reject(response))
+            .then(responseJson => {
+                if(responseJson.valor) {
+                    toastr.warning(`La visita seleccionada ya tiene una cotización activa.`);
+                } else {
+                    $('#btnGuardar').prop('disabled', false);
+                }
+            }).catch(err => manejarErrorFetch(err, "Verificación de Visita"));
+
+        fetch(`/Visita/EquiposDeVisita?secuencialVisita=${visitaId}`)
+            .then(response => response.ok ? response.json() : Promise.reject(response))
+            .then(responseJson => {
+                const tbody = $("#tbDetalles tbody");
+                tbody.empty();
+                if (responseJson.data && responseJson.data.$values && responseJson.data.$values.length > 0) {
+                    responseJson.data.$values.forEach(equipo => {
+                        const fila = `\n                            <tr class=\"text-xs\" data-id-equipo=\"0\" data-sec-equipo-visita=\"${equipo.secuencial}\" data-esta-activo=\"1\">\n                                <td>${equipo.descripcionImpresa}</td>\n                                <td><input type=\"number\" class=\"form-control form-control-sm cantidad\" value=\"1\" min=\"1\"></td>\n                                <td><input type=\"text\" class=\"form-control form-control-sm valor-compra\" value=\"0\"></td>\n                                <td><input type=\"text\" class=\"form-control form-control-sm margen-ganancia\" value=\"0\"></td>\n                                <td class=\"valor-venta-unitario\">0.00</td>\n                                <td class=\"total-fila\">0.00</td>\n                                <td>\n                                    <button class=\"btn btn-danger btn-sm btn-eliminar-item\" data-toggle=\"tooltip\" title=\"Eliminar Equipo\">\n                                        <i class=\"fas fa-trash\"></i>\n                                    </button>\n                                </td>\n                            </tr>`;
+                        const newRow = $(fila);
+                        tbody.append(newRow);
+                        calcularFilaDetalle(newRow); // Recalculate for the newly added row
+                    });
+                } else {
+                    tbody.append('<tr><td colspan=\"7\">No hay equipos registrados para esta visita.</td></tr>');
+                }
+            }).catch(err => manejarErrorFetch(err, "Cargar Equipos de Visita"));
+    } else {
+        // If we are editing, the save button should be enabled by default
+        $('#btnGuardar').prop('disabled', false);
+    }
+    
+    fetch(`/Visita/ObtenerDetalleVisita?secuencialVisita=${visitaId}`)
+        .then(response => response.ok ? response.json() : Promise.reject(response))
+        .then(responseJson => {
+            if (responseJson.estado) {
+                const visita = responseJson.objeto;
+                $('#txtNombreObra').val(visita.nombre);
+                $('#pDireccionProyecto').text(visita.direccion);
+                $('#pProvincia').text(visita.nombreProvincia);
+                $('#pCanton').text(visita.nombreCanton);
+                $('#pParroquia').text(visita.nombreParroquia);
+                $('#pConstructora').text(visita.nombreConstructora);
+                $('#pContacto').text(visita.nombreContacto);
+                $('#pCorreoContacto').text(visita.correoContacto);
+                $('#pTelefonoContacto').text(visita.telefonoContacto);
+                $('#pUsuarioGenerador').text(visita.nombreUsuario);
+
+                $('#visitDetailsContent, #hrContactDetails, #contactDetailsContent, #hrUserGenerator, #userGeneratorContent').show();
+            } else {
+                toastr.error("No se pudieron cargar los detalles de la visita.");
+            }
+        }).catch(err => manejarErrorFetch(err, "Cargar Detalles de Visita"));
 }
+
 // #endregion
 
 // #region Lógica del Modal Principal (Cotización)
@@ -105,16 +178,37 @@ function mostrarModal(modelo = MODELO_BASE) {
     let detalles = modelo.cotizaciondetalles ? (modelo.cotizaciondetalles.$values || modelo.cotizaciondetalles) : [];
     if (Array.isArray(detalles) && detalles.length > 0) {
         detalles.forEach(detalle => {
-            const fila = `<tr class="text-xs" data-id-equipo="${detalle.secuencial}" data-sec-equipo-visita="${detalle.secEquipoVisita || ''}" data-esta-activo="${detalle.estaActivo || 1}"> ... </tr>`; // Contenido de la fila
-            $("#tbDetalles tbody").append(fila);
+            console.log("Detalle de cotización cargado:", detalle); // Debugging line
+            const fila = `
+                <tr class="text-xs" data-id-equipo="${detalle.secuencial}" data-sec-equipo-visita="${detalle.secEquipoVisita || ''}" data-esta-activo="${detalle.estaActivo || 1}">
+                    <td>${detalle.detalleEquipo}</td>
+                    <td><input type="number" class="form-control form-control-sm cantidad" value="${detalle.cantidad}" min="1"></td>
+                    <td><input type="text" class="form-control form-control-sm valor-compra" value="${detalle.valorCompra}"></td>
+                    <td><input type="text" class="form-control form-control-sm margen-ganancia" value="${detalle.margenGanancia}"></td>
+                    <td class="valor-venta-unitario">${(detalle.valorCompra * (1 + detalle.margenGanancia / 100)).toFixed(2)}</td>
+                    <td class="total-fila">${detalle.total.toFixed(2)}</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm btn-eliminar-item" data-toggle="tooltip" title="Eliminar Equipo">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>`;
+            const newRow = $(fila); // Convert the string to a jQuery object
+            $("#tbDetalles tbody").append(newRow);
+            calcularFilaDetalle(newRow); // Recalculate for the newly added row
         });
     }
 
     if (modelo.secVisita > 0) {
-        fetch(`/Visita/ObtenerDetalleVisita?secuencialVisita=${modelo.secVisita}`)
-            .then(response => response.ok ? response.json() : Promise.reject(response))
-            .then(respuestaJson => { /* ... */ });
-        $("#cboVisita").trigger('change');
+        // Temporarily unbind the change event to prevent it from firing when setting the value
+        $("#cboVisita").off('change');
+        $("#cboVisita").val(modelo.secVisita);
+        // Rebind the change event after setting the value
+        $("#cboVisita").on('change', function() {
+            handleVisitaChange($(this).val(), parseInt($('#txtId').val()));
+        });
+        // Manually trigger the logic for obtaining visit details, but not equipment if editing
+        handleVisitaChange(modelo.secVisita, modelo.secuencial);
     }
 
     $('#btnGuardar').prop('disabled', modelo.secuencial <= 0);
@@ -125,23 +219,84 @@ function mostrarModal(modelo = MODELO_BASE) {
     $("#spanTotal").text(modelo.totalConImpuestos.toFixed(2));
     mostrarDesgloseImpuestos(modelo.impuestoCotizaciones);
     $("#modalData").modal("show");
-}
+} // End of mostrarModal
+
 // #endregion
 
 $(document).ready(function () {
-    $('body').tooltip({ selector: '[data-toggle="tooltip"]' });
 
     fetch('/Impuesto/ListaActivos')
         .then(response => response.ok ? response.json() : Promise.reject(response))
         .then(responseJson => { activeTaxes = responseJson.data.$values || responseJson.data; })
         .catch(err => manejarErrorFetch(err, "Carga de Impuestos"));
 
-    tablaData = $('#tbdata').DataTable({ /* ... configuración de datatable ... */ });
+    tablaData = $('#tbdata').DataTable({
+        responsive: true,
+        ajax: {
+            url: '/Cotizacion/Lista',
+            type: "GET",
+            datatype: "json",
+            dataSrc: function (json) {
+                // Handle the $values property if present
+                return json.data.$values || json.data;
+            }
+        },
+        "columns": [
+            { data: "secuencial", visible: false },
+            { data: "nombreObra" },
+            { data: "nombreContacto" },
+            { data: "enviadoProveedor", render: function (data) { return data ? '<span class="badge badge-success">Sí</span>' : '<span class="badge badge-danger">No</span>'; } },
+            { data: "enviadoCliente", render: function (data) { return data ? '<span class="badge badge-success">Sí</span>' : '<span class="badge badge-danger">No</span>'; } },
+            { data: "confirmacion", render: function (data) { return data ? '<span class="badge badge-success">Sí</span>' : '<span class="badge badge-danger">No</span>'; } },
+            { data: "nombreUsuario" },
+            { data: "nombreUsuarioModifica" },
+            { data: "estaActivo", render: function (data) { return data === 1 ? '<span class="badge badge-info">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>'; } },
+            {
+                "defaultContent":
+                    '<div class="btn-group" role="group">' +
+                    '<button class="btn btn-primary btn-editar btn-sm" title="Editar"><i class="fas fa-pencil-alt"></i></button>' +
+                    '<button class="btn btn-info btn-sm btn-seguimiento" title="Seguimiento"><i class="fas fa-history"></i></button>' +
+                    '<button class="btn btn-danger btn-eliminar btn-sm" title="Eliminar"><i class="fas fa-trash-alt"></i></button>' +
+                    '</div>',
+                "orderable": false,
+                "searchable": false,
+                "width": "120px"
+            }
+        ],
+        order: [[0, "desc"]],
+        dom: "Bfrtip",
+        buttons: [
+            {
+                text: 'Exportar Excel',
+                extend: 'excelHtml5',
+                title: 'Reporte de Cotizaciones',
+                filename: 'Reporte de Cotizaciones',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                }
+            },
+            {
+                text: 'Exportar PDF',
+                extend: 'pdfHtml5',
+                title: 'Reporte de Cotizaciones',
+                filename: 'Reporte de Cotizaciones',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                }
+            },
+            'pageLength'
+        ],
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
+        },
+    });
 
     fetch('/Visita/ListaParaCotizacion')
         .then(response => response.ok ? response.json() : Promise.reject(response))
         .then(respuestaJson => {
+            console.log("Respuesta JSON de ListaParaCotizacion:", respuestaJson);
             const visitas = respuestaJson.data.$values || respuestaJson.data;
+            console.log("Visitas procesadas:", visitas);
             const cboVisita = $('#cboVisita');
             cboVisita.empty().append('<option value="">Seleccione una visita</option>');
             if (visitas && Array.isArray(visitas)) {
@@ -150,69 +305,95 @@ $(document).ready(function () {
         }).catch(err => manejarErrorFetch(err, "Carga de Visitas"));
 
     $('#cboVisita').change(function() {
-        const visitaId = $(this).val();
-        if (!visitaId) { limpiarModal(); return; }
+        handleVisitaChange($(this).val(), parseInt($('#txtId').val()));
+    });
 
-        $('#btnGuardar').prop('disabled', true);
-        fetch(`/Cotizacion/VerificarVisita?visitaId=${visitaId}`)
-            .then(response => response.ok ? response.json() : Promise.reject(response))
-            .then(responseJson => {
-                if(responseJson.valor) {
-                    toastr.warning(`La visita seleccionada ya tiene una cotización activa.`);
-                } else {
-                    $('#btnGuardar').prop('disabled', false);
-                }
-            }).catch(err => manejarErrorFetch(err, "Verificación de Visita"));
-        
-        fetch(`/Visita/ObtenerDetalleVisita?secuencialVisita=${visitaId}`)
-            .then(response => response.ok ? response.json() : Promise.reject(response))
-            .then(responseJson => {
-                if (responseJson.estado) {
-                    const visita = responseJson.objeto;
-                    $('#txtNombreObra').val(visita.nombre);
-                    $('#pDireccionProyecto').text(visita.direccion);
-                    $('#pProvincia').text(visita.nombreProvincia);
-                    $('#pCanton').text(visita.nombreCanton);
-                    $('#pParroquia').text(visita.nombreParroquia);
-                    $('#pConstructora').text(visita.nombreConstructora);
-                    $('#pContacto').text(visita.nombreContacto);
-                    $('#pCorreoContacto').text(visita.correoContacto);
-                    $('#pTelefonoContacto').text(visita.telefonoContacto);
-                    $('#pUsuarioGenerador').text(visita.nombreUsuario);
+    $('#btnGenerarPdfCliente').click(function () {
+        const idCotizacion = parseInt($('#txtId').val());
+        if (idCotizacion === 0) {
+            Swal.fire("Advertencia", "Debe guardar la cotización antes de generar el PDF para el cliente.", "warning");
+            return;
+        }
 
-                    $('#visitDetailsContent, #hrContactDetails, #contactDetailsContent, #hrUserGenerator, #userGeneratorContent').show();
-                } else {
-                    toastr.error("No se pudieron cargar los detalles de la visita.");
-                }
-            }).catch(err => manejarErrorFetch(err, "Cargar Detalles de Visita"));
+        // Show loading overlay
+        Swal.fire({
+            title: 'Generando PDF...',
+            text: 'Por favor, espere.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
 
-        fetch(`/Visita/EquiposDeVisita?secuencialVisita=${visitaId}`)
-            .then(response => response.ok ? response.json() : Promise.reject(response))
-            .then(responseJson => {
-                const tbody = $("#tbDetalles tbody");
-                tbody.empty();
-                if (responseJson.data && responseJson.data.$values && responseJson.data.$values.length > 0) {
-                    responseJson.data.$values.forEach(equipo => {
-                        const fila = `
-                            <tr class="text-xs" data-id-equipo="0" data-sec-equipo-visita="${equipo.secuencial}" data-esta-activo="1">
-                                <td>${equipo.descripcionImpresa}</td>
-                                <td><input type="number" class="form-control form-control-sm cantidad" value="1" min="1"></td>
-                                <td><input type="text" class="form-control form-control-sm valor-compra" value="0"></td>
-                                <td><input type="text" class="form-control form-control-sm margen-ganancia" value="0"></td>
-                                <td class="valor-venta-unitario">0.00</td>
-                                <td class="total-fila">0.00</td>
-                                <td>
-                                    <button class="btn btn-danger btn-sm btn-eliminar-item" data-toggle="tooltip" title="Eliminar Equipo">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>`;
-                        tbody.append(fila);
+        fetch(`/Cotizacion/GenerarPDF?idCotizacion=${idCotizacion}`)
+            .then(response => {
+                Swal.close(); // Close loading overlay
+                if (!response.ok) {
+                    // Attempt to read error message from response body
+                    return response.text().then(errorText => {
+                        try {
+                            const errorJson = JSON.parse(errorText);
+                            throw new Error(errorJson.mensajes || errorText);
+                        } catch {
+                            throw new Error(errorText);
+                        }
                     });
-                } else {
-                    tbody.append('<tr><td colspan="7">No hay equipos registrados para esta visita.</td></tr>');
                 }
-            }).catch(err => manejarErrorFetch(err, "Cargar Equipos de Visita"));
+                return response.blob();
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                window.open(url, '_blank');
+                window.URL.revokeObjectURL(url); // Clean up the object URL
+            })
+            .catch(error => {
+                Swal.close(); // Ensure loading overlay is closed on error
+                Swal.fire("Error", error.message || "Ocurrió un error al generar el PDF para el cliente.", "error");
+            });
+    });
+
+    $('#btnGenerarPdf').click(function () {
+        const idCotizacion = parseInt($('#txtId').val());
+        if (idCotizacion === 0) {
+            Swal.fire("Advertencia", "Debe guardar la cotización antes de generar el PDF.", "warning");
+            return;
+        }
+
+        // Show loading overlay
+        Swal.fire({
+            title: 'Generando PDF de Solicitud...',
+            text: 'Por favor, espere.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        fetch(`/Cotizacion/GenerarPDFSolicitud?idCotizacion=${idCotizacion}`)
+            .then(response => {
+                Swal.close(); // Close loading overlay
+                if (!response.ok) {
+                    // Attempt to read error message from response body
+                    return response.text().then(errorText => {
+                        try {
+                            const errorJson = JSON.parse(errorText);
+                            throw new Error(errorJson.mensajes || errorText);
+                        } catch {
+                            throw new Error(errorText);
+                        }
+                    });
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                window.open(url, '_blank');
+                window.URL.revokeObjectURL(url); // Clean up the object URL
+            })
+            .catch(error => {
+                Swal.close(); // Ensure loading overlay is closed on error
+                Swal.fire("Error", error.message || "Ocurrió un error al generar el PDF de solicitud.", "error");
+            });
     });
 
     $('#btnGuardar').click(function () {
@@ -242,7 +423,7 @@ $(document).ready(function () {
 
         const esNuevo = modelo.secuencial === 0;
         const url = esNuevo ? '/Cotizacion/Crear' : '/Cotizacion/Editar';
-        const method = esNuevo ? 'POST' : 'PUT';
+        const method = 'POST';
 
         const formData = new FormData();
         formData.append('modelo', JSON.stringify(modelo));
@@ -251,7 +432,16 @@ $(document).ready(function () {
         fetch(url, { method: method, body: formData })
             .then(response => {
                 $("#modalData .modal-content").LoadingOverlay("hide");
-                if (!response.ok) return response.json().then(err => Promise.reject(err));
+                if (!response.ok) {
+                    // Check if the response is JSON before parsing
+                    const contentType = response.headers.get("content-type");
+                    if (contentType && contentType.indexOf("application/json") !== -1) {
+                        return response.json().then(err => Promise.reject(err));
+                    } else {
+                        // If not JSON, create a custom error object
+                        return response.text().then(text => Promise.reject({ status: response.status, mensajes: text }));
+                    }
+                }
                 return response.json();
             })
             .then(responseJson => {
@@ -269,7 +459,14 @@ $(document).ready(function () {
     });
 
     $("#tbdata tbody").on("click", ".btn-editar", function () {
-        // ...
+        let filaSeleccionada;
+        if ($(this).closest("tr").hasClass("child")) {
+            filaSeleccionada = $(this).closest("tr").prev();
+        } else {
+            filaSeleccionada = $(this).closest("tr");
+        }
+        const data = tablaData.row(filaSeleccionada).data();
+
         $("#modalData .modal-content").LoadingOverlay("show");
         fetch(`/Cotizacion/Detalle?id=${data.secuencial}`)
             .then(response => {
@@ -309,6 +506,29 @@ $(document).ready(function () {
                     });
             }
         });
+    });
+
+
+
+    // Click handler for the "Seguimiento" button in the DataTable
+    $("#tbdata tbody").on("click", ".btn-seguimiento", function () {
+        let filaSeleccionada;
+        if ($(this).closest("tr").hasClass("child")) {
+            filaSeleccionada = $(this).closest("tr").prev();
+        } else {
+            filaSeleccionada = $(this).closest("tr");
+        }
+        const data = tablaData.row(filaSeleccionada).data();
+        const idCotizacion = data.secuencial;
+
+        mostrarHistorialSeguimiento(idCotizacion);
+    });
+
+    // Event listeners for dynamic calculation in the detail table
+    $("#tbDetalles tbody").on("change keyup", ".cantidad, .valor-compra, .margen-ganancia", function () {
+        const fila = $(this).closest("tr");
+        calcularFilaDetalle(fila);
+        calcularTotalesGenerales();
     });
 
     // Lógica de Seguimientos también refactorizada para usar manejarErrorFetch

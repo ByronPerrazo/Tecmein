@@ -460,6 +460,48 @@ namespace TecmeinWebApp.Controllers
             return StatusCode(StatusCodes.Status200OK, response);
         }
 
+        [HttpGet]
+        public IActionResult ObtenerConstantesEquipos(string tipoConstante)
+        {
+            Dictionary<string, string> constantes;
+            switch (tipoConstante.ToLower())
+            {
+                case "tipoequipo":
+                    constantes = ConstantesEquipos.TipoEquipo.ObtenerValores();
+                    break;
+                case "sistema":
+                    constantes = ConstantesEquipos.Sistema.ObtenerValores();
+                    break;
+                case "marca":
+                    constantes = ConstantesEquipos.Marca.ObtenerValores();
+                    break;
+                case "salamarquinas":
+                    constantes = ConstantesEquipos.SalaMaquinas.ObtenerValores();
+                    break;
+                case "tipomotor":
+                    constantes = ConstantesEquipos.TipoMotor.ObtenerValores();
+                    break;
+                case "velocidad":
+                    constantes = ConstantesEquipos.Velocidad.ObtenerValores();
+                    break;
+                case "tipoembarque":
+                    constantes = ConstantesEquipos.TipoEmbarque.ObtenerValores();
+                    break;
+                case "tipoducto":
+                    constantes = ConstantesEquipos.TipoDucto.ObtenerValores();
+                    break;
+                case "tipoenergia":
+                    constantes = ConstantesEquipos.TipoEnergia.ObtenerValores();
+                    break;
+                case "materialpuertas":
+                    constantes = ConstantesEquipos.MaterialPuertas.ObtenerValores();
+                    break;
+                default:
+                    return BadRequest("Tipo de constante no válido.");
+            }
+            return StatusCode(StatusCodes.Status200OK, constantes);
+        }
+
         [HttpPost]
         [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> SincronizarEquipos([FromQuery] int secuencialVisita)

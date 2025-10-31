@@ -261,30 +261,32 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
                                                                                $" Num. Paradas{origen.NumeroParadas}-" +
                                                                                $" Nomb. Paradas{origen.NombresParadas}-" +
                                                                                $" Num Personas:{origen.NumeroPersonas} "))
-                                          .ForMember(destino =>
-                                                     destino.DescripcionImpresa,                                           opt =>
-                                           opt.MapFrom(origen => $"Sistema: { (origen.Sistema == "Tri" ? "Triplex" : origen.Sistema) } -" +
-                                                                 $" Tipo Eq: {origen.TipoEquipo} -" +
-                                                                 $" Marca: {origen.Marca} -" +
-                                                                 $" Capacidad: {origen.Capacidad} -" +
-                                                                 $" Velocidad: {origen.Velocidad} -" +
-                                                                 $" Sala Maq: {origen.SalaMaquinas} -" +
-                                                                 $" Motor: {origen.TipoMotor} -" +
-                                                                 $" Embarque: {origen.Embarque} -" +
-                                                                 $" Ducto: {origen.TipoDucto} -" +
-                                                                 $" MedidasAF: {origen.MedidasAfducto} -" +
-                                                                 $" Foso: {origen.Foso} -" +
-                                                                 $" Recorrido: {origen.Recorrido} -" +
-                                                                 $" Sbr. Recorrido: {origen.SobreRecorrido} -" +
-                                                                 $" Ing. Frontales: {origen.IngresosFrontales} -" +
-                                                                 $" Ing. Posteriores: {origen.IngresosPosteriores} -" +
-                                                                 $" Dime Entrada: {origen.DimencionEntrada} -" +
-                                                                 $" Alt Entre Pisos: {origen.AlturaEntrePisos} -" +
-                                                                 $" Energia: {origen.Energia} -" +
-                                                                 $" Puertas: {origen.MaterialPuertas} -" +
-                                                                 $" Num. Paradas: {origen.NumeroParadas}-" +
-                                                                 $" Nomb. Paradas: {origen.NombresParadas}-" +
-                                                                 $" Num Personas: {origen.NumeroPersonas} "))
+                                                                      .ForMember(destino =>
+                                                                                 destino.DescripcionImpresa,
+                                                                                     opt =>
+                                                                                     opt.MapFrom(origen =>
+                                                                                         $"Sistema: {ConstantesEquipos.Sistema.ObtenerValores().GetValueOrDefault(origen.Sistema, origen.Sistema)} -" +
+                                                                                         $" Tipo Eq: {ConstantesEquipos.TipoEquipo.ObtenerValores().GetValueOrDefault(origen.TipoEquipo, origen.TipoEquipo)} -" +
+                                                                                         $" Marca: {ConstantesEquipos.Marca.ObtenerValores().GetValueOrDefault(origen.Marca, origen.Marca)} -" +
+                                                                                         $" Capacidad: {origen.Capacidad} -" +
+                                                                                         $" Velocidad: {origen.Velocidad} -" +
+                                                                                         $" Sala Maq: {ConstantesEquipos.SalaMaquinas.ObtenerValores().GetValueOrDefault(origen.SalaMaquinas, origen.SalaMaquinas)} -" +
+                                                                                         $" Motor: {ConstantesEquipos.TipoMotor.ObtenerValores().GetValueOrDefault(origen.TipoMotor, origen.TipoMotor)} -" +
+                                                                                         $" Embarque: {ConstantesEquipos.TipoEmbarque.ObtenerValores().GetValueOrDefault(origen.Embarque, origen.Embarque)} -" +
+                                                                                         $" Ducto: {ConstantesEquipos.TipoDucto.ObtenerValores().GetValueOrDefault(origen.TipoDucto, origen.TipoDucto)} -" +
+                                                                                         $" MedidasAF: {origen.MedidasAfducto} -" +
+                                                                                         $" Foso: {origen.Foso} -" +
+                                                                                         $" Recorrido: {origen.Recorrido} -" +
+                                                                                         $" Sbr. Recorrido: {origen.SobreRecorrido} -" +
+                                                                                         $" Ing. Frontales: {origen.IngresosFrontales} -" +
+                                                                                         $" Ing. Posteriores: {origen.IngresosPosteriores} -" +
+                                                                                         $" Dime Entrada: {origen.DimencionEntrada} -" +
+                                                                                         $" Alt Entre Pisos: {origen.AlturaEntrePisos} -" +
+                                                                                         $" Energia: {ConstantesEquipos.TipoEnergia.ObtenerValores().GetValueOrDefault(origen.Energia, origen.Energia)} -" +
+                                                                                         $" Puertas: {ConstantesEquipos.MaterialPuertas.ObtenerValores().GetValueOrDefault(origen.MaterialPuertas, origen.MaterialPuertas)} -" +
+                                                                                         $" Num. Paradas: {origen.NumeroParadas}-" +
+                                                                                         $" Nomb. Paradas: {origen.NombresParadas}-" +
+                                                                                         $" Num Personas: {origen.NumeroPersonas} "))
                             .ForMember(destino =>
                                        destino.DetalleEspecifico,                             opt =>
                              opt.MapFrom(origen => $"Sistema:{origen.Sistema} -" +
@@ -430,13 +432,13 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
             CreateMap<Cotizaciondetalle, CotizaciondetalleVM>()
                 .ForMember(destino =>
                     destino.ValorCompra,
-                    opt => opt.MapFrom(origen => Convert.ToString(origen.ValorCompra, System.Globalization.CultureInfo.InvariantCulture)))
+                    opt => opt.MapFrom(origen => origen.ValorCompra))
                 .ForMember(destino =>
                     destino.MargenGanancia,
-                    opt => opt.MapFrom(origen => Convert.ToString(origen.MargenGanancia, System.Globalization.CultureInfo.InvariantCulture)))
+                    opt => opt.MapFrom(origen => origen.MargenGanancia))
                 .ForMember(destino =>
                     destino.Total,
-                    opt => opt.MapFrom(origen => Convert.ToString(origen.Total, System.Globalization.CultureInfo.InvariantCulture)))
+                    opt => opt.MapFrom(origen => origen.Total))
                 .ForMember(destino =>
                     destino.Cantidad,
                     opt => opt.MapFrom(origen => origen.Cantidad));

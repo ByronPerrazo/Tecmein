@@ -402,6 +402,18 @@ namespace BLL.Implementacion
                     throw new KeyNotFoundException($"Cotización con ID {idCotizacion} no encontrada.");
                 }
 
+                // Validar que todos los detalles de la cotización tengan un ValorCompra mayor a 0
+                if (cotizacion.Cotizaciondetalles.Any(d => d.ValorCompra == 0))
+                {
+                    throw new InvalidOperationException("No se puede generar el PDF para el cliente porque uno o más equipos no tienen un valor de compra asignado.");
+                }
+
+                // Validar que la cotización haya sido enviada al proveedor
+                if (!cotizacion.EnviadoProveedor)
+                {
+                    throw new InvalidOperationException("No se puede generar el PDF para el cliente porque la cotización aún no ha sido enviada al proveedor.");
+                }
+
                 var document = new CotizacionDocument(cotizacion);
                 byte[] pdfBytes = document.GeneratePdf();
                 return pdfBytes;

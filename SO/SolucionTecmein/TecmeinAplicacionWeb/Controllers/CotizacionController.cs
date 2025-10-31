@@ -149,7 +149,7 @@ namespace TecmeinWebApp.Controllers
             return StatusCode(StatusCodes.Status200OK, response);
         }
 
-        [HttpPut]
+        [HttpPost]
         [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> Editar([FromForm] string modelo)
         {

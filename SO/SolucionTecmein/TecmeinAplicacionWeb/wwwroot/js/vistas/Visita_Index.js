@@ -37,8 +37,37 @@ function cargarOperadores() {
         .catch(error => console.error('Error al obtener la lista de Operadores:', error));
 }
 
+function cargarConstantesEquipos() {
+    const selectsToLoad = [
+        { id: "cboTipoEquipo", tipo: "tipoequipo", placeholder: "Tipo Equipo" },
+        { id: "cboSistema", tipo: "sistema", placeholder: "Sistema" },
+        { id: "cboMarca", tipo: "marca", placeholder: "Marca" },
+        { id: "cboSalaMaquinas", tipo: "salamarquinas", placeholder: "Sala Maquinas" },
+        { id: "cboTipoMotor", tipo: "tipomotor", placeholder: "Tipo Motor" },
+        { id: "cboVelocidad", tipo: "velocidad", placeholder: "Velocidad m/s" },
+        { id: "cboTipoEmbarque", tipo: "tipoembarque", placeholder: "Tipo de Embarque" },
+        { id: "cboTipoDucto", tipo: "tipoducto", placeholder: "Ducto De" },
+        { id: "cboTipoEnergia", tipo: "tipoenergia", placeholder: "Tipo Energía" },
+        { id: "cboTipoMaterial", tipo: "materialpuertas", placeholder: "Material de Puertas" }
+    ];
+
+    selectsToLoad.forEach(selectInfo => {
+        fetch(`/Visita/ObtenerConstantesEquipos?tipoConstante=${selectInfo.tipo}`)
+            .then(response => response.ok ? response.json() : Promise.reject(response))
+            .then(data => {
+                const selectElement = $(`#${selectInfo.id}`);
+                selectElement.empty().append(`<option value="" disabled selected>${selectInfo.placeholder}</option>`);
+                Object.keys(data).forEach(codigo => {
+                    selectElement.append($("<option>").val(codigo).text(data[codigo]));
+                });
+            })
+            .catch(error => console.error(`Error al cargar ${selectInfo.placeholder}:`, error));
+    });
+}
+
 $(document).ready(function () {
     cargarOperadores(); // Call on document ready
+    cargarConstantesEquipos(); // Call to load equipment constants
 
     fetch("/Visita/Etapas")
         .then(response => response.ok ? response.json() : Promise.reject(response))
