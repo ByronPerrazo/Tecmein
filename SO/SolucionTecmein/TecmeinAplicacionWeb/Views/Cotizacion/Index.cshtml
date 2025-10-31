@@ -330,6 +330,24 @@
     </div>
 </div>
 
+<!-- Modal Historial Cambios -->
+<div class="modal fade" id="modalHistorial" tabindex="-1" role="dialog" aria-labelledby="modalHistorialLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+                            <div class="modal-header py-2 bg-second-primary">
+                                <h6 class="m-0 font-weight-bold text-white" id="modalHistorialLabel">Historial de Cambios de la Cotización</h6>
+                                <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true" class="text-white">×</span>
+                                </button>
+                            </div>            <div class="modal-body">
+                <div id="historial-cards-container" class="overflow-auto" style="max-height: 600px;">
+                    <!-- History cards will be injected here by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
  @section Scripts {
      <script src="~/vendor/datatables/jquery.dataTables.min.js"></script>

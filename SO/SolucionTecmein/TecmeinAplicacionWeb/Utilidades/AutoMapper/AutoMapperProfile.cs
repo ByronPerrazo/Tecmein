@@ -575,6 +575,11 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
 
             #endregion
 
+            #region Auditoria
+            CreateMap<AuditoriaEvento, AuditoriaEventoVM>()
+                .ForMember(dest => dest.FechaHora, opt => opt.MapFrom(src => src.FechaHora.ToString("dd/MM/yyyy HH:mm:ss")));
+            #endregion
+
 
         }
     }

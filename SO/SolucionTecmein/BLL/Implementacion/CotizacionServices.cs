@@ -17,6 +17,8 @@ namespace BLL.Implementacion
         private readonly IGenericRepository<ImpuestoCotizacion> _repositorioImpuestoCotizacion;
         private readonly IImpuestoServices _impuestoServices;
         private readonly ITipoImpuestoServices _tipoImpuestoServices;
+        private readonly IAuditService _auditService;
+        private readonly IUsuarioServices _usuarioServices;
 
         public CotizacionServices(
             IGenericRepository<Cotizacion> repositorio,
@@ -25,7 +27,9 @@ namespace BLL.Implementacion
             IImpuestoServices impuestoServices,
             IVisitaServices visitaServices,
             ITipoImpuestoServices tipoImpuestoServices,
-            IEquiposVisitaServices equiposVisitaServices
+            IEquiposVisitaServices equiposVisitaServices,
+            IAuditService auditService, // Added
+            IUsuarioServices usuarioServices // Added
             )
         {
             _repositorio = repositorio;
@@ -34,6 +38,8 @@ namespace BLL.Implementacion
             _impuestoServices = impuestoServices;
             _visitaServices = visitaServices;
             _equiposVisitaServices = equiposVisitaServices;
+            _auditService = auditService;
+            _usuarioServices = usuarioServices;
         }
 
         private readonly IVisitaServices _visitaServices;
@@ -187,6 +193,55 @@ namespace BLL.Implementacion
 
                 if (cotizacionActual == null)
                     throw new KeyNotFoundException($"No se encontró la cotización con el secuencial {entidad.Secuencial}");
+
+                // --- AUDIT LOGIC START ---
+                var usuario = await _usuarioServices.ObtenerPorId(secUsuarioActual);
+                var nombreUsuario = usuario?.Nombre ?? "Sistema";
+
+                var oldDetailsList = cotizacionActual.Cotizaciondetalles.ToList();
+                var newDetailsList = entidad.Cotizaciondetalles.ToList();
+
+                // Find updated and removed items
+                foreach (var oldItem in oldDetailsList)
+                {
+                    var newItem = newDetailsList.FirstOrDefault(d => d.SecEquipoVisita != null && d.SecEquipoVisita == oldItem.SecEquipoVisita);
+
+                    if (newItem != null) // Item found, check for updates
+                    {
+                        var sbChanges = new StringBuilder();
+                        if (oldItem.Cantidad != newItem.Cantidad) sbChanges.Append($"Cantidad: '{oldItem.Cantidad}' -> '{newItem.Cantidad}'. ");
+                        if (oldItem.ValorCompra != newItem.ValorCompra) sbChanges.Append($"Valor Compra: '{oldItem.ValorCompra:C}' -> '{newItem.ValorCompra:C}'. ");
+                        if (oldItem.MargenGanancia != newItem.MargenGanancia) sbChanges.Append($"Margen: '{oldItem.MargenGanancia}%' -> '{newItem.MargenGanancia}%'. ");
+
+                        if (sbChanges.Length > 0)
+                        {
+                            await _auditService.RegistrarEventoAsync(
+                                $"COTIZACION_{cotizacionActual.Secuencial}_DETALLE_UPDATE",
+                                secUsuarioActual, nombreUsuario,
+                                $"Item '{oldItem.DetalleEquipo}': {sbChanges.ToString()}", null);
+                        }
+                    }
+                    else // Item not found in new list, so it was removed
+                    {
+                        await _auditService.RegistrarEventoAsync(
+                            $"COTIZACION_{cotizacionActual.Secuencial}_DETALLE_DELETE",
+                            secUsuarioActual, nombreUsuario,
+                            $"Item eliminado: '{oldItem.DetalleEquipo}'.", null);
+                    }
+                }
+
+                // Find added items
+                foreach (var newItem in newDetailsList)
+                {
+                    if (!oldDetailsList.Any(d => d.SecEquipoVisita != null && d.SecEquipoVisita == newItem.SecEquipoVisita))
+                    {
+                        await _auditService.RegistrarEventoAsync(
+                            $"COTIZACION_{cotizacionActual.Secuencial}_DETALLE_CREATE",
+                            secUsuarioActual, nombreUsuario,
+                            $"Item añadido: '{newItem.DetalleEquipo}' (Cant: {newItem.Cantidad}, Valor: {newItem.ValorCompra:C}, Margen: {newItem.MargenGanancia}%).", null);
+                    }
+                }
+                // --- AUDIT LOGIC END ---
 
                 // Determinar si se debe crear una nueva versión o actualizar el registro existente
                 bool crearNuevaVersion = cotizacionActual.EnviadoCliente; // Si ya fue enviada al cliente, se crea una nueva versión

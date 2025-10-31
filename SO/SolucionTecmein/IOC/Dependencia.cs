@@ -65,7 +65,11 @@ namespace IOC
                     provider.GetRequiredService<IImpuestoServices>(),
                     provider.GetRequiredService<IVisitaServices>(),
                     provider.GetRequiredService<ITipoImpuestoServices>(),
-                    provider.GetRequiredService<IEquiposVisitaServices>()
+                    provider.GetRequiredService<IEquiposVisitaServices>(),
+                    provider.GetRequiredService<IAuditService>(),
+                    provider.GetRequiredService<IUsuarioServices>()
+
+
                 ));
             services.AddScoped<IEtapaServices, EtapaServices>();
             services.AddScoped<IVisitaServices, VisitaServices>();

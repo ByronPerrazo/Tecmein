@@ -14,11 +14,13 @@ namespace TecmeinWebApp.Controllers
     {
         private readonly ICotizacionServices _cotizacionServices;
         private readonly IMapper _mapper;
+        private readonly IAuditService _auditService;
 
-        public CotizacionController(ICotizacionServices cotizacionServices, IMapper mapper)
+        public CotizacionController(ICotizacionServices cotizacionServices, IMapper mapper, IAuditService auditService)
         {
             _cotizacionServices = cotizacionServices;
             _mapper = mapper;
+            _auditService = auditService;
         }
 
         [ValidatePermission("LEER")]
@@ -199,6 +201,23 @@ namespace TecmeinWebApp.Controllers
                 response.Mensajes = ex.Message;
             }
             return StatusCode(StatusCodes.Status200OK, response);
+        }
+
+        [HttpGet]
+        [ValidatePermission("LEER")]
+        public async Task<IActionResult> HistorialCambios(int idCotizacion)
+        {
+            // This assumes a method like GetEventsByPrefixAsync exists in IAuditService
+            // and that the event type is stored with a prefix like "COTIZACION_123_"
+            var eventPrefix = $"COTIZACION_{idCotizacion}";
+            var eventos = await _auditService.GetEventsByPrefixAsync(eventPrefix);
+
+            // Further filter for detail-related changes if the service returns broad results
+            var eventosDetalle = eventos.Where(e => e.TipoEvento.Contains("_DETALLE_")).ToList();
+
+            var eventosVM = _mapper.Map<List<AuditoriaEventoVM>>(eventosDetalle);
+
+            return StatusCode(StatusCodes.Status200OK, new { data = eventosVM });
         }
 
                 

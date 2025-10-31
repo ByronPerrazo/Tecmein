@@ -256,6 +256,7 @@ $(document).ready(function () {
                     '<div class="btn-group" role="group">' +
                     '<button class="btn btn-primary btn-editar btn-sm" title="Editar"><i class="fas fa-pencil-alt"></i></button>' +
                     '<button class="btn btn-info btn-sm btn-seguimiento" title="Seguimiento"><i class="fas fa-history"></i></button>' +
+                    '<button class="btn btn-warning btn-historial btn-sm" title="Historial"><i class="fas fa-book-open"></i></button>' +
                     '<button class="btn btn-danger btn-eliminar btn-sm" title="Eliminar"><i class="fas fa-trash-alt"></i></button>' +
                     '</div>',
                 "orderable": false,
@@ -533,4 +534,61 @@ $(document).ready(function () {
 
     // Lógica de Seguimientos también refactorizada para usar manejarErrorFetch
     // ...
+
+    // New handler for history button
+    $("#tbdata tbody").on("click", ".btn-historial", function () {
+        let filaSeleccionada;
+        if ($(this).closest("tr").hasClass("child")) {
+            filaSeleccionada = $(this).closest("tr").prev();
+        } else {
+            filaSeleccionada = $(this).closest("tr");
+        }
+        const data = tablaData.row(filaSeleccionada).data();
+        const idCotizacion = data.secuencial;
+
+        $('#modalHistorialLabel').text(`Historial de Cambios - Cotización #${idCotizacion}`);
+        const container = $('#historial-cards-container');
+        container.empty().html('<p class="text-center">Cargando historial...</p>'); // Show loading message
+        $('#modalHistorial').modal('show');
+
+        const ajaxUrl = `/Cotizacion/HistorialCambios?idCotizacion=${idCotizacion}`;
+
+        fetch(ajaxUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error al cargar el historial: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(json => {
+                container.empty(); // Clear loading message
+                const eventos = json.data.$values || json.data;
+
+                if (eventos && eventos.length > 0) {
+                    eventos.forEach(evento => {
+                        const cardHtml = `
+                            <div class="card shadow-sm mb-3">
+                                <div class="card-header bg-light py-2">
+                                    <h6 class="m-0 font-weight-bold text-primary">
+                                        <i class="fas fa-user-clock"></i> ${evento.nombreUsuario || 'Sistema'}
+                                        <small class="float-right text-muted">${evento.fechaHora}</small>
+                                    </h6>
+                                </div>
+                                <div class="card-body py-2">
+                                    <p class="mb-1"><strong>Evento:</strong> <span class="badge badge-info">${evento.tipoEvento}</span></p>
+                                    <p class="mb-1"><strong>Detalle:</strong></p>
+                                    <p class="text-monospace bg-white p-2 rounded border" style="font-size: 0.85rem;">${evento.detalle}</p>
+                                </div>
+                            </div>`;
+                        container.append(cardHtml);
+                    });
+                } else {
+                    container.html('<p class="text-center text-muted">No hay historial de cambios para esta cotización.</p>');
+                }
+            })
+            .catch(error => {
+                container.html(`<p class="text-center text-danger">${error.message}</p>`);
+                console.error("Error en fetch historial:", error);
+            });
+    });
 });

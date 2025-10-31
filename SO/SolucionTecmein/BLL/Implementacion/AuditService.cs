@@ -1,8 +1,7 @@
 using BLL.Interfaces;
 using DAL.DBContext;
 using Entity;
-using System;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Implementacion
 {
@@ -29,6 +28,14 @@ namespace BLL.Implementacion
 
             _context.AuditoriaEventos.Add(evento);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<AuditoriaEvento>> GetEventsByPrefixAsync(string prefix)
+        {
+            return await _context.AuditoriaEventos
+                                 .Where(e => e.TipoEvento.StartsWith(prefix))
+                                 .OrderByDescending(e => e.FechaHora)
+                                 .ToListAsync();
         }
     }
 }
