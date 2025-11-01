@@ -261,7 +261,7 @@ namespace BLL.Implementacion
             var query = await _repositorioContrato.Consultar(c => c.EsActivo == true);
             return await query.Include(c => c.IdCotizacionNavigation).ThenInclude(cot => cot.SecVisitaNavigation)
                               .Include(c => c.IdUsuarioCargaNavigation)
-                              .Include(c => c.SecClienteNavigation)
+                              .Include(c => c.SecClienteNavigation).ThenInclude(cli => cli.SecConstructoraNavigation)
                               .ToListAsync();
         }
 
@@ -289,6 +289,17 @@ namespace BLL.Implementacion
                 if (contrato == null)
                 {
                     throw new KeyNotFoundException("Contrato no encontrado.");
+                }
+
+                // Delete file from Firebase Storage
+                if (!string.IsNullOrEmpty(contrato.NombreArchivo))
+                {
+                    var cliente = await _dbContext.Clientes.FindAsync(contrato.SecCliente);
+                    if (cliente != null)
+                    {
+                        string carpetaDestino = $"Contratos/{cliente.NumeroCliente}/{contrato.IdContrato}";
+                        await _storageServices.EliminarStorage(carpetaDestino, contrato.NombreArchivo);
+                    }
                 }
 
                 // Revert PreContrato status if it exists

@@ -18,11 +18,15 @@ namespace TecmeinAplicacionWeb.Controllers
     {
         private readonly IContratoService _contratoService;
         private readonly IMapper _mapper;
+        private readonly IPreContratoServices _preContratoServices;
+        private readonly IConstructoraServices _constructoraServices; // New field declaration
 
-        public ContratoController(IContratoService contratoService, IMapper mapper)
+        public ContratoController(IContratoService contratoService, IMapper mapper, IPreContratoServices preContratoServices, IConstructoraServices constructoraServices)
         {
             _contratoService = contratoService;
             _mapper = mapper;
+            _preContratoServices = preContratoServices;
+            _constructoraServices = constructoraServices; // New field
         }
 
         [ValidatePermission("VER_MENU")]
@@ -80,7 +84,21 @@ namespace TecmeinAplicacionWeb.Controllers
 
                 // Mapeo manual de campos que no están en el mapeo automático
                 vm.SecCliente = contrato.SecCliente;
+                vm.ProvieneDePreContrato = false;
+                // Determinar si proviene de un pre-contrato aprobado
+                if (contrato.IdCotizacion != 0 )
+                {
+                    var preContrato = await _preContratoServices.ObtenerUltimaVersion(contrato.IdCotizacion);
+                    vm.ProvieneDePreContrato =  preContrato != null ;
+                }
 
+                // Obtener el nombre del cliente
+                if (contrato.SecCliente != 0)
+                {
+                    var constructora = await _constructoraServices.ConstructoraPorSecuencial(contrato.SecCliente);
+                    vm.NombreCliente = constructora?.Nombre;
+                }
+               
                 gResponse.Estado = true;
                 gResponse.Objeto = vm;
             }

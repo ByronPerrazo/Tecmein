@@ -206,9 +206,10 @@ $(document).ready(function () {
         // Reset checkbox and dependent divs
         $('#chkCrearDesdePreContrato').prop('checked', false).trigger('change');
         
-        // Clear dropdowns
-        $('#cboPreContrato').empty();
-        $('#cboClienteDirecto').empty();
+        // Clear dropdowns and project name
+        $('#cboPreContrato').val('').empty();
+        $('#cboClienteDirecto').val('').empty();
+        $('#txtNombreProyecto').val('');
 
         // Set modal title for new
         $('#modalContratoUnificadoTitle span').text('Nuevo Contrato');
@@ -228,7 +229,7 @@ $(document).ready(function () {
                 const $cbo = $('#cboClienteDirecto');
                 $cbo.empty().append($('<option>').val('').text('Seleccionar...'));
                 clientes.forEach(c => {
-                    $cbo.append($('<option>').val(c.secCliente).text(`${c.nombres} ${c.apellidos}`));
+                    $cbo.append($('<option>').val(c.secCliente).text(c.nombreConstructora));
                 });
             })
         ).done(function() {
@@ -252,9 +253,6 @@ $(document).ready(function () {
                 $('#txtNombreProyecto').prop('readonly', false);
             }
         }
-        $('#cboPreContrato').val('');
-        $('#cboClienteDirecto').val('');
-        $('#txtNombreProyecto').val('');
     });
 
     $('#cboPreContrato').on('change', function() {
@@ -292,22 +290,35 @@ $(document).ready(function () {
         $('#txtNombreProyecto').prop('disabled', true);
 
         // 4. Show the origin info (but disabled)
-        if (data.idCotizacion) {
-            $('#chkCrearDesdePreContrato').prop('checked', true);
-            $('#divPreContrato').show();
-            $('#divCliente').hide();
-            // Add the used pre-contract to the dropdown so it's visible
-            $('#cboPreContrato').empty().append($('<option>').text(`Desde Cotización #${data.idCotizacion}`).val(data.idCotizacion));
-        } else {
-            $('#chkCrearDesdePreContrato').prop('checked', false);
-            $('#divPreContrato').hide();
-            $('#divCliente').show();
-            // Add the used client to the dropdown
-             $('#cboClienteDirecto').empty().append($('<option>').text(`Cliente ID: ${data.secCliente}`).val(data.secCliente));
-        }
+        // NUEVA LÓGICA: Obtener detalles completos del contrato para determinar el origen
+        $.ajax({
+            url: `/Contrato/ObtenerDetalles?id=${data.idContrato}`,
+            type: "GET",
+            success: function (response) {
+                if (response.estado) {
+                    const contratoDetalle = response.objeto; // Esto es un ContratoVM
 
-        // 5. Show the modal
-        $('#modalContratoUnificado').modal('show');
+                    if (contratoDetalle.provieneDePreContrato) {
+                        $('#chkCrearDesdePreContrato').prop('checked', true).trigger('change');
+                        $('#divPreContrato').show();
+                        $('#divCliente').hide();
+                        // Add the used pre-contract to the dropdown so it's visible
+                        $('#cboPreContrato').empty().append($('<option>').text(`Desde Cotización #${contratoDetalle.idCotizacion}`).val(contratoDetalle.idCotizacion));
+                    } else {
+                        $('#chkCrearDesdePreContrato').prop('checked', false).trigger('change');
+                        $('#divPreContrato').hide();
+                        $('#divCliente').show();
+                        // Add the used client to the dropdown
+                        $('#cboClienteDirecto').empty().append($('<option>').text(`${contratoDetalle.nombreCliente}`).val(contratoDetalle.secCliente));
+                    }
+                    // 5. Show the modal after all data is loaded and UI updated
+                    $('#modalContratoUnificado').modal('show');
+                } else {
+                    Swal.fire("Error", response.mensajes, "error");
+                }
+            },
+            error: manejarErrorAjax
+        });
     });
 
     $('#tbContrato tbody').on('click', '.btn-eliminar', function () {

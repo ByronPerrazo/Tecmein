@@ -13,5 +13,7 @@ namespace TecmeinAplicacionWeb.Models.ViewModels
         public string? RutaArchivo { get; set; } // Propiedad que faltaba
         public string? NombreProyecto { get; set; } // Añadido para el nombre de la obra en contratos directos
         public bool? EsActivo { get; set; }
+        public string? NombreCliente { get; set; }
+        public bool ProvieneDePreContrato { get; set; }
     }
 }

@@ -537,6 +537,8 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
             CreateMap<Contrato, ContratoVM>()
                 .ForMember(dest => dest.NombreProyecto,
                            opt => opt.MapFrom(src => src.IdCotizacionNavigation.SecVisitaNavigation.Nombre ?? "Sin Obra Asociada"))
+                .ForMember(dest => dest.NombreCliente,
+                           opt => opt.MapFrom(src => src.SecClienteNavigation != null && src.SecClienteNavigation.SecConstructoraNavigation != null ? src.SecClienteNavigation.SecConstructoraNavigation.Nombre : "N/A"))
                 .ForMember(dest => dest.NombreUsuarioCarga,
                            opt => opt.MapFrom(src => src.IdUsuarioCargaNavigation.Nombre))
                 .ForMember(dest => dest.FechaFirma,
