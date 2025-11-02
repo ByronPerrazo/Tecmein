@@ -71,12 +71,11 @@ namespace TecmeinWebApp.Controllers
 
         [HttpPost]
         [ValidatePermission("CREAR")]
-        public async Task<IActionResult> Crear([FromForm] string modelo)
+        public async Task<IActionResult> Crear([FromBody] FormaPagoVM formaPagoVM)
         {
             var gResponse = new GenericResponse<FormaPagoVM>();
             try
             {
-                var formaPagoVM = JsonConvert.DeserializeObject<FormaPagoVM>(modelo);
                 FormaPago formaPagoCreada = await _formaPagoServices.Crear(_mapper.Map<FormaPago>(formaPagoVM));
                 gResponse.Estado = true;
                 gResponse.Objeto = _mapper.Map<FormaPagoVM>(formaPagoCreada);
@@ -92,12 +91,11 @@ namespace TecmeinWebApp.Controllers
 
         [HttpPut]
         [ValidatePermission("ACTUALIZAR")]
-        public async Task<IActionResult> Editar([FromForm] string modelo)
+        public async Task<IActionResult> Editar([FromBody] FormaPagoVM formaPagoVM)
         {
             var gResponse = new GenericResponse<FormaPagoVM>();
             try
             {
-                FormaPagoVM? formaPagoVM = JsonConvert.DeserializeObject<FormaPagoVM>(modelo);
                 var formaPagoEditada = await _formaPagoServices.Editar(_mapper.Map<FormaPago>(formaPagoVM));
                 gResponse.Estado = true;
                 gResponse.Objeto = _mapper.Map<FormaPagoVM>(formaPagoEditada);

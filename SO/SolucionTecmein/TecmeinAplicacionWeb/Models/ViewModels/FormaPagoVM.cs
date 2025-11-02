@@ -4,6 +4,6 @@ namespace TecmeinAplicacionWeb.Models.ViewModels
     {
         public int SecFormaPago { get; set; }
         public string Descripcion { get; set; } = null!;
-        public short EstaActivo { get; set; }
+        public bool EstaActivo { get; set; }
     }
 }

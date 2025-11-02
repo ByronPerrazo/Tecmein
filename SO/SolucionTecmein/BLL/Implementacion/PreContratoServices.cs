@@ -169,7 +169,9 @@ namespace BLL.Implementacion
         public async Task<PreContrato> ObtenerUltimaVersion(int secCotizacion)
         {
             var preContratos = await _repositorio.Consultar(p => p.SecCotizacion == secCotizacion);
-            return await preContratos.OrderByDescending(p => p.Version).FirstOrDefaultAsync();
+            return await preContratos.Include(p => p.PreContratoCompromisoPagos) // Incluir los compromisos de pago
+                                     .OrderByDescending(p => p.Version)
+                                     .FirstOrDefaultAsync();
         }
 
         public async Task<PreContrato> CrearDesdeCotizacion(int cotizacionId, int secUsuario)

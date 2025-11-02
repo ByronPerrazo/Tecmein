@@ -31,7 +31,7 @@ namespace BLL.Implementacion
         public async Task<FormaPago> Crear(FormaPago entidad)
         {
             if (entidad == null) throw new ArgumentNullException(nameof(entidad));
-            entidad.EstaActivo = 1;
+            entidad.EstaActivo = 1; // Asignar 1 para activo (short)
             var formaPagoCreada = await _repositorio.Crear(entidad);
             return formaPagoCreada;
         }

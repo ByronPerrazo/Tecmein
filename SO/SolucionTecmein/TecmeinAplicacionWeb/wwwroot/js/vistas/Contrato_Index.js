@@ -2,6 +2,15 @@ let tablaContratos;
 let precontratosCargados = [];
 let modeloBasePlanDePago = {};
 
+// Helper function to find the mode (most frequent value) in an array
+const findMode = (arr) => {
+    if (arr.length === 0) return null;
+    return arr.sort((a,b) =>
+          arr.filter(v => v===a).length
+        - arr.filter(v => v===b).length
+    ).pop();
+}
+
 const modeloBaseContrato = {
     idContrato: 0,
     idCotizacion: null,
@@ -23,7 +32,111 @@ function abrirModalContrato(modelo = modeloBaseContrato) {
     // ... (código de abrirModalContrato sin cambios)
 }
 
-// ... (otras funciones de UI sin cambios) ...
+    // ... (otras funciones de UI sin cambios) ...
+
+function reEnumerarCuotasContrato() {
+    $("#tbodyCuotas tr").each(function (index) {
+        $(this).find("td:first").text(index + 1);
+        // Actualizar el número de cuota en el input hidden si existe
+        $(this).find(".numero-cuota-hidden").val(index + 1);
+    });
+    calcularTotalCuotas(); // Recalcular totales cuando se re-enumera
+}
+
+function calcularTotalCuotas() {
+    let sumaMontos = 0;
+    $("#tbodyCuotas .monto-cuota-input").each(function() {
+        const monto = parseFloat($(this).val());
+        if (!isNaN(monto)) {
+            sumaMontos += monto;
+        }
+    });
+
+    const totalContrato = parseFloat($("#txtValorContratoPlan").val());
+    const totalFooter = $("#totalCuotasPlan");
+
+    totalFooter.text(sumaMontos.toFixed(2));
+
+    if (!isNaN(totalContrato) && totalContrato.toFixed(2) != sumaMontos.toFixed(2)) {
+        totalFooter.addClass("text-danger").removeClass("text-success");
+    } else {
+        totalFooter.removeClass("text-danger").addClass("text-success");
+    }
+}
+
+function generarCuotasContratoInteligentes() {
+    const numCuotas = parseInt($("#numCuotasGenerar").val());
+    const montoBase = parseFloat($("#montoCuotaGenerar").val());
+    const fechaInicialStr = $("#fechaPrimeraCuotaGenerar").datepicker('getFormattedDate', 'yyyy-mm-dd');
+    const valorContrato = parseFloat($("#txtValorContratoPlan").val());
+    const valorAnticipo = parseFloat($("#txtValorAnticipoPlan").val()) || 0;
+
+    if (isNaN(valorContrato) || valorContrato <= 0) {
+        Swal.fire("Datos incompletos", "Se requiere un 'Valor del Contrato' mayor a cero para generar las cuotas.", "info");
+        return;
+    }
+
+    if (isNaN(numCuotas) || isNaN(montoBase) || !fechaInicialStr) {
+        Swal.fire("Datos incompletos", "Para generar cuotas, se requiere N° de Cuotas, Monto Base y Fecha Inicial.", "info");
+        return;
+    }
+
+    $("#tbodyCuotas").empty();
+
+    const saldoPendiente = valorContrato - valorAnticipo;
+
+    // 1. Add Anticipo Row if it exists
+    if (valorAnticipo > 0) {
+        const anticipoFecha = new Date(fechaInicialStr + 'T00:00:00');
+        const fechaFormateada = anticipoFecha.toISOString().split('T')[0];
+        const nuevaFila = `
+            <tr>
+                <td>1</td>
+                <td>Anticipo</td>
+                <td><div class="input-group date" data-provide="datepicker"><input type="text" class="form-control form-control-sm fecha-cuota-input" value="${fechaFormateada}"><div class="input-group-addon"><span class="glyphicon glyphicon-th"></span></div></div></td>
+                <td><input type="number" class="form-control form-control-sm monto-cuota-input" value="${valorAnticipo.toFixed(2)}"></td>
+                <td><button type="button" class="btn btn-danger btn-sm btn-eliminar-cuota-contrato"><i class="fas fa-trash"></i></button></td>
+            </tr>
+        `;
+        $("#tbodyCuotas").append(nuevaFila);
+    }
+
+    // 2. Generate Cuota Rows
+    if (numCuotas > 0 && saldoPendiente > 0) {
+        if ((numCuotas * montoBase) > saldoPendiente + 0.01) { // 0.01 de tolerancia
+            Swal.fire("Monto Base Excesivo", `La suma de las cuotas generadas no puede exceder el saldo pendiente de ${saldoPendiente.toFixed(2)}.`, "error");
+            return;
+        }
+
+        const startDate = new Date(fechaInicialStr + 'T00:00:00');
+        let totalAcumulado = 0;
+
+        for (let i = 0; i < numCuotas; i++) {
+            let montoActualCuota = (i === numCuotas - 1) ? (saldoPendiente - totalAcumulado) : montoBase;
+            
+            // Start installments one month after the initial date
+            const nuevaFecha = new Date(startDate.getTime());
+            nuevaFecha.setMonth(nuevaFecha.getMonth() + i + 1);
+
+            const fechaFormateada = nuevaFecha.toISOString().split('T')[0];
+
+            const nuevaFila = `
+                <tr>
+                    <td>${i + 2}</td>
+                    <td>Cuota</td>
+                    <td><div class="input-group date" data-provide="datepicker"><input type="text" class="form-control form-control-sm fecha-cuota-input" value="${fechaFormateada}"><div class="input-group-addon"><span class="glyphicon glyphicon-th"></span></div></div></td>
+                    <td><input type="number" class="form-control form-control-sm monto-cuota-input" value="${montoActualCuota.toFixed(2)}"></td>
+                    <td><button type="button" class="btn btn-danger btn-sm btn-eliminar-cuota-contrato"><i class="fas fa-trash"></i></button></td>
+                </tr>
+            `;
+            
+            $("#tbodyCuotas").append(nuevaFila);
+            totalAcumulado += montoBase;
+        }
+    }
+
+    reEnumerarCuotasContrato(); // This will also call calcularTotalCuotas
+}
 
 $(document).ready(function () {
     // Initialize datepickers with a standard format
@@ -32,6 +145,35 @@ $(document).ready(function () {
         language: 'es',
         autoclose: true,
         todayHighlight: true
+    });
+
+    $("#btnGenerarCuotasInteligentes").on("click", generarCuotasContratoInteligentes);
+
+    $("#modalPlanDePago").on("click", ".btn-eliminar-cuota-contrato", function() {
+        $(this).closest("tr").remove();
+        reEnumerarCuotasContrato();
+    });
+
+    // Two-way binding for Anticipo value
+    $("#txtValorAnticipoPlan").on("change", function() {
+        const anticipoValue = $(this).val();
+        const firstRow = $("#tbodyCuotas tr:first");
+        
+        if (firstRow.length && firstRow.find("td:nth-child(2)").text() === "Anticipo") {
+            firstRow.find(".monto-cuota-input").val(parseFloat(anticipoValue).toFixed(2));
+            calcularTotalCuotas();
+        }
+    });
+
+    $("#modalPlanDePago").on("change", ".monto-cuota-input", function() {
+        const $this = $(this);
+        const $currentRow = $this.closest("tr");
+
+        if ($currentRow.is(":first-child") && $currentRow.find("td:nth-child(2)").text() === "Anticipo") {
+            $("#txtValorAnticipoPlan").val($this.val());
+        }
+
+        calcularTotalCuotas();
     });
 
     // ... (inicialización de datatable y otros listeners sin cambios) ...
@@ -74,9 +216,11 @@ $(document).ready(function () {
                 }
             },
             {
-                "defaultContent": '<button class="btn btn-primary btn-editar btn-sm" title="Editar"><i class="fas fa-pencil-alt"></i></button>' +
-                                  '<button class="btn btn-danger btn-eliminar btn-sm" title="Eliminar"><i class="fas fa-trash-alt"></i></button>' +
-                                  '<button class="btn btn-info btn-plan-pagos btn-sm" title="Plan de Pagos"><i class="fas fa-cash-register"></i></button>',
+                "defaultContent": '<div class="btn-group" role="group" aria-label="Acciones de Contrato">' +
+                                    '<button class="btn btn-primary btn-editar btn-sm" title="Editar"><i class="fas fa-pencil-alt"></i></button>' +
+                                    '<button class="btn btn-info btn-plan-pagos btn-sm" title="Plan de Pagos"><i class="fas fa-cash-register"></i></button>' +
+                                    '<button class="btn btn-danger btn-eliminar btn-sm" title="Eliminar"><i class="fas fa-trash-alt"></i></button>' +
+                                  '</div>',
                 "orderable": false,
                 "searchable": false,
                 "width": "120px"
@@ -357,9 +501,148 @@ $(document).ready(function () {
 
     $('#tbContrato tbody').on('click', '.btn-plan-pagos', function () {
         const data = tablaContratos.row($(this).parents('tr')).data();
-        // Lógica para abrir el modal de plan de pagos
         console.log("Abriendo plan de pagos para:", data);
-        // Aquí iría la llamada AJAX para obtener el plan y luego mostrar el modal
-        $('#modalPlanDePago').modal('show');
+
+        // Resetear el formulario del plan de pagos
+        $('#formPlanDePago')[0].reset();
+        $('#txtIdContratoPlan').val(data.idContrato);
+        $('#tbodyCuotas').empty(); // Limpiar cuotas anteriores
+
+        // Cargar las formas de pago para el dropdown
+        $.ajax({
+            url: "/FormaPago/ListaParaDropdown",
+            type: "GET",
+            success: function (response) {
+                const formasPago = response.data.$values || response.data; // Acceder directamente a response.data.$values
+                const $cbo = $('#cboFormaPagoPlan');
+                $cbo.empty().append($('<option>').val('').text('Seleccionar...'));
+                formasPago.forEach(fp => {
+                    $cbo.append($('<option>').val(fp.value).text(fp.text));
+                });
+            },
+            error: function(xhr, status, error) { // Manejar el error directamente aquí
+                manejarErrorAjax(xhr.responseJSON, "Cargar Formas de Pago");
+            }
+        });
+
+        if (data.provieneDePreContrato) {
+            // Si proviene de un pre-contrato, cargar los compromisos de pago
+            $.ajax({
+                url: `/Contrato/ObtenerCompromisosDePagoPreContrato?idCotizacion=${data.idCotizacion}`,
+                type: "GET",
+                success: function (response) {
+                    if (response.estado) {
+                        const compromisos = response.objeto.$values; // Acceder a la propiedad $values
+
+                        let totalContratoCalculado = 0;
+                        let valorAnticipo = 0;
+                        let fechaAnticipo = '';
+                        let numeroCuotas = 0;
+                        let fechaPrimeraCuota = '';
+
+                        compromisos.forEach(function(compromiso) {
+                            totalContratoCalculado += compromiso.monto;
+                            if (compromiso.tipo === "Anticipo") {
+                                valorAnticipo = compromiso.monto;
+                                fechaAnticipo = compromiso.fechaVencimiento;
+                            } else if (compromiso.tipo === "Cuota") {
+                                numeroCuotas++;
+                                if (compromiso.numeroCuota === 1) { // Asumiendo que la primera cuota tiene NumeroCuota = 1
+                                    fechaPrimeraCuota = compromiso.fechaVencimiento;
+                                }
+                            }
+                            // Añadir la fila a la tabla de cuotas
+                            const fechaFormateada = new Date(compromiso.fechaVencimiento).toISOString().split('T')[0];
+                            const nuevaFila = `
+                                <tr>
+                                    <td>${compromiso.numeroCuota}</td>
+                                    <td>${compromiso.tipo}</td>
+                                    <td><div class="input-group date" data-provide="datepicker"><input type="text" class="form-control form-control-sm fecha-cuota-input" value="${fechaFormateada}"><div class="input-group-addon"><span class="glyphicon glyphicon-th"></span></div></div></td>
+                                    <td><input type="number" class="form-control form-control-sm monto-cuota-input" value="${compromiso.monto.toFixed(2)}"></td>
+                                    <td><button type="button" class="btn btn-danger btn-sm btn-eliminar-cuota-contrato"><i class="fas fa-trash"></i></button></td>
+                                </tr>
+                            `;
+                            $('#tbodyCuotas').append(nuevaFila);
+                        });
+
+                        // Poblar las casillas del modal con los valores derivados
+                        $('#txtValorContratoPlan').val(totalContratoCalculado.toFixed(2));
+                        $('#txtValorAnticipoPlan').val(valorAnticipo.toFixed(2));
+
+                        const cuotas = compromisos.filter(c => c.tipo === 'Cuota');
+                        if (cuotas.length > 0) {
+                            const montos = cuotas.map(c => c.monto);
+                            const montoMasFrecuente = findMode(montos);
+                            const fechaInicialGeneracion = fechaAnticipo; 
+
+                            $('#numCuotasGenerar').val(cuotas.length);
+                            $('#montoCuotaGenerar').val(montoMasFrecuente ? montoMasFrecuente.toFixed(2) : '');
+                            $('#fechaPrimeraCuotaGenerar').datepicker('update', fechaInicialGeneracion ? new Date(fechaInicialGeneracion + 'T00:00:00') : '');
+                        }
+
+                        reEnumerarCuotasContrato(); // This will also call calcularTotalCuotas
+
+                        $('#modalPlanDePago').modal('show');
+                    } else {
+                        Swal.fire("Error", response.mensajes, "error");
+                    }
+                },
+                error: manejarErrorAjax
+            });
+        } else {
+            // Si no proviene de un pre-contrato, cargar el plan de pagos existente
+            $.ajax({
+                url: `/Contrato/ObtenerPlanDePagoPorContrato?idContrato=${data.idContrato}`,
+                type: "GET",
+                success: function (response) {
+                    if (response.estado) {
+                        const planDePago = response.objeto; // Esto es un PlanDePagoVM
+
+                        // Poblar campos principales
+                        $('#txtValorContratoPlan').val(planDePago.valorContrato.toFixed(2));
+                        $('#cboFormaPagoPlan').val(planDePago.secFormaPago);
+                        $('#txtValorAnticipoPlan').val(planDePago.valorAnticipo.toFixed(2));
+
+                        // Poblar la tabla de cuotas con campos editables
+                        $('#tbodyCuotas').empty();
+                        planDePago.cuotas.$values.forEach(function(cuota, index) {
+                            const tipoCuota = (index === 0 && planDePago.valorAnticipo > 0) ? "Anticipo" : "Cuota";
+                            const fechaFormateada = new Date(cuota.fechaVencimiento).toISOString().split('T')[0];
+                            const nuevaFila = `
+                                <tr>
+                                    <td>${cuota.numeroCuota}</td>
+                                    <td>${tipoCuota}</td>
+                                    <td><div class="input-group date" data-provide="datepicker"><input type="text" class="form-control form-control-sm fecha-cuota-input" value="${fechaFormateada}"><div class="input-group-addon"><span class="glyphicon glyphicon-th"></span></div></div></td>
+                                    <td><input type="number" class="form-control form-control-sm monto-cuota-input" value="${cuota.monto.toFixed(2)}"></td>
+                                    <td><button type="button" class="btn btn-danger btn-sm btn-eliminar-cuota-contrato"><i class="fas fa-trash"></i></button></td>
+                                </tr>
+                            `;
+                            $('#tbodyCuotas').append(nuevaFila);
+                        });
+
+                        // Derivar y poblar campos de generación inteligente
+                        const cuotas = planDePago.cuotas.$values;
+                        if (cuotas && cuotas.length > 0) {
+                            const montos = cuotas.map(c => c.monto);
+                            const montoMasFrecuente = findMode(montos);
+                            const primeraCuota = cuotas.find(c => c.numeroCuota === 1);
+                            const fechaInicialGeneracion = primeraCuota ? primeraCuota.fechaVencimiento : (planDePago.fechaAnticipo || '');
+
+                            $('#numCuotasGenerar').val(cuotas.length);
+                            $('#montoCuotaGenerar').val(montoMasFrecuente ? montoMasFrecuente.toFixed(2) : '');
+                            $('#fechaPrimeraCuotaGenerar').datepicker('update', fechaInicialGeneracion ? new Date(fechaInicialGeneracion + 'T00:00:00') : '');
+                        }
+                        
+                        reEnumerarCuotasContrato(); // This will also call calcularTotalCuotas
+                        $('#modalPlanDePago').modal('show');
+                    } else {
+                        // Si no hay plan de pago existente, mostrar el modal vacío para crear uno nuevo
+                        Swal.fire("Información", "No se encontró un plan de pago existente para este contrato. Puede crear uno nuevo.", "info");
+                        $('#modalPlanDePago').modal('show');
+                    }
+                },
+                error: manejarErrorAjax
+            });
+        }
     });
 });

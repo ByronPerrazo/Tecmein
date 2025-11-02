@@ -355,7 +355,12 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
 
             CreateMap<Seguimiento, SeguimientoVM>().ReverseMap();
 
-            CreateMap<FormaPago, FormaPagoVM>().ReverseMap();
+            CreateMap<FormaPago, FormaPagoVM>()
+                .ForMember(destino => destino.EstaActivo,
+                           opt => opt.MapFrom(origen => origen.EstaActivo == 1)); // short a bool
+            CreateMap<FormaPagoVM, FormaPago>()
+                .ForMember(destino => destino.EstaActivo,
+                           opt => opt.MapFrom(origen => (short)(origen.EstaActivo ? 1 : 0))); // bool a short
 
             CreateMap<PlantillaPreContrato, PlantillaPreContratoVM>()
                 .ForMember(destino => destino.DescripcionTipoDocumento,
@@ -563,6 +568,32 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
             CreateMap<PlanDePagoVM, PlanDePago>()
                 .ForMember(destino => destino.SecFormaPagoNavigation, opt => opt.Ignore());
 
+            CreateMap<PlanDePago, PlanDePagoVM>()
+                .ForMember(destino => destino.DescripcionFormaPago,
+                           opt => opt.MapFrom(origen => origen.SecFormaPagoNavigation.Descripcion))
+                .ForMember(destino => destino.FechaAnticipo,
+                           opt => opt.MapFrom(origen => origen.FechaAnticipo.HasValue ? origen.FechaAnticipo.Value.ToString("dd/MM/yyyy") : null))
+                .ForMember(destino => destino.FechaPrimeraCuota,
+                           opt => opt.MapFrom(origen => origen.FechaPrimeraCuota.HasValue ? origen.FechaPrimeraCuota.Value.ToString("dd/MM/yyyy") : null))
+                .ForMember(destino => destino.FechaRegistro,
+                           opt => opt.MapFrom(origen => origen.FechaRegistro.ToString("dd/MM/yyyy")))
+                .ForMember(destino => destino.EstaActivo,
+                           opt => opt.MapFrom(origen => origen.EstaActivo))
+                .ForMember(destino => destino.Cuotas,
+                           opt => opt.MapFrom(origen => origen.Cuotas)); // Mapear la colección de cuotas
+
+            CreateMap<PlanDePagoVM, PlanDePago>()
+                .ForMember(destino => destino.SecFormaPagoNavigation, opt => opt.Ignore())
+                .ForMember(destino => destino.IdContratoNavigation, opt => opt.Ignore())
+                .ForMember(destino => destino.Pagos, opt => opt.Ignore())
+                .ForMember(destino => destino.Cuotas, opt => opt.Ignore()) // Las cuotas se manejan por separado
+                .ForMember(destino => destino.FechaAnticipo,
+                           opt => opt.MapFrom(origen => !string.IsNullOrEmpty(origen.FechaAnticipo) ? DateTime.ParseExact(origen.FechaAnticipo, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture) : (DateTime?)null))
+                .ForMember(destino => destino.FechaPrimeraCuota,
+                           opt => opt.MapFrom(origen => !string.IsNullOrEmpty(origen.FechaPrimeraCuota) ? DateTime.ParseExact(origen.FechaPrimeraCuota, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture) : (DateTime?)null))
+                .ForMember(destino => destino.FechaRegistro,
+                           opt => opt.MapFrom(origen => DateTime.ParseExact(origen.FechaRegistro, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)));
+
             CreateMap<Cuota, CuotaVM>()
                 .ForMember(destino => destino.FechaVencimiento,
                            opt => opt.MapFrom(origen => origen.FechaVencimiento.ToString("dd/MM/yyyy")))
@@ -574,7 +605,8 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
             CreateMap<PlanDePago, PlanDePagoDTO>().ReverseMap();
             CreateMap<Cuota, CuotaDTO>().ReverseMap();
             CreateMap<Pago, PagoDTO>().ReverseMap();
-
+            CreateMap<PlanDePagoDTO, PlanDePagoVM>();
+            CreateMap<CuotaDTO, CuotaVM>();
             #endregion
 
             #region Auditoria
@@ -582,6 +614,14 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
                 .ForMember(dest => dest.FechaHora, opt => opt.MapFrom(src => src.FechaHora.ToString("dd/MM/yyyy HH:mm:ss")));
             #endregion
 
+            #region PreContratoCompromisoPago
+            CreateMap<PreContratoCompromisoPago, PreContratoCompromisoPagoVM>()
+                .ForMember(destino => destino.FechaVencimiento,
+                           opt => opt.MapFrom(origen => origen.FechaVencimiento.ToString("dd/MM/yyyy")));
+            CreateMap<PreContratoCompromisoPagoVM, PreContratoCompromisoPago>()
+                .ForMember(destino => destino.FechaVencimiento,
+                           opt => opt.MapFrom(origen => DateTime.ParseExact(origen.FechaVencimiento, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)));
+            #endregion
 
         }
     }

@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace TecmeinAplicacionWeb.Models.ViewModels
 {
     public class PlanDePagoVM
@@ -8,15 +5,14 @@ namespace TecmeinAplicacionWeb.Models.ViewModels
         public int IdPlanDePago { get; set; }
         public int IdContrato { get; set; }
         public int SecFormaPago { get; set; }
-        public string? DescripcionFormaPago { get; set; }
+        public string DescripcionFormaPago { get; set; } // Para mostrar en la vista
         public decimal ValorContrato { get; set; }
         public decimal ValorAnticipo { get; set; }
-        public DateTime? FechaAnticipo { get; set; }
+        public string? FechaAnticipo { get; set; } // Formato string para la vista
         public int NumeroCuotas { get; set; }
-        public DateTime? FechaPrimeraCuota { get; set; }
+        public string? FechaPrimeraCuota { get; set; } // Formato string para la vista
         public bool EstaActivo { get; set; }
-        public string? FechaRegistro { get; set; }
-
-        public List<CuotaVM>? Cuotas { get; set; }
+        public string FechaRegistro { get; set; } // Formato string para la vista
+        public List<CuotaVM> Cuotas { get; set; } // Para la parrilla de cuotas
     }
 }

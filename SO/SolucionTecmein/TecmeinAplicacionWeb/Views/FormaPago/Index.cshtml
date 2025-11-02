@@ -5,33 +5,82 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="card">
-    <div class="card-header">
-        <h5>Gestión de Formas de Pago</h5>
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3 bg-second-primary">
+        <h6 class="m-0 font-weight-bold text-white">Lista de Formas de Pago</h6>
     </div>
     <div class="card-body">
-        <form id="formaPagoForm">
-            <input type="hidden" asp-for="SecFormaPago" />
-
-            <div class="form-group">
-                <label for="Descripcion">Descripción</label>
-                <input type="text" class="form-control" asp-for="Descripcion" placeholder="Ej: Efectivo, Tarjeta">
+        <div class="row">
+            <div class="col-sm-3">
+                <button class="btn btn-success" id="btnNuevaFormaPago"><i class="fas fa-plus-circle"></i> Nueva Forma de Pago</button>
             </div>
-
-            <div class="form-group">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" asp-for="EstaActivo">
-                    <label class="form-check-label" for="EstaActivo">
-                        Está Activo
-                    </label>
-                </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-sm-12">
+                <table id="tbFormaPago" class="table table-bordered" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
-
-            <button type="submit" class="btn btn-primary">Guardar Forma de Pago</button>
-        </form>
+        </div>
     </div>
 </div>
 
-@section Scripts{
+<!-- Modal para Forma de Pago -->
+<div class="modal fade" id="modalFormaPago" tabindex="-1" role="dialog" aria-labelledby="modalFormaPagoLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalFormaPagoLabel">Forma de Pago</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formaPagoForm">
+                    <input type="hidden" asp-for="SecFormaPago" />
+
+                    <div class="form-group">
+                        <label for="Descripcion">Descripción</label>
+                        <input type="text" class="form-control" asp-for="Descripcion" placeholder="Ej: Efectivo, Tarjeta">
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" asp-for="EstaActivo">
+                            <label class="form-check-label" for="EstaActivo">
+                                Está Activo
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="btnGuardarFormaPago">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script src="~/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/dataTables.responsive.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/dataTables.buttons.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/jszip.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.html5.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.print.min.js"></script>
+
     <script src="~/js/vistas/FormaPago_Index.js"></script>
 }

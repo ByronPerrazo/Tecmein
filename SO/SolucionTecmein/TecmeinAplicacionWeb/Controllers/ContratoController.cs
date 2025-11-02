@@ -19,14 +19,16 @@ namespace TecmeinAplicacionWeb.Controllers
         private readonly IContratoService _contratoService;
         private readonly IMapper _mapper;
         private readonly IPreContratoServices _preContratoServices;
-        private readonly IConstructoraServices _constructoraServices; // New field declaration
+        private readonly IConstructoraServices _constructoraServices;
+        private readonly IPlanDePagoService _planDePagoService; // New field declaration
 
-        public ContratoController(IContratoService contratoService, IMapper mapper, IPreContratoServices preContratoServices, IConstructoraServices constructoraServices)
+        public ContratoController(IContratoService contratoService, IMapper mapper, IPreContratoServices preContratoServices, IConstructoraServices constructoraServices, IPlanDePagoService planDePagoService)
         {
             _contratoService = contratoService;
             _mapper = mapper;
             _preContratoServices = preContratoServices;
-            _constructoraServices = constructoraServices; // New field
+            _constructoraServices = constructoraServices;
+            _planDePagoService = planDePagoService; // New field
         }
 
         [ValidatePermission("VER_MENU")]
@@ -40,7 +42,27 @@ namespace TecmeinAplicacionWeb.Controllers
         public async Task<IActionResult> Listar()
         {
             var lista = await _contratoService.Listar();
-            List<ContratoVM> vmLista = _mapper.Map<List<ContratoVM>>(lista);
+            List<ContratoVM> vmLista = new List<ContratoVM>();
+
+            foreach (var contrato in lista)
+            {
+                ContratoVM vm = _mapper.Map<ContratoVM>(contrato);
+
+                // Determinar si proviene de un pre-contrato
+                if (contrato.IdCotizacion != 0)
+                {
+                    var preContrato = await _preContratoServices.ObtenerUltimaVersion(contrato.IdCotizacion);
+                    vm.ProvieneDePreContrato = preContrato != null;
+                }
+
+                // Obtener el nombre del cliente
+                if (contrato.SecCliente != 0)
+                {
+                    var constructora = await _constructoraServices.ConstructoraPorSecuencial(contrato.SecCliente);
+                    vm.NombreCliente = constructora?.Nombre;
+                }
+                vmLista.Add(vm);
+            }
             return StatusCode(StatusCodes.Status200OK, new { data = vmLista });
         }
 
@@ -196,6 +218,60 @@ namespace TecmeinAplicacionWeb.Controllers
             {
                 gResponse.Estado = false;
                 gResponse.Mensajes = ex.Message;
+            }
+            return StatusCode(StatusCodes.Status200OK, gResponse);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ObtenerCompromisosDePagoPreContrato(int idCotizacion)
+        {
+            var gResponse = new GenericResponse<List<PreContratoCompromisoPagoVM>>();
+            try
+            {
+                var preContrato = await _preContratoServices.ObtenerUltimaVersion(idCotizacion);
+
+                if (preContrato == null)
+                {
+                    gResponse.Estado = false;
+                    gResponse.Mensajes = "No se encontró un pre-contrato asociado a la cotización.";
+                    return StatusCode(StatusCodes.Status404NotFound, gResponse);
+                }
+
+                gResponse.Estado = true;
+                gResponse.Objeto = _mapper.Map<List<PreContratoCompromisoPagoVM>>(preContrato.PreContratoCompromisoPagos);
+            }
+            catch (Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, gResponse);
+            }
+            return StatusCode(StatusCodes.Status200OK, gResponse);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ObtenerPlanDePagoPorContrato(int idContrato)
+        {
+            var gResponse = new GenericResponse<PlanDePagoVM>();
+            try
+            {
+                var planDePagoDTO = await _planDePagoService.ObtenerPorContratoId(idContrato);
+
+                if (planDePagoDTO == null)
+                {
+                    gResponse.Estado = false;
+                    gResponse.Mensajes = "No se encontró un plan de pago para el contrato especificado.";
+                    return StatusCode(StatusCodes.Status404NotFound, gResponse);
+                }
+
+                gResponse.Estado = true;
+                gResponse.Objeto = _mapper.Map<PlanDePagoVM>(planDePagoDTO);
+            }
+            catch (Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, gResponse);
             }
             return StatusCode(StatusCodes.Status200OK, gResponse);
         }
