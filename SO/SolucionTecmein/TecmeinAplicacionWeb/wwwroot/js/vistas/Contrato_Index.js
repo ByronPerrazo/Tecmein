@@ -74,9 +74,18 @@ function calcularTotalCuotas() {
 }
 
 function generarCuotasContratoInteligentes() {
-    const fechaInicialStr = $("#fechaPrimeraCuotaGenerar").datepicker('getFormattedDate', 'yyyy-mm-dd');
+    let fechaInicialStr = $("#fechaPrimeraCuotaGenerar").val();
     if (!fechaInicialStr) {
         Swal.fire("Datos incompletos", "Se requiere una 'Fecha Inicial' para generar las cuotas.", "info");
+        return;
+    }
+
+    // Sanitize the date string and parse as UTC to avoid timezone issues.
+    fechaInicialStr = fechaInicialStr.replace(/\//g, '-');
+    const startDate = new Date(fechaInicialStr + 'T00:00:00Z');
+
+    if (isNaN(startDate.getTime())) {
+        Swal.fire("Fecha Inválida", "La 'Fecha Inicial' proporcionada no es válida. Por favor, verifique el formato (YYYY-MM-DD).", "error");
         return;
     }
 
@@ -98,12 +107,7 @@ function generarCuotasContratoInteligentes() {
     $("#tbodyCuotas").empty();
 
     const saldoPendiente = valorContrato - valorAnticipo;
-    const startDate = new Date(fechaInicialStr + 'T00:00:00');
 
-    if (isNaN(startDate.getTime())) {
-        Swal.fire("Fecha Inválida", "La 'Fecha Inicial' proporcionada no es válida. Por favor, verifique el formato (YYYY-MM-DD).", "error");
-        return;
-    }
 
     if (valorAnticipo > 0) {
         const fechaFormateada = startDate.toISOString().split('T')[0];
@@ -330,18 +334,22 @@ $(document).ready(function () {
         let cuotasVm = [];
         let valido = true;
         $("#tbodyCuotas tr").each(function () {
-            const numeroCuota = $(this).find("td:first").text();
-            const fechaVencimiento = $(this).find(".fecha-cuota-input").val();
-            const monto = parseFloat($(this).find(".monto-cuota-input").val());
+            const fila = $(this);
+            const numeroCuota = fila.find("td:eq(0)").text();
+            const tipoCuota = fila.find("td:eq(1)").text();
+            const fechaVencimiento = fila.find(".fecha-cuota-input").val();
+            const monto = parseFloat(fila.find(".monto-cuota-input").val());
 
             if (!fechaVencimiento || isNaN(monto)) {
                 valido = false;
-                return;
+                return false; // Romper el bucle .each
             }
             cuotasVm.push({
+                idCuota: parseInt(fila.data("id-cuota")) || 0, // Obtener el ID guardado
                 numeroCuota: parseInt(numeroCuota),
+                tipo: tipoCuota, // Enviar el tipo
                 fechaVencimiento: fechaVencimiento,
-                monto: monto,
+                montoEsperado: monto, // Usar el nombre correcto
                 estado: "Pendiente"
             });
         });
@@ -351,12 +359,15 @@ $(document).ready(function () {
             return;
         }
 
+        const fechaAnticipo = cuotasVm.length > 0 ? cuotasVm[0].fechaVencimiento : null;
+
         const modelo = {
             idPlanDePago: idPlanDePago,
             idContrato: parseInt(idContrato),
             secFormaPago: parseInt(secFormaPago),
             valorContrato: parseFloat($("#txtValorContratoPlan").val()),
             valorAnticipo: parseFloat($("#txtValorAnticipoPlan").val()) || 0,
+            fechaAnticipo: fechaAnticipo,
             numeroCuotas: cuotasVm.length,
             cuotas: cuotasVm
         };
@@ -632,12 +643,10 @@ $(document).ready(function () {
                 if (cuotas.length > 0) {
                     cuotas.forEach(function(cuota) {
                         if (!cuota.fechaVencimiento) return;
-                        const fecha = new Date(cuota.fechaVencimiento);
-                        if (isNaN(fecha.getTime())) return;
-
-                        const fechaFormateada = fecha.toISOString().split('T')[0];
+                        // FIX: Directly split the date string to avoid timezone issues with `new Date()`
+                        const fechaFormateada = cuota.fechaVencimiento.split('T')[0];
                         const nuevaFila = `
-                            <tr>
+                            <tr data-id-cuota="${cuota.idCuota}">
                                 <td>${cuota.numeroCuota}</td>
                                 <td>${cuota.tipo || 'Cuota'}</td>
                                 <td><div class="input-group date" data-provide="datepicker"><input type="text" class="form-control form-control-sm fecha-cuota-input" value="${fechaFormateada}"><div class="input-group-addon"><span class="glyphicon glyphicon-th"></span></div></div></td>

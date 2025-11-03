@@ -1,14 +1,10 @@
+using AutoMapper;
 using BLL.DTOs;
 using BLL.Interfaces;
 using DAL.DBContext;
 using DAL.Interfaces;
 using Entity;
 using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BLL.Implementacion
 {
@@ -52,48 +48,68 @@ namespace BLL.Implementacion
             await using var transaction = await _dbContext.Database.BeginTransactionAsync();
             try
             {
-                // Buscar si ya existe un plan para este contrato
                 var planDePagoEntity = await _dbContext.PlanesDePago
                     .Include(p => p.Cuotas)
                     .FirstOrDefaultAsync(p => p.IdContrato == modelo.IdContrato);
 
-                if (planDePagoEntity == null) // No existe, es totalmente nuevo
+                bool isNewPlan = planDePagoEntity == null;
+
+                if (isNewPlan)
                 {
-                    planDePagoEntity = _mapper.Map<PlanDePago>(modelo);
-                    planDePagoEntity.FechaRegistro = DateTime.Now;
-                    planDePagoEntity.EstaActivo = true;
+                    planDePagoEntity = new PlanDePago { IdContrato = modelo.IdContrato };
                     _dbContext.PlanesDePago.Add(planDePagoEntity);
-                    await _dbContext.SaveChangesAsync(); // Guardar para obtener el IdPlanDePago
-                }
-                else // Ya existe, es una actualización
-                {
-                    // Borrar cuotas antiguas para reemplazarlas
-                    if (planDePagoEntity.Cuotas.Any())
-                    {
-                        _dbContext.Cuotas.RemoveRange(planDePagoEntity.Cuotas);
-                    }
-
-                    // Mapear los datos principales del VM al entity existente
-                    _mapper.Map(modelo, planDePagoEntity);
-                    planDePagoEntity.FechaModificacion = DateTime.Now;
                 }
 
-                // Extraer fechas de la lista de cuotas del DTO
+                // Mapear datos principales del DTO a la entidad
+                planDePagoEntity.SecFormaPago = modelo.SecFormaPago;
+                planDePagoEntity.ValorContrato = modelo.ValorContrato;
+                planDePagoEntity.ValorAnticipo = (decimal)modelo.ValorAnticipo;
+                planDePagoEntity.NumeroCuotas = modelo.Cuotas.Count;
+                planDePagoEntity.EstaActivo = true;
+                planDePagoEntity.FechaRegistro = isNewPlan ? DateTime.Now : planDePagoEntity.FechaRegistro;
+                planDePagoEntity.FechaModificacion = isNewPlan ? null : (DateTime?)DateTime.Now;
+                planDePagoEntity.FechaAnticipo = modelo.FechaAnticipo;
+
+                // Extraer fechas clave de la lista de cuotas
                 var cuotaAnticipo = modelo.Cuotas.FirstOrDefault(c => c.Tipo == "Anticipo");
-                var primeraCuotaRegular = modelo.Cuotas.Where(c => c.Tipo == "Cuota").OrderBy(c => c.NumeroCuota).FirstOrDefault();
+                var primeraCuotaRegular = modelo.Cuotas.Where(c => c.Tipo != "Anticipo").OrderBy(c => c.FechaVencimiento).FirstOrDefault();
 
-                planDePagoEntity.FechaAnticipo = cuotaAnticipo?.FechaVencimiento;
                 planDePagoEntity.FechaPrimeraCuota = primeraCuotaRegular?.FechaVencimiento;
 
-                // Crear las nuevas cuotas
-                if (modelo.Cuotas != null && modelo.Cuotas.Any())
+                // Lógica de Upsert/Delete para Cuotas
+                var cuotasDtoIds = modelo.Cuotas.Select(c => c.IdCuota).Where(id => id > 0).ToList();
+                var cuotasExistentes = planDePagoEntity.Cuotas.ToList();
+                var cuotasParaEliminar = cuotasExistentes.Where(c => !cuotasDtoIds.Contains(c.IdCuota)).ToList();
+
+                if (cuotasParaEliminar.Any())
                 {
-                    foreach (var cuotaDto in modelo.Cuotas)
+                    _dbContext.Cuotas.RemoveRange(cuotasParaEliminar);
+                }
+
+                foreach (var cuotaDto in modelo.Cuotas)
+                {
+                    if (cuotaDto.IdCuota > 0) // Actualizar cuota existente
                     {
-                        var cuotaEntity = _mapper.Map<Cuota>(cuotaDto);
-                        cuotaEntity.IdPlanDePago = planDePagoEntity.IdPlanDePago;
-                        cuotaEntity.FechaRegistro = DateTime.Now;
-                        _dbContext.Cuotas.Add(cuotaEntity);
+                        var cuotaExistente = cuotasExistentes.FirstOrDefault(c => c.IdCuota == cuotaDto.IdCuota);
+                        if (cuotaExistente != null)
+                        {
+                            cuotaExistente.NumeroCuota = cuotaDto.NumeroCuota;
+                            cuotaExistente.MontoEsperado = cuotaDto.MontoEsperado;
+                            cuotaExistente.FechaVencimiento = cuotaDto.FechaVencimiento;
+                            cuotaExistente.Estado = cuotaDto.Estado;
+                        }
+                    }
+                    else // Insertar nueva cuota
+                    {
+                        var nuevaCuota = new Cuota
+                        {
+                            NumeroCuota = cuotaDto.NumeroCuota,
+                            MontoEsperado = cuotaDto.MontoEsperado,
+                            FechaVencimiento = cuotaDto.FechaVencimiento,
+                            Estado = cuotaDto.Estado,
+                            FechaRegistro = DateTime.Now
+                        };
+                        planDePagoEntity.Cuotas.Add(nuevaCuota);
                     }
                 }
 
@@ -101,7 +117,6 @@ namespace BLL.Implementacion
                 await transaction.CommitAsync();
 
                 var dtoResult = _mapper.Map<PlanDePagoDTO>(planDePagoEntity);
-                dtoResult.Cuotas = _mapper.Map<List<CuotaDTO>>(planDePagoEntity.Cuotas.OrderBy(c => c.NumeroCuota).ToList());
                 return dtoResult;
             }
             catch (Exception ex)
