@@ -4,7 +4,7 @@ let modeloBasePlanDePago = {};
 
 function inicializarDatepickers(selector) {
     $(selector).find('.date').datepicker({
-        format: 'yyyy-mm-dd',
+        format: 'dd/mm/yyyy',
         language: 'es',
         autoclose: true,
         todayHighlight: true
@@ -80,12 +80,21 @@ function generarCuotasContratoInteligentes() {
         return;
     }
 
-    // Sanitize the date string and parse as UTC to avoid timezone issues.
-    fechaInicialStr = fechaInicialStr.replace(/\//g, '-');
-    const startDate = new Date(fechaInicialStr + 'T00:00:00Z');
+    // Parse DD/MM/YYYY string into a Date object
+    const parts = fechaInicialStr.split('/');
+    if (parts.length !== 3) {
+        Swal.fire("Fecha Inválida", "La 'Fecha Inicial' proporcionada no es válida. Por favor, verifique el formato (DD/MM/YYYY).", "error");
+        return;
+    }
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10);
+    const year = parseInt(parts[2], 10);
+
+    // Create a Date object (month is 0-indexed in JS Date)
+    const startDate = new Date(year, month - 1, day);
 
     if (isNaN(startDate.getTime())) {
-        Swal.fire("Fecha Inválida", "La 'Fecha Inicial' proporcionada no es válida. Por favor, verifique el formato (YYYY-MM-DD).", "error");
+        Swal.fire("Fecha Inválida", "La 'Fecha Inicial' proporcionada no es válida. Por favor, verifique el formato (DD/MM/YYYY).", "error");
         return;
     }
 
@@ -110,7 +119,7 @@ function generarCuotasContratoInteligentes() {
 
 
     if (valorAnticipo > 0) {
-        const fechaFormateada = startDate.toISOString().split('T')[0];
+        const fechaFormateada = startDate.toLocaleDateString('es-ES');
         const nuevaFila = `
             <tr>
                 <td>1</td>
@@ -129,7 +138,7 @@ function generarCuotasContratoInteligentes() {
             let montoActualCuota = (i === numCuotas - 1) ? (saldoPendiente - totalAcumulado) : montoBase;
             const nuevaFecha = new Date(startDate.getTime());
             nuevaFecha.setMonth(nuevaFecha.getMonth() + i + 1);
-            const fechaFormateada = nuevaFecha.toISOString().split('T')[0];
+            const fechaFormateada = nuevaFecha.toLocaleDateString('es-ES');
             const nuevaFila = `
                 <tr>
                     <td>${i + 2}</td>
@@ -167,7 +176,7 @@ function setPlanDePagoEditable(esEditable) {
 $(document).ready(function () {
     // Initialize datepickers with a standard format
     $('.date').datepicker({
-        format: 'yyyy-mm-dd',
+        format: 'dd/mm/yyyy',
         language: 'es',
         autoclose: true,
         todayHighlight: true
@@ -643,8 +652,9 @@ $(document).ready(function () {
                 if (cuotas.length > 0) {
                     cuotas.forEach(function(cuota) {
                         if (!cuota.fechaVencimiento) return;
-                        // FIX: Directly split the date string to avoid timezone issues with `new Date()`
-                        const fechaFormateada = cuota.fechaVencimiento.split('T')[0];
+                        // Parse YYYY-MM-DDTHH:mm:ss from server, then format to DD/MM/YYYY
+                        const serverDate = new Date(cuota.fechaVencimiento);
+                        const fechaFormateada = serverDate.toLocaleDateString('es-ES');
                         const nuevaFila = `
                             <tr data-id-cuota="${cuota.idCuota}">
                                 <td>${cuota.numeroCuota}</td>
