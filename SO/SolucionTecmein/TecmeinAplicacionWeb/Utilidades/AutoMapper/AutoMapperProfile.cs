@@ -607,6 +607,8 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
             CreateMap<Pago, PagoDTO>().ReverseMap();
             CreateMap<PlanDePagoDTO, PlanDePagoVM>();
             CreateMap<CuotaDTO, CuotaVM>();
+            CreateMap<PlanDePagoVM, PlanDePagoDTO>();
+            CreateMap<CuotaVM, CuotaDTO>();
             #endregion
 
             #region Auditoria

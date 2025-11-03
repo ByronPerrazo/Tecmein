@@ -2,6 +2,15 @@ let tablaContratos;
 let precontratosCargados = [];
 let modeloBasePlanDePago = {};
 
+function inicializarDatepickers(selector) {
+    $(selector).find('.date').datepicker({
+        format: 'yyyy-mm-dd',
+        language: 'es',
+        autoclose: true,
+        todayHighlight: true
+    });
+}
+
 // Helper function to find the mode (most frequent value) in an array
 const findMode = (arr) => {
     if (arr.length === 0) return null;
@@ -65,9 +74,14 @@ function calcularTotalCuotas() {
 }
 
 function generarCuotasContratoInteligentes() {
+    const fechaInicialStr = $("#fechaPrimeraCuotaGenerar").datepicker('getFormattedDate', 'yyyy-mm-dd');
+    if (!fechaInicialStr) {
+        Swal.fire("Datos incompletos", "Se requiere una 'Fecha Inicial' para generar las cuotas.", "info");
+        return;
+    }
+
     const numCuotas = parseInt($("#numCuotasGenerar").val());
     const montoBase = parseFloat($("#montoCuotaGenerar").val());
-    const fechaInicialStr = $("#fechaPrimeraCuotaGenerar").datepicker('getFormattedDate', 'yyyy-mm-dd');
     const valorContrato = parseFloat($("#txtValorContratoPlan").val());
     const valorAnticipo = parseFloat($("#txtValorAnticipoPlan").val()) || 0;
 
@@ -76,19 +90,23 @@ function generarCuotasContratoInteligentes() {
         return;
     }
 
-    if (isNaN(numCuotas) || isNaN(montoBase) || !fechaInicialStr) {
-        Swal.fire("Datos incompletos", "Para generar cuotas, se requiere N° de Cuotas, Monto Base y Fecha Inicial.", "info");
+    if (isNaN(numCuotas) || isNaN(montoBase)) {
+        Swal.fire("Datos incompletos", "Para generar cuotas, se requiere N° de Cuotas y Monto Base.", "info");
         return;
     }
 
     $("#tbodyCuotas").empty();
 
     const saldoPendiente = valorContrato - valorAnticipo;
+    const startDate = new Date(fechaInicialStr + 'T00:00:00');
 
-    // 1. Add Anticipo Row if it exists
+    if (isNaN(startDate.getTime())) {
+        Swal.fire("Fecha Inválida", "La 'Fecha Inicial' proporcionada no es válida. Por favor, verifique el formato (YYYY-MM-DD).", "error");
+        return;
+    }
+
     if (valorAnticipo > 0) {
-        const anticipoFecha = new Date(fechaInicialStr + 'T00:00:00');
-        const fechaFormateada = anticipoFecha.toISOString().split('T')[0];
+        const fechaFormateada = startDate.toISOString().split('T')[0];
         const nuevaFila = `
             <tr>
                 <td>1</td>
@@ -101,25 +119,13 @@ function generarCuotasContratoInteligentes() {
         $("#tbodyCuotas").append(nuevaFila);
     }
 
-    // 2. Generate Cuota Rows
     if (numCuotas > 0 && saldoPendiente > 0) {
-        if ((numCuotas * montoBase) > saldoPendiente + 0.01) { // 0.01 de tolerancia
-            Swal.fire("Monto Base Excesivo", `La suma de las cuotas generadas no puede exceder el saldo pendiente de ${saldoPendiente.toFixed(2)}.`, "error");
-            return;
-        }
-
-        const startDate = new Date(fechaInicialStr + 'T00:00:00');
         let totalAcumulado = 0;
-
         for (let i = 0; i < numCuotas; i++) {
             let montoActualCuota = (i === numCuotas - 1) ? (saldoPendiente - totalAcumulado) : montoBase;
-            
-            // Start installments one month after the initial date
             const nuevaFecha = new Date(startDate.getTime());
             nuevaFecha.setMonth(nuevaFecha.getMonth() + i + 1);
-
             const fechaFormateada = nuevaFecha.toISOString().split('T')[0];
-
             const nuevaFila = `
                 <tr>
                     <td>${i + 2}</td>
@@ -129,13 +135,29 @@ function generarCuotasContratoInteligentes() {
                     <td><button type="button" class="btn btn-danger btn-sm btn-eliminar-cuota-contrato"><i class="fas fa-trash"></i></button></td>
                 </tr>
             `;
-            
             $("#tbodyCuotas").append(nuevaFila);
             totalAcumulado += montoBase;
         }
     }
 
-    reEnumerarCuotasContrato(); // This will also call calcularTotalCuotas
+    inicializarDatepickers("#tbodyCuotas");
+    reEnumerarCuotasContrato();
+}
+
+function setPlanDePagoEditable(esEditable) {
+    $("#formPlanDePago input, #formPlanDePago select").prop("disabled", !esEditable);
+    $("#cboFormaPagoPlan").prop("disabled", false); // La forma de pago siempre es editable
+    $("#btnGenerarCuotasInteligentes").prop("disabled", !esEditable);
+    $("#tbodyCuotas .btn-eliminar-cuota-contrato").prop("disabled", !esEditable);
+
+    if (esEditable) {
+        $("#mensajeSoloLectura").hide();
+        $("#formPlanDePago input, #formPlanDePago select").removeClass("readonly-style");
+    } else {
+        $("#mensajeSoloLectura").show();
+        $("#formPlanDePago input, #formPlanDePago select").addClass("readonly-style");
+        $("#cboFormaPagoPlan").removeClass("readonly-style");
+    }
 }
 
 $(document).ready(function () {
@@ -296,23 +318,63 @@ $(document).ready(function () {
     });
 
     $('#btnGuardarPlanDePago').on('click', function () {
-        // --- LÓGICA DE CONSTRUCCIÓN Y VALIDACIÓN RESTAURADA ---
-        if (!validarCuotasPlanDePago()) { return; }
         const idContrato = $("#txtIdContratoPlan").val();
-        const idPlanDePago = modeloBasePlanDePago.idPlanDePago;
+        const idPlanDePago = modeloBasePlanDePago.idPlanDePago || 0;
         const secFormaPago = $("#cboFormaPagoPlan").val();
-        if (!secFormaPago) { /* ... validación ... */ return; }
-        const cuotas = [];
-        $("#tbodyCuotas tr").each(function (index) { /* ... construcción de cuotas ... */ });
-        const primeraFechaCuota = cuotas.length > 0 ? cuotas[0].fechaVencimiento : null;
-        const modeloPlan = { /* ... construcción de modeloPlan ... */ };
+
+        if (!secFormaPago) {
+            Swal.fire("Error de Validación", "Debe seleccionar una Forma de Pago.", "warning");
+            return;
+        }
+
+        let cuotasVm = [];
+        let valido = true;
+        $("#tbodyCuotas tr").each(function () {
+            const numeroCuota = $(this).find("td:first").text();
+            const fechaVencimiento = $(this).find(".fecha-cuota-input").val();
+            const monto = parseFloat($(this).find(".monto-cuota-input").val());
+
+            if (!fechaVencimiento || isNaN(monto)) {
+                valido = false;
+                return;
+            }
+            cuotasVm.push({
+                numeroCuota: parseInt(numeroCuota),
+                fechaVencimiento: fechaVencimiento,
+                monto: monto,
+                estado: "Pendiente"
+            });
+        });
+
+        if (!valido) {
+            Swal.fire("Error de Validación", "Todas las cuotas deben tener una fecha y un monto válidos.", "warning");
+            return;
+        }
+
+        const modelo = {
+            idPlanDePago: idPlanDePago,
+            idContrato: parseInt(idContrato),
+            secFormaPago: parseInt(secFormaPago),
+            valorContrato: parseFloat($("#txtValorContratoPlan").val()),
+            valorAnticipo: parseFloat($("#txtValorAnticipoPlan").val()) || 0,
+            numeroCuotas: cuotasVm.length,
+            cuotas: cuotasVm
+        };
 
         $.ajax({
-            url: '/api/PlanDePago/Guardar',
+            url: '/Contrato/GuardarPlanDePago',
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify(modeloPlan),
-            success: function (response) { /* ... */ },
+            data: JSON.stringify(modelo),
+            success: function (response) {
+                if (response.estado) {
+                    $('#modalPlanDePago').modal('hide');
+                    Swal.fire("Listo!", "Plan de pago guardado exitosamente.", "success");
+                    tablaContratos.ajax.reload();
+                } else {
+                    Swal.fire("Error", response.mensajes, "error");
+                }
+            },
             error: manejarErrorAjax
         });
     });
@@ -501,148 +563,98 @@ $(document).ready(function () {
 
     $('#tbContrato tbody').on('click', '.btn-plan-pagos', function () {
         const data = tablaContratos.row($(this).parents('tr')).data();
-        console.log("Abriendo plan de pagos para:", data);
 
-        // Resetear el formulario del plan de pagos
+        // Resetear y preparar el modal
         $('#formPlanDePago')[0].reset();
         $('#txtIdContratoPlan').val(data.idContrato);
-        $('#tbodyCuotas').empty(); // Limpiar cuotas anteriores
+        $('#tbodyCuotas').empty();
+        modeloBasePlanDePago = {}; // Limpiar modelo base
 
-        // Cargar las formas de pago para el dropdown
-        $.ajax({
-            url: "/FormaPago/ListaParaDropdown",
-            type: "GET",
-            success: function (response) {
-                const formasPago = response.data.$values || response.data; // Acceder directamente a response.data.$values
-                const $cbo = $('#cboFormaPagoPlan');
-                $cbo.empty().append($('<option>').val('').text('Seleccionar...'));
-                formasPago.forEach(fp => {
-                    $cbo.append($('<option>').val(fp.value).text(fp.text));
-                });
-            },
-            error: function(xhr, status, error) { // Manejar el error directamente aquí
-                manejarErrorAjax(xhr.responseJSON, "Cargar Formas de Pago");
+        // Cargar siempre los dropdowns y el plan de pago existente
+        $.when(
+            $.ajax({ url: "/FormaPago/ListaParaDropdown" }),
+            $.ajax({ url: `/Contrato/ObtenerPlanDePagoPorContrato?idContrato=${data.idContrato}` })
+        ).done(function (responseFormasPago, responsePlanPago) {
+            // 1. Poblar Formas de Pago
+            const formasPago = responseFormasPago[0].data.$values || responseFormasPago[0].data;
+            const $cboFormaPago = $('#cboFormaPagoPlan');
+            $cboFormaPago.empty().append($('<option>').val('').text('Seleccionar...'));
+            formasPago.forEach(fp => {
+                $cboFormaPago.append($('<option>').val(fp.value).text(fp.text));
+            });
+
+            // 2. Procesar Plan de Pago Existente
+            const planDePago = responsePlanPago[0].estado ? responsePlanPago[0].objeto : null;
+            if (planDePago) {
+                modeloBasePlanDePago = planDePago; // Guardar el plan cargado
+                $cboFormaPago.val(planDePago.secFormaPago);
+                $('#txtValorContratoPlan').val(planDePago.valorContrato.toFixed(2));
+                $('#txtValorAnticipoPlan').val(planDePago.valorAnticipo.toFixed(2));
             }
+
+            // 3. Decidir el flujo basado en el origen del contrato
+            if (data.provieneDePreContrato) {
+                setPlanDePagoEditable(false);
+                $.ajax({
+                    url: `/Contrato/ObtenerCompromisosDePagoPreContrato?idCotizacion=${data.idCotizacion}`,
+                    type: "GET",
+                    success: function (response) {
+                        if (response.estado) {
+                            let totalContratoCalculado = 0;
+                            $('#tbodyCuotas').empty(); // Limpiar por si acaso
+                            const compromisos = response.objeto.$values || response.objeto;
+                            compromisos.forEach(function (compromiso) {
+                                totalContratoCalculado += compromiso.monto;
+                                const fechaFormateada = new Date(compromiso.fechaVencimiento).toISOString().split('T')[0];
+                                const nuevaFila = `
+                                    <tr>
+                                        <td>${compromiso.numeroCuota}</td>
+                                        <td>${compromiso.tipo}</td>
+                                        <td><input type="text" class="form-control form-control-sm fecha-cuota-input" value="${fechaFormateada}" readonly></td>
+                                        <td><input type="number" class="form-control form-control-sm monto-cuota-input" value="${compromiso.monto.toFixed(2)}" readonly></td>
+                                        <td></td>
+                                    </tr>
+                                `;
+                                $('#tbodyCuotas').append(nuevaFila);
+                            });
+                            $('#txtValorContratoPlan').val(totalContratoCalculado.toFixed(2));
+                            reEnumerarCuotasContrato();
+                            $('#modalPlanDePago').modal('show');
+                        } else {
+                            Swal.fire("Error", response.mensajes, "error");
+                        }
+                    },
+                    error: manejarErrorAjax
+                });
+            } else {
+                setPlanDePagoEditable(true);
+                const cuotas = (planDePago && planDePago.cuotas && planDePago.cuotas.$values) ? planDePago.cuotas.$values : (planDePago && planDePago.cuotas || []);
+                if (cuotas.length > 0) {
+                    cuotas.forEach(function(cuota) {
+                        if (!cuota.fechaVencimiento) return;
+                        const fecha = new Date(cuota.fechaVencimiento);
+                        if (isNaN(fecha.getTime())) return;
+
+                        const fechaFormateada = fecha.toISOString().split('T')[0];
+                        const nuevaFila = `
+                            <tr>
+                                <td>${cuota.numeroCuota}</td>
+                                <td>${cuota.tipo || 'Cuota'}</td>
+                                <td><div class="input-group date" data-provide="datepicker"><input type="text" class="form-control form-control-sm fecha-cuota-input" value="${fechaFormateada}"><div class="input-group-addon"><span class="glyphicon glyphicon-th"></span></div></div></td>
+                                <td><input type="number" class="form-control form-control-sm monto-cuota-input" value="${cuota.montoEsperado.toFixed(2)}"></td>
+                                <td><button type="button" class="btn btn-danger btn-sm btn-eliminar-cuota-contrato"><i class="fas fa-trash"></i></button></td>
+                            </tr>
+                        `;
+                        $('#tbodyCuotas').append(nuevaFila);
+                    });
+                    inicializarDatepickers("#tbodyCuotas");
+                    reEnumerarCuotasContrato();
+                }
+                $('#modalPlanDePago').modal('show');
+            }
+
+        }).fail(function () {
+            Swal.fire("Error de Carga", "No se pudieron cargar los datos necesarios para el plan de pagos.", "error");
         });
-
-        if (data.provieneDePreContrato) {
-            // Si proviene de un pre-contrato, cargar los compromisos de pago
-            $.ajax({
-                url: `/Contrato/ObtenerCompromisosDePagoPreContrato?idCotizacion=${data.idCotizacion}`,
-                type: "GET",
-                success: function (response) {
-                    if (response.estado) {
-                        const compromisos = response.objeto.$values; // Acceder a la propiedad $values
-
-                        let totalContratoCalculado = 0;
-                        let valorAnticipo = 0;
-                        let fechaAnticipo = '';
-                        let numeroCuotas = 0;
-                        let fechaPrimeraCuota = '';
-
-                        compromisos.forEach(function(compromiso) {
-                            totalContratoCalculado += compromiso.monto;
-                            if (compromiso.tipo === "Anticipo") {
-                                valorAnticipo = compromiso.monto;
-                                fechaAnticipo = compromiso.fechaVencimiento;
-                            } else if (compromiso.tipo === "Cuota") {
-                                numeroCuotas++;
-                                if (compromiso.numeroCuota === 1) { // Asumiendo que la primera cuota tiene NumeroCuota = 1
-                                    fechaPrimeraCuota = compromiso.fechaVencimiento;
-                                }
-                            }
-                            // Añadir la fila a la tabla de cuotas
-                            const fechaFormateada = new Date(compromiso.fechaVencimiento).toISOString().split('T')[0];
-                            const nuevaFila = `
-                                <tr>
-                                    <td>${compromiso.numeroCuota}</td>
-                                    <td>${compromiso.tipo}</td>
-                                    <td><div class="input-group date" data-provide="datepicker"><input type="text" class="form-control form-control-sm fecha-cuota-input" value="${fechaFormateada}"><div class="input-group-addon"><span class="glyphicon glyphicon-th"></span></div></div></td>
-                                    <td><input type="number" class="form-control form-control-sm monto-cuota-input" value="${compromiso.monto.toFixed(2)}"></td>
-                                    <td><button type="button" class="btn btn-danger btn-sm btn-eliminar-cuota-contrato"><i class="fas fa-trash"></i></button></td>
-                                </tr>
-                            `;
-                            $('#tbodyCuotas').append(nuevaFila);
-                        });
-
-                        // Poblar las casillas del modal con los valores derivados
-                        $('#txtValorContratoPlan').val(totalContratoCalculado.toFixed(2));
-                        $('#txtValorAnticipoPlan').val(valorAnticipo.toFixed(2));
-
-                        const cuotas = compromisos.filter(c => c.tipo === 'Cuota');
-                        if (cuotas.length > 0) {
-                            const montos = cuotas.map(c => c.monto);
-                            const montoMasFrecuente = findMode(montos);
-                            const fechaInicialGeneracion = fechaAnticipo; 
-
-                            $('#numCuotasGenerar').val(cuotas.length);
-                            $('#montoCuotaGenerar').val(montoMasFrecuente ? montoMasFrecuente.toFixed(2) : '');
-                            $('#fechaPrimeraCuotaGenerar').datepicker('update', fechaInicialGeneracion ? new Date(fechaInicialGeneracion + 'T00:00:00') : '');
-                        }
-
-                        reEnumerarCuotasContrato(); // This will also call calcularTotalCuotas
-
-                        $('#modalPlanDePago').modal('show');
-                    } else {
-                        Swal.fire("Error", response.mensajes, "error");
-                    }
-                },
-                error: manejarErrorAjax
-            });
-        } else {
-            // Si no proviene de un pre-contrato, cargar el plan de pagos existente
-            $.ajax({
-                url: `/Contrato/ObtenerPlanDePagoPorContrato?idContrato=${data.idContrato}`,
-                type: "GET",
-                success: function (response) {
-                    if (response.estado) {
-                        const planDePago = response.objeto; // Esto es un PlanDePagoVM
-
-                        // Poblar campos principales
-                        $('#txtValorContratoPlan').val(planDePago.valorContrato.toFixed(2));
-                        $('#cboFormaPagoPlan').val(planDePago.secFormaPago);
-                        $('#txtValorAnticipoPlan').val(planDePago.valorAnticipo.toFixed(2));
-
-                        // Poblar la tabla de cuotas con campos editables
-                        $('#tbodyCuotas').empty();
-                        planDePago.cuotas.$values.forEach(function(cuota, index) {
-                            const tipoCuota = (index === 0 && planDePago.valorAnticipo > 0) ? "Anticipo" : "Cuota";
-                            const fechaFormateada = new Date(cuota.fechaVencimiento).toISOString().split('T')[0];
-                            const nuevaFila = `
-                                <tr>
-                                    <td>${cuota.numeroCuota}</td>
-                                    <td>${tipoCuota}</td>
-                                    <td><div class="input-group date" data-provide="datepicker"><input type="text" class="form-control form-control-sm fecha-cuota-input" value="${fechaFormateada}"><div class="input-group-addon"><span class="glyphicon glyphicon-th"></span></div></div></td>
-                                    <td><input type="number" class="form-control form-control-sm monto-cuota-input" value="${cuota.monto.toFixed(2)}"></td>
-                                    <td><button type="button" class="btn btn-danger btn-sm btn-eliminar-cuota-contrato"><i class="fas fa-trash"></i></button></td>
-                                </tr>
-                            `;
-                            $('#tbodyCuotas').append(nuevaFila);
-                        });
-
-                        // Derivar y poblar campos de generación inteligente
-                        const cuotas = planDePago.cuotas.$values;
-                        if (cuotas && cuotas.length > 0) {
-                            const montos = cuotas.map(c => c.monto);
-                            const montoMasFrecuente = findMode(montos);
-                            const primeraCuota = cuotas.find(c => c.numeroCuota === 1);
-                            const fechaInicialGeneracion = primeraCuota ? primeraCuota.fechaVencimiento : (planDePago.fechaAnticipo || '');
-
-                            $('#numCuotasGenerar').val(cuotas.length);
-                            $('#montoCuotaGenerar').val(montoMasFrecuente ? montoMasFrecuente.toFixed(2) : '');
-                            $('#fechaPrimeraCuotaGenerar').datepicker('update', fechaInicialGeneracion ? new Date(fechaInicialGeneracion + 'T00:00:00') : '');
-                        }
-                        
-                        reEnumerarCuotasContrato(); // This will also call calcularTotalCuotas
-                        $('#modalPlanDePago').modal('show');
-                    } else {
-                        // Si no hay plan de pago existente, mostrar el modal vacío para crear uno nuevo
-                        Swal.fire("Información", "No se encontró un plan de pago existente para este contrato. Puede crear uno nuevo.", "info");
-                        $('#modalPlanDePago').modal('show');
-                    }
-                },
-                error: manejarErrorAjax
-            });
-        }
     });
 });

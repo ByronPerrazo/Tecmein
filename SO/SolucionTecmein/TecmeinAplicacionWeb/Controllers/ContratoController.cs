@@ -275,5 +275,24 @@ namespace TecmeinAplicacionWeb.Controllers
             }
             return StatusCode(StatusCodes.Status200OK, gResponse);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> GuardarPlanDePago([FromBody] PlanDePagoVM modelo)
+        {
+            var gResponse = new GenericResponse<PlanDePagoVM>();
+            try
+            {
+                var planDePagoDto = _mapper.Map<PlanDePagoDTO>(modelo);
+                var planGuardado = await _planDePagoService.Guardar(planDePagoDto);
+                gResponse.Estado = true;
+                gResponse.Objeto = _mapper.Map<PlanDePagoVM>(planGuardado);
+            }
+            catch (Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+            }
+            return StatusCode(StatusCodes.Status200OK, gResponse);
+        }
     }
 }

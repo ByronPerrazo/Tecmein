@@ -35,10 +35,10 @@ namespace Entity
 
         public bool EstaActivo { get; set; }
 
-        public DateTime FechaRegistro { get; set; }
+    public DateTime FechaRegistro { get; set; }
+    public DateTime? FechaModificacion { get; set; }
 
-        [ForeignKey("IdContrato")]
-        public virtual Contrato IdContratoNavigation { get; set; } = null!;
+    public virtual Contrato IdContratoNavigation { get; set; } = null!;
 
         [ForeignKey("SecFormaPago")]
         public virtual FormaPago SecFormaPagoNavigation { get; set; } = null!;

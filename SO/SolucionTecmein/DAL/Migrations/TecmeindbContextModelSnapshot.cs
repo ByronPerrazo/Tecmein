@@ -1109,6 +1109,12 @@ namespace DAL.Migrations
                         .HasColumnType("varchar(30)")
                         .HasColumnName("icono");
 
+                    b.Property<bool>("MostrarEnMenu")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("Orden")
+                        .HasColumnType("int");
+
                     b.Property<string>("PaginaAccion")
                         .HasMaxLength(130)
                         .HasColumnType("varchar(130)")
@@ -1250,6 +1256,9 @@ namespace DAL.Migrations
                     b.Property<DateTime?>("FechaAnticipo")
                         .HasColumnType("datetime")
                         .HasColumnName("FechaAnticipo");
+
+                    b.Property<DateTime?>("FechaModificacion")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime?>("FechaPrimeraCuota")
                         .HasColumnType("datetime")
@@ -1843,10 +1852,8 @@ namespace DAL.Migrations
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<DateTime?>("FechaSiguienteVisita")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasColumnName("fechaSiguienteVisita")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnName("fechaSiguienteVisita");
 
                     b.Property<string>("GeoUbicacion")
                         .HasMaxLength(250)
