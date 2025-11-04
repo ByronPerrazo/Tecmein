@@ -78,6 +78,44 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
             color: white;
             text-align: center;
+            overflow: hidden; /* To contain the animation */
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #007bff, #003366, #007bff);
+            background-size: 400% 400%;
+            z-index: -1;
+            border-radius: 18px; /* Slightly larger than card border-radius */
+            filter: blur(8px);
+            animation: border-light-anim 8s ease-in-out infinite;
+        }
+
+        .login-card::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #007bff, #003366, #007bff);
+            background-size: 400% 400%;
+            z-index: -1;
+            border-radius: 18px;
+            filter: blur(8px);
+            animation: border-light-anim 8s ease-in-out infinite;
+            animation-delay: -4s; /* Start halfway through the animation */
+        }
+
+        @@keyframes border-light-anim {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .logo-container {
