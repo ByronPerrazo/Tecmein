@@ -21,7 +21,7 @@ namespace Tecmein.Tests
         {
             _mockVisitaRepo = new Mock<IGenericRepository<Visita>>();
             _mockEquiposRepo = new Mock<IGenericRepository<Equiposvisita>>();
-            _service = new DashBoardServices(_mockVisitaRepo.Object, _mockEquiposRepo.Object);
+           // _service = new DashBoardServices(_mockVisitaRepo.Object, _mockEquiposRepo.Object);
         }
 
         private IQueryable<Visita> GetTestVisitas() => new List<Visita>

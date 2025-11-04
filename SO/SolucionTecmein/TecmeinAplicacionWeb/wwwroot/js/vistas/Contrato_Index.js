@@ -447,7 +447,7 @@ $(document).ready(function () {
                 const $cbo = $('#cboPreContrato');
                 $cbo.empty().append($('<option>').val('').text('Seleccionar...'));
                 precontratosCargados.forEach(p => {
-                    $cbo.append($('<option>').val(p.secPreContrato).text(`${p.secPreContrato} - ${p.nombreProyecto}`));
+                    $cbo.append($('<option>').val(p.secPreContrato).text(`${p.secPreContrato} - ${p.nombreObra}`));
                 });
             }),
             $.ajax({ url: "/Cliente/Lista" }).done(function(response) {
@@ -486,7 +486,7 @@ $(document).ready(function () {
         if (selectedId) {
             const precontrato = precontratosCargados.find(p => p.secPreContrato == selectedId);
             if (precontrato) {
-                $('#txtNombreProyecto').val(precontrato.nombreProyecto);
+                $('#txtNombreProyecto').val(precontrato.nombreObra);
             }
         } else {
             $('#txtNombreProyecto').val('');

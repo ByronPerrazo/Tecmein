@@ -11,6 +11,9 @@ namespace TecmeinAplicacionWeb.Models.ViewModels
 
         public List<MarcasMasVendidasVM> listaMarcasMasVendidasVM { get; set; }
         public List<VisitasUktimaSemanaVM> listaVisitasUktimaSemanaVM { get; set; }
+        public Dictionary<string, int> VisitasPorEtapa { get; set; }
+        public Dictionary<string, int> ContratosPorMes { get; set; }
+        public Dictionary<string, int> TopClientesConMasContratos { get; set; }
     }
 
     public class MarcasMasVendidasVM { 

@@ -14,6 +14,9 @@ namespace BLL.Interfaces
         Task<int> TotalMarcas();
         Task<Dictionary<string, int>> VisitasUltimaSemana();
         Task<Dictionary<string, int>> MarcasMasVendidas();
+        Task<Dictionary<string, int>> VisitasPorEtapa();
+        Task<Dictionary<string, int>> ContratosPorMes();
+        Task<Dictionary<string, int>> TopClientesConMasContratos();
 
     }
 }

@@ -341,6 +341,8 @@ namespace BLL.Implementacion
             var query = await _repositorioPreContrato.Consultar(p => p.Estado == "Aprobado" && p.EstaActivo);
             return await query.Include(p => p.SecCotizacionNavigation)
                               .ThenInclude(c => c.SecVisitaNavigation)
+                                .ThenInclude(v => v.Contactovisita)
+                                    .ThenInclude(cv => cv.SecContactoNavigation)
                               .ToListAsync();
         }
 

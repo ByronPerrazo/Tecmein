@@ -141,6 +141,51 @@
         </div>
     </div>
 
+    <!-- Content Row -->
+    <div class="row">
+        <!-- Visitas por Etapa -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-second-primary">
+                    <h6 class="m-0 font-weight-bold text-white">Visitas por Etapa</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie" style="height: 350px !important ;">
+                        <canvas id="chartVisitasPorEtapa"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contratos por Mes -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-second-primary">
+                    <h6 class="m-0 font-weight-bold text-white">Contratos por Mes (Últimos 12 meses)</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area" style="height: 350px !important;">
+                        <canvas id="chartContratosPorMes"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top 5 Clientes -->
+        <div class="col-xl-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-second-primary">
+                    <h6 class="m-0 font-weight-bold text-white">Top 5 Clientes con más Contratos</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar" style="height: 350px !important;">
+                        <canvas id="chartTopClientes"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 <!-- /.container-fluid -->
 

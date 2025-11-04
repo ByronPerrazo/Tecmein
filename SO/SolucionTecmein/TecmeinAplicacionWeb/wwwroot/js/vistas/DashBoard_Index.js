@@ -123,12 +123,122 @@ $(document).ready(function () {
                         },
                     });
 
+                    // New Charts
+                    renderPieChart("chartVisitasPorEtapa", d.visitasPorEtapa, "Visitas por Etapa");
+                    renderBarChart("chartContratosPorMes", d.contratosPorMes, "Contratos por Mes");
+                    renderHorizontalBarChart("chartTopClientes", d.topClientesConMasContratos, "Top 5 Clientes");
+
                 }
             }
         )
         .catch(error => {
             console.error('Error al obtener resumen :', error);
         });
+
+    function renderPieChart(canvasId, data, label) {
+        const labels = Object.keys(data);
+        const values = Object.values(data);
+        const control = document.getElementById(canvasId);
+        new Chart(control, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'],
+                    hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf', '#dda20a', '#c73021'],
+                    hoverBorderColor: "rgba(234, 236, 244, 1)",
+                }],
+            },
+            options: {
+                maintainAspectRatio: false,
+                tooltips: {
+                    backgroundColor: "rgb(255,255,255)",
+                    bodyFontColor: "#858796",
+                    borderColor: '#dddfeb',
+                    borderWidth: 1,
+                    xPadding: 15,
+                    yPadding: 15,
+                    displayColors: false,
+                    caretPadding: 10,
+                },
+                legend: {
+                    display: true
+                },
+            },
+        });
+    }
+
+    function renderBarChart(canvasId, data, label) {
+        const labels = Object.keys(data);
+        const values = Object.values(data);
+        const control = document.getElementById(canvasId);
+        new Chart(control, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: label,
+                    backgroundColor: "#4e73df",
+                    hoverBackgroundColor: "#2e59A9",
+                    borderColor: "#4e73df",
+                    data: values,
+                }],
+            },
+            options: {
+                maintainAspectRatio: false,
+                legend: {
+                    display: false
+                },
+                scales: {
+                    xAxes: [{
+                        gridLines: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        maxBarThickness: 50,
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            min: 0,
+                            maxTicksLimit: 5
+                        }
+                    }],
+                },
+            }
+        });
+    }
+
+    function renderHorizontalBarChart(canvasId, data, label) {
+        const labels = Object.keys(data);
+        const values = Object.values(data);
+        const control = document.getElementById(canvasId);
+        new Chart(control, {
+            type: 'horizontalBar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: label,
+                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'],
+                    data: values,
+                }],
+            },
+            options: {
+                maintainAspectRatio: false,
+                legend: {
+                    display: false
+                },
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            min: 0,
+                            maxTicksLimit: 5
+                        }
+                    }],
+                },
+            }
+        });
+    }
 
 
 });

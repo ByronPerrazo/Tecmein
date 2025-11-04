@@ -11,6 +11,7 @@ using TecmeinWebApp.Utilidades.Response;
 using TecmeinWebApp.Utilidades.ViewComponents;
 using System.Globalization;
 using BLL.DTOs;
+using Microsoft.EntityFrameworkCore;
 
 namespace TecmeinAplicacionWeb.Controllers
 {
@@ -155,7 +156,7 @@ namespace TecmeinAplicacionWeb.Controllers
                     IdCotizacion = vmContrato.IdCotizacion > 0 ? vmContrato.IdCotizacion : null,
                     SecCliente = vmContrato.SecCliente > 0 ? vmContrato.SecCliente : null,
                     NombreProyecto = vmContrato.NombreProyecto, // Añadido para pasar el nombre del proyecto
-                    FechaFirma = DateTime.ParseExact(vmContrato.FechaFirma, "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                    FechaFirma = DateTime.ParseExact(vmContrato.FechaFirma, "dd/MM/yyyy", new CultureInfo("es-ES")),
                     IdUsuarioCarga = int.Parse(idUsuario),
                     ArchivoStream = archivo.OpenReadStream(),
                     NombreArchivo = archivo.FileName

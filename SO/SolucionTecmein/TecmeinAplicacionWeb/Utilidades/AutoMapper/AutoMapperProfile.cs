@@ -547,11 +547,11 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
                 .ForMember(dest => dest.NombreUsuarioCarga,
                            opt => opt.MapFrom(src => src.IdUsuarioCargaNavigation.Nombre))
                 .ForMember(dest => dest.FechaFirma,
-                           opt => opt.MapFrom(src => src.FechaFirma.ToString("yyyy-MM-dd")));
+                           opt => opt.MapFrom(src => src.FechaFirma.ToString("dd/MM/yyyy")));
 
             CreateMap<ContratoVM, Contrato>()
                 .ForMember(dest => dest.FechaFirma, 
-                           opt => opt.MapFrom(src => DateTime.ParseExact(src.FechaFirma, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)))
+                           opt => opt.MapFrom(src => DateTime.ParseExact(src.FechaFirma, "dd/MM/yyyy", new System.Globalization.CultureInfo("es-ES"))))
                 .ForMember(dest => dest.IdCotizacionNavigation, opt => opt.Ignore())
                 .ForMember(dest => dest.IdUsuarioCargaNavigation, opt => opt.Ignore());
             #endregion

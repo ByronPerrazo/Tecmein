@@ -15,14 +15,11 @@ namespace TecmeinWebApp.Controllers
             _dashBoarServicio = dashBoarServicio;
         }
         
-        [ValidatePermission("VER_MENU")]
         public IActionResult Index()
         {
             return View();
         }
 
-        [HttpGet]
-        [ValidatePermission("LEER")]
         public async Task<IActionResult> ObtenerResumen()
         {
 
@@ -61,6 +58,10 @@ namespace TecmeinWebApp.Controllers
 
                 dashBoard.listaMarcasMasVendidasVM = listaMarcasMasVendidas;
                 dashBoard.listaVisitasUktimaSemanaVM = listaVisitasUltimaSemana;
+
+                dashBoard.VisitasPorEtapa = await _dashBoarServicio.VisitasPorEtapa();
+                dashBoard.ContratosPorMes = await _dashBoarServicio.ContratosPorMes();
+                dashBoard.TopClientesConMasContratos = await _dashBoarServicio.TopClientesConMasContratos();
 
                 gResponse.Estado = true;
                 gResponse.Objeto = dashBoard;

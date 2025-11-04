@@ -49,7 +49,8 @@ namespace IOC
             services.AddScoped<IDashBoardServices, DashBoardServices>(provider =>
                 new DashBoardServices(
                     provider.GetRequiredService<IGenericRepository<Visita>>(),
-                    provider.GetRequiredService<IGenericRepository<Equiposvisita>>()
+                    provider.GetRequiredService<IGenericRepository<Equiposvisita>>(),
+                    provider.GetRequiredService<IGenericRepository<Contrato>>()
                 ));
 
             services.AddScoped<IPermisoServices, PermisoServices>();
