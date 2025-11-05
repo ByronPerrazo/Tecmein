@@ -180,7 +180,7 @@ $("#btnGuardar").click(function () {
 
     const inputImagen = document.getElementById("txtFoto");
     const datosFormulario = new FormData();
-    datosFormulario.append("imagen", inputImagen.files[0]);
+    datosFormulario.append("Foto", inputImagen.files[0]);
     datosFormulario.append("modelo", JSON.stringify(modelo));
 
     const url = esEdicion ? "Editar" : "Crear";
