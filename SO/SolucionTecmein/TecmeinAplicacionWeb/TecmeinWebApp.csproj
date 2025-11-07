@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <SignAssembly>False</SignAssembly>
     <NeutralLanguage>es-EC</NeutralLanguage>
+    <UserSecretsId>89baefb1-035d-4ccc-959c-50e202a2bf69</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
