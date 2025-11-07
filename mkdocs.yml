@@ -1,0 +1,23 @@
+site_name: Manual de Usuario - Tecmein
+docs_dir: Manuales
+
+theme:
+  name: material
+  language: es
+  palette:
+    scheme: default 
+    primary: indigo
+    accent: indigo
+  features:
+    - navigation.tabs
+    - navigation.top
+    - search.suggest
+    - search.highlight
+
+nav:
+  - 'Inicio': 'index.md'
+  - 'Administración': 'Administracion_Sistema.md'
+  - 'Entidades Principales': 'Gestion_Entidades_Principales.md'
+  - 'Gestión de Visitas': 'Gestion_Visitas.md'
+  - 'Proceso de Cotización': 'Proceso_Cotizacion.md'
+  - 'Pre-Contratos y Contratos': 'Gestion_PreContratos_Contratos.md'

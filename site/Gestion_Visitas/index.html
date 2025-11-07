@@ -1,0 +1,925 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../Gestion_Entidades_Principales/">
+      
+      
+        <link rel="next" href="../Proceso_Cotizacion/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.23">
+    
+    
+      
+        <title>Gestión de Visitas - Manual de Usuario - Tecmein</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#manual-de-usuario-gestion-de-visitas" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href=".." title="Manual de Usuario - Tecmein" class="md-header__button md-logo" aria-label="Manual de Usuario - Tecmein" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Manual de Usuario - Tecmein
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Gestión de Visitas
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Inicio
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../Administracion_Sistema/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Administración
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../Gestion_Entidades_Principales/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Entidades Principales
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Gestión de Visitas
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../Proceso_Cotizacion/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Proceso de Cotización
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../Gestion_PreContratos_Contratos/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Pre-Contratos y Contratos
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Manual de Usuario - Tecmein" class="md-nav__button md-logo" aria-label="Manual de Usuario - Tecmein" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Manual de Usuario - Tecmein
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Inicio
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Administracion_Sistema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Administración
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gestion_Entidades_Principales/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Entidades Principales
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Gestión de Visitas
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Gestión de Visitas
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Introducción
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-acceso-al-modulo" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Acceso al Módulo
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-pantalla-principal-listado-de-visitas" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Pantalla Principal (Listado de Visitas)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Pantalla Principal (Listado de Visitas)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#funcionalidades-adicionales" class="md-nav__link">
+    <span class="md-ellipsis">
+      Funcionalidades Adicionales:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-acciones-principales" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Acciones Principales
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Acciones Principales">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-crear-una-nueva-visita" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1. Crear una Nueva Visita
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-editar-una-visita" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2. Editar una Visita
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-eliminar-una-visita" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3. Eliminar una Visita
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-avanzar-etapa-de-la-visita" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.4. Avanzar Etapa de la Visita
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-ver-detalles-de-la-visita" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.5. Ver Detalles de la Visita
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-conceptos-clave" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Conceptos Clave
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-permisos-y-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Permisos y Roles
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Proceso_Cotizacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Proceso de Cotización
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gestion_PreContratos_Contratos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Pre-Contratos y Contratos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Introducción
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-acceso-al-modulo" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Acceso al Módulo
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-pantalla-principal-listado-de-visitas" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Pantalla Principal (Listado de Visitas)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Pantalla Principal (Listado de Visitas)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#funcionalidades-adicionales" class="md-nav__link">
+    <span class="md-ellipsis">
+      Funcionalidades Adicionales:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-acciones-principales" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Acciones Principales
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Acciones Principales">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-crear-una-nueva-visita" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1. Crear una Nueva Visita
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-editar-una-visita" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2. Editar una Visita
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-eliminar-una-visita" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3. Eliminar una Visita
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-avanzar-etapa-de-la-visita" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.4. Avanzar Etapa de la Visita
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-ver-detalles-de-la-visita" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.5. Ver Detalles de la Visita
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-conceptos-clave" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Conceptos Clave
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-permisos-y-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Permisos y Roles
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="manual-de-usuario-gestion-de-visitas">Manual de Usuario - Gestión de Visitas</h1>
+<h2 id="1-introduccion">1. Introducción</h2>
+<p>El módulo de Gestión de Visitas es una herramienta fundamental en el ciclo comercial de Tecmein. Permite planificar, registrar y dar seguimiento a todas las interacciones y visitas técnicas realizadas a clientes actuales o potenciales. </p>
+<p>El objetivo de este módulo es centralizar la información de cada visita, desde su programación inicial hasta la ejecución y los pasos posteriores, asegurando un seguimiento ordenado y eficiente.</p>
+<h2 id="2-acceso-al-modulo">2. Acceso al Módulo</h2>
+<p>Para acceder al módulo de Gestión de Visitas, el usuario debe navegar al menú principal del sistema y hacer clic en la opción <strong>Visitas</strong>.</p>
+<p><img alt="imagen-del-menu-visitas" src="https://via.placeholder.com/150x50.png?text=Menú+Visitas" /></p>
+<h2 id="3-pantalla-principal-listado-de-visitas">3. Pantalla Principal (Listado de Visitas)</h2>
+<p>Al ingresar al módulo, se presenta un listado con todas las visitas registradas. Esta pantalla ofrece una vista general y permite realizar acciones rápidas.</p>
+<p><img alt="imagen-listado-visitas" src="https://via.placeholder.com/800x400.png?text=Listado+de+Visitas" /></p>
+<p>La tabla de visitas generalmente contiene las siguientes columnas:
+- <strong>ID:</strong> Identificador único de la visita.
+- <strong>Cliente:</strong> Nombre del cliente asociado a la visita.
+- <strong>Proyecto/Constructora:</strong> Proyecto específico al que pertenece la visita.
+- <strong>Fecha Programada:</strong> Día y hora en que la visita debe realizarse.
+- <strong>Etapa:</strong> Estado actual de la visita (Ej: Planificada, Realizada, Cancelada).
+- <strong>Técnico Asignado:</strong> Usuario responsable de llevar a cabo la visita.
+- <strong>Acciones:</strong> Botones para interactuar con cada registro (Editar, Eliminar, Ver Detalles, etc.).</p>
+<h3 id="funcionalidades-adicionales">Funcionalidades Adicionales:</h3>
+<ul>
+<li><strong>Barra de Búsqueda:</strong> Permite buscar visitas por cliente, proyecto o técnico.</li>
+<li><strong>Filtros:</strong> Permite filtrar las visitas por rango de fechas o por etapa.</li>
+<li><strong>Botón "Nueva Visita":</strong> Inicia el proceso para registrar una nueva visita.</li>
+</ul>
+<h2 id="4-acciones-principales">4. Acciones Principales</h2>
+<h3 id="41-crear-una-nueva-visita">4.1. Crear una Nueva Visita</h3>
+<ol>
+<li>Haga clic en el botón <strong>"Nueva Visita"</strong> ubicado en la parte superior de la pantalla de listado.</li>
+<li>Se abrirá un formulario donde deberá completar la siguiente información:<ul>
+<li><strong>Cliente:</strong> Seleccione un cliente existente de la lista.</li>
+<li><strong>Constructora/Proyecto:</strong> Seleccione el proyecto asociado.</li>
+<li><strong>Fecha y Hora:</strong> Especifique el momento de la visita.</li>
+<li><strong>Técnico Asignado:</strong> Asigne un usuario del sistema como responsable.</li>
+<li><strong>Contactos:</strong> Seleccione las personas de contacto del cliente que atenderán la visita.</li>
+<li><strong>Equipos:</strong> (Opcional) Asocie los equipos que serán revisados o instalados.</li>
+<li><strong>Descripción/Observaciones:</strong> Añada cualquier detalle relevante sobre el objetivo de la visita.</li>
+</ul>
+</li>
+<li>Una vez completados los campos, haga clic en <strong>"Guardar"</strong>. La nueva visita aparecerá en el listado.</li>
+</ol>
+<h3 id="42-editar-una-visita">4.2. Editar una Visita</h3>
+<ol>
+<li>Localice la visita que desea modificar en el listado.</li>
+<li>En la columna "Acciones", haga clic en el icono de <strong>Editar</strong> (usualmente un lápiz).</li>
+<li>Se cargará el mismo formulario de creación, pero con los datos de la visita seleccionada.</li>
+<li>Realice los cambios necesarios y haga clic en <strong>"Guardar"</strong>.</li>
+</ol>
+<h3 id="43-eliminar-una-visita">4.3. Eliminar una Visita</h3>
+<ol>
+<li>Localice la visita que desea eliminar.</li>
+<li>Haga clic en el icono de <strong>Eliminar</strong> (usualmente un cesto de basura).</li>
+<li>El sistema le pedirá una confirmación para evitar eliminaciones accidentales.</li>
+<li>Confirme la acción para eliminar permanentemente la visita.</li>
+</ol>
+<h3 id="44-avanzar-etapa-de-la-visita">4.4. Avanzar Etapa de la Visita</h3>
+<p>Cambiar la etapa de una visita es crucial para el seguimiento.
+1.  Desde el listado, puede haber un menú desplegable en la columna "Etapa" para un cambio rápido.
+2.  Alternativamente, al <strong>Editar</strong> o <strong>Ver Detalles</strong> de una visita, encontrará un botón o sección para <strong>"Avanzar Etapa"</strong>.
+3.  Seleccione la nueva etapa (por ejemplo, de "Planificada" a "Realizada").
+4.  Guarde los cambios. El sistema registrará la fecha y el usuario que realizó el cambio de etapa.</p>
+<h3 id="45-ver-detalles-de-la-visita">4.5. Ver Detalles de la Visita</h3>
+<p>Para consultar toda la información de una visita sin riesgo de modificarla:
+1.  Localice la visita en el listado.
+2.  Haga clic en el icono de <strong>Ver Detalles</strong> (usualmente un ojo o una lupa).
+3.  Se mostrará una vista de solo lectura con toda la información: datos generales, contactos, equipos, seguimientos realizados y el historial de etapas.</p>
+<h2 id="5-conceptos-clave">5. Conceptos Clave</h2>
+<ul>
+<li><strong>Etapas de la Visita:</strong> Representan el ciclo de vida de la visita. Un flujo típico podría ser:<ol>
+<li><strong>Planificada:</strong> La visita ha sido creada y agendada.</li>
+<li><strong>Confirmada:</strong> El cliente ha confirmado la fecha y hora.</li>
+<li><strong>Realizada:</strong> El técnico ha completado la visita.</li>
+<li><strong>En Seguimiento:</strong> Se están realizando acciones post-visita (enviando cotización, etc.).</li>
+<li><strong>Cancelada:</strong> La visita no se llevó a cabo.</li>
+</ol>
+</li>
+<li><strong>Seguimiento:</strong> Dentro de los detalles de una visita, se pueden añadir registros de seguimiento para documentar llamadas, correos o próximas acciones relacionadas con esa visita.</li>
+</ul>
+<h2 id="6-permisos-y-roles">6. Permisos y Roles</h2>
+<p>Las acciones que un usuario puede realizar en este módulo dependen de los permisos asignados a su rol:
+- <strong>Administrador/Jefe de Ventas:</strong> Generalmente tiene acceso completo para crear, editar, eliminar y asignar cualquier visita.
+- <strong>Técnico/Comercial:</strong> Puede que solo tenga permisos para ver y actualizar las visitas que le han sido asignadas.
+- <strong>Rol de Consulta:</strong> Solo puede ver la información de las visitas pero no puede modificarla.</p>
+<p>La correcta gestión de permisos asegura que cada usuario interactúe con el módulo de la forma prevista.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "search.highlight"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>

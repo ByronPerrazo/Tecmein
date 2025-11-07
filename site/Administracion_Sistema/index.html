@@ -1,0 +1,922 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../Gestion_Entidades_Principales/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.23">
+    
+    
+      
+        <title>Administración - Manual de Usuario - Tecmein</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#manual-de-usuario-administracion-del-sistema" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href=".." title="Manual de Usuario - Tecmein" class="md-header__button md-logo" aria-label="Manual de Usuario - Tecmein" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Manual de Usuario - Tecmein
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Administración
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Inicio
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Administración
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../Gestion_Entidades_Principales/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Entidades Principales
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../Gestion_Visitas/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Gestión de Visitas
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../Proceso_Cotizacion/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Proceso de Cotización
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../Gestion_PreContratos_Contratos/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Pre-Contratos y Contratos
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Manual de Usuario - Tecmein" class="md-nav__button md-logo" aria-label="Manual de Usuario - Tecmein" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Manual de Usuario - Tecmein
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Inicio
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Administración
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Administración
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Introducción
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-acceso-al-modulo" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Acceso al Módulo
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-gestion-de-usuarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Gestión de Usuarios
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Gestión de Usuarios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-pantalla-principal-listado-de-usuarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1. Pantalla Principal (Listado de Usuarios)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-crear-un-nuevo-usuario" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2. Crear un Nuevo Usuario
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-editar-un-usuario" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3. Editar un Usuario
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-activar-desactivar-un-usuario" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.4. Activar / Desactivar un Usuario
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-gestion-de-roles-y-permisos" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Gestión de Roles y Permisos
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Gestión de Roles y Permisos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-pantalla-principal-listado-de-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1. Pantalla Principal (Listado de Roles)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-crear-un-nuevo-rol" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2. Crear un Nuevo Rol
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-asignar-permisos-a-un-rol" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3. Asignar Permisos a un Rol
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-flujo-de-trabajo-recomendado" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Flujo de Trabajo Recomendado
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gestion_Entidades_Principales/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Entidades Principales
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gestion_Visitas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Gestión de Visitas
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Proceso_Cotizacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Proceso de Cotización
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gestion_PreContratos_Contratos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Pre-Contratos y Contratos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Introducción
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-acceso-al-modulo" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Acceso al Módulo
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-gestion-de-usuarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Gestión de Usuarios
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Gestión de Usuarios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-pantalla-principal-listado-de-usuarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1. Pantalla Principal (Listado de Usuarios)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-crear-un-nuevo-usuario" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2. Crear un Nuevo Usuario
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-editar-un-usuario" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3. Editar un Usuario
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-activar-desactivar-un-usuario" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.4. Activar / Desactivar un Usuario
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-gestion-de-roles-y-permisos" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Gestión de Roles y Permisos
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Gestión de Roles y Permisos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-pantalla-principal-listado-de-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1. Pantalla Principal (Listado de Roles)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-crear-un-nuevo-rol" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2. Crear un Nuevo Rol
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-asignar-permisos-a-un-rol" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3. Asignar Permisos a un Rol
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-flujo-de-trabajo-recomendado" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Flujo de Trabajo Recomendado
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="manual-de-usuario-administracion-del-sistema">Manual de Usuario - Administración del Sistema</h1>
+<h2 id="1-introduccion">1. Introducción</h2>
+<p>El módulo de Administración del Sistema es el centro de control para la seguridad y el acceso dentro de Tecmein. Permite a los usuarios autorizados (generalmente, administradores) gestionar quién puede ingresar al sistema y qué acciones puede realizar cada persona.</p>
+<p>Una correcta configuración en este módulo es vital para proteger la información de la empresa y asegurar que los empleados solo tengan acceso a las funcionalidades relevantes para su puesto.</p>
+<p><strong>Nota:</strong> El acceso a este módulo está restringido a roles con privilegios de administrador.</p>
+<h2 id="2-acceso-al-modulo">2. Acceso al Módulo</h2>
+<p>Para acceder, el usuario debe navegar al menú de <strong>Configuración</strong> o <strong>Administración</strong> y seleccionar las sub-secciones correspondientes, como <strong>Usuarios</strong> o <strong>Roles</strong>.</p>
+<p><img alt="imagen-menu-admin" src="https://via.placeholder.com/150x100.png?text=Menú+Admin" /></p>
+<h2 id="3-gestion-de-usuarios">3. Gestión de Usuarios</h2>
+<p>Esta sección permite administrar las cuentas de las personas que utilizan el sistema.</p>
+<h3 id="31-pantalla-principal-listado-de-usuarios">3.1. Pantalla Principal (Listado de Usuarios)</h3>
+<p>Muestra una lista de todos los usuarios registrados con detalles clave:
+- <strong>Nombre de Usuario:</strong> Identificador de inicio de sesión.
+- <strong>Nombre Completo:</strong> Nombre y apellido del usuario.
+- <strong>Correo Electrónico:</strong> Email de contacto.
+- <strong>Rol Asignado:</strong> El rol que define sus permisos.
+- <strong>Estado:</strong> Indica si la cuenta está <code>Activa</code> o <code>Inactiva</code>.
+- <strong>Acciones:</strong> Botones para Editar, Desactivar, etc.</p>
+<h3 id="32-crear-un-nuevo-usuario">3.2. Crear un Nuevo Usuario</h3>
+<ol>
+<li>Haga clic en el botón <strong>"Nuevo Usuario"</strong>.</li>
+<li>Complete el formulario con los datos del nuevo empleado:<ul>
+<li><strong>Nombre de Usuario:</strong> (Ej: <code>j.perez</code>)</li>
+<li><strong>Nombre Completo:</strong> (Ej: <code>Juan Pérez</code>)</li>
+<li><strong>Correo Electrónico:</strong></li>
+<li><strong>Contraseña Temporal:</strong> Asigne una contraseña inicial. El sistema debería forzar al usuario a cambiarla en su primer inicio de sesión.</li>
+<li><strong>Rol:</strong> Seleccione de la lista el rol que desempeñará (Ej: <code>Técnico</code>, <code>Vendedor</code>).</li>
+</ul>
+</li>
+<li>Haga clic en <strong>"Guardar"</strong>.</li>
+</ol>
+<h3 id="33-editar-un-usuario">3.3. Editar un Usuario</h3>
+<ol>
+<li>Busque al usuario en el listado y haga clic en el icono de <strong>Editar</strong>.</li>
+<li>Podrá modificar su nombre, correo y reasignar su rol.</li>
+<li><strong>Restablecer Contraseña:</strong> Dentro de la edición, suele existir un botón para generar una nueva contraseña temporal y enviarla al correo del usuario si la ha olvidado.</li>
+</ol>
+<h3 id="34-activar-desactivar-un-usuario">3.4. Activar / Desactivar un Usuario</h3>
+<p>En lugar de eliminar un usuario (lo que podría causar pérdida de historial), la mejor práctica es desactivarlo.
+- Un usuario <strong>inactivo</strong> no puede iniciar sesión en el sistema, pero todos sus registros (visitas, contratos, etc.) se conservan.
+- Esta acción se realiza normalmente con un botón o interruptor en la fila del usuario en el listado.</p>
+<h2 id="4-gestion-de-roles-y-permisos">4. Gestión de Roles y Permisos</h2>
+<p>Esta es la sección más crítica, ya que define lo que cada tipo de usuario puede hacer.</p>
+<h3 id="41-pantalla-principal-listado-de-roles">4.1. Pantalla Principal (Listado de Roles)</h3>
+<p>Muestra los roles definidos en el sistema, como <code>Administrador</code>, <code>Jefe de Ventas</code>, <code>Técnico</code>, <code>Contabilidad</code>.</p>
+<h3 id="42-crear-un-nuevo-rol">4.2. Crear un Nuevo Rol</h3>
+<ol>
+<li>Haga clic en <strong>"Nuevo Rol"</strong>.</li>
+<li>Asigne un <strong>Nombre</strong> descriptivo (Ej: <code>Asistente Comercial</code>) y una <strong>Descripción</strong> de su propósito.</li>
+<li>Guarde el nuevo rol. Inicialmente, no tendrá ningún permiso.</li>
+</ol>
+<h3 id="43-asignar-permisos-a-un-rol">4.3. Asignar Permisos a un Rol</h3>
+<ol>
+<li>En el listado de roles, haga clic en el icono de <strong>"Permisos"</strong> o <strong>"Editar"</strong> junto al rol que desea configurar.</li>
+<li>
+<p>Se presentará una pantalla con una lista de todos los permisos disponibles en el sistema, agrupados por módulo.</p>
+<p><img alt="imagen-permisos" src="https://via.placeholder.com/800x500.png?text=Matriz+de+Permisos+por+Rol" /></p>
+</li>
+<li>
+<p><strong>Ejemplo de Módulo "Visitas":</strong></p>
+<ul>
+<li><code>[ ] Ver Visitas Asignadas</code></li>
+<li><code>[ ] Ver Todas las Visitas</code></li>
+<li><code>[ ] Crear Nueva Visita</code></li>
+<li><code>[ ] Editar Visita</code></li>
+<li><code>[ ] Eliminar Visita</code></li>
+<li><code>[ ] Avanzar Etapa de Visita</code></li>
+</ul>
+</li>
+<li>
+<p>Marque las casillas correspondientes a las acciones que los usuarios con este rol podrán realizar.</p>
+</li>
+<li>Haga clic en <strong>"Guardar"</strong> para aplicar la nueva configuración de permisos. Todos los usuarios con ese rol heredarán instantáneamente estos accesos.</li>
+</ol>
+<h2 id="5-flujo-de-trabajo-recomendado">5. Flujo de Trabajo Recomendado</h2>
+<p>Para una configuración segura y ordenada, siga estos pasos:
+1.  <strong>Definir Roles:</strong> Analice los puestos de trabajo en su empresa y cree un rol para cada uno.
+2.  <strong>Configurar Permisos:</strong> Asigne los permisos mínimos necesarios para que cada rol pueda cumplir sus funciones (principio de menor privilegio).
+3.  <strong>Crear Usuarios:</strong> Cree las cuentas de usuario y asígneles el rol pre-configurado que les corresponde.
+4.  <strong>Revisar Periódicamente:</strong> Es una buena práctica revisar los permisos de cada rol de forma periódica para ajustarlos a las necesidades cambiantes del negocio.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "search.highlight"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>
