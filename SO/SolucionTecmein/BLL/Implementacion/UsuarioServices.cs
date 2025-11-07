@@ -136,14 +136,17 @@ namespace BLL.Implementacion
         {
             try
             {
-                var usuario =
-                    _repositorio
-                    .Obtener(x => x.Secuencial == secuencialUsuario)
-                    .Result ??
-                     throw new TaskCanceledException("Usuario No Registrado");
+                var usuario = await _repositorio.Obtener(x => x.Secuencial == secuencialUsuario);
+
+                if (usuario == null)
+                {
+                    return false; // Usuario no encontrado
+                }
 
                 if (!usuario.Clave.Equals(_utilidadesServices.ConvertirSha256(ClaveActual)))
-                    throw new TaskCanceledException("Contraseña Incorrecta, Intente Otra Vez");
+                {
+                    return false; // Contraseña actual incorrecta
+                }
 
                 usuario.Clave = _utilidadesServices.ConvertirSha256(ClaveNueva);
 
@@ -151,7 +154,8 @@ namespace BLL.Implementacion
             }
             catch (Exception)
             {
-                throw;
+                // Loggear la excepción si es necesario
+                return false; // Error durante la operación
             }
         }
 

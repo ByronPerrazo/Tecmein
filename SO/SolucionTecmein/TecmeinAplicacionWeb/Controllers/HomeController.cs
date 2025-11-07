@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
 using TecmeinAplicacionWeb.Models.ViewModels;
+using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.ViewComponents;
 
 namespace TecmeinWebApp.Controllers;
@@ -80,5 +81,58 @@ public class HomeController : Controller
     public IActionResult AccessDenied()
     {
         return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CambiarClave([FromBody] VMCambiarClave modelo)
+    {
+        try
+        {
+            string idUsuario = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
+            bool claveCambiada = await _usuarioServices.CambiarClave(int.Parse(idUsuario), modelo.claveActual, modelo.claveNueva);
+
+            if (!claveCambiada)
+            {
+                return StatusCode(StatusCodes.Status200OK, new { estado = false, mensajes = "No se pudo cambiar la clave. Verifique su clave actual." });
+            }
+
+            return StatusCode(StatusCodes.Status200OK, new { estado = true, mensajes = "Clave cambiada con éxito." });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error en CambiarClave");
+            return StatusCode(StatusCodes.Status500InternalServerError, new { estado = false, mensajes = "Error interno del servidor." });
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> GuardarPerfil([FromBody] VMPerfil modelo)
+    {
+        try
+        {
+            string idUsuario = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var usuario = new Usuario()
+            {
+                Secuencial = int.Parse(idUsuario),
+                Correo = modelo.correo,
+                Telefono = modelo.telefono
+            };
+
+            bool perfilGuardado = await _usuarioServices.GuardarPerfil(usuario);
+
+            if (!perfilGuardado)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { estado = false, mensajes = "No se pudo guardar el perfil." });
+            }
+
+            return StatusCode(StatusCodes.Status200OK, new { estado = true, mensajes = "Perfil guardado con éxito." });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error en GuardarPerfil");
+            return StatusCode(StatusCodes.Status500InternalServerError, new { estado = false, mensajes = "Error interno del servidor." });
+        }
     }
 }
