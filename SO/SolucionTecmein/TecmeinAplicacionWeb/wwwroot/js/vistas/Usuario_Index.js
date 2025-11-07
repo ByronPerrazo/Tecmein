@@ -28,7 +28,8 @@ $(document).ready(function () {
             { data: "secuencial", visible: false, searchable: false },
             {
                 data: 'urlFoto', render: function (data) {
-                    return `<img style="height:60px" src=${data} class="rounded mx-auto d-block"/>`;
+                    const imageUrl = data && data.trim() !== '' ? data : 'https://via.placeholder.com/60';
+                    return `<img style="height:60px" src="${imageUrl}" class="rounded mx-auto d-block"/>`;
                 }
             },
             { data: "nombre" },
@@ -106,7 +107,7 @@ $("#btnNuevo").click(function () {
             return response.json();
         })
         .then(responseJson => {
-            mostrarModal(MODELO_BASE, responseJson);
+            mostrarModal(MODELO_BASE, responseJson.$values);
         })
         .catch(error => {
             if (error && error.mensajes) {
@@ -171,7 +172,7 @@ $("#btnGuardar").click(function () {
     }
 
     const modelo = structuredClone(MODELO_BASE);
-    modelo["secuencial"] = $("#txtId").val();
+    modelo["secuencial"] = parseInt($("#txtId").val()) || 0;
     modelo["nombre"] = $("#txtNombre").val();
     modelo["correo"] = $("#txtCorreo").val();
     modelo["telefono"] = $("#txtTelefono").val();
@@ -180,7 +181,11 @@ $("#btnGuardar").click(function () {
 
     const inputImagen = document.getElementById("txtFoto");
     const datosFormulario = new FormData();
-    datosFormulario.append("Foto", inputImagen.files[0]);
+
+    if (inputImagen.files && inputImagen.files[0]) {
+        const imageKey = esEdicion ? "Foto" : "imagen";
+        datosFormulario.append(imageKey, inputImagen.files[0]);
+    }
     datosFormulario.append("modelo", JSON.stringify(modelo));
 
     const url = esEdicion ? "Editar" : "Crear";
@@ -225,7 +230,7 @@ $("#btnGuardar").click(function () {
     });
 });
 
-$("#tbdata tbody").on("click", ".btn-eliminar", function () {
+    $("#tbdata tbody").on("click", ".btn-eliminar", function () {
 
     let fila;
     if ($(this).closest("tr").hasClass("child")) {
@@ -278,4 +283,16 @@ $("#tbdata tbody").on("click", ".btn-eliminar", function () {
             });
         }
     });
+});
+
+// Lógica para la vista previa de la imagen
+$("#txtFoto").change(function() {
+    const input = this;
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            $('#imgUsuario').attr('src', e.target.result);
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
 });

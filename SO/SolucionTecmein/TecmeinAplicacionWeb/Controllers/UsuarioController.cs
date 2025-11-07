@@ -118,10 +118,15 @@ namespace TecmeinWebApp.Controllers
 
                 if (imagen != null)
                 {
+                    Console.WriteLine($"Imagen recibida: {imagen.FileName}, Tamaño: {imagen.Length} bytes");
                     string nombreCodificado = $"{usuariosVM.Secuencial.ToString()}-{Guid.NewGuid().ToString("N").Substring(0, 8)}";
                     string extension = Path.GetExtension(imagen.FileName);
                     nombreFoto = string.Concat(nombreCodificado, extension);
                     imagenStream = imagen.OpenReadStream();
+                }
+                else
+                {
+                    Console.WriteLine("No se recibió ninguna imagen para el nuevo usuario.");
                 }
 
                 var urlPantallaCorreo = $"{this.Request.Scheme}://" +

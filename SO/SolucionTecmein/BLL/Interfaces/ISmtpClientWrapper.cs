@@ -5,6 +5,6 @@ namespace BLL.Interfaces
 {
     public interface ISmtpClientWrapper
     {
-        Task SendMailAsync(MailMessage mailMessage, string host, int port, string userName, string password, bool enableSsl);
+        Task SendMailAsync(MailMessage mailMessage);
     }
 }

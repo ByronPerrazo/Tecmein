@@ -10,28 +10,28 @@
     <meta name="viewport" content="width=device-width" />
     <title>EnviarClave</title>
 </head>
-<body style="background-color:#EDF6FF">
+<body style="background-color:#EDF6FF;">
     <br />
     <br />
-    <div style="width:400px;border-radius:5px; margin:auto;background-color:#fff;box-shadow:0px 0px 10px  #DEDEDE;padding:20px">
+    <div style="width:400px;border-radius:5px; margin:auto;background-color:#003366;box-shadow:0px 0px 10px  #DEDEDE;padding:20px">
         <table style="width:100%">
             <tr>
                 <td align="center" colspan="2">
-                    <h2 style="color:#004DAF">Bienvenido</h2>
+                    <h2 style="color:#FFFFFF;">Bienvenido</h2>
                 </td>
             </tr>
             <tr>
                 <td align="left" colspan="2">
-                    <p>Se creó exitosamente tu usuario. Los detalles de tu cuenta son:</p>
+                    <p style="color:#FFFFFF;">Se creó exitosamente tu usuario. Los detalles de tu cuenta son:</p>
                 </td>
             </tr>
             <tr>
-                <td><h4 style="color:#004DAF;margin:2px">Correo:</h4></td>
-                <td>@ViewData["Correo"]</td>
+                <td><h4 style="color:#FFFFFF;margin:2px">Correo:</h4></td>
+                <td style="color:#FFFFFF;">@ViewData["Correo"]</td>
             </tr>
             <tr>
-                <td><h4 style="color:#004DAF;margin:2px">Contraseña:</h4></td>
-                <td>@ViewData["Clave"]</td>
+                <td><h4 style="color:#FFFFFF;margin:2px">Contraseña:</h4></td>
+                <td style="color:#FFFFFF;">@ViewData["Clave"]</td>
             </tr>
         </table>
         <div style="background-color:#FFE1CE;padding:15px;margin-top:15px;margin-bottom:15px">
@@ -39,12 +39,13 @@
         </div>
         <table>
             <tr>
-                <td>Para iniciar sesión ingrese a la siguiente URL:</td>
+                <td style="color:#FFFFFF;">Para iniciar sesión ingrese a la siguiente URL:</td>
             </tr>
         </table>
-        <a href="@ViewData["Url"]">Iniciar Sesión</a>
+        <a href="@ViewData["Url"]" style="color:#FFFFFF;">Iniciar Sesión</a>
     </div>
     <br />
     <br />
+
 </body>
 </html>

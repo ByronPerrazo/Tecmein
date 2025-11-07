@@ -40,9 +40,7 @@ namespace Tecmein.Tests
             _mockRepo.Setup(repo => repo.Obtener(It.IsAny<Expression<Func<Empresacorreo, bool>>>(), It.IsAny<string>()))
                      .ReturnsAsync(empresaCorreo);
 
-            _mockSmtpClientWrapper.Setup(s => s.SendMailAsync(
-                It.IsAny<MailMessage>(), It.IsAny<string>(), It.IsAny<int>(), 
-                It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()))
+            _mockSmtpClientWrapper.Setup(s => s.SendMailAsync(It.IsAny<MailMessage>()))
                 .Returns(Task.CompletedTask);
 
             // Act
@@ -51,12 +49,7 @@ namespace Tecmein.Tests
             // Assert
             Assert.True(resultado);
             _mockSmtpClientWrapper.Verify(s => s.SendMailAsync(
-                It.Is<MailMessage>(m => m.To.First().Address == "recipient@example.com"),
-                empresaCorreo.Host,
-                (int)empresaCorreo.Puerto,
-                empresaCorreo.Email,
-                empresaCorreo.Clave,
-                true),
+                It.Is<MailMessage>(m => m.To.First().Address == "recipient@example.com")),
                 Times.Once);
         }
 
@@ -87,9 +80,7 @@ namespace Tecmein.Tests
             _mockRepo.Setup(repo => repo.Obtener(It.IsAny<Expression<Func<Empresacorreo, bool>>>(), It.IsAny<string>()))
                      .ReturnsAsync(empresaCorreo);
 
-            _mockSmtpClientWrapper.Setup(s => s.SendMailAsync(
-                It.IsAny<MailMessage>(), It.IsAny<string>(), It.IsAny<int>(), 
-                It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()))
+            _mockSmtpClientWrapper.Setup(s => s.SendMailAsync(It.IsAny<MailMessage>()))
                 .ThrowsAsync(smtpException);
 
             // Act & Assert

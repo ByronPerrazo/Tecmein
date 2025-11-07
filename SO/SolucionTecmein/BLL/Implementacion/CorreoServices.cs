@@ -34,14 +34,7 @@ namespace BLL.Implementacion
 
             mailMessage.To.Add(Destino);
 
-            await _smtpClientWrapper.SendMailAsync(
-                mailMessage,
-                empresaCorreo.Host,
-                Convert.ToInt32(empresaCorreo.Puerto),
-                correoEmpresarial,
-                empresaCorreo.Clave,
-                true // EnableSsl
-            );
+            await _smtpClientWrapper.SendMailAsync(mailMessage);
 
             return true;
         }

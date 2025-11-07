@@ -6,10 +6,10 @@ using TecmeinWebApp.Utilidades.ViewComponents;
 
 namespace TecmeinWebApp.Controllers
 {
-    [Authorize]
     public class PlantillaController : Controller
     {
-        [ValidatePermission("LEER")]
+  
+        [AllowAnonymous]
         public IActionResult EnviarClave(string correo, string clave)
         {
             ViewData["Correo"] = correo;
@@ -17,7 +17,8 @@ namespace TecmeinWebApp.Controllers
             ViewData["Url"] = $"{this.Request.Scheme}://{this.Request.Host}";
             return View();
         }
-        [ValidatePermission("LEER")]
+
+        [AllowAnonymous]
         public IActionResult RestablecerClave(string clave)
         {
             ViewData["Clave"] = clave;
