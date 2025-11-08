@@ -317,9 +317,8 @@ namespace BLL.Implementacion
                     return false;
 
                 var usuario =
-                    _repositorio
-                    .Obtener(x => !(x.Correo == correoDestino))
-                    .Result ??
+                    await _repositorio
+                    .Obtener(x => x.Correo == correoDestino) ??
                      throw new TaskCanceledException($"Correo {correoDestino} No Registrado");
 
                 var claveGenerada = _utilidadesServices.GenerarClave(8);
