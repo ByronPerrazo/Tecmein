@@ -3,16 +3,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@model TecmeinAplicacionWeb.Models.ViewModels.VisitaVM
+
 @section Estilos {
     <link rel="stylesheet" href="~/vendor/datatables/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/responsive.dataTables.min.css">
     <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/buttons.dataTables.min.css">
     <link rel="stylesheet" href="~/css/styleGenerales.css">
-
 }
-
-
-
 
 <!-- Grilla inicial de proceso -->
 <div class="card shadow-sm mb-2">
@@ -22,7 +20,7 @@
     <div class="card-body">
         <div class="row">
             <div class="col-sm-3">
-                <button class="btn btn-success" id="btnNuevo" data-toggle="modal" data-target="#modalData">
+                <button class="btn btn-success" id="btnNuevo">
                     <i class="fas fa-plus-circle"></i>
                     Nueva Visita
                 </button>
@@ -52,112 +50,109 @@
     </div>
 </div>
 
-<!-- Datatalle Visita -->
+<!-- Modal Detalle Visita -->
 <div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="card shadow-sm">
-                <div class="card-header py-2 bg-second-primary">
-                    <h6 class="m-0 font-weight-bold text-white">
-                        <i class="fas fa-building"></i> Detalle Visita
-                        <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true" class="text-white">×</span>
-                        </button>
-                    </h6>
+            <form id="formVisita">
+                <div class="card shadow-sm">
+                    <div class="card-header py-2 bg-second-primary">
+                        <h6 class="m-0 font-weight-bold text-white">
+                            <i class="fas fa-building"></i> Detalle Visita
+                            <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true" class="text-white">×</span>
+                            </button>
+                        </h6>
+                    </div>
+                    <div class="card-header py-2 bg-second-primary">
+                        <h6 class="m-0 font-weight-bold text-white"><i class="fas fa-industry"></i> Obra </h6>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" value="0" id="txtId" name="Secuencial">
+                        <input type="hidden" value="0" id="txtGeolocallizacion" name="GeoUbicacion">
+
+                        <div class="form-row">
+                            <div class="form-group col-sm-10 text-xs">
+                                <label class="cab_i_sm text-xs" for="txtNombreObra">Nombre Obra / Proyecto</label>
+                                <input type="text" class="form-control form-control-sm text-xs" id="txtNombreObra" name="Nombre">
+                                <span asp-validation-for="Nombre" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-sm-2 text-xs">
+                                <label class="cab_i_sm text-xs" for="cboOperador">Operador</label>
+                                <select class="form-control form-control-sm text-xs" id="cboOperador" name="SecEmpresa">
+                                </select>
+                                <span asp-validation-for="SecEmpresa" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-sm-4 text-xs">
+                                <label class="cab_i_sm text-xs" for="cboProvincia">Provincia</label>
+                                <select class="form-control form-control-sm text-xs" id="cboProvincia" name="SecProvincia">
+                                    <option value="" disabled selected>Seleccione Provincia</option>
+                                </select>
+                                <span asp-validation-for="SecProvincia" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-sm-4 text-xs">
+                                <label class="cab_i_sm text-xs" for="cboCanton">Cantón</label>
+                                <select class="form-control form-control-sm text-xs" id="cboCanton" name="SecCanton">
+                                    <option value="" disabled selected>Seleccione Cantón</option>
+                                </select>
+                                <span asp-validation-for="SecCanton" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-sm-4 text-xs">
+                                <label class="cab_i_sm text-xs" for="cboParroquia">Parroquia</label>
+                                <select class="form-control form-control-sm text-xs" id="cboParroquia" name="SecParroquia">
+                                    <option value="" disabled selected>Seleccione Parroquia</option>
+                                </select>
+                                <span asp-validation-for="SecParroquia" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-row form-row-compact">
+                            <div class="form-group col-sm-12 text-xs">
+                                <label class="cab_i_sm" for="txtDireccion">Dirección Obra / Proyecto</label>
+                                <input type="text" class="form-control form-control-sm text-xs" id="txtDireccion" placeholder="Dirección" name="Direccion">
+                                <span asp-validation-for="Direccion" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-row form-row-compact">
+                            <div class="form-group col-sm-4">
+                                <label class="cab_i_sm">Etapa</label>
+                                <select class="form-control form-control-sm text-xs" id="cboEtapaObra" name="IdEtapa" onchange="mostrarDiv()" disabled>
+                                </select>
+                            </div>
+                            <div class="form-group col-sm-4" style="display:none">
+                                <label class="cab_i_sm">Estado Obra</label>
+                                <select class="form-control form-control-sm text-xs" id="cboEstado" name="EstaActivo">
+                                    <option value="1">Activo</option>
+                                    <option value="0">Inactivo</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-sm-4">
+                                <label class="cab_i_sm">Próxima Visita</label>
+                                <input type="checkbox" name="esSigVisita" id="chkEsSigVisita">
+                                <input type="date" class="form-control form-control-sm validar-fecha-mayor text-xs" id="dtpkFechaSigVisita" style="display:none" name="FechaSiguienteVisita">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-sm-12 text-xs">
+                                <label class="cab_i_sm" for="txtDescripcion">Detalle</label>
+                                <textarea rows="2" cols="50" class="form-control form-control-sm text-xs" id="txtDescripcion" name="Detalle"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0 d-flex justify-content-end">
+                        <button class="btn btn-primary btn-sm m-1 mr-2" type="button" id="btnGuardarVisitas">Guardar</button>
+                        <button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal">Cancel</button>
+                    </div>
                 </div>
-                <div class="card-header py-2 bg-second-primary">
-                    <h6 class="m-0 font-weight-bold text-white"><i class="fas fa-industry"></i> Obra </h6>
-                </div>
-                <div class="card-body">
-                    <input type="hidden" value="0" id="txtId">
-                    <input type="hidden" value="0" id="txtGeolocallizacion">
-
-                    <div class="form-row">
-                        <div class="form-group col-sm-10 text-xs">
-                            <i class="cab_i_sm text-xs">Nombre Obra / Proyecto</i>
-                            <input type="text" class="form-control form-control-sm text-xs"
-                                   name="Nombre Proyecto"
-                                   id="txtNombreObra">
-                        </div>
-                        <div class="form-group col-sm-2 text-xs">
-                            <i class="cab_i_sm text-xs">Operador</i>
-                            <select class="form-control form-control-sm text-xs" id="cboOperador" name="Operador">
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-sm-4 text-xs">
-                            <i class="cab_i_sm text-xs">Provincia</i>
-                            <select class="form-control form-control-sm text-xs" id="cboProvincia" name="Provincia">
-                            </select>
-                        </div>
-                        <div class="form-group col-sm-4 text-xs">
-                            <i class="cab_i_sm text-xs">Cantón</i>
-                            <select class="form-control form-control-sm text-xs"
-                                    id="cboCanton"
-                                    name="Canton">
-                            </select>
-                        </div>
-                        <div class="form-group col-sm-4 text-xs">
-                            <i class="cab_i_sm text-xs">Parroquia</i>
-                            <select class="form-control form-control-sm text-xs"
-                                    id="cboParroquia"
-                                    name="Parroquia">
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row form-row-compact">
-                        <div class="form-group col-sm-12 text-xs">
-                            <i class="cab_i_sm">Dirección Obra / Proyecto</i>
-                            <input type="text" class="form-control form-control-sm text-xs" id="txtDireccion" placeholder="Dirección" name="Dirección">
-                        </div>
-
-                    </div>
-
-                    <div class="form-row form-row-compact">
-
-                        <div class="form-group col-sm-4">
-                            <i class="cab_i_sm">Etapa</i>
-                            <select class="form-control form-control-sm text-xs"
-                                    id="cboEtapaObra"
-                                    name="Etapa"
-                                    onchange="mostrarDiv()" disabled>
-                            </select>
-                        </div>
-
-                        <div class="form-group col-sm-4" style="display:none">
-                            <i class="cab_i_sm">Estado Obra</i>
-                            <select class="form-control form-control-sm text-xs" id="cboEstado">
-                                <option value="1">Activo</option>
-                                <option value="0">Inactivo</option>
-                            </select>
-                        </div>													<div class="form-group col-sm-4">
-                            <i class="cab_i_sm">Próxima Visita</i>
-                            <input type="checkbox" name="esSigVisita" id="chkEsSigVisita">
-                            <input type="date"
-                                   class="form-control form-control-sm validar-fecha-mayor text-xs"
-                                   id="dtpkFechaSigVisita" style="display:none"
-                                   name="Fecha Siguiente Visita">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-sm-12 text-xs">
-                            <i class="cab_i_sm">Detalle</i>
-                            <textarea rows="2" cols="50" class="form-control form-control-sm input-validar text-xs" id="txtDescripcion" name="Detalle"></textarea>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="card-body p-0 d-flex justify-content-end">
-                    <button class="btn btn-primary btn-sm m-1 mr-2" type="button" id="btnGuardarVisitas">Guardar</button>
-                    <button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal">Cancel</button>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>
 
+<!-- Other Modals remain unchanged -->
 <!--Contacto-->
 <div class="modal fade" id="modalDataContacto" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-lg" role="document">
@@ -421,6 +416,7 @@
                                                     <th class="col-sm text-xs">Secuencial</th>
                                                     <th class="col-sm text-xs">Cantidad</th>
                                                     <th class="col-sm text-xs">Detalle</th>
+                                                    <th class="col-sm text-xs">DetalleImpresion</th>
                                                     <th class="col-sm text-xs">Acciones</th>
                                                 </tr>
                                             </thead>
@@ -466,9 +462,8 @@
     </div>
 </div>
 
-
 @section Scripts {
-
+    <!-- DataTables & Extensions -->
     <script src="~/vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="~/vendor/datatables/dataTables.bootstrap4.min.js"></script>
     <script src="~/vendor/datatables/extensiones/js/dataTables.responsive.min.js"></script>
@@ -478,15 +473,15 @@
     <script src="~/vendor/datatables/extensiones/js/vfs_fonts.js"></script>
     <script src="~/vendor/datatables/extensiones/js/buttons.html5.min.js"></script>
     <script src="~/vendor/datatables/extensiones/js/buttons.print.min.js"></script>
-    <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- Agregar el siguiente script en el head de tu página -->
+    
+    <!-- jQuery Validation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
 
-
+    <!-- App Scripts -->
     <script src="~/js/vistas/Visita_Index.js"></script>
     <script src="~/js/vistas/Visita_Contacto_Index.js"></script>
     <script src="~/js/vistas/Vista_Producto_Index.js"></script>
     <script src="~/js/vistas/Controles_Generales.js"></script>
     <script src="~/js/mapa.js"></script>
-
-
 }

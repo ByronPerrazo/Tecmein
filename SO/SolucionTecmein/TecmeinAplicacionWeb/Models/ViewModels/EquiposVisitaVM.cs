@@ -1,4 +1,6 @@
-﻿namespace TecmeinAplicacionWeb.Models.ViewModels
+﻿using Newtonsoft.Json;
+
+namespace TecmeinAplicacionWeb.Models.ViewModels
 {
     public class EquiposVisitaVM
     {
@@ -24,12 +26,14 @@
 
         public int? NumeroParadas { get; set; }
 
+        [JsonProperty("nombreParadas")]
         public string? NombresParadas { get; set; }
 
         public string? Embarque { get; set; }
 
         public string? TipoDucto { get; set; }
 
+        [JsonProperty("medidasDuctoAF")]
         public string? MedidasAfducto { get; set; }
 
         public string? TipoMotor { get; set; }
@@ -44,6 +48,7 @@
 
         public int? SobreRecorrido { get; set; }
 
+        [JsonProperty("dimensionEntrada")]
         public int? DimencionEntrada { get; set; }
 
         public int? AlturaEntrePisos { get; set; }

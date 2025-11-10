@@ -38,6 +38,37 @@ let contactoNombreCompleto = "";
 let contactoCorreo = "";
 let contactoTelefono = "";
 
+function limpiarFormularioEquipos() {
+    // Resetear todos los campos del formulario de equipos a sus valores por defecto
+    $('#cboTipoEquipo').val('');
+    $('#cboSistema').val('');
+    $('#cboMarca').val('');
+    $('#cboSalaMaquinas').val('');
+    $('#cboTipoMotor').val('');
+    $('#cboVelocidad').val('');
+    $('#txtCapacidad').val('');
+    $('#txtNumPersonas').val('');
+    $('#txtNumParadas').val('');
+    $('#txtNombresParadas').val('');
+    $('#cboTipoEmbarque').val('');
+    $('#cboTipoDucto').val('');
+    $('#txtMedidasDuctoAF').val('');
+    $('#txtFoso').val('');
+    $('#txtRecorrido').val('');
+    $('#txtEntradasFrontales').val('');
+    $('#txtEntradasPosterior').val('');
+    $('#txtSobreRecorrido').val('');
+    $('#cboTipoEnergia').val('');
+    $('#txtAlturaEntrePisos').val('');
+    $('#txtDimencionEntrada').val('');
+    $('#cboTipoMaterial').val('');
+    $('#txtCantidad').val('');
+
+    // Quitar clases de validación por si quedaron de una interacción anterior
+    $('.is-invalid').removeClass('is-invalid');
+}
+
+
 $("#tbdata tbody").on("click", ".btn-info", function () {
 
     if ($(this).closest("tr").hasClass("child")) {
@@ -54,6 +85,7 @@ $("#tbdata tbody").on("click", ".btn-info", function () {
     nombreCanton = data.NombreCanton;
     nombreParroquia = data.NombreParroquia;
 
+    limpiarFormularioEquipos(); // Limpiar el formulario antes de cargar nuevos datos
 
     if (secVisitaProducto != 0)
         ProcesoCargaLista(secVisitaProducto)
@@ -64,6 +96,64 @@ $("#tbdata tbody").on("click", ".btn-info", function () {
 
 $("#btnAgregarItem").click(function () {
 
+    // Función auxiliar para manejar el fallo de validación
+    const handleValidationError = (message, focusElement) => {
+        toastr.warning("", message);
+        $(focusElement).focus();
+        // Asegurarse de que los acordeones permanezcan abiertos
+        $('#collapseGeneralInfo').addClass('show');
+        $('#collapseInstallationDetails').addClass('show');
+        return true; // Indica que hubo un error
+    };
+
+    // --- VALIDACIÓN DE CAMPOS OBLIGATORIOS ---
+    let hasError = false;
+
+    // Validar Selects
+    const requiredSelects = [
+        { id: '#cboTipoEquipo', name: 'Tipo Equipo' },
+        { id: '#cboSistema', name: 'Sistema' },
+        { id: '#cboMarca', name: 'Marca' },
+        { id: '#cboVelocidad', name: 'Velocidad' },
+        { id: '#cboSalaMaquinas', name: 'Sala Máquinas' },
+        { id: '#cboTipoEmbarque', name: 'Tipo de Embarque' },
+        { id: '#cboTipoDucto', name: 'Ducto De' },
+        { id: '#cboTipoMotor', name: 'Tipo Motor' },
+        { id: '#cboTipoEnergia', name: 'Tipo Energía' },
+        { id: '#cboTipoMaterial', name: 'Material de Puertas' }
+    ];
+
+    for (const select of requiredSelects) {
+        if ($(select.id).val() === "" || $(select.id).val() === null) {
+            hasError = handleValidationError(`Debe seleccionar un valor para "${select.name}".`, select.id);
+            if (hasError) return;
+        }
+    }
+
+    // Validar Inputs de texto/número
+    const requiredInputs = [
+        { id: '#txtCapacidad', name: 'Capacidad de Carga' },
+        { id: '#txtNumPersonas', name: 'N° Personas' },
+        { id: '#txtNumParadas', name: 'Número Paradas' },
+        { id: '#txtFoso', name: 'Foso' },
+        { id: '#txtRecorrido', name: 'Recorrido' },
+        { id: '#txtEntradasFrontales', name: 'Entradas Frontales' },
+        { id: '#txtEntradasPosterior', name: 'Entradas Posteriores' },
+        { id: '#txtSobreRecorrido', name: 'Sobre Recorrido' },
+        { id: '#txtAlturaEntrePisos', name: 'Altura Entre Pisos' },
+        { id: '#txtDimencionEntrada', name: 'Dimensión Entrada' },
+        { id: '#txtCantidad', name: 'Cantidad' }
+    ];
+
+    for (const input of requiredInputs) {
+        if (($(input.id).val() || "").trim() === "") {
+            hasError = handleValidationError(`Debe ingresar un valor para "${input.name}".`, input.id);
+            if (hasError) return;
+        }
+    }
+    // --- FIN VALIDACIÓN DE CAMPOS OBLIGATORIOS ---
+
+
     // Validación de formato para campos de dimensión
     const camposDimension = [
         { id: '#txtMedidasDuctoAF', name: 'Medidas Ducto A-F' },
@@ -71,24 +161,21 @@ $("#btnAgregarItem").click(function () {
     ];
 
     for (const campo of camposDimension) {
-        const valor = $(campo.id).val().trim();
-        // Se valida solo si el campo tiene algún valor
+        const valor = ($(campo.id).val() || "").trim();
         if (valor && !/^\d+\s*\*\s*\d+$/.test(valor)) {
-            toastr.warning("", `El formato para "${campo.name}" no es válido. Debe ser NÚMERO * NÚMERO.`);
-            $(campo.id).focus();
-            return; // Detener la ejecución
+            handleValidationError(`El formato para "${campo.name}" no es válido. Debe ser NÚMERO * NÚMERO.`, campo.id);
+            return;
         }
     }
 
-    // Validación para Nombres Paradas al hacer clic en Agregar
-    const nombresParadas = $('#txtNombresParadas').val().trim();
-    const numParadas = parseInt($('#txtNumParadas').val());
+    // Validación para Nombres Paradas
+    const nombresParadas = ($('#txtNombresParadas').val() || "").trim();
+    const numParadas = parseInt($('#txtNumParadas').val() || "0");
     const nombresParadasInput = document.getElementById('txtNombresParadas');
 
     if (!validarNombresParadas(nombresParadas, numParadas, nombresParadasInput)) {
-        toastr.warning("", "El número de nombres de paradas no coincide con el número de paradas.");
-        $(nombresParadasInput).focus();
-        return; // Detener la ejecución
+        handleValidationError("El número de nombres de paradas no coincide con el número de paradas.", nombresParadasInput);
+        return;
     }
 
     // Validación para Entradas Frontales y Posteriores
@@ -97,37 +184,65 @@ $("#btnAgregarItem").click(function () {
     const numParadasVal = parseInt($('#txtNumParadas').val() || '0');
 
     if (!validarSumaEntradas(entradasFrontales, entradasPosteriores, numParadasVal, document.getElementById('txtEntradasFrontales'), document.getElementById('txtEntradasPosterior'))) {
-        toastr.warning("", "Verifique las entradas frontales y posteriores. Cada una no puede exceder el número de paradas, y la suma debe estar entre el número de paradas y el doble de este.");
-        return; // Detener la ejecución
+        handleValidationError("Verifique las entradas frontales y posteriores. La suma debe ser coherente con el número de paradas.", '#txtEntradasFrontales');
+        return;
     }
-
 
     const modeloVisitaProductos = structuredClone(MODELO_VISITA_PRODUCTOS);
     modeloVisitaProductos["secVisita"] = secVisitaProducto;
-    modeloVisitaProductos["tipoEquipo"] = $("#cboTipoEquipo").val().trim();
-    modeloVisitaProductos["sistema"] = $("#cboSistema").val().trim();
-    modeloVisitaProductos["marca"] = $("#cboMarca").val().trim();
-    modeloVisitaProductos["capacidad"] = parseInt($("#txtCapacidad").val() || "0");
-    modeloVisitaProductos["velocidad"] = parseFloat($("#cboVelocidad").val().trim());
-    modeloVisitaProductos["salaMaquinas"] = $("#cboSalaMaquinas").val().trim();
-    modeloVisitaProductos["salaControl"] = $("#cboSalaMaquinas").val().trim();
-    modeloVisitaProductos["numeroPersonas"] = parseInt($("#txtNumPersonas").val());
-    modeloVisitaProductos["numeroParadas"] = parseInt($("#txtNumParadas").val());
-    modeloVisitaProductos["nombreParadas"] = $("#txtNombresParadas").val().trim();
-    modeloVisitaProductos["embarque"] = $("#cboTipoEmbarque").val();
-    modeloVisitaProductos["tipoDucto"] = $("#cboTipoDucto").val();
-    modeloVisitaProductos["medidasDuctoAF"] = $("#txtMedidasDuctoAF").val().trim();
-    modeloVisitaProductos["tipoMotor"] = $("#cboTipoMotor").val();
-    modeloVisitaProductos["foso"] = parseInt($("#txtFoso").val());
-    modeloVisitaProductos["recorrido"] = parseInt($("#txtRecorrido").val());
-    modeloVisitaProductos["ingresosFrontales"] = parseInt($("#txtEntradasFrontales").val());
-    modeloVisitaProductos["ingresosPosteriores"] = parseInt($("#txtEntradasPosterior").val());
-    modeloVisitaProductos["sobrerecorrido"] = parseInt($("#txtSobreRecorrido").val());
-    modeloVisitaProductos["dimensionEntrada"] = parseInt($("#txtDimencionEntrada").val());
-    modeloVisitaProductos["alturaEntrePisos"] = parseInt($("#txtAlturaEntrePisos").val());
-    modeloVisitaProductos["materialPuertas"] = $("#cboTipoMaterial").val();
-    modeloVisitaProductos["energia"] = $("#cboTipoEnergia").val();
-    modeloVisitaProductos["cantidad"] = parseInt($("#txtCantidad").val());
+    modeloVisitaProductos["tipoEquipo"] = ($("#cboTipoEquipo").val() || "").trim();
+    modeloVisitaProductos["sistema"] = ($("#cboSistema").val() || "").trim();
+    modeloVisitaProductos["marca"] = ($("#cboMarca").val() || "").trim();
+
+    // Ajuste para campos numéricos de selects: null si es placeholder, no 0
+    const capacidadVal = ($("#txtCapacidad").val() || "").trim();
+    modeloVisitaProductos["capacidad"] = capacidadVal === "" ? null : parseInt(capacidadVal);
+
+    const velocidadVal = ($("#cboVelocidad").val() || "").trim();
+    modeloVisitaProductos["velocidad"] = velocidadVal === "" ? null : parseFloat(velocidadVal);
+
+    modeloVisitaProductos["salaMaquinas"] = ($("#cboSalaMaquinas").val() || "").trim();
+    modeloVisitaProductos["salaControl"] = ($("#cboSalaMaquinas").val() || "").trim(); // Mantengo la asignación actual
+
+    const numPersonasVal = ($("#txtNumPersonas").val() || "").trim();
+    modeloVisitaProductos["numeroPersonas"] = numPersonasVal === "" ? null : parseInt(numPersonasVal);
+
+    const numParadasModelVal = ($("#txtNumParadas").val() || "").trim();
+    modeloVisitaProductos["numeroParadas"] = numParadasModelVal === "" ? null : parseInt(numParadasModelVal);
+
+    modeloVisitaProductos["nombreParadas"] = ($("#txtNombresParadas").val() || "").trim();
+    modeloVisitaProductos["embarque"] = ($("#cboTipoEmbarque").val() || "").trim();
+    modeloVisitaProductos["tipoDucto"] = ($("#cboTipoDucto").val() || "").trim();
+    modeloVisitaProductos["medidasDuctoAF"] = ($("#txtMedidasDuctoAF").val() || "").trim();
+    modeloVisitaProductos["tipoMotor"] = ($("#cboTipoMotor").val() || "").trim();
+
+    const fosoVal = ($("#txtFoso").val() || "").trim();
+    modeloVisitaProductos["foso"] = fosoVal === "" ? null : parseInt(fosoVal);
+
+    const recorridoVal = ($("#txtRecorrido").val() || "").trim();
+    modeloVisitaProductos["recorrido"] = recorridoVal === "" ? null : parseInt(recorridoVal);
+
+    const entradasFrontalesVal = ($("#txtEntradasFrontales").val() || "").trim();
+    modeloVisitaProductos["ingresosFrontales"] = entradasFrontalesVal === "" ? null : parseInt(entradasFrontalesVal);
+
+    const entradasPosterioresVal = ($("#txtEntradasPosterior").val() || "").trim();
+    modeloVisitaProductos["ingresosPosteriores"] = entradasPosterioresVal === "" ? null : parseInt(entradasPosterioresVal);
+
+    const sobrerecorridoVal = ($("#txtSobreRecorrido").val() || "").trim();
+    modeloVisitaProductos["sobrerecorrido"] = sobrerecorridoVal === "" ? null : parseInt(sobrerecorridoVal);
+
+    const dimensionEntradaVal = ($("#txtDimencionEntrada").val() || "").trim();
+    modeloVisitaProductos["dimensionEntrada"] = dimensionEntradaVal === "" ? null : parseInt(dimensionEntradaVal);
+
+    const alturaEntrePisosVal = ($("#txtAlturaEntrePisos").val() || "").trim();
+    modeloVisitaProductos["alturaEntrePisos"] = alturaEntrePisosVal === "" ? null : parseInt(alturaEntrePisosVal);
+
+    modeloVisitaProductos["materialPuertas"] = ($("#cboTipoMaterial").val() || "").trim();
+    modeloVisitaProductos["energia"] = ($("#cboTipoEnergia").val() || "").trim();
+
+    const cantidadVal = ($("#txtCantidad").val() || "").trim();
+    modeloVisitaProductos["cantidad"] = cantidadVal === "" ? null : parseInt(cantidadVal);
+
     modeloVisitaProductos["esActivo"] = $("#cboEstado").val();
 
     const datoProductoItem = new FormData();
@@ -173,6 +288,7 @@ $("#btnAgregarItem").click(function () {
 
 });
 
+let fechaMaquina = new Date();
 async function ProcesoCargaLista(secuencialVisita) {
     try {
         if ($.fn.DataTable.isDataTable('#tbDataItems')) {
@@ -196,6 +312,7 @@ async function ProcesoCargaLista(secuencialVisita) {
                     { data: "secuencial", visible: false },
                     { data: "cantidad", searchable: false, width: "10%", className: "text-center" },
                     { data: "detalleEspecifico", searchable: true, width: "80%" },
+                    { data: "descripcionImpresa", visible: false },
                     {
                         "defaultContent":
                             '<div class="btn-group" role="group"><button class="btn btn-danger btn-eliminar-equipo btn-sm"><i class="fas fa-trash-alt"></i></button></div>',
@@ -213,14 +330,14 @@ async function ProcesoCargaLista(secuencialVisita) {
                 paging: false, // Deshabilitar paginación
                 info: false,   // Deshabilitar información de paginación
                 searching: false, // Deshabilitar búsqueda
-                                buttons: [
+                buttons: [
                     {
                         text: '<i class="fas fa-file-excel"></i>',
                         extend: 'excelHtml5',
-                        title: 'Detalle Equipos Visita',
-                        filename: 'Reporte Detalle Equipos',
+                        title: 'Detalle Equipos Visita ' + nombreProyecto,
+                        filename: 'Detalle Equipos Visita ' + nombreProyecto + ' ' + fechaMaquina.toLocaleDateString(),
                         exportOptions: {
-                            columns: [1, 2]
+                            columns: [1, 3]
                         },
                         className: 'btn-success',
                         titleAttr: 'Exportar a Excel'
@@ -228,10 +345,10 @@ async function ProcesoCargaLista(secuencialVisita) {
                     {
                         text: '<i class="fas fa-file-pdf"></i>',
                         extend: 'pdfHtml5',
-                        title: 'Detalle Equipos',
-                        filename: 'Reporte Detalle Equipos',
+                        title: 'Detalle Equipos Visita ' + nombreProyecto,
+                        filename: 'Detalle Equipos Visita ' + nombreProyecto + ' ' + fechaMaquina.toLocaleDateString(),
                         exportOptions: {
-                            columns: [1, 2]
+                            columns: [1, 3]
                         },
                         className: 'btn-danger',
                         titleAttr: 'Exportar a PDF',
@@ -254,12 +371,12 @@ async function ProcesoCargaLista(secuencialVisita) {
                             });
 
                             const now = new Date();
-                            const printDate = `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
+                            const printDate = `${now.toLocaleDateString()} ${now.toLocaleTimeString()} `;
 
                             // Construir el contenido del encabezado
                             const headerContent = [
                                 { text: ' Propuesta ', bold: true, fontSize: 14, alignment: 'center', margin: [0, 0, 0, 10] },
-                                { 
+                                {
                                     columns: [
                                         { width: 80, text: [{ text: 'Proyecto: ', bold: true }] },
                                         { width: '*', text: nombreProyecto }
@@ -268,7 +385,7 @@ async function ProcesoCargaLista(secuencialVisita) {
                                 {
                                     columns: [
                                         { width: 80, text: [{ text: 'Ubicación: ', bold: true }] },
-                                        { width: '*', text: `${nombreProvincia} - ${nombreCanton} - ${nombreParroquia}` }
+                                        { width: '*', text: `${nombreProvincia} - ${nombreCanton} - ${nombreParroquia} ` }
                                     ]
                                 },
                                 {
@@ -280,7 +397,7 @@ async function ProcesoCargaLista(secuencialVisita) {
                                 {
                                     columns: [
                                         { width: 80, text: [{ text: 'Contacto: ', bold: true }] },
-                                        { width: '*', text: contactoData ? `${contactoData.nombres} ${contactoData.apellidos}` : 'N/A' }
+                                        { width: '*', text: contactoData ? `${contactoData.nombres} ${contactoData.apellidos} ` : 'N/A' }
                                     ]
                                 },
                                 {
@@ -295,11 +412,104 @@ async function ProcesoCargaLista(secuencialVisita) {
                                         { width: '*', text: contactoData ? contactoData.telefono : 'N/A' }
                                     ]
                                 },
-                                { text: `Impreso: ${printDate}`, alignment: 'right', fontSize: 5, margin: [0, 10, 0, 0] }
+                                { text: `Impreso: ${printDate} `, alignment: 'right', fontSize: 5, margin: [0, 10, 0, 0] }
                             ];
 
                             // Añadir el encabezado al documento
                             doc.content.splice(0, 0, { stack: headerContent, margin: [0, 0, 0, 12] });
+
+                            const tableNode = doc.content[2];
+
+                            if (tableNode && tableNode.table) {
+                                // Definir estilos personalizados
+                                doc.styles = doc.styles || {};
+                                doc.styles.customGridHeader = {
+                                    bold: true,
+                                    fontSize: 12, // Tamaño de fuente ajustado
+                                    fillColor: '#D7E1F5',
+                                    alignment: 'center',
+                                    color: '#000000', // Color de texto negro para mejor contraste
+                                    margin: [0, 5, 0, 5]
+                                };
+                                doc.styles.cellStyle = {
+                                    margin: [0, 5, 0, 5],
+                                    alignment: 'center'
+                                };
+
+                                tableNode.table.body.forEach((row, i) => {
+                                    if (i === 0) { // Fila de encabezado
+                                        // Celda de Cantidad
+                                        const headerCell1 = row[0];
+                                        if (headerCell1) {
+                                            headerCell1.text = 'Cantidad';
+                                            headerCell1.style = 'customGridHeader';
+                                            headerCell1.alignment = 'center';
+                                        }
+
+                                        // Celda de Descripción
+                                        const headerCell2 = row[1];
+                                        if (headerCell2) {
+                                            headerCell2.text = 'Descripción del Equipo Solicitado';
+                                            headerCell2.style = 'customGridHeader';
+                                            headerCell2.alignment = 'left';
+                                        }
+
+                                        // Añadir nueva celda de encabezado 'Verificado'
+                                        row.push({
+                                            text: 'Verificado',
+                                            style: 'customGridHeader',
+                                            alignment: 'center'
+                                        });
+                                    } else {
+                                        // Determinar el color de fondo para el efecto cebra (filas de datos impares son grises)
+                                        const rowFillColor = (i % 2 !== 0) ? '#F5F5F5' : null;
+
+                                        // Aplicar el color de fondo a todas las celdas existentes en la fila
+                                        row.forEach(cell => {
+                                            if (rowFillColor) {
+                                                cell.fillColor = rowFillColor;
+                                            } else {
+                                                delete cell.fillColor; // Asegura que las filas pares sean blancas
+                                            }
+                                        });
+
+                                        // Centrar la primera columna de datos
+                                        if (row[0]) {
+                                            row[0].alignment = 'center';
+                                        }
+
+                                        // Crear la nueva celda para la columna 'Verificado'
+                                        const newCell = {
+                                            canvas: [
+                                                {
+                                                    type: 'rect',
+                                                    x: 45, // Ajustado para mejor centrado
+                                                    y: 10,
+                                                    w: 10,
+                                                    h: 10,
+                                                    r: 2,
+                                                    lineColor: '#000000',
+                                                    lineWidth: 1
+                                                }
+                                            ],
+                                            style: 'cellStyle'
+                                        };
+
+                                        // Aplicar el color de fondo determinado a la nueva celda
+                                        if (rowFillColor) {
+                                            newCell.fillColor = rowFillColor;
+                                        }
+
+                                        row.push(newCell);
+                                    }
+                                });
+
+                                // Ajustar el ancho de las columnas para incluir la nueva columna
+                                // La suma debe ser '*' o un número fijo. Asumamos que el ancho total es 510.
+                                // Ejemplo: ['10%', '70%', '20%']
+                                tableNode.table.widths = ['15%', '65%', '20%'];
+                            }
+
                         }
                     },
                     {
@@ -323,23 +533,23 @@ async function ProcesoCargaLista(secuencialVisita) {
                                     fetch(`/Visita/SincronizarEquipos?secuencialVisita=${secVisitaProducto}`, {
                                         method: "POST" // Usar POST para una acción que modifica datos
                                     })
-                                    .then(response => {
-                                        $(".showSweetAlert").LoadingOverlay("hide");
-                                        return response.ok ? response.json() : Promise.reject(response);
-                                    })
-                                    .then(responseJson => {
-                                        if (responseJson.estado) {
-                                            Swal.fire("Listo!", "Equipos sincronizados exitosamente.", "success");
-                                            // Opcional: recargar la tabla de equipos si la sincronización afecta su estado visual
-                                            // tablaDataPro.ajax.reload();
-                                        } else {
-                                            Swal.fire("Error", responseJson.mensajes, "error");
-                                        }
-                                    })
-                                    .catch(err => {
-                                        $(".showSweetAlert").LoadingOverlay("hide");
-                                        Swal.fire("Error", "No se pudo conectar con el servidor.", "error");
-                                    });
+                                        .then(response => {
+                                            $(".showSweetAlert").LoadingOverlay("hide");
+                                            return response.ok ? response.json() : Promise.reject(response);
+                                        })
+                                        .then(responseJson => {
+                                            if (responseJson.estado) {
+                                                Swal.fire("Listo!", "Equipos sincronizados exitosamente.", "success");
+                                                // Opcional: recargar la tabla de equipos si la sincronización afecta su estado visual
+                                                // tablaDataPro.ajax.reload();
+                                            } else {
+                                                Swal.fire("Error", responseJson.mensajes, "error");
+                                            }
+                                        })
+                                        .catch(err => {
+                                            $(".showSweetAlert").LoadingOverlay("hide");
+                                            Swal.fire("Error", "No se pudo conectar con el servidor.", "error");
+                                        });
                                 }
                             });
                         }
@@ -543,7 +753,9 @@ $(document).on("click", ".btn-eliminar-equipo", function () {
         text: `Eliminar el equipo "${data.detalleEspecifico}"`, // Usar detalleEspecifico para el mensaje
         icon: "warning",
         showCancelButton: true,
-        confirmButtonClass: "btn-danger",
+        customClass: {
+            confirmButton: 'btn-danger' // Correcto para aplicar clases CSS
+        },
         confirmButtonText: "Sí, eliminar",
         cancelButtonText: "No, cancelar",
         reverseButtons: true
@@ -551,30 +763,34 @@ $(document).on("click", ".btn-eliminar-equipo", function () {
         if (result.isConfirmed) {
             $(".showSweetAlert").LoadingOverlay("show");
 
-            fetch(`ProcesaEliminar?secuencial=${data.secuencial}`, {
-                method: "DELETE"
-            })
-            .then(response => {
-                $(".showSweetAlert").LoadingOverlay("hide");
-                return response.ok ? response.json() : Promise.reject(response);
-            })
-            .then(responseJson => {
-                if (responseJson.estado) {
-                    tablaDataPro.row(fila).remove().draw(false);
-                    Swal.fire("Listo!", "El equipo fue eliminado.", "success");
-                } else {
-                    Swal.fire("Error", responseJson.mensajes, "error");
-                }
-            })
-            .catch(async error => {
-                $(".showSweetAlert").LoadingOverlay("hide");
-                if (error.status === 403) {
-                    Swal.fire("Acceso Denegado", "No tiene permisos para eliminar equipos de visita.", "error");
-                } else {
-                    const errorText = await error.text();
-                    Swal.fire("Error", `Ocurrió un error al eliminar el equipo: ${errorText || error.statusText}`, "error");
-                }
-            });
+            fetch(`/visita/ProcesoEliminarEquipoVisita?secuencialEquipoVisita=${data.secuencial}`,
+                { method: "DELETE" }
+            )
+                .then(response => {
+                    $(".showSweetAlert").LoadingOverlay("hide");
+                    return response.ok ? response.json() : Promise.reject(response);
+                })
+                .then(responseJson => {
+                    if (responseJson.estado) {
+                        tablaDataPro.row(fila).remove().draw(false);
+                        Swal.fire("Listo!", "El equipo fue eliminado.", "success");
+                    } else {
+                        Swal.fire("Error", responseJson.mensajes, "error");
+                    }
+                })
+                .catch(async error => {
+                    $(".showSweetAlert").LoadingOverlay("hide");
+                    let errorMessage = "Ocurrió un error desconocido al eliminar el equipo.";
+                    if (error.status === 403) {
+                        errorMessage = "No tiene permisos para eliminar equipos de visita.";
+                    } else if (error instanceof Response && typeof error.text === 'function') {
+                        const errorText = await error.text();
+                        errorMessage = `Error en la respuesta del servidor: ${errorText || error.statusText} `;
+                    } else if (error.message) {
+                        errorMessage = `Error: ${error.message} `;
+                    }
+                    Swal.fire("Error", errorMessage, "error");
+                });
         }
     });
 });

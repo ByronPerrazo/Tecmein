@@ -265,28 +265,28 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
                                                                                  destino.DescripcionImpresa,
                                                                                      opt =>
                                                                                      opt.MapFrom(origen =>
-                                                                                         $"Sistema: {ConstantesEquipos.Sistema.ObtenerValores().GetValueOrDefault(origen.Sistema, origen.Sistema)} -" +
-                                                                                         $" Tipo Eq: {ConstantesEquipos.TipoEquipo.ObtenerValores().GetValueOrDefault(origen.TipoEquipo, origen.TipoEquipo)} -" +
-                                                                                         $" Marca: {ConstantesEquipos.Marca.ObtenerValores().GetValueOrDefault(origen.Marca, origen.Marca)} -" +
-                                                                                         $" Capacidad: {origen.Capacidad} -" +
-                                                                                         $" Velocidad: {origen.Velocidad} -" +
-                                                                                         $" Sala Maq: {ConstantesEquipos.SalaMaquinas.ObtenerValores().GetValueOrDefault(origen.SalaMaquinas, origen.SalaMaquinas)} -" +
-                                                                                         $" Motor: {ConstantesEquipos.TipoMotor.ObtenerValores().GetValueOrDefault(origen.TipoMotor, origen.TipoMotor)} -" +
-                                                                                         $" Embarque: {ConstantesEquipos.TipoEmbarque.ObtenerValores().GetValueOrDefault(origen.Embarque, origen.Embarque)} -" +
-                                                                                         $" Ducto: {ConstantesEquipos.TipoDucto.ObtenerValores().GetValueOrDefault(origen.TipoDucto, origen.TipoDucto)} -" +
-                                                                                         $" MedidasAF: {origen.MedidasAfducto} -" +
-                                                                                         $" Foso: {origen.Foso} -" +
-                                                                                         $" Recorrido: {origen.Recorrido} -" +
-                                                                                         $" Sbr. Recorrido: {origen.SobreRecorrido} -" +
-                                                                                         $" Ing. Frontales: {origen.IngresosFrontales} -" +
-                                                                                         $" Ing. Posteriores: {origen.IngresosPosteriores} -" +
-                                                                                         $" Dime Entrada: {origen.DimencionEntrada} -" +
-                                                                                         $" Alt Entre Pisos: {origen.AlturaEntrePisos} -" +
-                                                                                         $" Energia: {ConstantesEquipos.TipoEnergia.ObtenerValores().GetValueOrDefault(origen.Energia, origen.Energia)} -" +
-                                                                                         $" Puertas: {ConstantesEquipos.MaterialPuertas.ObtenerValores().GetValueOrDefault(origen.MaterialPuertas, origen.MaterialPuertas)} -" +
-                                                                                         $" Num. Paradas: {origen.NumeroParadas}-" +
-                                                                                         $" Nomb. Paradas: {origen.NombresParadas}-" +
-                                                                                         $" Num Personas: {origen.NumeroPersonas} "))
+                                                                                         $" Sistema del Equipo: {ConstantesEquipos.Sistema.ObtenerValores().GetValueOrDefault(origen.Sistema, origen.Sistema)} " + Environment.NewLine +
+                                                                                         $" Tipo Equipo: {ConstantesEquipos.TipoEquipo.ObtenerValores().GetValueOrDefault(origen.TipoEquipo, origen.TipoEquipo)} " + Environment.NewLine +
+                                                                                         $" Marca del Equipo: {ConstantesEquipos.Marca.ObtenerValores().GetValueOrDefault(origen.Marca, origen.Marca)} " + Environment.NewLine +
+                                                                                         $" Capacidad: {origen.Capacidad} " + Environment.NewLine +
+                                                                                         $" Velocidad: {origen.Velocidad} " + Environment.NewLine +
+                                                                                         $" Sala Maquina: {ConstantesEquipos.SalaMaquinas.ObtenerValores().GetValueOrDefault(origen.SalaMaquinas, origen.SalaMaquinas)} " + Environment.NewLine +
+                                                                                         $" Motor: {ConstantesEquipos.TipoMotor.ObtenerValores().GetValueOrDefault(origen.TipoMotor, origen.TipoMotor)} " + Environment.NewLine +
+                                                                                         $" Embarque: {ConstantesEquipos.TipoEmbarque.ObtenerValores().GetValueOrDefault(origen.Embarque, origen.Embarque)} " + Environment.NewLine +
+                                                                                         $" Tipo Ducto: {ConstantesEquipos.TipoDucto.ObtenerValores().GetValueOrDefault(origen.TipoDucto, origen.TipoDucto)} " + Environment.NewLine +
+                                                                                         $" Medidas Ducto Ancho Fondo: {origen.MedidasAfducto} " + Environment.NewLine +
+                                                                                         $" Foso: {origen.Foso} " + Environment.NewLine +
+                                                                                         $" Recorrido: {origen.Recorrido} " + Environment.NewLine +
+                                                                                         $" Sobre Recorrido: {origen.SobreRecorrido} " + Environment.NewLine +
+                                                                                         $" Ingresos Frontales: {origen.IngresosFrontales} " + Environment.NewLine +
+                                                                                         $" Ingresos Posteriores: {origen.IngresosPosteriores} " + Environment.NewLine +
+                                                                                         $" Dimención Entrada: {origen.DimencionEntrada} " + Environment.NewLine +
+                                                                                         $" Altura Entre Pisos: {origen.AlturaEntrePisos} " + Environment.NewLine +
+                                                                                         $" Energía: {ConstantesEquipos.TipoEnergia.ObtenerValores().GetValueOrDefault(origen.Energia, origen.Energia)} " + Environment.NewLine +
+                                                                                         $" Material de Puertas: {ConstantesEquipos.MaterialPuertas.ObtenerValores().GetValueOrDefault(origen.MaterialPuertas, origen.MaterialPuertas)} " + Environment.NewLine +
+                                                                                         $" Numero de Paradas: {origen.NumeroParadas}" + Environment.NewLine +
+                                                                                         $" Nombres de Paradas: {origen.NombresParadas}" + Environment.NewLine +
+                                                                                         $" Numero de Personas: {origen.NumeroPersonas} "))
                             .ForMember(destino =>
                                        destino.DetalleEspecifico,                             opt =>
                              opt.MapFrom(origen => $"Sistema:{origen.Sistema} -" +

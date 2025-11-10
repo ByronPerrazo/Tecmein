@@ -196,6 +196,17 @@ namespace TecmeinWebApp.Controllers
                     = JsonConvert
                       .DeserializeObject<VisitaVM>(modelo);
 
+                // Forzar la validación en el modelo deserializado manualmente
+                if (!TryValidateModel(visitaIngresadaVM))
+                {
+                    var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                                   .Select(e => e.ErrorMessage)
+                                                   .ToList();
+                    genericResponse.Estado = false;
+                    genericResponse.Mensajes = string.Join("\n", errors);
+                    return StatusCode(StatusCodes.Status400BadRequest, genericResponse);
+                }
+
                 if (visitaIngresadaVM.FechaSiguienteVisita == DateTime.MinValue)
                 {
                     visitaIngresadaVM.FechaSiguienteVisita = null;
@@ -239,6 +250,17 @@ namespace TecmeinWebApp.Controllers
             try
             {
                 VisitaVM? visitaVM = JsonConvert.DeserializeObject<VisitaVM>(modelo);
+
+                // Forzar la validación en el modelo deserializado manualmente
+                if (!TryValidateModel(visitaVM))
+                {
+                    var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                                   .Select(e => e.ErrorMessage)
+                                                   .ToList();
+                    genericResponse.Estado = false;
+                    genericResponse.Mensajes = string.Join("\n", errors);
+                    return StatusCode(StatusCodes.Status400BadRequest, genericResponse);
+                }
 
                 if (visitaVM.FechaSiguienteVisita == DateTime.MinValue)
                 {

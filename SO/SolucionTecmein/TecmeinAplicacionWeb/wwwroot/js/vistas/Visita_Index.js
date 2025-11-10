@@ -57,8 +57,10 @@ function cargarConstantesEquipos() {
             .then(data => {
                 const selectElement = $(`#${selectInfo.id}`);
                 selectElement.empty().append(`<option value="" disabled selected>${selectInfo.placeholder}</option>`);
-                Object.keys(data).forEach(codigo => {
-                    selectElement.append($("<option>").val(codigo).text(data[codigo]));
+                
+                // Iterar sobre las claves del objeto JSON, excluyendo la propiedad "$id"
+                Object.keys(data).filter(key => key !== "$id").forEach(key => {
+                    selectElement.append($("<option>").val(key).text(data[key]));
                 });
             })
             .catch(error => console.error(`Error al cargar ${selectInfo.placeholder}:`, error));
@@ -373,9 +375,9 @@ function obtenerGeoubicacion() {
 function limpiarFormularioModal() {
     $("#txtId").val('');
     $("#txtNombreObra").val('');
-    $("#cboProvincia").val($("#cboProvincia option:first").val());
-    $("#cboCanton").val($("#cboCanton option:first").val());
-    $("#cboParroquia").val($("#cboParroquia option:first").val());
+    $("#cboProvincia").val("");
+    $("#cboCanton").val("");
+    $("#cboParroquia").val("");
     $("#txtDireccion").val('');
     $("#txtGeolocallizacion").val('');
     $("#cboEstado").val(1);
@@ -418,8 +420,9 @@ function mostrarModalVisita(esEdicion, modeloVisita = MODELO_BASEVISITA) {
     loadDateFromString(modeloVisita.FechaSiguienteVisita)
     
     $("#txtDescripcion").val(modeloVisita.Detalle)
-    //ejecutra llamada adicionales basados en el secuencial de la visita
-
+    
+    // Forzar a la validación no intrusiva a parsear el formulario del modal
+    $.validator.unobtrusive.parse("#formVisita");
 
     $("#modalData").modal("show")
 };
@@ -469,44 +472,10 @@ let esEdicion;
     })
 $("#btnGuardarVisitas").click(function () {
 
-    const inputs = $("input.input-validar").serializeArray();
-    const inputs_vacios = inputs.filter(item => item.value.trim() == "");
-
-    inputs_vacios.forEach(x => {
-        const mensaje = `Debe llenar el campo: "${x.name}"\n`;
-        toastr.warning("", mensaje);
+    // Validar el formulario usando jQuery Validate
+    if (!$("#formVisita").valid()) {
+        toastr.warning("", "Por favor, complete todos los campos requeridos.");
         return;
-    });
-
-    if (inputs_vacios.length > 0) {
-        $(`input[name="${inputs_vacios[0].name}"]`).focus();
-        return;
-    }
-
-    const selects = document.querySelectorAll("select.input-validar");
-
-    const selectsConValorDeshabilitado = Array.from(selects).filter(select => {
-        const selectedOption = select.options[select.selectedIndex];
-        return selectedOption.disabled && selectedOption.selected;
-    });
-
-    selectsConValorDeshabilitado.map(select => {
-        const mensaje = `Debe seleccionar una opción valida en : "${select.name}"\n`;
-        toastr.warning("", mensaje);
-        selectsConValorDeshabilitado[0].focus();
-        return;
-    });
-
-    const seleccion = document.getElementById('cboEtapaObra').value;
-    if (seleccion != 'VIS') {
-        var respuesta = validarFechaFormulario(validaFecha);
-        respuesta += validarFormulario();
-
-        if (respuesta != '') {
-            toastr.warning("", respuesta);
-            return;
-        }
-
     }
 
     let secuencialVisita = $("#txtId").val().trim() == "" ? "0" : $("#txtId").val().trim();
@@ -524,7 +493,7 @@ $("#btnGuardarVisitas").click(function () {
     }
     modeloVisita["detalle"] = $("#txtDescripcion").val();
     modeloVisita["estaActivo"] = $("#cboEstado").val();
-    modeloVisita["secEmpresa"] = $("#cboOperador").val();
+    modeloVisita["secEmpresa"] = parseInt($("#cboOperador").val());
     modeloVisita["idEtapa"] = parseInt($("#cboEtapaObra").val());
 
     const datosFormulario = new FormData();
@@ -533,133 +502,76 @@ $("#btnGuardarVisitas").click(function () {
 
     $("#modalData").find("div.modal-content").LoadingOverlay("show");
 
-    if (!esEdicion) {
+    const url = !esEdicion ? "CrearVisita" : "EditarVisita";
+    const successMessage = !esEdicion ? "creada" : "editada";
 
-        fetch("CrearVisita", {
-            method: "POST",
-            body: datosFormulario
-        })
-            .then(response => {
-                $("#modalData")
-                    .find("div.modal-content")
-                    .LoadingOverlay("hide");
-                return response.ok
-                    ? response.json()
-                    : Promise.reject(response);
-            })
-            .then(responseJson => {
-                if (responseJson.estado) {
-
-                    responseJson.objeto.Secuencial = responseJson.objeto.secuencial;
-                    responseJson.objeto.Nombre = responseJson.objeto.nombre;
-                    responseJson.objeto.SecProvincia = responseJson.objeto.secProvincia;
-                    responseJson.objeto.NombreProvincia = $("#cboProvincia option:selected").text();
-                    responseJson.objeto.SecCanton = responseJson.objeto.secCanton;
-                    responseJson.objeto.NombreCanton = $("#cboCanton option:selected").text();
-                    responseJson.objeto.SecParroquia = responseJson.objeto.secParroquia;
-                    responseJson.objeto.NombreParroquia = responseJson.objeto.nombreParroquia;
-                    responseJson.objeto.Direccion = responseJson.objeto.direccion;
-                    responseJson.objeto.FechaRegistro = responseJson.objeto.fechaRegistro;
-                    responseJson.objeto.GeoUbicacion = responseJson.objeto.geoUbicacion;
-                    responseJson.objeto.EstaActivo = responseJson.objeto.estaActivo;
-                    responseJson.objeto.SecUsuario = responseJson.objeto.secUsuario;
-                    responseJson.objeto.FechaSiguienteVisita = responseJson.objeto.fechaSiguienteVisita;
-                    responseJson.objeto.Detalle = responseJson.objeto.detalle;
-                    responseJson.objeto.IdEtapa = responseJson.objeto.idEtapa;
-                    responseJson.objeto.DescripcionEtapa = $("#cboEtapaObra option:selected").text();
-                    responseJson.objeto.CodigoEtapa = responseJson.objeto.codigoEtapa;
-                    responseJson.objeto.SecEmpresa = responseJson.objeto.secEmpresa;
-                    responseJson.objeto.NombreEmpresa = $("#cboOperador option:selected").text();
-                    responseJson.objeto.SecConstructora = responseJson.objeto.secConstructora;
-                    responseJson.objeto.NombreConstructora = responseJson.objeto.nombreConstructora;
-
-
-                    tablaData.row.add(responseJson.objeto).draw(false);
-                    $("#modalData").modal("hide");
-                    Swal.fire("Listo!",
-                        "Visita a " + responseJson.objeto.nombre + " Creada ",
-                        "success");
-                }
-                else {
-                    Swal.fire("Fallo!", responseJson.mensajes, "error");
-                }
-            })
-            .catch(error => {
-                $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-                if (error.status === 403) {
-                    Swal.fire("Acceso Denegado", "No tiene permisos para crear visitas.", "error");
-                } else {
-                    Swal.fire("Error", "Ocurrió un error al crear la visita.", "error");
-                }
+    fetch(url, {
+        method: "POST",
+        body: datosFormulario
+    })
+    .then(response => {
+        $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+        if (response.ok) {
+            return response.json();
+        } else {
+            // Si la respuesta no es OK, intenta leer el cuerpo del error
+            return response.json().then(errorJson => {
+                // Rechaza la promesa con el JSON del error para que sea capturado por el .catch
+                return Promise.reject({ status: response.status, data: errorJson });
             });
-    }
-    else {
+        }
+    })
+    .then(responseJson => {
+        if (responseJson.estado) {
+            // Convertir propiedades a PascalCase para DataTables
+            const dataForRow = {
+                Secuencial: responseJson.objeto.secuencial,
+                Nombre: responseJson.objeto.nombre,
+                SecProvincia: responseJson.objeto.secProvincia,
+                NombreProvincia: $("#cboProvincia option:selected").text(),
+                SecCanton: responseJson.objeto.secCanton,
+                NombreCanton: $("#cboCanton option:selected").text(),
+                SecParroquia: responseJson.objeto.secParroquia,
+                NombreParroquia: $("#cboParroquia option:selected").text(),
+                Direccion: responseJson.objeto.direccion,
+                FechaRegistro: responseJson.objeto.fechaRegistro,
+                GeoUbicacion: responseJson.objeto.geoUbicacion,
+                EstaActivo: responseJson.objeto.estaActivo,
+                SecUsuario: responseJson.objeto.secUsuario,
+                FechaSiguienteVisita: responseJson.objeto.fechaSiguienteVisita,
+                Detalle: responseJson.objeto.detalle,
+                IdEtapa: responseJson.objeto.idEtapa,
+                DescripcionEtapa: $("#cboEtapaObra option:selected").text(),
+                CodigoEtapa: responseJson.objeto.codigoEtapa,
+                SecEmpresa: responseJson.objeto.secEmpresa,
+                NombreEmpresa: $("#cboOperador option:selected").text(),
+                SecConstructora: responseJson.objeto.secConstructora,
+                NombreConstructora: responseJson.objeto.nombreConstructora
+            };
 
-        fetch("EditarVisita", {
-            method: "POST",
-            body: datosFormulario
-        })
-            .then(response => {
-                $("#modalData")
-                    .find("div.modal-content")
-                    .LoadingOverlay("hide");
-                return response.ok
-                    ? response.json()
-                    : Promise.reject(response);
-            })
-            .then(responseJson => {
-                if (responseJson.estado) {
+            if (esEdicion) {
+                tablaData.row(filaSeleccionada).data(dataForRow).draw(false);
+            } else {
+                tablaData.row.add(dataForRow).draw(false);
+            }
 
-                    // Convertir propiedades a PascalCase para DataTables
-                    responseJson.objeto.Secuencial = responseJson.objeto.secuencial;
-                    responseJson.objeto.Nombre = responseJson.objeto.nombre;
-                    responseJson.objeto.SecProvincia = responseJson.objeto.secProvincia;
-                    responseJson.objeto.NombreProvincia = $("#cboProvincia option:selected").text();
-                    responseJson.objeto.SecCanton = responseJson.objeto.secCanton;
-                    responseJson.objeto.NombreCanton = $("#cboCanton option:selected").text();
-                    responseJson.objeto.SecParroquia = responseJson.objeto.secParroquia;
-                    responseJson.objeto.NombreParroquia = responseJson.objeto.nombreParroquia;
-                    responseJson.objeto.Direccion = responseJson.objeto.direccion;
-                    responseJson.objeto.FechaRegistro = responseJson.objeto.fechaRegistro;
-                    responseJson.objeto.GeoUbicacion = responseJson.objeto.geoUbicacion;
-                    responseJson.objeto.EstaActivo = responseJson.objeto.estaActivo;
-                    responseJson.objeto.SecUsuario = responseJson.objeto.secUsuario;
-                    responseJson.objeto.FechaSiguienteVisita = responseJson.objeto.fechaSiguienteVisita;
-                    responseJson.objeto.Detalle = responseJson.objeto.detalle;
-                    responseJson.objeto.IdEtapa = responseJson.objeto.idEtapa;
-                    responseJson.objeto.DescripcionEtapa = $("#cboEtapaObra option:selected").text();
-                    responseJson.objeto.CodigoEtapa = responseJson.objeto.codigoEtapa;
-                    responseJson.objeto.SecEmpresa = responseJson.objeto.secEmpresa;
-                    responseJson.objeto.NombreEmpresa = $("#cboOperador option:selected").text();
-                    responseJson.objeto.SecConstructora = responseJson.objeto.secConstructora;
-                    responseJson.objeto.NombreConstructora = responseJson.objeto.nombreConstructora;
-
-                    tablaData
-                        .row(filaSeleccionada)
-                        .data(responseJson.objeto)
-                        .draw(false);
-                    $("#modalData").modal("hide");
-                    Swal.fire("Listo!",
-                        "Visita a " + responseJson.objeto.nombre + " Editada ",
-                        "success");
-                }
-                else {
-                    Swal.fire("Fallo!", responseJson.mensajes, "error");
-                }
-            })
-            .catch(error => {
-                $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-                if (error.status === 403) {
-                    Swal.fire("Acceso Denegado", "No tiene permisos para editar visitas.", "error");
-                } else {
-                    Swal.fire("Error", "Ocurrió un error al editar la visita.", "error");
-                }
-            });
-
-    }
-       
-
-
+            $("#modalData").modal("hide");
+            Swal.fire("Listo!", `Visita a ${dataForRow.Nombre} ${successMessage}`, "success");
+        } else {
+            Swal.fire("Fallo!", responseJson.mensajes, "error");
+        }
+    })
+    .catch(error => {
+        $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+        if (error.status === 400) {
+            // Error de validación del servidor
+            Swal.fire("Datos Inválidos", error.data.mensajes, "error");
+        } else if (error.status === 403) {
+            Swal.fire("Acceso Denegado", `No tiene permisos para ${successMessage} visitas.`, "error");
+        } else {
+            Swal.fire("Error", `Ocurrió un error al ${successMessage} la visita.`, "error");
+        }
+    });
 });
 
 let filaSeleccionada;

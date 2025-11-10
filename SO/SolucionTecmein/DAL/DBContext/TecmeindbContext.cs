@@ -591,7 +591,7 @@ public partial class TecmeindbContext : DbContext
             entity.HasIndex(e => e.Secuencial, "secuencial_UNIQUE").IsUnique();
 
             entity.Property(e => e.Secuencial)
-                .ValueGeneratedNever()
+                .ValueGeneratedOnAdd()
                 .HasColumnName("secuencial");
             entity.Property(e => e.AlturaEntrePisos).HasColumnName("alturaEntrePisos");
             entity.Property(e => e.Cantidad).HasColumnName("cantidad");

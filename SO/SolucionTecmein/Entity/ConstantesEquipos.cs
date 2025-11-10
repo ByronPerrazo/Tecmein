@@ -67,6 +67,8 @@ namespace Entity
                 { CUADRUPLEX_CODIGO, CUADRUPLEX_DESCRIPCION },
                 { QUINTUPLEX_CODIGO, QUINTUPLEX_DESCRIPCION }
             };
+
+            //public static 
         }
 
         public static class Marca

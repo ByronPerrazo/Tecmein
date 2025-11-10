@@ -504,9 +504,13 @@ $(document).ready(function () {
         $('#txtIdContratoDirecto').val(data.idContrato);
         $('#txtNombreProyecto').val(data.nombreProyecto);
 
-                    const dateParts = data.fechaFirma.split('-'); // data.fechaFirma is "yyyy-MM-dd"
+        const serverDate = new Date(data.fechaFirma);
+        const fechaFormateada = serverDate.toLocaleDateString('es-ES');
+
+                    //const dateParts = data.fechaFirma.split('/'); // data.fechaFirma is "yyyy-MM-dd"
+        const dateParts = fechaFormateada.split('/'); // data.fechaFirma is "yyyy-MM-dd"
                     const dateObject = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]); // year, month (0-indexed), day
-                    $('#txtFechaFirmaDirecto').datepicker('update', dateObject);        
+        $('#txtFechaFirmaDirecto').datepicker('update', fechaFormateada);        
         $('#cboEstadoDirecto').val(data.esActivo ? "1" : "0");
 
         // 3. Disable fields that should not be changed
@@ -625,7 +629,7 @@ $(document).ready(function () {
                             const compromisos = response.objeto.$values || response.objeto;
                             compromisos.forEach(function (compromiso) {
                                 totalContratoCalculado += compromiso.monto;
-                                const fechaFormateada = new Date(compromiso.fechaVencimiento).toISOString().split('T')[0];
+                                const fechaFormateada = compromiso.fechaVencimiento;
                                 const nuevaFila = `
                                     <tr>
                                         <td>${compromiso.numeroCuota}</td>
