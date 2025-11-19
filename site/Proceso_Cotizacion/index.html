@@ -786,7 +786,7 @@
 <p>Para gestionar las cotizaciones, el usuario debe seleccionar la opción <strong>Cotizaciones</strong> en el menú principal del sistema.</p>
 <h2 id="3-pantalla-principal-listado-de-cotizaciones">3. Pantalla Principal (Listado de Cotizaciones)</h2>
 <p>Esta pantalla muestra un resumen de todas las cotizaciones y permite un acceso rápido a sus detalles y acciones.</p>
-<p><img alt="imagen-listado-cotizaciones" src="https://via.placeholder.com/800x400.png?text=Listado+de+Cotizaciones" /></p>
+<p><img alt="listaCotizacion" src="../img/listaCotizacion.png" /></p>
 <p>Columnas principales del listado:
 - <strong>Número Cotización:</strong> Código único que identifica la oferta.
 - <strong>Versión:</strong> Número de versión de la cotización (v1, v2, etc.).
@@ -797,6 +797,8 @@
 - <strong>Acciones:</strong> Botones para interactuar con cada cotización.</p>
 <h2 id="4-creacion-y-gestion-de-una-cotizacion">4. Creación y Gestión de una Cotización</h2>
 <h3 id="41-iniciar-una-nueva-cotizacion">4.1. Iniciar una Nueva Cotización</h3>
+<p><img alt="NuevaCotizacion1" src="../img/NuevaCotizacion1.png" /></p>
+<p><img alt="NuevaCotizacion2" src="../img/NuevaCotizacion2.png" /></p>
 <ol>
 <li>Haga clic en el botón <strong>"Nueva Cotización"</strong>.</li>
 <li>Se abrirá el formulario para los datos generales de la cotización:<ul>
@@ -808,6 +810,7 @@
 <li>Guarde esta cabecera. El sistema creará la cotización en estado <code>Borrador</code> y le asignará un número.</li>
 </ol>
 <h3 id="42-agregar-productos-y-servicios-detalle">4.2. Agregar Productos y Servicios (Detalle)</h3>
+<p><img alt="EdicionCotizacion1" src="../img/EdicionCotizacion1.png" /></p>
 <p>Una vez creada la cabecera, el siguiente paso es añadir los ítems:
 1.  Dentro de la vista de edición de la cotización, busque la sección de "Detalles" y haga clic en <strong>"Agregar Producto/Servicio"</strong>.
 2.  Se abrirá una ventana para buscar y seleccionar ítems del catálogo de productos/servicios de la empresa.
@@ -823,6 +826,7 @@
 <li><strong>Total:</strong> El monto final que el cliente deberá pagar.</li>
 </ul>
 <h2 id="5-versionado-de-cotizaciones">5. Versionado de Cotizaciones</h2>
+<p><img alt="HistorialCotizaciones" src="../img/HistorialCotizaciones.png" /></p>
 <p>El versionado es crucial para mantener un historial claro de las negociaciones.</p>
 <h3 id="51-cuando-crear-una-nueva-version">5.1. ¿Cuándo crear una nueva versión?</h3>
 <p>Si un cliente solicita un cambio en una cotización que ya fue enviada (cambiar cantidades, precios, agregar o quitar ítems), no se debe modificar la original. En su lugar, se crea una nueva versión.</p>
@@ -837,8 +841,15 @@
 <p>Una cotización pasa por varios estados a lo largo de su ciclo de vida:</p>
 <ol>
 <li><strong>Borrador:</strong> La cotización está siendo creada o editada. No es visible para el cliente.</li>
-<li><strong>Enviada:</strong> La cotización ha sido finalizada y enviada al cliente. Para formalizar este paso, se utiliza un botón <strong>"Generar PDF y Enviar"</strong>. Esto bloquea la cotización para evitar modificaciones y la marca como <code>Enviada</code>.</li>
-<li><strong>Aprobada:</strong> Si el cliente acepta la oferta, el usuario debe registrar esta decisión en el sistema. Se utiliza un botón <strong>"Marcar como Aprobada"</strong>. Este estado es a menudo el disparador para el siguiente paso del proceso comercial: la creación de un <strong>Pre-Contrato</strong> o Contrato.</li>
+<li>
+<p><strong>Enviada:</strong> La cotización ha sido finalizada y enviada al cliente. Para formalizar este paso, se utiliza un botón <strong>"Generar PDF y Enviar"</strong>. Esto bloquea la cotización para evitar modificaciones y la marca como <code>Enviada</code>.</p>
+<p><img alt="CotizacionPDF_Cliente_ok" src="../img/CotizacionPDF_Cliente_ok.png" />
+<img alt="CotizacionPDF_Cliente_ok_envioCliente" src="../img/CotizacionPDF_Cliente_ok_envioCliente.png" />
+<img alt="CotizacionPDF_Proveedor" src="../img/CotizacionPDF_Proveedor.png" /></p>
+</li>
+<li>
+<p><strong>Aprobada:</strong> Si el cliente acepta la oferta, el usuario debe registrar esta decisión en el sistema. Se utiliza un botón <strong>"Marcar como Aprobada"</strong>. Este estado es a menudo el disparador para el siguiente paso del proceso comercial: la creación de un <strong>Pre-Contrato</strong> o Contrato.</p>
+</li>
 <li><strong>Rechazada:</strong> Si el cliente no acepta la oferta, se debe marcar como <strong>"Rechazada"</strong>. Esto saca la cotización del flujo de trabajo activo, pero la mantiene en el historial.</li>
 <li><strong>Anulada:</strong> Un estado para invalidar una cotización por motivos internos, incluso si ya había sido enviada.</li>
 </ol>

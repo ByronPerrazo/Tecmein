@@ -119,7 +119,16 @@ function guardarCambios() {
 }
 
 function eliminar(data) {
-     Swal.fire({ /* ... */ }).then((result) => {
+    Swal.fire({ /* ... */
+        title: "¿Está seguro de eliminar este parrafo?",
+        text: "Una vez eliminada, no podrá recuperarse.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "No, cancelar"
+    })
+        .then((result) => {
         if (result.isConfirmed) {
             fetch(`/PlantillaPreContratoParrafo/Eliminar?secPlantillaPreContratoParrafo=${data.secPlantillaPreContratoParrafo}`, { method: "DELETE" })
                 .then(response => {

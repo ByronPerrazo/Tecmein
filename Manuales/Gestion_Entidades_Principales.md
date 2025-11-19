@@ -16,6 +16,9 @@ Cada tipo de entidad principal suele tener su propia sección en el menú princi
 La sección de Clientes permite administrar la información de las empresas o personas a las que Tecmein ofrece sus servicios.
 
 ### 3.1. Pantalla Principal (Listado de Clientes)
+
+![ListaClientes](img/ListaClientes.png)
+
 Muestra una tabla con todos los clientes registrados. Las columnas típicas incluyen:
 - **RUC / Identificación:** Número de identificación fiscal o personal.
 - **Razón Social / Nombre:** Nombre legal de la empresa o nombre completo de la persona.
@@ -26,6 +29,9 @@ Muestra una tabla con todos los clientes registrados. Las columnas típicas incl
 - **Acciones:** Botones para Editar, Ver Detalles, etc.
 
 ### 3.2. Crear un Nuevo Cliente
+
+![NuevoCliente](img/NuevoCliente.png)
+
 1.  Haga clic en el botón **"Nuevo Cliente"**.
 2.  Complete el formulario con la siguiente información:
     - **Tipo de Identificación:** (Ej: RUC, Cédula, Pasaporte).
@@ -38,6 +44,9 @@ Muestra una tabla con todos los clientes registrados. Las columnas típicas incl
 3.  Haga clic en **"Guardar"**.
 
 ### 3.3. Editar un Cliente
+
+![EditarCliente](img/EditarCliente.png)
+
 1.  Localice el cliente en el listado y haga clic en el icono de **Editar**.
 2.  Realice los cambios necesarios en el formulario.
 3.  Haga clic en **"Guardar"** para actualizar la información.
@@ -54,6 +63,9 @@ Haga clic en el icono de **Ver Detalles** para acceder a una vista completa del 
 Esta sección permite administrar los proyectos específicos o las constructoras con las que trabaja un cliente. Una constructora o proyecto siempre estará asociado a un cliente principal.
 
 ### 4.1. Pantalla Principal (Listado de Constructoras/Proyectos)
+
+![listadoConstructora](img/listadoConstructora.png)
+
 Muestra una tabla con los proyectos o constructoras registrados. Las columnas típicas incluyen:
 - **Nombre del Proyecto / Constructora:**
 - **Cliente Asociado:** El cliente principal al que pertenece.
@@ -62,6 +74,9 @@ Muestra una tabla con los proyectos o constructoras registrados. Las columnas t�
 - **Acciones:** Botones para Editar, Ver Detalles, etc.
 
 ### 4.2. Crear una Nueva Constructora / Proyecto
+
+![ConstructoraNuevo](img/ConstructoraNuevo.png)
+
 1.  Haga clic en el botón **"Nueva Constructora / Proyecto"**.
 2.  Complete el formulario:
     - **Nombre del Proyecto / Constructora:**
@@ -71,6 +86,9 @@ Muestra una tabla con los proyectos o constructoras registrados. Las columnas t�
 3.  Haga clic en **"Guardar"**.
 
 ### 4.3. Editar una Constructora / Proyecto
+
+![ConstructoraEdicion](img/ConstructoraEdicion.png)
+
 1.  Localice el proyecto en el listado y haga clic en el icono de **Editar**.
 2.  Realice los cambios y haga clic en **"Guardar"**.
 
@@ -82,6 +100,9 @@ Muestra toda la información del proyecto, incluyendo los contactos específicos
 La sección de Contactos permite registrar a las personas clave dentro de las empresas clientes o constructoras.
 
 ### 5.1. Pantalla Principal (Listado de Contactos)
+
+![ListaContactos](img/ListaContactos.png)
+
 Muestra una tabla con todos los contactos registrados. Las columnas típicas incluyen:
 - **Nombre Completo:**
 - **Cargo:** Puesto que ocupa en la empresa.
@@ -92,6 +113,9 @@ Muestra una tabla con todos los contactos registrados. Las columnas típicas inc
 - **Acciones:** Botones para Editar, Ver Detalles, etc.
 
 ### 5.2. Crear un Nuevo Contacto
+
+![Nuevo Contacto](img/`Nuevo Contacto.png`)
+
 1.  Haga clic en el botón **"Nuevo Contacto"**.
 2.  Complete el formulario:
     - **Nombre y Apellido:**
@@ -102,6 +126,9 @@ Muestra una tabla con todos los contactos registrados. Las columnas típicas inc
 3.  Haga clic en **"Guardar"**.
 
 ### 5.3. Editar un Contacto
+
+![EditarCotacto](img/EditarCotacto.png)
+
 1.  Localice el contacto en el listado y haga clic en el icono de **Editar**.
 2.  Realice los cambios y haga clic en **"Guardar"**.
 

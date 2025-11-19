@@ -122,7 +122,16 @@ $(document).ready(function () {
         const fila = $(this).closest("tr").hasClass("child") ? $(this).closest("tr").prev() : $(this).closest("tr");
         const data = tablaData.row(fila).data();
 
-        Swal.fire({ /* ... */ }).then((result) => {
+        Swal.fire({
+            title: "¿Está seguro de eliminar esta plantilla?",
+            text: "Una vez eliminada, no podrá recuperarse.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            confirmButtonText: "Sí, eliminar",
+            cancelButtonText: "No, cancelar"
+        })
+            .then((result) => {
             if (result.isConfirmed) {
                 const sweetAlertOverlay = $(".swal2-container");
                 sweetAlertOverlay.LoadingOverlay("show");

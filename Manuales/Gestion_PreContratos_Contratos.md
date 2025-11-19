@@ -6,6 +6,8 @@ Este módulo es fundamental para formalizar los acuerdos comerciales con los cli
 
 ## 2. Acceso a los Módulos
 
+![ListaPrecontratos1](img/ListaPrecontratos1.png)
+
 Los módulos de Pre-Contratos y Contratos se encuentran generalmente en el menú principal del sistema, bajo opciones como **"Pre-Contratos"** y **"Contratos"**.
 
 ## 3. Proceso de Pre-Contrato
@@ -13,6 +15,14 @@ Los módulos de Pre-Contratos y Contratos se encuentran generalmente en el menú
 El Pre-Contrato es un documento intermedio que permite definir y negociar los términos del acuerdo, especialmente el plan de pagos, antes de la emisión del contrato final.
 
 ### 3.1. Creación de un Pre-Contrato
+
+![NuevoPrecontrato](img/NuevoPrecontrato.png)
+![NuevoPreContratoPlantilla](img/NuevoPreContratoPlantilla.png)
+![NuevoPrecontrato_cotizaciones](img/NuevoPrecontrato_cotizaciones.png)
+![NuevoPrecontrato_Nuevos](img/NuevoPrecontrato_Nuevos.png)
+![NuevoPrecontrato_Nuevos_CompromisoPago](img/NuevoPrecontrato_Nuevos_CompromisoPago.png)
+![NuevoPrecontrato_Nuevos_CompromisoPago2](img/NuevoPrecontrato_Nuevos_CompromisoPago2.png)
+
 1.  **Desde una Cotización Aprobada:** La forma más común de iniciar un Pre-Contrato es desde una Cotización que ha sido marcada como `Aprobada`. En la vista de detalles de la cotización, busque un botón como **"Generar Pre-Contrato"**.
 2.  **Selección de Plantilla:** El sistema le pedirá seleccionar una `Plantilla de Pre-Contrato` predefinida. Estas plantillas contienen la estructura y el texto base del acuerdo.
 3.  **Datos Iniciales:** El Pre-Contrato se precargará con información del cliente, proyecto y los montos de la cotización aprobada.
@@ -28,6 +38,10 @@ El Pre-Contrato es un documento intermedio que permite definir y negociar los t�
 - Si se realizan cambios significativos en un Pre-Contrato que ya ha sido enviado a revisión o al cliente, es recomendable **crear una nueva versión**. Esto asegura un historial claro de las negociaciones y evita confusiones. La versión anterior se mantendrá intacta.
 
 ### 3.3. Aprobación del Pre-Contrato
+
+![ListaPrecontratos_AprobarPrecontrato](img/ListaPrecontratos_AprobarPrecontrato.png)
+![ListaPrecontratos_Aceptacion](img/ListaPrecontratos_Aceptacion.png)
+
 Una vez que el Pre-Contrato ha sido negociado y acordado con el cliente, y ha pasado por cualquier revisión interna necesaria:
 1.  Haga clic en el botón **"Aprobar Pre-Contrato"**.
 2.  Esta acción es irreversible y tiene consecuencias importantes:
@@ -39,6 +53,13 @@ Una vez que el Pre-Contrato ha sido negociado y acordado con el cliente, y ha pa
 El Contrato es el documento final que formaliza el acuerdo.
 
 ### 4.1. Generación del Contrato Final
+
+![NuevoContrato](img/`Nuevo Contrato.png`)
+![NuevoContrato_Precontrato](img/NuevoContrato_Precontrato.png)
+![NuevoContrato_Precontrato_Lleno](img/NuevoContrato_Precontrato_Lleno.png)
+![NuevoContrato_PlanPagos_Precon](img/NuevoContrato_PlanPagos_Precon.png)
+![NuevoContrato_PlanPagos_Cliente](img/NuevoContrato_PlanPagos_Cliente.png)
+
 1.  **Desde un Pre-Contrato Aprobado:** Una vez que un Pre-Contrato ha sido `Aprobado`, aparecerá un botón como **"Generar Contrato"**.
 2.  Al hacer clic, el sistema tomará toda la información del Pre-Contrato aprobado (incluyendo el plan de pagos final) y generará el `Contrato` definitivo.
 3.  El Contrato generado es un documento de solo lectura que representa el acuerdo final.

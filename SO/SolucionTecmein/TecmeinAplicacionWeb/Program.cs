@@ -1,6 +1,7 @@
 using IOC;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using QuestPDF.Infrastructure;
 using Serilog;
@@ -21,6 +22,11 @@ try
         .ReadFrom.Configuration(context.Configuration)
         .ReadFrom.Services(services)
         .Enrich.FromLogContext());
+
+    // Configuracion de Data Protection para persistir keys
+    builder.Services.AddDataProtection()
+        .PersistKeysToFileSystem(new DirectoryInfo(@"C:\TecmeinKeys\"))
+        .SetApplicationName("Tecmein");
 
     builder.Services.AddControllersWithViews(options =>
     {

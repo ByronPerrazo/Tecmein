@@ -10,13 +10,13 @@ El objetivo de este módulo es centralizar la información de cada visita, desde
 
 Para acceder al módulo de Gestión de Visitas, el usuario debe navegar al menú principal del sistema y hacer clic en la opción **Visitas**.
 
-![imagen-del-menu-visitas](https://via.placeholder.com/150x50.png?text=Menú+Visitas)
+![ListaVisita](img/ListaVisita.png)
 
 ## 3. Pantalla Principal (Listado de Visitas)
 
 Al ingresar al módulo, se presenta un listado con todas las visitas registradas. Esta pantalla ofrece una vista general y permite realizar acciones rápidas.
 
-![imagen-listado-visitas](https://via.placeholder.com/800x400.png?text=Listado+de+Visitas)
+![ListaVisita](img/ListaVisita.png)
 
 La tabla de visitas generalmente contiene las siguientes columnas:
 - **ID:** Identificador único de la visita.
@@ -36,6 +36,8 @@ La tabla de visitas generalmente contiene las siguientes columnas:
 
 ### 4.1. Crear una Nueva Visita
 
+![nuevaVisita](img/nuevaVisita.png)
+
 1.  Haga clic en el botón **"Nueva Visita"** ubicado en la parte superior de la pantalla de listado.
 2.  Se abrirá un formulario donde deberá completar la siguiente información:
     - **Cliente:** Seleccione un cliente existente de la lista.
@@ -43,11 +45,17 @@ La tabla de visitas generalmente contiene las siguientes columnas:
     - **Fecha y Hora:** Especifique el momento de la visita.
     - **Técnico Asignado:** Asigne un usuario del sistema como responsable.
     - **Contactos:** Seleccione las personas de contacto del cliente que atenderán la visita.
+    ![contactoVisita](img/contactoVisita.png)
     - **Equipos:** (Opcional) Asocie los equipos que serán revisados o instalados.
+    ![equipoVisita1](img/equipoVisita1.png)
+    ![equipoVisita2](img/equipoVisita2.png)
+    ![equipoVisita3](img/equipoVisita3.png)
     - **Descripción/Observaciones:** Añada cualquier detalle relevante sobre el objetivo de la visita.
 3.  Una vez completados los campos, haga clic en **"Guardar"**. La nueva visita aparecerá en el listado.
 
 ### 4.2. Editar una Visita
+
+![editarVisita](img/editarVisita.png)
 
 1.  Localice la visita que desea modificar en el listado.
 2.  En la columna "Acciones", haga clic en el icono de **Editar** (usualmente un lápiz).
