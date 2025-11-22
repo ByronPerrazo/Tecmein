@@ -151,10 +151,28 @@ namespace IOC
             // Nuevo Servicio de Auditoría
             services.AddScoped<IAuditService, AuditService>();
 
-            // Registro de IMemoryCache
-            services.AddMemoryCache();
+                        // Registro de IMemoryCache
 
+                        services.AddMemoryCache();
 
-        }
-    }
-}
+            
+
+                        // --- INICIO MCP (Model Context Protocol) ---
+
+                        services.AddHttpClient(); // Registra IHttpClientFactory
+
+                        services.AddScoped<DAL.Mcp.IMySqlRepository, DAL.Mcp.MySqlRepository>();
+
+                        services.AddScoped<BLL.Mcp.IMcpService, BLL.Mcp.McpService>();
+
+                        // --- FIN MCP ---
+
+            
+
+                    }
+
+                }
+
+            }
+
+            
