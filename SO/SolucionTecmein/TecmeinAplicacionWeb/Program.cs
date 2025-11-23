@@ -2,6 +2,7 @@ using IOC;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using QuestPDF.Infrastructure;
 using Serilog;
@@ -17,6 +18,12 @@ Log.Information("Starting up");
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+
+    builder.Services.Configure<ForwardedHeadersOptions>(options =>
+    {
+        options.ForwardedHeaders =
+            ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    });
 
     builder.Host.UseSerilog((context, services, configuration) => configuration
         .ReadFrom.Configuration(context.Configuration)
@@ -80,7 +87,11 @@ try
     if (!app.Environment.IsDevelopment())
     {
         app.UseExceptionHandler("/Home/Error");
+        // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+        app.UseHsts();
     }
+    app.UseForwardedHeaders();
+    app.UseHttpsRedirection();
     app.UseStaticFiles();
     app.UseStatusCodePages();
 
