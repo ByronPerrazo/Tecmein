@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "6IHB3CDxlL4=",
+  "dgSpecHash": "ZUbD+IlnVB4=",
   "success": true,
   "projectFilePath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
   "expectedPackageFiles": [
@@ -98,5 +98,138 @@
     "C:\\Users\\darkb\\.nuget\\packages\\system.xml.readerwriter\\4.3.0\\system.xml.readerwriter.4.3.0.nupkg.sha512",
     "C:\\Users\\darkb\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "message": "El paquete \"Magick.NET-Q16-AnyCPU\" 13.7.0 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-6hgw-6x87-578x",
+      "projectPath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
+      "libraryId": "Magick.NET-Q16-AnyCPU",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "message": "El paquete \"Magick.NET-Q16-AnyCPU\" 13.7.0 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-9ccg-6pjw-x645",
+      "projectPath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
+      "libraryId": "Magick.NET-Q16-AnyCPU",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "message": "El paquete \"Magick.NET-Q16-AnyCPU\" 13.7.0 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-9pp9-cfwx-54rm",
+      "projectPath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
+      "libraryId": "Magick.NET-Q16-AnyCPU",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1901",
+      "level": "Warning",
+      "message": "El paquete \"Magick.NET-Q16-AnyCPU\" 13.7.0 tiene una vulnerabilidad de gravedad baja conocida, https://github.com/advisories/GHSA-cfh4-9f7v-fhrc",
+      "projectPath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
+      "libraryId": "Magick.NET-Q16-AnyCPU",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "message": "El paquete \"Magick.NET-Q16-AnyCPU\" 13.7.0 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-cjc8-g9w8-chfw",
+      "projectPath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
+      "libraryId": "Magick.NET-Q16-AnyCPU",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1901",
+      "level": "Warning",
+      "message": "El paquete \"Magick.NET-Q16-AnyCPU\" 13.7.0 tiene una vulnerabilidad de gravedad baja conocida, https://github.com/advisories/GHSA-fh55-q5pj-pxgw",
+      "projectPath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
+      "libraryId": "Magick.NET-Q16-AnyCPU",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1901",
+      "level": "Warning",
+      "message": "El paquete \"Magick.NET-Q16-AnyCPU\" 13.7.0 tiene una vulnerabilidad de gravedad baja conocida, https://github.com/advisories/GHSA-hm4x-r5hc-794f",
+      "projectPath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
+      "libraryId": "Magick.NET-Q16-AnyCPU",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "message": "El paquete \"Magick.NET-Q16-AnyCPU\" 13.7.0 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-mxvv-97wh-cfmm",
+      "projectPath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
+      "libraryId": "Magick.NET-Q16-AnyCPU",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "message": "El paquete \"Magick.NET-Q16-AnyCPU\" 13.7.0 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-qh3h-j545-h8c9",
+      "projectPath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
+      "libraryId": "Magick.NET-Q16-AnyCPU",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "message": "El paquete \"Magick.NET-Q16-AnyCPU\" 13.7.0 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-qp29-wxp5-wh82",
+      "projectPath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
+      "libraryId": "Magick.NET-Q16-AnyCPU",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "message": "El paquete \"Magick.NET-Q16-AnyCPU\" 13.7.0 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-vmhh-8rxq-fp9g",
+      "projectPath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Proyectos\\Tecmein\\SO\\SolucionTecmein\\BLL\\BLL.csproj",
+      "libraryId": "Magick.NET-Q16-AnyCPU",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
 }

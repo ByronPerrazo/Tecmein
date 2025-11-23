@@ -1,0 +1,253 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = TecmeinWebApp
+build_property.RootNamespace = TecmeinWebApp
+build_property.ProjectDir = C:\Proyectos\Tecmein\SO\SolucionTecmein\TecmeinAplicacionWeb\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Proyectos\Tecmein\SO\SolucionTecmein\TecmeinAplicacionWeb
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Acceso/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjZXNvXExvZ2luLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Acceso/RestablecerClave.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjZXNvXFJlc3RhYmxlY2VyQ2xhdmUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Catalogo/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0YWxvZ29cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Cliente/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50ZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Constructora/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uc3RydWN0b3JhXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Contacto/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udGFjdG9cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Contrato/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udHJhdG9cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Cotizacion/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ290aXphY2lvblxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Dashboard/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/DiccionarioParametro/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGljY2lvbmFyaW9QYXJhbWV0cm9cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Empresa/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wcmVzYVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/FormaPago/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybWFQYWdvXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/FormatoNumeroCliente/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybWF0b051bWVyb0NsaWVudGVcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Home/AccessDenied.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBY2Nlc3NEZW5pZWQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Home/Perfil.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQZXJmaWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Impuesto/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW1wdWVzdG9cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Impuesto/_Modal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW1wdWVzdG9cX01vZGFsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Menu/Crear.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVudVxDcmVhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Menu/Editar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVudVxFZGl0YXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Menu/Eliminar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVudVxFbGltaW5hci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Menu/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVudVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Permiso/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVybWlzb1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/PlanDePago/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxhbkRlUGFnb1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/PlantillaPreContratoParrafo/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxhbnRpbGxhUHJlQ29udHJhdG9QYXJyYWZvXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/PlantillaPreContrato/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxhbnRpbGxhUHJlQ29udHJhdG9cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/PlantillaPreContrato/Parrafos.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxhbnRpbGxhUHJlQ29udHJhdG9cUGFycmFmb3MuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/PlantillaPreContrato/_PlantillaPreContratoModal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxhbnRpbGxhUHJlQ29udHJhdG9cX1BsYW50aWxsYVByZUNvbnRyYXRvTW9kYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Plantilla/EnviarClave.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxhbnRpbGxhXEVudmlhckNsYXZlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Plantilla/RestablecerClave.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxhbnRpbGxhXFJlc3RhYmxlY2VyQ2xhdmUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/PolizaGarantia/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUG9saXphR2FyYW50aWFcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/PolizaGarantia/_PolizaGarantiaModal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUG9saXphR2FyYW50aWFcX1BvbGl6YUdhcmFudGlhTW9kYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/PreContrato/Editor.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJlQ29udHJhdG9cRWRpdG9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/PreContrato/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJlQ29udHJhdG9cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/PreContrato/_EditorPreContratoModal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJlQ29udHJhdG9cX0VkaXRvclByZUNvbnRyYXRvTW9kYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/PreContrato/_HistorialCambiosModal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJlQ29udHJhdG9cX0hpc3RvcmlhbENhbWJpb3NNb2RhbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/PreContrato/_PreContratoModal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJlQ29udHJhdG9cX1ByZUNvbnRyYXRvTW9kYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/PreContrato/_VistaPreviaModal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJlQ29udHJhdG9cX1Zpc3RhUHJldmlhTW9kYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/RolMenu/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9sTWVudVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Rol/GestionarPermisos.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9sXEdlc3Rpb25hclBlcm1pc29zLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Rol/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9sXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Seguimiento/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VndWltaWVudG9cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Shared/Components/MenuUsuario/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcTWVudVVzdWFyaW9cRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Shared/Components/Menu/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcTWVudVxEZWZhdWx0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/TipoDocumento/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb0RvY3VtZW50b1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/TipoDocumento/_TipoDocumentoModal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb0RvY3VtZW50b1xfVGlwb0RvY3VtZW50b01vZGFsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/TipoImpuesto/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb0ltcHVlc3RvXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/TipoImpuesto/_Modal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb0ltcHVlc3RvXF9Nb2RhbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Usuario/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Visita/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmlzaXRhXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Proyectos/Tecmein/SO/SolucionTecmein/TecmeinAplicacionWeb/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-92nwxm7n6k

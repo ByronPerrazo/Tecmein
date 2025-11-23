@@ -1,0 +1,1346 @@
+2025-10-25 10:32:45.777 -05:00 [INF] HTTP GET / responded 200 in 4806.0626 ms
+2025-10-25 10:32:46.774 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 252.6168 ms
+2025-10-25 10:32:46.993 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 89.1436 ms
+2025-10-25 11:06:55.931 -05:00 [INF] HTTP POST / responded 302 in 6943.5797 ms
+2025-10-25 11:06:57.003 -05:00 [INF] HTTP GET /Home/Index responded 200 in 1022.8353 ms
+2025-10-25 11:06:57.284 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 89.6052 ms
+2025-10-25 11:07:13.202 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 166.2270 ms
+2025-10-25 11:07:13.359 -05:00 [INF] HTTP GET /js/vistas/Rol_Index.js responded 304 in 16.1022 ms
+2025-10-25 11:07:14.293 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 699.7318 ms
+2025-10-25 11:07:17.501 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 73.0448 ms
+2025-10-25 11:07:17.636 -05:00 [INF] HTTP GET /js/vistas/Menu_Index.js responded 304 in 2.3037 ms
+2025-10-25 11:07:17.914 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 111.7217 ms
+2025-10-25 11:07:25.120 -05:00 [INF] HTTP POST /Menu/SincronizarModulos responded 200 in 258.8656 ms
+2025-10-25 11:07:25.157 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 19.3311 ms
+2025-10-25 11:07:53.520 -05:00 [INF] HTTP GET /Home/Salir responded 302 in 61.1769 ms
+2025-10-25 11:07:53.542 -05:00 [INF] HTTP GET / responded 200 in 6.7146 ms
+2025-10-25 11:07:56.203 -05:00 [INF] HTTP GET / responded 200 in 4.7095 ms
+2025-10-25 11:07:56.447 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 195.9362 ms
+2025-10-25 11:07:56.447 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 206.3752 ms
+2025-10-25 11:07:56.449 -05:00 [INF] HTTP GET / responded 200 in 5.0179 ms
+2025-10-25 11:07:56.490 -05:00 [INF] HTTP GET / responded 200 in 2.2168 ms
+2025-10-25 11:07:56.554 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 17.3825 ms
+2025-10-25 11:07:56.618 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 70.4344 ms
+2025-10-25 11:07:56.693 -05:00 [INF] HTTP GET / responded 200 in 6.0985 ms
+2025-10-25 11:07:56.700 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 10.7493 ms
+2025-10-25 11:07:56.821 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 33.1432 ms
+2025-10-25 11:07:56.821 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 30.2926 ms
+2025-10-25 11:07:56.841 -05:00 [INF] HTTP GET / responded 200 in 4.9218 ms
+2025-10-25 11:07:56.919 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 5.1796 ms
+2025-10-25 11:07:56.942 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 23.0097 ms
+2025-10-25 11:07:57.314 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 7.2049 ms
+2025-10-25 11:07:57.406 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 3.1939 ms
+2025-10-25 11:08:00.695 -05:00 [INF] HTTP POST / responded 302 in 63.3642 ms
+2025-10-25 11:08:00.744 -05:00 [INF] HTTP GET /Home/Index responded 200 in 30.8449 ms
+2025-10-25 11:08:04.470 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 32.2589 ms
+2025-10-25 11:08:04.795 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 15.4231 ms
+2025-10-25 11:08:08.176 -05:00 [INF] HTTP POST /Menu/SincronizarModulos responded 200 in 32.4373 ms
+2025-10-25 11:08:08.224 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 21.7950 ms
+2025-10-25 11:55:30.828 -05:00 [INF] HTTP GET / responded 200 in 4289.8798 ms
+2025-10-25 11:55:31.200 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 118.3761 ms
+2025-10-25 11:55:31.318 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 24.1034 ms
+2025-10-25 12:12:05.966 -05:00 [INF] HTTP GET / responded 200 in 125.0797 ms
+2025-10-25 12:12:05.966 -05:00 [INF] HTTP GET / responded 200 in 46.3604 ms
+2025-10-25 12:12:06.030 -05:00 [INF] HTTP GET / responded 200 in 9.0814 ms
+2025-10-25 12:12:06.110 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 60.4630 ms
+2025-10-25 12:12:06.146 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 94.9762 ms
+2025-10-25 12:12:06.679 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 2.6516 ms
+2025-10-25 12:12:06.793 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 16.5831 ms
+2025-10-25 12:12:12.492 -05:00 [INF] HTTP POST / responded 302 in 2932.3836 ms
+2025-10-25 12:12:13.079 -05:00 [INF] HTTP GET /Home/Index responded 200 in 570.1162 ms
+2025-10-25 12:12:13.276 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 25.7751 ms
+2025-10-25 12:12:23.251 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 87.9945 ms
+2025-10-25 12:12:23.526 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 76.5810 ms
+2025-10-25 12:12:27.373 -05:00 [INF] HTTP POST /Menu/SincronizarModulos responded 200 in 195.1005 ms
+2025-10-25 12:12:27.392 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 11.3189 ms
+2025-10-25 12:12:36.529 -05:00 [INF] HTTP POST /Menu/SincronizarModulos responded 200 in 12.1162 ms
+2025-10-25 12:12:36.548 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 9.2825 ms
+2025-10-25 12:12:39.032 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 16.1900 ms
+2025-10-25 12:12:39.057 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 5.0360 ms
+2025-10-25 12:12:39.109 -05:00 [INF] HTTP GET /vendor/datatables/dataTables.bootstrap4.min.css responded 200 in 45.9853 ms
+2025-10-25 12:12:39.119 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/buttons.dataTables.min.css responded 200 in 55.3241 ms
+2025-10-25 12:12:39.197 -05:00 [INF] HTTP GET /vendor/jquery/jquery.min.js responded 200 in 3.8344 ms
+2025-10-25 12:12:39.119 -05:00 [INF] HTTP GET /vendor/select2/select2.min.css responded 200 in 53.9409 ms
+2025-10-25 12:12:39.148 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 89.9805 ms
+2025-10-25 12:12:39.125 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.css responded 200 in 66.5228 ms
+2025-10-25 12:12:39.142 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/responsive.dataTables.min.css responded 200 in 17.1022 ms
+2025-10-25 12:12:39.224 -05:00 [INF] HTTP GET /vendor/jquery-easing/jquery.easing.min.js responded 200 in 7.8234 ms
+2025-10-25 12:12:39.232 -05:00 [INF] HTTP GET /js/sb-admin-2.js responded 200 in 5.0333 ms
+2025-10-25 12:12:39.227 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 25.9268 ms
+2025-10-25 12:12:39.244 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.js responded 200 in 11.4665 ms
+2025-10-25 12:12:39.260 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 5.1838 ms
+2025-10-25 12:12:39.273 -05:00 [INF] HTTP GET /vendor/datatables/dataTables.bootstrap4.min.css responded 200 in 6.9870 ms
+2025-10-25 12:12:39.278 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/buttons.dataTables.min.css responded 200 in 8.9672 ms
+2025-10-25 12:12:39.281 -05:00 [INF] HTTP GET /vendor/select2/select2.min.css responded 200 in 11.2546 ms
+2025-10-25 12:12:39.267 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 4.8956 ms
+2025-10-25 12:12:39.303 -05:00 [INF] HTTP GET /vendor/jquery-easing/jquery.easing.min.js responded 200 in 15.4010 ms
+2025-10-25 12:12:39.316 -05:00 [INF] HTTP GET /js/sb-admin-2.js responded 200 in 2.7960 ms
+2025-10-25 12:12:39.326 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/responsive.dataTables.min.css responded 200 in 2.8650 ms
+2025-10-25 12:12:39.284 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.css responded 200 in 2.4567 ms
+2025-10-25 12:12:39.335 -05:00 [INF] HTTP GET /vendor/loadingoverlay/loadingoverlay.min.js responded 200 in 5.5535 ms
+2025-10-25 12:12:39.346 -05:00 [INF] HTTP GET /vendor/datatables/dataTables.bootstrap4.min.js responded 200 in 4.6650 ms
+2025-10-25 12:12:39.336 -05:00 [INF] HTTP GET /vendor/loadingoverlay/loadingoverlay.min.js responded 200 in 114.1654 ms
+2025-10-25 12:12:39.350 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.js responded 200 in 5.3538 ms
+2025-10-25 12:12:39.392 -05:00 [INF] HTTP GET /vendor/bootstrap/js/bootstrap.bundle.min.js responded 200 in 106.1116 ms
+2025-10-25 12:12:39.392 -05:00 [INF] HTTP GET /vendor/bootstrap/js/bootstrap.bundle.min.js responded 200 in 191.1151 ms
+2025-10-25 12:12:39.426 -05:00 [INF] HTTP GET /vendor/select2/es.min.js responded 200 in 56.6054 ms
+2025-10-25 12:12:39.445 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/js/dataTables.responsive.min.js responded 200 in 88.1463 ms
+2025-10-25 12:12:39.464 -05:00 [INF] HTTP GET /vendor/select2/select2.min.js responded 200 in 103.6716 ms
+2025-10-25 12:12:39.469 -05:00 [INF] HTTP GET /vendor/jquery/jquery.min.js responded 200 in 193.2977 ms
+2025-10-25 12:12:39.487 -05:00 [INF] HTTP GET /js/vistas/Menu_Index.js responded 200 in 55.8882 ms
+2025-10-25 12:12:39.516 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 4.3978 ms
+2025-10-25 12:12:39.530 -05:00 [INF] HTTP GET /vendor/datatables/jquery.dataTables.min.js responded 200 in 194.4371 ms
+2025-10-25 12:12:39.990 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 1.2333 ms
+2025-10-25 12:12:40.687 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 10.9277 ms
+2025-10-25 12:12:55.578 -05:00 [INF] HTTP POST /Menu/SincronizarModulos responded 200 in 11.8712 ms
+2025-10-25 12:12:55.612 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 9.4180 ms
+2025-10-25 12:39:21.191 -05:00 [INF] HTTP GET / responded 200 in 1604.9491 ms
+2025-10-25 12:39:21.371 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 69.1634 ms
+2025-10-25 12:39:25.062 -05:00 [INF] HTTP GET / responded 200 in 20.8779 ms
+2025-10-25 12:39:25.088 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 3.3167 ms
+2025-10-25 12:39:25.194 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 106.1990 ms
+2025-10-25 12:39:25.215 -05:00 [INF] HTTP GET / responded 200 in 22.8115 ms
+2025-10-25 12:39:25.245 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 5.6234 ms
+2025-10-25 12:39:25.272 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 26.8496 ms
+2025-10-25 12:39:25.289 -05:00 [INF] HTTP GET / responded 200 in 1.8220 ms
+2025-10-25 12:39:25.315 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 8.0492 ms
+2025-10-25 12:39:25.327 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 9.6828 ms
+2025-10-25 12:39:25.424 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 2.8365 ms
+2025-10-25 12:39:25.499 -05:00 [INF] HTTP GET / responded 200 in 2.2555 ms
+2025-10-25 12:39:25.522 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 4.4485 ms
+2025-10-25 12:39:25.529 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 7.0438 ms
+2025-10-25 12:39:25.842 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 3.0845 ms
+2025-10-25 12:39:25.947 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 2.0021 ms
+2025-10-25 12:39:33.826 -05:00 [INF] HTTP POST / responded 302 in 3328.5130 ms
+2025-10-25 12:39:34.410 -05:00 [INF] HTTP GET /Home/Index responded 200 in 564.3074 ms
+2025-10-25 12:39:35.553 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 2.8125 ms
+2025-10-25 12:47:18.218 -05:00 [INF] HTTP GET /Home/Index responded 200 in 111.0927 ms
+2025-10-25 12:47:21.076 -05:00 [INF] HTTP GET /Home/Index responded 200 in 22.1466 ms
+2025-10-25 12:47:21.107 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 5.0333 ms
+2025-10-25 12:47:21.111 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.css responded 200 in 3.3351 ms
+2025-10-25 12:47:21.234 -05:00 [INF] HTTP GET /vendor/jquery/jquery.min.js responded 200 in 10.9173 ms
+2025-10-25 12:47:21.234 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 128.9994 ms
+2025-10-25 12:47:21.243 -05:00 [INF] HTTP GET /vendor/bootstrap/js/bootstrap.bundle.min.js responded 200 in 7.3437 ms
+2025-10-25 12:47:21.226 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/buttons.dataTables.min.css responded 200 in 54.1118 ms
+2025-10-25 12:47:21.223 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/responsive.dataTables.min.css responded 200 in 59.8920 ms
+2025-10-25 12:47:21.172 -05:00 [INF] HTTP GET /vendor/datatables/dataTables.bootstrap4.min.css responded 200 in 47.8214 ms
+2025-10-25 12:47:21.261 -05:00 [INF] HTTP GET /js/sb-admin-2.js responded 200 in 2.1894 ms
+2025-10-25 12:47:21.262 -05:00 [INF] HTTP GET /Home/Index responded 200 in 26.3609 ms
+2025-10-25 12:47:21.266 -05:00 [INF] HTTP GET /vendor/jquery-easing/jquery.easing.min.js responded 200 in 1.8570 ms
+2025-10-25 12:47:21.292 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 4.3049 ms
+2025-10-25 12:47:21.298 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 5.9293 ms
+2025-10-25 12:47:21.296 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.css responded 200 in 3.5153 ms
+2025-10-25 12:47:21.322 -05:00 [INF] HTTP GET /vendor/jquery-easing/jquery.easing.min.js responded 200 in 12.8243 ms
+2025-10-25 12:47:21.351 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/responsive.dataTables.min.css responded 200 in 2.4507 ms
+2025-10-25 12:47:21.337 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/buttons.dataTables.min.css responded 200 in 23.6353 ms
+2025-10-25 12:47:21.305 -05:00 [INF] HTTP GET /vendor/datatables/dataTables.bootstrap4.min.css responded 200 in 3.8980 ms
+2025-10-25 12:47:21.308 -05:00 [INF] HTTP GET /vendor/jquery/jquery.min.js responded 200 in 7.3885 ms
+2025-10-25 12:47:21.418 -05:00 [INF] HTTP GET /js/sb-admin-2.js responded 200 in 3.3402 ms
+2025-10-25 12:47:21.315 -05:00 [INF] HTTP GET /vendor/bootstrap/js/bootstrap.bundle.min.js responded 200 in 8.9842 ms
+2025-10-25 12:47:21.424 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.js responded 200 in 2.3999 ms
+2025-10-25 12:47:21.432 -05:00 [INF] HTTP GET /vendor/loadingoverlay/loadingoverlay.min.js responded 200 in 1.7047 ms
+2025-10-25 12:47:21.433 -05:00 [INF] HTTP GET /Home/Index responded 200 in 20.9649 ms
+2025-10-25 12:47:21.471 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 5.4953 ms
+2025-10-25 12:47:21.486 -05:00 [INF] HTTP GET /vendor/datatables/dataTables.bootstrap4.min.css responded 200 in 4.3253 ms
+2025-10-25 12:47:21.503 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/responsive.dataTables.min.css responded 200 in 16.9594 ms
+2025-10-25 12:47:21.514 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/buttons.dataTables.min.css responded 200 in 2.7117 ms
+2025-10-25 12:47:21.507 -05:00 [INF] HTTP GET /vendor/jquery/jquery.min.js responded 200 in 17.9796 ms
+2025-10-25 12:47:21.526 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.js responded 200 in 4.6367 ms
+2025-10-25 12:47:21.539 -05:00 [INF] HTTP GET /vendor/loadingoverlay/loadingoverlay.min.js responded 200 in 5.6962 ms
+2025-10-25 12:47:21.517 -05:00 [INF] HTTP GET /js/sb-admin-2.js responded 200 in 2.4917 ms
+2025-10-25 12:47:21.486 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.css responded 200 in 8.6573 ms
+2025-10-25 12:47:21.481 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 6.7414 ms
+2025-10-25 12:47:21.571 -05:00 [INF] HTTP GET /vendor/jquery-easing/jquery.easing.min.js responded 200 in 1.8925 ms
+2025-10-25 12:47:21.580 -05:00 [INF] HTTP GET /vendor/bootstrap/js/bootstrap.bundle.min.js responded 200 in 7.5303 ms
+2025-10-25 12:47:21.717 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 14.3589 ms
+2025-10-25 12:47:22.026 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 5.4391 ms
+2025-10-25 12:47:24.816 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 120.1817 ms
+2025-10-25 12:47:24.883 -05:00 [INF] HTTP GET /vendor/select2/select2.min.css responded 200 in 3.4320 ms
+2025-10-25 12:47:25.266 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 126.4684 ms
+2025-10-25 12:47:29.515 -05:00 [INF] HTTP POST /Menu/SincronizarModulos responded 200 in 222.5912 ms
+2025-10-25 12:47:29.535 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 8.8764 ms
+2025-10-25 13:02:13.749 -05:00 [INF] HTTP POST /Menu/SincronizarModulos responded 302 in 44.7468 ms
+2025-10-25 13:02:13.761 -05:00 [INF] HTTP GET /Acceso/Login responded 200 in 3.9040 ms
+2025-10-25 13:02:23.787 -05:00 [INF] HTTP GET /Menu/Index responded 302 in 1.2054 ms
+2025-10-25 13:02:23.842 -05:00 [INF] HTTP GET /Acceso/Login responded 200 in 44.1411 ms
+2025-10-25 13:36:32.813 -05:00 [INF] HTTP GET / responded 200 in 3466.4561 ms
+2025-10-25 13:36:33.032 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 88.2687 ms
+2025-10-25 13:38:42.232 -05:00 [INF] HTTP POST / responded 302 in 3300.5287 ms
+2025-10-25 13:38:42.775 -05:00 [INF] HTTP GET /Home/Index responded 200 in 521.3246 ms
+2025-10-25 13:38:42.877 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 8.3653 ms
+2025-10-25 13:38:46.866 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 99.4384 ms
+2025-10-25 13:38:47.157 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 75.3801 ms
+2025-10-25 13:38:49.922 -05:00 [INF] HTTP POST /Menu/SincronizarModulos responded 200 in 174.6963 ms
+2025-10-25 13:38:49.942 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 10.1463 ms
+2025-10-25 13:39:03.858 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 18.5784 ms
+2025-10-25 13:39:04.025 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 8.9246 ms
+2025-10-25 13:39:25.890 -05:00 [INF] HTTP GET /Menu/ObtenerParaEditar responded 200 in 127.7729 ms
+2025-10-25 13:39:35.923 -05:00 [INF] HTTP POST /Menu/ProcesaGuardarMenu responded 200 in 78.3887 ms
+2025-10-25 13:39:35.941 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 8.5172 ms
+2025-10-25 13:39:43.496 -05:00 [INF] HTTP GET /Menu/ObtenerParaEditar responded 200 in 12.5080 ms
+2025-10-25 13:41:42.423 -05:00 [INF] HTTP POST /Menu/ProcesaGuardarMenu responded 200 in 39.2824 ms
+2025-10-25 13:41:42.441 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 8.7001 ms
+2025-10-25 13:41:47.709 -05:00 [INF] HTTP GET /Menu/ObtenerParaEditar responded 200 in 11.2809 ms
+2025-10-25 13:43:12.108 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 86.0962 ms
+2025-10-25 13:43:12.781 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 485.4749 ms
+2025-10-25 13:43:15.318 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 363.6582 ms
+2025-10-25 13:49:22.785 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 88.3770 ms
+2025-10-25 13:49:22.977 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 19.3141 ms
+2025-10-25 13:49:27.085 -05:00 [INF] HTTP GET /Menu/ObtenerParaEditar responded 200 in 11.2608 ms
+2025-10-25 13:54:46.877 -05:00 [INF] HTTP GET /Menu/ObtenerParaEditar responded 200 in 145.5095 ms
+2025-10-25 14:18:01.742 -05:00 [INF] HTTP GET / responded 200 in 3510.4741 ms
+2025-10-25 14:18:01.997 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 95.5335 ms
+2025-10-25 14:18:02.082 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 71.5679 ms
+2025-10-25 14:18:10.755 -05:00 [ERR] Failed executing DbCommand (17ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT `m`.`secuencial`, `m`.`controlador`, `m`.`descripcion`, `m`.`esActivo`, `m`.`fechaRegistro`, `m`.`icono`, `m`.`MostrarEnMenu`, `m`.`paginaAccion`, `m`.`secMenuPadre`
+FROM `menu` AS `m`
+WHERE `m`.`secuencial` IN (1, 2, 3, 4, 6, 7, 10, 12, 13, 15, 16, 17, 19, 20, 21, 23, 24, 25, 27, 29, 31, 32, 41) AND (`m`.`esActivo` = 1)
+2025-10-25 14:18:10.964 -05:00 [ERR] An exception occurred while iterating over the results of a query for context type 'DAL.DBContext.TecmeindbContext'.
+MySqlConnector.MySqlException (0x80004005): Unknown column 'm.MostrarEnMenu' in 'field list'
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 894
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 37
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.InitAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 483
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 357
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 350
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+MySqlConnector.MySqlException (0x80004005): Unknown column 'm.MostrarEnMenu' in 'field list'
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 894
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 37
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.InitAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 483
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 357
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 350
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+2025-10-25 14:18:11.404 -05:00 [ERR] HTTP POST / responded 500 in 5170.0888 ms
+MySqlConnector.MySqlException (0x80004005): Unknown column 'm.MostrarEnMenu' in 'field list'
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 894
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 37
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.InitAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 483
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 357
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 350
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at BLL.Implementacion.MenuServices.ObtieneMenusPorIdsAsync(HashSet`1 menuIds) in C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\Implementacion\MenuServices.cs:line 40
+   at TecmeinWebApp.Controllers.AccesoController.Login(LoginUsuarioVM modelo) in C:\Proyectos\Tecmein\SO\SolucionTecmein\TecmeinAplicacionWeb\Controllers\AccesoController.cs:line 77
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-10-25 14:18:11.485 -05:00 [ERR] An unhandled exception has occurred while executing the request.
+MySqlConnector.MySqlException (0x80004005): Unknown column 'm.MostrarEnMenu' in 'field list'
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 894
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 37
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.InitAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 483
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 357
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 350
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at BLL.Implementacion.MenuServices.ObtieneMenusPorIdsAsync(HashSet`1 menuIds) in C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\Implementacion\MenuServices.cs:line 40
+   at TecmeinWebApp.Controllers.AccesoController.Login(LoginUsuarioVM modelo) in C:\Proyectos\Tecmein\SO\SolucionTecmein\TecmeinAplicacionWeb\Controllers\AccesoController.cs:line 77
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2025-10-25 14:18:21.664 -05:00 [ERR] Failed executing DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT `m`.`secuencial`, `m`.`controlador`, `m`.`descripcion`, `m`.`esActivo`, `m`.`fechaRegistro`, `m`.`icono`, `m`.`MostrarEnMenu`, `m`.`paginaAccion`, `m`.`secMenuPadre`
+FROM `menu` AS `m`
+WHERE `m`.`secuencial` IN (1, 2, 3, 4, 6, 7, 10, 12, 13, 15, 16, 17, 19, 20, 21, 23, 24, 25, 27, 29, 31, 32, 41) AND (`m`.`esActivo` = 1)
+2025-10-25 14:18:21.670 -05:00 [ERR] An exception occurred while iterating over the results of a query for context type 'DAL.DBContext.TecmeindbContext'.
+MySqlConnector.MySqlException (0x80004005): Unknown column 'm.MostrarEnMenu' in 'field list'
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 894
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 37
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.InitAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 483
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 357
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 350
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+MySqlConnector.MySqlException (0x80004005): Unknown column 'm.MostrarEnMenu' in 'field list'
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 894
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 37
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.InitAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 483
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 357
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 350
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+2025-10-25 14:18:21.858 -05:00 [ERR] HTTP POST / responded 500 in 300.5020 ms
+MySqlConnector.MySqlException (0x80004005): Unknown column 'm.MostrarEnMenu' in 'field list'
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 894
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 37
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.InitAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 483
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 357
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 350
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at BLL.Implementacion.MenuServices.ObtieneMenusPorIdsAsync(HashSet`1 menuIds) in C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\Implementacion\MenuServices.cs:line 40
+   at TecmeinWebApp.Controllers.AccesoController.Login(LoginUsuarioVM modelo) in C:\Proyectos\Tecmein\SO\SolucionTecmein\TecmeinAplicacionWeb\Controllers\AccesoController.cs:line 77
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-10-25 14:18:21.879 -05:00 [ERR] An unhandled exception has occurred while executing the request.
+MySqlConnector.MySqlException (0x80004005): Unknown column 'm.MostrarEnMenu' in 'field list'
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 894
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 37
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.InitAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 483
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 357
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 350
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at BLL.Implementacion.MenuServices.ObtieneMenusPorIdsAsync(HashSet`1 menuIds) in C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\Implementacion\MenuServices.cs:line 40
+   at TecmeinWebApp.Controllers.AccesoController.Login(LoginUsuarioVM modelo) in C:\Proyectos\Tecmein\SO\SolucionTecmein\TecmeinAplicacionWeb\Controllers\AccesoController.cs:line 77
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2025-10-25 14:18:21.983 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 2.0241 ms
+2025-10-25 14:19:32.456 -05:00 [INF] HTTP GET / responded 200 in 3496.0745 ms
+2025-10-25 14:19:32.872 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 176.3319 ms
+2025-10-25 14:19:32.971 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 5.1361 ms
+2025-10-25 14:20:39.733 -05:00 [ERR] Failed executing DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT `m`.`secuencial`, `m`.`controlador`, `m`.`descripcion`, `m`.`esActivo`, `m`.`fechaRegistro`, `m`.`icono`, `m`.`MostrarEnMenu`, `m`.`paginaAccion`, `m`.`secMenuPadre`
+FROM `menu` AS `m`
+WHERE `m`.`secuencial` IN (1, 2, 3, 4, 6, 7, 10, 12, 13, 15, 16, 17, 19, 20, 21, 23, 24, 25, 27, 29, 31, 32, 41) AND (`m`.`esActivo` = 1)
+2025-10-25 14:20:39.894 -05:00 [ERR] An exception occurred while iterating over the results of a query for context type 'DAL.DBContext.TecmeindbContext'.
+MySqlConnector.MySqlException (0x80004005): Unknown column 'm.MostrarEnMenu' in 'field list'
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 894
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 37
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.InitAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 483
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 357
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 350
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+MySqlConnector.MySqlException (0x80004005): Unknown column 'm.MostrarEnMenu' in 'field list'
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 894
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 37
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.InitAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 483
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 357
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 350
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+2025-10-25 14:20:40.142 -05:00 [ERR] HTTP POST / responded 500 in 3148.7312 ms
+MySqlConnector.MySqlException (0x80004005): Unknown column 'm.MostrarEnMenu' in 'field list'
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 894
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 37
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.InitAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 483
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 357
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 350
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at BLL.Implementacion.MenuServices.ObtieneMenusPorIdsAsync(HashSet`1 menuIds) in C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\Implementacion\MenuServices.cs:line 40
+   at TecmeinWebApp.Controllers.AccesoController.Login(LoginUsuarioVM modelo) in C:\Proyectos\Tecmein\SO\SolucionTecmein\TecmeinAplicacionWeb\Controllers\AccesoController.cs:line 77
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-10-25 14:20:40.194 -05:00 [ERR] An unhandled exception has occurred while executing the request.
+MySqlConnector.MySqlException (0x80004005): Unknown column 'm.MostrarEnMenu' in 'field list'
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 894
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 37
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.InitAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 483
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 357
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 350
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at BLL.Implementacion.MenuServices.ObtieneMenusPorIdsAsync(HashSet`1 menuIds) in C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\Implementacion\MenuServices.cs:line 40
+   at TecmeinWebApp.Controllers.AccesoController.Login(LoginUsuarioVM modelo) in C:\Proyectos\Tecmein\SO\SolucionTecmein\TecmeinAplicacionWeb\Controllers\AccesoController.cs:line 77
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2025-10-25 14:24:29.215 -05:00 [INF] HTTP POST / responded 302 in 196.9109 ms
+2025-10-25 14:24:29.664 -05:00 [INF] HTTP GET /Home/Index responded 200 in 438.4895 ms
+2025-10-25 14:24:29.756 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 5.7449 ms
+2025-10-25 14:28:11.611 -05:00 [INF] HTTP GET /Home/Index responded 200 in 104.9574 ms
+2025-10-25 14:28:18.414 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 57.3006 ms
+2025-10-25 14:28:18.732 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 132.9965 ms
+2025-10-25 14:28:23.051 -05:00 [INF] HTTP GET /Menu/ObtenerParaEditar responded 200 in 57.0119 ms
+2025-10-25 14:28:34.237 -05:00 [INF] HTTP GET /Menu/ObtenerParaEditar responded 200 in 13.2282 ms
+2025-10-25 14:28:42.366 -05:00 [INF] HTTP GET /Menu/ObtenerParaEditar responded 200 in 19.7774 ms
+2025-10-25 17:53:50.906 -05:00 [INF] HTTP GET / responded 200 in 2013.7627 ms
+2025-10-25 17:53:51.152 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 109.6522 ms
+2025-10-25 17:53:57.415 -05:00 [INF] HTTP POST / responded 302 in 3405.7667 ms
+2025-10-25 17:53:57.994 -05:00 [INF] HTTP GET /Home/Index responded 200 in 564.4375 ms
+2025-10-25 17:54:06.391 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 111.8454 ms
+2025-10-25 17:54:06.556 -05:00 [INF] HTTP GET /js/vistas/Menu_Index.js responded 200 in 102.4468 ms
+2025-10-25 17:54:10.157 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 22.4132 ms
+2025-10-25 17:54:18.313 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 28.0097 ms
+2025-10-25 17:59:05.542 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 128.5338 ms
+2025-10-25 18:03:19.811 -05:00 [INF] HTTP GET / responded 200 in 2444.0656 ms
+2025-10-25 18:03:19.975 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 81.5271 ms
+2025-10-25 18:03:20.051 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 92.7813 ms
+2025-10-25 18:03:19.971 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 52.6331 ms
+2025-10-25 18:03:20.124 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 17.6401 ms
+2025-10-25 18:03:28.909 -05:00 [INF] HTTP GET / responded 200 in 50.4991 ms
+2025-10-25 18:03:28.976 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 33.0701 ms
+2025-10-25 18:03:29.028 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 58.8174 ms
+2025-10-25 18:03:29.177 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 4.9161 ms
+2025-10-25 18:03:29.262 -05:00 [INF] HTTP GET / responded 200 in 33.3125 ms
+2025-10-25 18:03:29.297 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 8.5390 ms
+2025-10-25 18:03:29.301 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 7.4866 ms
+2025-10-25 18:03:29.442 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 4.5553 ms
+2025-10-25 18:03:29.462 -05:00 [INF] HTTP GET / responded 200 in 3.4330 ms
+2025-10-25 18:03:29.497 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 3.9131 ms
+2025-10-25 18:03:29.533 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 34.7836 ms
+2025-10-25 18:03:29.727 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 5.8652 ms
+2025-10-25 18:03:29.845 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 4.2723 ms
+2025-10-25 18:03:36.285 -05:00 [INF] HTTP POST / responded 302 in 2995.0400 ms
+2025-10-25 18:03:36.733 -05:00 [INF] HTTP GET /Home/Index responded 200 in 435.6278 ms
+2025-10-25 18:03:36.847 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 3.1302 ms
+2025-10-25 18:03:41.026 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 87.5290 ms
+2025-10-25 18:03:41.073 -05:00 [INF] HTTP GET /vendor/select2/select2.min.css responded 200 in 3.6056 ms
+2025-10-25 18:04:00.164 -05:00 [INF] HTTP GET /DashBoard/Index responded 200 in 44.2875 ms
+2025-10-25 18:04:00.286 -05:00 [INF] HTTP GET /vendor/chart.js/Chart.min.js responded 200 in 3.2667 ms
+2025-10-25 18:04:00.288 -05:00 [INF] HTTP GET /js/vistas/DashBoard_Index.js responded 200 in 2.4562 ms
+2025-10-25 18:04:00.648 -05:00 [INF] HTTP GET /DashBoard/ObtenerResumen responded 403 in 45.8248 ms
+2025-10-25 18:04:10.847 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 19.8693 ms
+2025-10-25 18:04:28.792 -05:00 [INF] HTTP GET /vendor/bootstrap/js/bootstrap.bundle.min.js.map responded 200 in 4.0340 ms
+2025-10-25 18:04:28.796 -05:00 [INF] HTTP GET /vendor/toastr/toastr.js.map responded 404 in 7.2513 ms
+2025-10-25 18:06:18.267 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 82.2343 ms
+2025-10-25 18:06:18.684 -05:00 [INF] HTTP GET /vendor/bootstrap/js/bootstrap.bundle.min.js.map responded 304 in 1.7037 ms
+2025-10-25 18:06:18.685 -05:00 [INF] HTTP GET /vendor/toastr/toastr.js.map responded 404 in 1.5171 ms
+2025-10-25 18:10:57.125 -05:00 [INF] HTTP GET / responded 200 in 2180.5287 ms
+2025-10-25 18:10:57.283 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 35.5753 ms
+2025-10-25 18:12:22.581 -05:00 [INF] HTTP POST / responded 302 in 4773.5560 ms
+2025-10-25 18:12:23.518 -05:00 [INF] HTTP GET /Home/Index responded 200 in 909.7044 ms
+2025-10-25 18:12:23.687 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 4.5633 ms
+2025-10-25 18:16:46.735 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 253.3236 ms
+2025-10-25 18:16:46.923 -05:00 [INF] HTTP GET /js/vistas/Menu_Index.js responded 200 in 97.4566 ms
+2025-10-25 18:16:47.127 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 85.2799 ms
+2025-10-25 18:22:01.037 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 65.1281 ms
+2025-10-25 18:22:01.146 -05:00 [INF] HTTP GET /js/vistas/Menu_Index.js responded 200 in 72.1145 ms
+2025-10-25 18:22:01.254 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 31.6760 ms
+2025-10-25 18:23:36.509 -05:00 [INF] HTTP GET / responded 200 in 2236.1485 ms
+2025-10-25 18:23:36.672 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 43.5214 ms
+2025-10-25 18:23:36.672 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 99.3305 ms
+2025-10-25 18:23:36.750 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 36.3491 ms
+2025-10-25 18:23:36.798 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 9.7806 ms
+2025-10-25 18:24:06.385 -05:00 [INF] HTTP POST / responded 302 in 3023.3274 ms
+2025-10-25 18:24:06.977 -05:00 [INF] HTTP GET /Home/Index responded 200 in 574.1369 ms
+2025-10-25 18:24:07.068 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 4.9164 ms
+2025-10-25 18:24:18.790 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 109.4641 ms
+2025-10-25 18:24:18.886 -05:00 [INF] HTTP GET /js/vistas/Menu_Index.js responded 200 in 5.0227 ms
+2025-10-25 18:24:18.898 -05:00 [INF] HTTP GET /vendor/select2/es.min.js responded 200 in 16.4109 ms
+2025-10-25 18:24:19.048 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 69.0741 ms
+2025-10-25 18:24:27.586 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 19.9015 ms
+2025-10-25 18:24:27.611 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 3.1445 ms
+2025-10-25 18:24:27.616 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 5.1559 ms
+2025-10-25 18:24:27.620 -05:00 [INF] HTTP GET /vendor/datatables/dataTables.bootstrap4.min.css responded 200 in 3.3074 ms
+2025-10-25 18:24:27.617 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.css responded 200 in 3.9221 ms
+2025-10-25 18:24:27.630 -05:00 [INF] HTTP GET /vendor/bootstrap/js/bootstrap.bundle.min.js responded 200 in 2.4580 ms
+2025-10-25 18:24:27.627 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/responsive.dataTables.min.css responded 200 in 1.8923 ms
+2025-10-25 18:24:27.643 -05:00 [INF] HTTP GET /vendor/jquery/jquery.min.js responded 200 in 9.2257 ms
+2025-10-25 18:24:27.650 -05:00 [INF] HTTP GET /vendor/datatables/jquery.dataTables.min.js responded 200 in 4.9835 ms
+2025-10-25 18:24:27.658 -05:00 [INF] HTTP GET /vendor/loadingoverlay/loadingoverlay.min.js responded 200 in 3.5067 ms
+2025-10-25 18:24:27.662 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/js/dataTables.responsive.min.js responded 200 in 1.9967 ms
+2025-10-25 18:24:27.666 -05:00 [INF] HTTP GET /vendor/select2/select2.min.js responded 200 in 3.0320 ms
+2025-10-25 18:24:27.670 -05:00 [INF] HTTP GET /vendor/select2/es.min.js responded 200 in 3.8507 ms
+2025-10-25 18:24:27.621 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/buttons.dataTables.min.css responded 200 in 3.8038 ms
+2025-10-25 18:24:27.633 -05:00 [INF] HTTP GET /vendor/jquery-easing/jquery.easing.min.js responded 200 in 2.1034 ms
+2025-10-25 18:24:27.674 -05:00 [INF] HTTP GET /js/vistas/Menu_Index.js responded 200 in 1.5093 ms
+2025-10-25 18:24:27.685 -05:00 [INF] HTTP GET /js/sb-admin-2.js responded 200 in 2.7522 ms
+2025-10-25 18:24:27.624 -05:00 [INF] HTTP GET /vendor/select2/select2.min.css responded 200 in 3.0661 ms
+2025-10-25 18:24:27.690 -05:00 [INF] HTTP GET /vendor/datatables/dataTables.bootstrap4.min.js responded 200 in 2.3564 ms
+2025-10-25 18:24:27.697 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.js responded 200 in 1.8297 ms
+2025-10-25 18:24:27.771 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 24.0880 ms
+2025-10-25 18:24:27.803 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 3.7367 ms
+2025-10-25 18:24:27.811 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 7.5286 ms
+2025-10-25 18:24:27.811 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.css responded 200 in 3.5609 ms
+2025-10-25 18:24:27.808 -05:00 [INF] HTTP GET /vendor/datatables/dataTables.bootstrap4.min.css responded 200 in 2.2268 ms
+2025-10-25 18:24:27.815 -05:00 [INF] HTTP GET /vendor/select2/select2.min.css responded 200 in 3.7304 ms
+2025-10-25 18:24:27.823 -05:00 [INF] HTTP GET /vendor/bootstrap/js/bootstrap.bundle.min.js responded 200 in 2.1960 ms
+2025-10-25 18:24:27.826 -05:00 [INF] HTTP GET /vendor/jquery/jquery.min.js responded 200 in 2.1017 ms
+2025-10-25 18:24:27.817 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/responsive.dataTables.min.css responded 200 in 3.3471 ms
+2025-10-25 18:24:27.839 -05:00 [INF] HTTP GET /vendor/datatables/dataTables.bootstrap4.min.js responded 200 in 2.3403 ms
+2025-10-25 18:24:27.846 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/js/dataTables.responsive.min.js responded 200 in 2.3887 ms
+2025-10-25 18:24:27.849 -05:00 [INF] HTTP GET /vendor/loadingoverlay/loadingoverlay.min.js responded 200 in 1.8337 ms
+2025-10-25 18:24:27.854 -05:00 [INF] HTTP GET /vendor/select2/es.min.js responded 200 in 2.7593 ms
+2025-10-25 18:24:27.856 -05:00 [INF] HTTP GET /js/vistas/Menu_Index.js responded 200 in 1.5832 ms
+2025-10-25 18:24:27.814 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/buttons.dataTables.min.css responded 200 in 3.3483 ms
+2025-10-25 18:24:27.833 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.js responded 200 in 3.9448 ms
+2025-10-25 18:24:27.820 -05:00 [INF] HTTP GET /vendor/jquery-easing/jquery.easing.min.js responded 200 in 2.6397 ms
+2025-10-25 18:24:27.869 -05:00 [INF] HTTP GET /js/sb-admin-2.js responded 200 in 2.6417 ms
+2025-10-25 18:24:27.873 -05:00 [INF] HTTP GET /vendor/select2/select2.min.js responded 200 in 2.0978 ms
+2025-10-25 18:24:27.876 -05:00 [INF] HTTP GET /vendor/datatables/jquery.dataTables.min.js responded 200 in 2.7636 ms
+2025-10-25 18:24:27.949 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 19.5209 ms
+2025-10-25 18:24:27.975 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 3.0492 ms
+2025-10-25 18:24:27.984 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.css responded 200 in 5.5599 ms
+2025-10-25 18:24:27.995 -05:00 [INF] HTTP GET /vendor/select2/select2.min.css responded 200 in 1.1887 ms
+2025-10-25 18:24:27.992 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/responsive.dataTables.min.css responded 200 in 11.0106 ms
+2025-10-25 18:24:28.000 -05:00 [INF] HTTP GET /vendor/jquery/jquery.min.js responded 200 in 2.2771 ms
+2025-10-25 18:24:27.996 -05:00 [INF] HTTP GET /vendor/datatables/dataTables.bootstrap4.min.css responded 200 in 2.0504 ms
+2025-10-25 18:24:28.009 -05:00 [INF] HTTP GET /vendor/bootstrap/js/bootstrap.bundle.min.js responded 200 in 2.6744 ms
+2025-10-25 18:24:28.029 -05:00 [INF] HTTP GET /vendor/datatables/jquery.dataTables.min.js responded 200 in 3.6101 ms
+2025-10-25 18:24:28.032 -05:00 [INF] HTTP GET /vendor/loadingoverlay/loadingoverlay.min.js responded 200 in 2.0293 ms
+2025-10-25 18:24:28.036 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/js/dataTables.responsive.min.js responded 200 in 2.5886 ms
+2025-10-25 18:24:28.040 -05:00 [INF] HTTP GET /vendor/select2/select2.min.js responded 200 in 2.3573 ms
+2025-10-25 18:24:28.044 -05:00 [INF] HTTP GET /vendor/select2/es.min.js responded 200 in 2.1407 ms
+2025-10-25 18:24:28.046 -05:00 [INF] HTTP GET /js/vistas/Menu_Index.js responded 200 in 1.5443 ms
+2025-10-25 18:24:27.990 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/buttons.dataTables.min.css responded 200 in 8.0706 ms
+2025-10-25 18:24:27.995 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 19.6538 ms
+2025-10-25 18:24:28.004 -05:00 [INF] HTTP GET /js/sb-admin-2.js responded 200 in 2.5874 ms
+2025-10-25 18:24:28.066 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.js responded 200 in 2.8637 ms
+2025-10-25 18:24:28.061 -05:00 [INF] HTTP GET /vendor/jquery-easing/jquery.easing.min.js responded 200 in 2.4679 ms
+2025-10-25 18:24:28.069 -05:00 [INF] HTTP GET /vendor/datatables/dataTables.bootstrap4.min.js responded 200 in 2.6869 ms
+2025-10-25 18:24:28.109 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 20.4213 ms
+2025-10-25 18:24:28.132 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 2.7424 ms
+2025-10-25 18:24:28.142 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.css responded 200 in 2.2914 ms
+2025-10-25 18:24:28.141 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/responsive.dataTables.min.css responded 200 in 1.6409 ms
+2025-10-25 18:24:28.142 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 9.2235 ms
+2025-10-25 18:24:28.146 -05:00 [INF] HTTP GET /vendor/datatables/dataTables.bootstrap4.min.css responded 200 in 1.4950 ms
+2025-10-25 18:24:28.154 -05:00 [INF] HTTP GET /vendor/jquery/jquery.min.js responded 200 in 3.1993 ms
+2025-10-25 18:24:28.163 -05:00 [INF] HTTP GET /vendor/loadingoverlay/loadingoverlay.min.js responded 200 in 4.4425 ms
+2025-10-25 18:24:28.158 -05:00 [INF] HTTP GET /vendor/bootstrap/js/bootstrap.bundle.min.js responded 200 in 2.7915 ms
+2025-10-25 18:24:28.144 -05:00 [INF] HTTP GET /vendor/select2/select2.min.css responded 200 in 2.4153 ms
+2025-10-25 18:24:28.190 -05:00 [INF] HTTP GET /vendor/select2/select2.min.js responded 200 in 11.6995 ms
+2025-10-25 18:24:28.230 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/js/dataTables.responsive.min.js responded 200 in 2.1071 ms
+2025-10-25 18:24:28.233 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.js responded 200 in 2.1364 ms
+2025-10-25 18:24:28.142 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/buttons.dataTables.min.css responded 200 in 2.3182 ms
+2025-10-25 18:24:28.149 -05:00 [INF] HTTP GET /vendor/jquery-easing/jquery.easing.min.js responded 200 in 2.2129 ms
+2025-10-25 18:24:28.247 -05:00 [INF] HTTP GET /js/sb-admin-2.js responded 200 in 1.6147 ms
+2025-10-25 18:24:28.238 -05:00 [INF] HTTP GET /js/vistas/Menu_Index.js responded 200 in 1.6605 ms
+2025-10-25 18:24:28.176 -05:00 [INF] HTTP GET /vendor/datatables/dataTables.bootstrap4.min.js responded 200 in 9.6641 ms
+2025-10-25 18:24:28.253 -05:00 [INF] HTTP GET /vendor/datatables/jquery.dataTables.min.js responded 200 in 4.4123 ms
+2025-10-25 18:24:28.261 -05:00 [INF] HTTP GET /vendor/select2/es.min.js responded 200 in 1.8134 ms
+2025-10-25 18:24:28.443 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 3.1337 ms
+2025-10-25 18:24:28.938 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 1.0735 ms
+2025-10-25 18:24:37.169 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 12.2354 ms
+2025-10-25 18:24:46.539 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 49.9724 ms
+2025-10-25 18:24:47.244 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 510.9493 ms
+2025-10-25 18:24:49.707 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 15.7548 ms
+2025-10-25 18:24:49.765 -05:00 [INF] HTTP GET /js/vistas/Menu_Index.js responded 304 in 2.8446 ms
+2025-10-25 18:24:49.892 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 8.8232 ms
+2025-10-25 18:26:08.766 -05:00 [INF] HTTP GET / responded 200 in 1411.4617 ms
+2025-10-25 18:26:09.004 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 111.2308 ms
+2025-10-25 18:26:16.740 -05:00 [INF] HTTP POST / responded 302 in 3443.0817 ms
+2025-10-25 18:26:17.275 -05:00 [INF] HTTP GET /Home/Index responded 200 in 510.1569 ms
+2025-10-25 18:26:18.414 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 4.1462 ms
+2025-10-25 18:26:48.792 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 102.4137 ms
+2025-10-25 18:26:48.943 -05:00 [INF] HTTP GET /js/vistas/Menu_Index.js responded 200 in 58.3805 ms
+2025-10-25 18:26:49.115 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 111.9312 ms
+2025-10-25 18:26:56.153 -05:00 [INF] HTTP GET /Menu/lista responded 200 in 17.0496 ms
+2025-10-25 18:26:56.247 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 6.4822 ms
+2025-10-25 18:43:45.749 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 118.7534 ms
+2025-10-25 18:43:45.863 -05:00 [INF] HTTP GET /js/vistas/Menu_Index.js responded 200 in 74.1215 ms
+2025-10-25 18:43:46.956 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 19.6121 ms
+2025-10-25 18:46:11.300 -05:00 [INF] HTTP GET / responded 200 in 1607.9309 ms
+2025-10-25 18:46:11.650 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 217.1082 ms
+2025-10-25 18:46:11.751 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 6.0469 ms
+2025-10-25 18:46:58.665 -05:00 [INF] HTTP POST / responded 302 in 2989.9082 ms
+2025-10-25 18:46:59.287 -05:00 [INF] HTTP GET /Home/Index responded 200 in 601.0381 ms
+2025-10-25 18:46:59.377 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 9.6906 ms
+2025-10-25 18:47:20.100 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 178.6843 ms
+2025-10-25 18:47:20.210 -05:00 [INF] HTTP GET /js/vistas/Menu_Index.js responded 304 in 43.1670 ms
+2025-10-25 18:47:20.360 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 68.2691 ms
+2025-10-25 18:51:20.429 -05:00 [INF] HTTP GET /Menu/ObtenerParaEditar responded 200 in 124.6461 ms
+2025-10-25 18:52:41.729 -05:00 [INF] HTTP POST /Menu/ProcesaGuardarMenu responded 200 in 243.4334 ms
+2025-10-25 18:52:41.761 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 20.0475 ms
+2025-10-25 18:52:48.387 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 22.8657 ms
+2025-10-25 18:52:48.439 -05:00 [INF] HTTP GET /js/vistas/Menu_Index.js responded 304 in 0.4377 ms
+2025-10-25 18:52:48.560 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 8.4808 ms
+2025-10-25 18:52:56.341 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 44.6648 ms
+2025-10-25 18:52:56.992 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 481.1840 ms
+2025-10-25 18:53:00.614 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 371.3610 ms
+2025-10-25 18:57:05.397 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 297.0731 ms
+2025-10-25 18:57:09.283 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 263.6100 ms
+2025-10-25 18:57:09.444 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 283.7605 ms
+2025-10-25 18:57:09.606 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 272.5792 ms
+2025-10-25 18:57:09.754 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 279.9365 ms
+2025-10-25 18:57:09.776 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 5.2166 ms
+2025-10-25 18:57:09.781 -05:00 [INF] HTTP GET /vendor/datatables/dataTables.bootstrap4.min.css responded 200 in 1.8869 ms
+2025-10-25 18:57:09.809 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/responsive.dataTables.min.css responded 200 in 26.2909 ms
+2025-10-25 18:57:09.786 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 11.4754 ms
+2025-10-25 18:57:09.839 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/buttons.dataTables.min.css responded 200 in 17.4669 ms
+2025-10-25 18:57:09.842 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.js responded 200 in 2.0195 ms
+2025-10-25 18:57:09.846 -05:00 [INF] HTTP GET /vendor/jquery-easing/jquery.easing.min.js responded 200 in 2.6886 ms
+2025-10-25 18:57:09.807 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.css responded 200 in 23.9775 ms
+2025-10-25 18:57:09.834 -05:00 [INF] HTTP GET /vendor/jquery/jquery.min.js responded 200 in 47.4753 ms
+2025-10-25 18:57:09.834 -05:00 [INF] HTTP GET /vendor/bootstrap/js/bootstrap.bundle.min.js responded 200 in 38.3998 ms
+2025-10-25 18:57:09.858 -05:00 [INF] HTTP GET /js/sb-admin-2.js responded 200 in 1.6120 ms
+2025-10-25 18:57:09.867 -05:00 [INF] HTTP GET /vendor/loadingoverlay/loadingoverlay.min.js responded 200 in 3.9123 ms
+2025-10-25 18:57:10.167 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 3.3770 ms
+2025-10-25 18:57:12.355 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 1.4722 ms
+2025-10-25 19:01:32.373 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 46.1728 ms
+2025-10-25 19:05:04.630 -05:00 [INF] HTTP GET / responded 200 in 2210.5781 ms
+2025-10-25 19:05:04.838 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 58.3317 ms
+2025-10-25 19:05:05.433 -05:00 [INF] HTTP GET / responded 200 in 19.6922 ms
+2025-10-25 19:05:05.467 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 16.8865 ms
+2025-10-25 19:05:05.511 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 37.5184 ms
+2025-10-25 19:05:05.604 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 3.4172 ms
+2025-10-25 19:05:05.630 -05:00 [INF] HTTP GET / responded 200 in 14.3916 ms
+2025-10-25 19:05:05.660 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 5.8123 ms
+2025-10-25 19:05:05.703 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 47.2800 ms
+2025-10-25 19:05:05.781 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 2.1983 ms
+2025-10-25 19:05:05.851 -05:00 [INF] HTTP GET / responded 200 in 60.8580 ms
+2025-10-25 19:05:05.868 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 2.9398 ms
+2025-10-25 19:05:05.878 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 7.5980 ms
+2025-10-25 19:05:05.963 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 2.6543 ms
+2025-10-25 19:05:06.022 -05:00 [INF] HTTP GET / responded 200 in 3.0330 ms
+2025-10-25 19:05:06.045 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 3.2945 ms
+2025-10-25 19:05:06.055 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 10.1109 ms
+2025-10-25 19:05:06.105 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 3.6020 ms
+2025-10-25 19:05:06.118 -05:00 [INF] HTTP GET / responded 200 in 1.8305 ms
+2025-10-25 19:05:06.146 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 2.7349 ms
+2025-10-25 19:05:06.155 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 8.8970 ms
+2025-10-25 19:05:06.249 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 2.0142 ms
+2025-10-25 19:05:06.262 -05:00 [INF] HTTP GET / responded 200 in 1.2400 ms
+2025-10-25 19:05:06.281 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 2.5366 ms
+2025-10-25 19:05:06.290 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 8.8849 ms
+2025-10-25 19:05:06.582 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 2.9955 ms
+2025-10-25 19:05:06.590 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 3.3705 ms
+2025-10-25 19:05:12.242 -05:00 [INF] HTTP POST / responded 302 in 2751.8523 ms
+2025-10-25 19:05:12.710 -05:00 [INF] HTTP GET /Home/Index responded 200 in 451.0261 ms
+2025-10-25 19:05:12.768 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.js responded 200 in 4.0696 ms
+2025-10-25 19:05:12.769 -05:00 [INF] HTTP GET /vendor/loadingoverlay/loadingoverlay.min.js responded 200 in 6.3277 ms
+2025-10-25 19:05:12.798 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 4.4462 ms
+2025-10-25 19:05:15.675 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 96.4045 ms
+2025-10-25 19:05:16.350 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 461.2525 ms
+2025-10-25 19:05:17.838 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 377.0808 ms
+2025-10-25 19:05:24.494 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 258.6395 ms
+2025-10-25 19:05:24.670 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 283.5315 ms
+2025-10-25 19:05:24.823 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 289.8466 ms
+2025-10-25 19:05:24.972 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 287.8361 ms
+2025-10-25 19:05:25.151 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 290.8274 ms
+2025-10-25 19:05:25.307 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 295.7347 ms
+2025-10-25 19:05:25.445 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 285.0542 ms
+2025-10-25 19:05:25.619 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 292.9674 ms
+2025-10-25 19:05:25.786 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 259.6059 ms
+2025-10-25 19:05:25.810 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 2.6112 ms
+2025-10-25 19:05:25.875 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/buttons.dataTables.min.css responded 200 in 46.8062 ms
+2025-10-25 19:05:25.883 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 72.7165 ms
+2025-10-25 19:05:25.903 -05:00 [INF] HTTP GET /vendor/datatables/dataTables.bootstrap4.min.css responded 200 in 25.9291 ms
+2025-10-25 19:05:25.877 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.css responded 200 in 56.8016 ms
+2025-10-25 19:05:25.930 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.js responded 200 in 3.1886 ms
+2025-10-25 19:05:25.935 -05:00 [INF] HTTP GET /vendor/loadingoverlay/loadingoverlay.min.js responded 200 in 3.4252 ms
+2025-10-25 19:05:25.913 -05:00 [INF] HTTP GET /vendor/jquery/jquery.min.js responded 200 in 40.9153 ms
+2025-10-25 19:05:25.877 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/responsive.dataTables.min.css responded 200 in 57.4908 ms
+2025-10-25 19:05:25.939 -05:00 [INF] HTTP GET /js/sb-admin-2.js responded 200 in 1.6111 ms
+2025-10-25 19:05:25.923 -05:00 [INF] HTTP GET /vendor/jquery-easing/jquery.easing.min.js responded 200 in 3.8186 ms
+2025-10-25 19:05:25.951 -05:00 [INF] HTTP GET /vendor/bootstrap/js/bootstrap.bundle.min.js responded 200 in 5.0028 ms
+2025-10-25 19:05:26.066 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 4.0967 ms
+2025-10-25 19:05:26.423 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 1.7049 ms
+2025-10-25 19:05:35.946 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 21.2482 ms
+2025-10-25 19:05:36.135 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 8.5775 ms
+2025-10-25 19:05:37.989 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 39.6595 ms
+2025-10-25 19:05:38.050 -05:00 [INF] HTTP GET /js/vistas/Menu_Index.js responded 304 in 5.1348 ms
+2025-10-25 19:05:38.239 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 69.8530 ms
+2025-10-25 19:05:46.511 -05:00 [INF] HTTP GET /Menu/ObtenerParaEditar responded 200 in 56.0610 ms
+2025-10-25 19:05:55.047 -05:00 [INF] HTTP POST /Menu/ProcesaGuardarMenu responded 200 in 101.5571 ms
+2025-10-25 19:05:55.064 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 9.0993 ms
+2025-10-25 19:05:58.364 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 16.4529 ms
+2025-10-25 19:05:58.541 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 11.4210 ms
+2025-10-25 19:06:12.960 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 16.5506 ms
+2025-10-25 19:06:13.135 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 8.1687 ms
+2025-10-25 19:06:14.757 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 247.5443 ms
+2025-10-25 19:06:19.576 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 267.8052 ms
+2025-10-25 19:06:25.269 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 269.0976 ms
+2025-10-25 19:06:25.436 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 296.6505 ms
+2025-10-25 19:06:25.670 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 349.1962 ms
+2025-10-25 19:06:25.790 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 337.3965 ms
+2025-10-25 19:06:25.919 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 290.4286 ms
+2025-10-25 19:06:26.027 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 287.3981 ms
+2025-10-25 19:06:26.055 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 2.5772 ms
+2025-10-25 19:06:26.064 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/responsive.dataTables.min.css responded 200 in 4.2623 ms
+2025-10-25 19:06:26.068 -05:00 [INF] HTTP GET /vendor/datatables/dataTables.bootstrap4.min.css responded 200 in 2.5133 ms
+2025-10-25 19:06:26.068 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.js responded 200 in 2.3676 ms
+2025-10-25 19:06:26.061 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 5.9544 ms
+2025-10-25 19:06:26.093 -05:00 [INF] HTTP GET /vendor/loadingoverlay/loadingoverlay.min.js responded 200 in 4.2930 ms
+2025-10-25 19:06:26.061 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.css responded 200 in 0.9098 ms
+2025-10-25 19:06:26.063 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/buttons.dataTables.min.css responded 200 in 2.4814 ms
+2025-10-25 19:06:26.098 -05:00 [INF] HTTP GET /vendor/jquery/jquery.min.js responded 200 in 1.8321 ms
+2025-10-25 19:06:26.104 -05:00 [INF] HTTP GET /vendor/jquery-easing/jquery.easing.min.js responded 200 in 2.0213 ms
+2025-10-25 19:06:26.073 -05:00 [INF] HTTP GET /js/sb-admin-2.js responded 200 in 2.7546 ms
+2025-10-25 19:06:26.109 -05:00 [INF] HTTP GET /vendor/bootstrap/js/bootstrap.bundle.min.js responded 200 in 3.8376 ms
+2025-10-25 19:06:26.345 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 3.6107 ms
+2025-10-25 19:06:26.695 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 1.6136 ms
+2025-10-25 19:06:43.884 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 271.0422 ms
+2025-10-25 19:06:56.826 -05:00 [INF] HTTP GET /GestionarPermisos responded 404 in 8.9068 ms
+2025-10-25 19:07:58.249 -05:00 [ERR] HTTP GET /Rol/GestionarPermisos/listar responded 500 in 16866.6737 ms
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at TecmeinWebApp.Controllers.RolController.GestionarPermisos(Int32 secRol) in C:\Proyectos\Tecmein\SO\SolucionTecmein\TecmeinAplicacionWeb\Controllers\RolController.cs:line 156
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-10-25 19:07:58.370 -05:00 [ERR] An unhandled exception has occurred while executing the request.
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at TecmeinWebApp.Controllers.RolController.GestionarPermisos(Int32 secRol) in C:\Proyectos\Tecmein\SO\SolucionTecmein\TecmeinAplicacionWeb\Controllers\RolController.cs:line 156
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2025-10-25 19:21:23.385 -05:00 [INF] HTTP GET / responded 200 in 2134.1528 ms
+2025-10-25 19:21:23.558 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 57.1120 ms
+2025-10-25 19:21:30.795 -05:00 [INF] HTTP POST / responded 302 in 2818.4052 ms
+2025-10-25 19:21:31.313 -05:00 [INF] HTTP GET /Home/Index responded 200 in 500.1010 ms
+2025-10-25 19:21:31.414 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 23.0306 ms
+2025-10-25 19:21:38.641 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 90.5106 ms
+2025-10-25 19:21:38.719 -05:00 [INF] HTTP GET /js/vistas/Menu_Index.js responded 304 in 2.9321 ms
+2025-10-25 19:21:38.891 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 61.7758 ms
+2025-10-25 19:21:43.214 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 52.2663 ms
+2025-10-25 19:21:43.827 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 443.2601 ms
+2025-10-25 19:21:45.357 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 379.1614 ms
+2025-10-25 19:21:52.639 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 241.0418 ms
+2025-10-25 19:22:05.429 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 16.5452 ms
+2025-10-25 19:22:05.608 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 8.4993 ms
+2025-10-25 19:22:10.894 -05:00 [INF] HTTP GET /Menu/ObtenerParaEditar responded 200 in 53.7149 ms
+2025-10-25 19:22:34.681 -05:00 [INF] HTTP POST /Menu/ProcesaGuardarMenu responded 200 in 123.1926 ms
+2025-10-25 19:22:34.701 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 8.0856 ms
+2025-10-25 19:22:40.112 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 17.6017 ms
+2025-10-25 19:22:40.295 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 7.4899 ms
+2025-10-25 19:22:44.389 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 15.3730 ms
+2025-10-25 19:22:44.611 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 8.9307 ms
+2025-10-25 19:22:46.091 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 268.3737 ms
+2025-10-25 19:36:32.313 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 293.9803 ms
+2025-10-25 19:37:08.205 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 299.9965 ms
+2025-10-25 19:41:40.057 -05:00 [INF] HTTP GET / responded 200 in 1524.9088 ms
+2025-10-25 19:41:40.300 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 107.6882 ms
+2025-10-25 19:41:46.916 -05:00 [INF] HTTP POST / responded 302 in 2718.0184 ms
+2025-10-25 19:41:47.434 -05:00 [INF] HTTP GET /Home/Index responded 200 in 504.5331 ms
+2025-10-25 19:41:48.583 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 3.5887 ms
+2025-10-25 19:43:19.372 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 171.5864 ms
+2025-10-25 19:43:19.440 -05:00 [INF] HTTP GET /vendor/select2/select2.min.css responded 200 in 6.6065 ms
+2025-10-25 19:43:19.542 -05:00 [INF] HTTP GET /js/vistas/Menu_Index.js responded 304 in 17.9410 ms
+2025-10-25 19:43:19.676 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 68.6378 ms
+2025-10-25 19:43:25.270 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 64.9178 ms
+2025-10-25 19:43:25.897 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 462.5026 ms
+2025-10-25 19:43:27.468 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 83.5365 ms
+2025-10-25 19:43:42.932 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 302 in 8.4220 ms
+2025-10-25 19:43:43.005 -05:00 [INF] HTTP GET /Acceso/Login responded 200 in 5.2359 ms
+2025-10-25 19:44:00.450 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 15.3754 ms
+2025-10-25 19:44:00.640 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 8.8439 ms
+2025-10-25 19:44:03.460 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 16.8682 ms
+2025-10-25 19:44:03.635 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 8.8543 ms
+2025-10-25 19:44:05.975 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 15.3267 ms
+2025-10-25 19:44:06.151 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 8.2570 ms
+2025-10-25 19:44:08.000 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 31.4448 ms
+2025-10-25 19:44:10.402 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 15.1157 ms
+2025-10-25 19:44:10.563 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 9.3454 ms
+2025-10-25 19:45:19.390 -05:00 [INF] HTTP GET / responded 200 in 2459.7974 ms
+2025-10-25 19:45:19.612 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 106.0126 ms
+2025-10-25 19:45:19.704 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 46.2991 ms
+2025-10-25 19:45:29.168 -05:00 [INF] HTTP POST / responded 302 in 2937.6351 ms
+2025-10-25 19:45:29.664 -05:00 [INF] HTTP GET /Home/Index responded 200 in 480.1555 ms
+2025-10-25 19:45:29.763 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 9.1394 ms
+2025-10-25 19:45:36.693 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 82.3895 ms
+2025-10-25 19:45:36.757 -05:00 [INF] HTTP GET /vendor/select2/es.min.js responded 200 in 3.6029 ms
+2025-10-25 19:45:36.950 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 72.4362 ms
+2025-10-25 19:45:42.654 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 51.5696 ms
+2025-10-25 19:45:43.268 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 457.5054 ms
+2025-10-25 19:45:44.753 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 77.8685 ms
+2025-10-25 19:47:44.410 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 37.5160 ms
+2025-10-25 19:53:25.225 -05:00 [INF] HTTP GET / responded 200 in 1911.1274 ms
+2025-10-25 19:53:25.427 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 77.6341 ms
+2025-10-25 19:53:25.427 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 79.5887 ms
+2025-10-25 19:53:25.527 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 110.3534 ms
+2025-10-25 19:53:25.638 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 6.4847 ms
+2025-10-25 19:53:32.040 -05:00 [INF] HTTP POST / responded 302 in 2825.9554 ms
+2025-10-25 19:53:32.538 -05:00 [INF] HTTP GET /Home/Index responded 200 in 481.1950 ms
+2025-10-25 19:53:32.631 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 5.3865 ms
+2025-10-25 19:53:37.973 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 100.1912 ms
+2025-10-25 19:53:38.605 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 429.8410 ms
+2025-10-25 19:53:39.832 -05:00 [ERR] HTTP GET /Rol/GestionarPermisos responded 500 in 68.8393 ms
+System.InvalidOperationException: The model item passed into the ViewDataDictionary is of type 'TecmeinAplicacionWeb.Models.ViewModels.GestionRolMenuVM', but this ViewDataDictionary instance requires a model item of type 'TecmeinAplicacionWeb.Models.ViewModels.GestionRolPermisoVM'.
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary.EnsureCompatible(Object value)
+   at lambda_method604(Closure, ViewDataDictionary)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorPagePropertyActivator.Activate(Object page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-10-25 19:53:39.928 -05:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: The model item passed into the ViewDataDictionary is of type 'TecmeinAplicacionWeb.Models.ViewModels.GestionRolMenuVM', but this ViewDataDictionary instance requires a model item of type 'TecmeinAplicacionWeb.Models.ViewModels.GestionRolPermisoVM'.
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary.EnsureCompatible(Object value)
+   at lambda_method604(Closure, ViewDataDictionary)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorPagePropertyActivator.Activate(Object page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2025-10-25 19:53:43.508 -05:00 [ERR] HTTP GET /Rol/GestionarPermisos responded 500 in 22.6302 ms
+System.InvalidOperationException: The model item passed into the ViewDataDictionary is of type 'TecmeinAplicacionWeb.Models.ViewModels.GestionRolMenuVM', but this ViewDataDictionary instance requires a model item of type 'TecmeinAplicacionWeb.Models.ViewModels.GestionRolPermisoVM'.
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary.EnsureCompatible(Object value)
+   at lambda_method604(Closure, ViewDataDictionary)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorPagePropertyActivator.Activate(Object page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-10-25 19:53:43.519 -05:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: The model item passed into the ViewDataDictionary is of type 'TecmeinAplicacionWeb.Models.ViewModels.GestionRolMenuVM', but this ViewDataDictionary instance requires a model item of type 'TecmeinAplicacionWeb.Models.ViewModels.GestionRolPermisoVM'.
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary.EnsureCompatible(Object value)
+   at lambda_method604(Closure, ViewDataDictionary)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorPagePropertyActivator.Activate(Object page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2025-10-25 19:53:43.573 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 2.9038 ms
+2025-10-25 19:53:43.641 -05:00 [ERR] HTTP GET /Rol/GestionarPermisos responded 500 in 23.8567 ms
+System.InvalidOperationException: The model item passed into the ViewDataDictionary is of type 'TecmeinAplicacionWeb.Models.ViewModels.GestionRolMenuVM', but this ViewDataDictionary instance requires a model item of type 'TecmeinAplicacionWeb.Models.ViewModels.GestionRolPermisoVM'.
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary.EnsureCompatible(Object value)
+   at lambda_method604(Closure, ViewDataDictionary)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorPagePropertyActivator.Activate(Object page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-10-25 19:53:43.656 -05:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: The model item passed into the ViewDataDictionary is of type 'TecmeinAplicacionWeb.Models.ViewModels.GestionRolMenuVM', but this ViewDataDictionary instance requires a model item of type 'TecmeinAplicacionWeb.Models.ViewModels.GestionRolPermisoVM'.
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary.EnsureCompatible(Object value)
+   at lambda_method604(Closure, ViewDataDictionary)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorPagePropertyActivator.Activate(Object page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2025-10-25 19:53:43.768 -05:00 [ERR] HTTP GET /Rol/GestionarPermisos responded 500 in 28.1695 ms
+System.InvalidOperationException: The model item passed into the ViewDataDictionary is of type 'TecmeinAplicacionWeb.Models.ViewModels.GestionRolMenuVM', but this ViewDataDictionary instance requires a model item of type 'TecmeinAplicacionWeb.Models.ViewModels.GestionRolPermisoVM'.
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary.EnsureCompatible(Object value)
+   at lambda_method604(Closure, ViewDataDictionary)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorPagePropertyActivator.Activate(Object page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-10-25 19:53:43.776 -05:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: The model item passed into the ViewDataDictionary is of type 'TecmeinAplicacionWeb.Models.ViewModels.GestionRolMenuVM', but this ViewDataDictionary instance requires a model item of type 'TecmeinAplicacionWeb.Models.ViewModels.GestionRolPermisoVM'.
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary.EnsureCompatible(Object value)
+   at lambda_method604(Closure, ViewDataDictionary)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorPagePropertyActivator.Activate(Object page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2025-10-25 19:53:43.857 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 1.8750 ms
+2025-10-25 19:58:23.978 -05:00 [INF] HTTP GET / responded 200 in 1394.9951 ms
+2025-10-25 19:58:24.314 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 195.1540 ms
+2025-10-25 19:58:30.329 -05:00 [INF] HTTP POST / responded 302 in 2479.5168 ms
+2025-10-25 19:58:30.814 -05:00 [INF] HTTP GET /Home/Index responded 200 in 472.1053 ms
+2025-10-25 19:58:30.896 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 15.3142 ms
+2025-10-25 19:58:40.124 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 90.5724 ms
+2025-10-25 19:58:40.186 -05:00 [INF] HTTP GET /js/vistas/Menu_Index.js responded 304 in 2.6999 ms
+2025-10-25 19:58:40.375 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 73.2468 ms
+2025-10-25 19:58:42.907 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 41.9460 ms
+2025-10-25 19:58:43.549 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 467.3933 ms
+2025-10-25 19:58:46.784 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 15.5703 ms
+2025-10-25 19:58:46.947 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 8.3557 ms
+2025-10-25 19:58:49.497 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 16.1124 ms
+2025-10-25 19:58:49.665 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 7.4272 ms
+2025-10-25 19:58:51.706 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 73.8790 ms
+2025-10-25 20:20:16.047 -05:00 [INF] HTTP GET / responded 200 in 2437.1910 ms
+2025-10-25 20:20:16.257 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 42.8066 ms
+2025-10-25 20:21:04.014 -05:00 [INF] HTTP POST / responded 302 in 2824.7252 ms
+2025-10-25 20:21:04.560 -05:00 [INF] HTTP GET /Home/Index responded 200 in 525.7989 ms
+2025-10-25 20:21:04.650 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 16.4143 ms
+2025-10-25 20:21:39.330 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 194.4695 ms
+2025-10-25 20:21:39.977 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 458.8318 ms
+2025-10-25 20:21:41.501 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 108.3247 ms
+2025-10-25 20:21:41.613 -05:00 [INF] HTTP GET /js/vistas/gestionar_permisos.js responded 200 in 74.1570 ms
+2025-10-25 20:21:44.843 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 26.0377 ms
+2025-10-25 20:21:44.867 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 6.4832 ms
+2025-10-25 20:21:44.883 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.css responded 200 in 12.0198 ms
+2025-10-25 20:21:44.903 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/buttons.dataTables.min.css responded 200 in 18.3961 ms
+2025-10-25 20:21:44.908 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 40.2103 ms
+2025-10-25 20:21:44.917 -05:00 [INF] HTTP GET /vendor/bootstrap/js/bootstrap.bundle.min.js responded 200 in 5.1273 ms
+2025-10-25 20:21:44.908 -05:00 [INF] HTTP GET /vendor/datatables/dataTables.bootstrap4.min.css responded 200 in 4.9746 ms
+2025-10-25 20:21:44.922 -05:00 [INF] HTTP GET /js/sb-admin-2.js responded 200 in 3.9132 ms
+2025-10-25 20:21:44.908 -05:00 [INF] HTTP GET /vendor/jquery/jquery.min.js responded 200 in 14.0230 ms
+2025-10-25 20:21:44.926 -05:00 [INF] HTTP GET /js/vistas/gestionar_permisos.js responded 200 in 2.7993 ms
+2025-10-25 20:21:44.936 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.js responded 200 in 4.4379 ms
+2025-10-25 20:21:44.901 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/responsive.dataTables.min.css responded 200 in 17.5388 ms
+2025-10-25 20:21:44.944 -05:00 [INF] HTTP GET /vendor/loadingoverlay/loadingoverlay.min.js responded 200 in 3.1307 ms
+2025-10-25 20:21:44.957 -05:00 [INF] HTTP GET /vendor/jquery-easing/jquery.easing.min.js responded 200 in 3.8995 ms
+2025-10-25 20:21:44.998 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 30.4278 ms
+2025-10-25 20:21:45.020 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 2.6296 ms
+2025-10-25 20:21:45.028 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/buttons.dataTables.min.css responded 200 in 3.7428 ms
+2025-10-25 20:21:45.032 -05:00 [INF] HTTP GET /vendor/bootstrap/js/bootstrap.bundle.min.js responded 200 in 5.2309 ms
+2025-10-25 20:21:45.034 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/responsive.dataTables.min.css responded 200 in 2.5670 ms
+2025-10-25 20:21:45.023 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.css responded 200 in 2.1768 ms
+2025-10-25 20:21:45.027 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 6.6209 ms
+2025-10-25 20:21:45.055 -05:00 [INF] HTTP GET /js/vistas/gestionar_permisos.js responded 200 in 1.7322 ms
+2025-10-25 20:21:45.060 -05:00 [INF] HTTP GET /vendor/jquery/jquery.min.js responded 200 in 2.8058 ms
+2025-10-25 20:21:45.027 -05:00 [INF] HTTP GET /vendor/datatables/dataTables.bootstrap4.min.css responded 200 in 3.8894 ms
+2025-10-25 20:21:45.052 -05:00 [INF] HTTP GET /vendor/loadingoverlay/loadingoverlay.min.js responded 200 in 13.7412 ms
+2025-10-25 20:21:45.066 -05:00 [INF] HTTP GET /js/sb-admin-2.js responded 200 in 4.5487 ms
+2025-10-25 20:21:45.037 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.js responded 200 in 1.8380 ms
+2025-10-25 20:21:45.073 -05:00 [INF] HTTP GET /vendor/jquery-easing/jquery.easing.min.js responded 200 in 1.7362 ms
+2025-10-25 20:21:45.141 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 26.2092 ms
+2025-10-25 20:21:45.163 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 2.9389 ms
+2025-10-25 20:21:45.168 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.css responded 200 in 3.8702 ms
+2025-10-25 20:21:45.169 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 5.7291 ms
+2025-10-25 20:21:45.175 -05:00 [INF] HTTP GET /vendor/jquery/jquery.min.js responded 200 in 4.1542 ms
+2025-10-25 20:21:45.215 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/buttons.dataTables.min.css responded 200 in 21.2634 ms
+2025-10-25 20:21:45.186 -05:00 [INF] HTTP GET /vendor/bootstrap/js/bootstrap.bundle.min.js responded 200 in 8.7206 ms
+2025-10-25 20:21:45.186 -05:00 [INF] HTTP GET /js/sb-admin-2.js responded 200 in 8.8777 ms
+2025-10-25 20:21:45.220 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.js responded 200 in 2.0978 ms
+2025-10-25 20:21:45.230 -05:00 [INF] HTTP GET /js/vistas/gestionar_permisos.js responded 200 in 3.8866 ms
+2025-10-25 20:21:45.173 -05:00 [INF] HTTP GET /vendor/datatables/dataTables.bootstrap4.min.css responded 200 in 2.8389 ms
+2025-10-25 20:21:45.185 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/responsive.dataTables.min.css responded 200 in 9.7570 ms
+2025-10-25 20:21:45.292 -05:00 [INF] HTTP GET /vendor/jquery-easing/jquery.easing.min.js responded 200 in 4.1438 ms
+2025-10-25 20:21:45.298 -05:00 [INF] HTTP GET /vendor/loadingoverlay/loadingoverlay.min.js responded 200 in 3.4359 ms
+2025-10-25 20:21:45.314 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 28.4057 ms
+2025-10-25 20:21:45.337 -05:00 [INF] HTTP GET /vendor/fontawesome-free/css/all.min.css responded 200 in 2.9114 ms
+2025-10-25 20:21:45.342 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.css responded 200 in 2.8512 ms
+2025-10-25 20:21:45.352 -05:00 [INF] HTTP GET /vendor/bootstrap/js/bootstrap.bundle.min.js responded 200 in 5.3497 ms
+2025-10-25 20:21:45.354 -05:00 [INF] HTTP GET /vendor/jquery/jquery.min.js responded 200 in 9.5294 ms
+2025-10-25 20:21:45.357 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/responsive.dataTables.min.css responded 200 in 2.1058 ms
+2025-10-25 20:21:45.372 -05:00 [INF] HTTP GET /vendor/loadingoverlay/loadingoverlay.min.js responded 200 in 12.0365 ms
+2025-10-25 20:21:45.376 -05:00 [INF] HTTP GET /js/vistas/gestionar_permisos.js responded 200 in 2.4075 ms
+2025-10-25 20:21:45.351 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/css/buttons.dataTables.min.css responded 200 in 7.7742 ms
+2025-10-25 20:21:45.351 -05:00 [INF] HTTP GET /css/sb-admin-2.css responded 200 in 11.9330 ms
+2025-10-25 20:21:45.351 -05:00 [INF] HTTP GET /vendor/datatables/dataTables.bootstrap4.min.css responded 200 in 4.9731 ms
+2025-10-25 20:21:45.392 -05:00 [INF] HTTP GET /js/sb-admin-2.js responded 200 in 1.7082 ms
+2025-10-25 20:21:45.397 -05:00 [INF] HTTP GET /vendor/jquery-easing/jquery.easing.min.js responded 200 in 3.6847 ms
+2025-10-25 20:21:45.400 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.js responded 200 in 1.9948 ms
+2025-10-25 20:21:45.658 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 3.3993 ms
+2025-10-25 20:21:46.128 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 1.2739 ms
+2025-10-25 20:21:58.165 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 46.5961 ms
+2025-10-25 20:21:58.239 -05:00 [INF] HTTP GET /js/vistas/Menu_Index.js responded 304 in 7.7407 ms
+2025-10-25 20:21:58.445 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 74.4344 ms
+2025-10-25 20:22:05.950 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 15.0311 ms
+2025-10-25 20:22:06.144 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 10.4285 ms
+2025-10-25 20:22:08.198 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 32.0925 ms
+2025-10-25 20:22:08.232 -05:00 [INF] HTTP GET /js/vistas/gestionar_permisos.js responded 304 in 0.3063 ms
+2025-10-25 20:23:36.875 -05:00 [INF] HTTP GET / responded 200 in 2095.7687 ms
+2025-10-25 20:23:37.187 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 169.2328 ms
+2025-10-25 20:23:37.228 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 8.0702 ms
+2025-10-25 20:23:42.690 -05:00 [INF] HTTP POST / responded 302 in 2800.4508 ms
+2025-10-25 20:23:43.207 -05:00 [INF] HTTP GET /Home/Index responded 200 in 502.5254 ms
+2025-10-25 20:23:43.286 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 12.1626 ms
+2025-10-25 20:24:09.119 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 165.2165 ms
+2025-10-25 20:24:09.289 -05:00 [INF] HTTP GET /vendor/select2/es.min.js responded 200 in 66.4971 ms
+2025-10-25 20:24:09.398 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 70.0427 ms
+2025-10-25 20:24:14.363 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 51.1310 ms
+2025-10-25 20:24:15.006 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 465.4140 ms
+2025-10-25 20:24:17.291 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 78.3589 ms
+2025-10-25 20:24:17.350 -05:00 [INF] HTTP GET /js/vistas/gestionar_permisos.js responded 200 in 8.0663 ms
+2025-10-25 20:24:24.287 -05:00 [INF] HTTP GET /Acceso/Login responded 200 in 4.8748 ms
+2025-10-25 20:30:30.687 -05:00 [INF] HTTP GET / responded 200 in 2226.4007 ms
+2025-10-25 20:30:30.935 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 120.9351 ms
+2025-10-25 20:30:30.982 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 4.9277 ms
+2025-10-25 20:31:00.539 -05:00 [INF] HTTP POST / responded 302 in 2766.6413 ms
+2025-10-25 20:31:01.039 -05:00 [INF] HTTP GET /Home/Index responded 200 in 486.1567 ms
+2025-10-25 20:31:01.148 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 5.0960 ms
+2025-10-25 20:31:10.280 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 96.4728 ms
+2025-10-25 20:31:10.917 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 461.2315 ms
+2025-10-25 20:31:12.744 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 103.5830 ms
+2025-10-25 20:31:12.802 -05:00 [INF] HTTP GET /js/vistas/gestionar_permisos.js responded 304 in 2.8448 ms
+2025-10-25 20:31:15.574 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 30.4234 ms
+2025-10-25 20:31:20.063 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 40.0802 ms
+2025-10-25 20:31:20.110 -05:00 [INF] HTTP GET /vendor/select2/select2.min.css responded 200 in 2.4513 ms
+2025-10-25 20:31:20.122 -05:00 [INF] HTTP GET /vendor/select2/es.min.js responded 200 in 3.1767 ms
+2025-10-25 20:31:20.285 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 46.9323 ms
+2025-10-25 20:31:23.050 -05:00 [INF] HTTP GET /Visita/Index responded 200 in 104.2507 ms
+2025-10-25 20:31:23.172 -05:00 [INF] HTTP GET /js/vistas/Vista_Producto_Index.js responded 200 in 5.8115 ms
+2025-10-25 20:31:23.184 -05:00 [INF] HTTP GET /js/vistas/Visita_Index.js responded 304 in 25.6450 ms
+2025-10-25 20:31:23.187 -05:00 [INF] HTTP GET /js/vistas/Visita_Contacto_Index.js responded 200 in 24.0215 ms
+2025-10-25 20:31:23.537 -05:00 [INF] HTTP GET /Visita/Provincias responded 200 in 164.2577 ms
+2025-10-25 20:31:23.564 -05:00 [INF] HTTP GET /Visita/Etapas responded 200 in 197.8849 ms
+2025-10-25 20:31:23.604 -05:00 [INF] HTTP GET /Visita/EmpresaConstructora responded 200 in 228.9792 ms
+2025-10-25 20:31:23.608 -05:00 [INF] HTTP GET /Visita/Operadores responded 200 in 241.7543 ms
+2025-10-25 20:31:23.618 -05:00 [INF] HTTP GET /Visita/GetClaims responded 200 in 47.6047 ms
+2025-10-25 20:31:23.619 -05:00 [INF] HTTP GET /Visita/Cantones responded 200 in 248.2136 ms
+2025-10-25 20:31:23.643 -05:00 [INF] HTTP GET /Visita/Parroquias responded 200 in 274.5715 ms
+2025-10-25 20:31:23.703 -05:00 [INF] HTTP GET /Visita/Contactos responded 200 in 89.1399 ms
+2025-10-25 20:31:23.721 -05:00 [INF] HTTP GET /Visita/Lista responded 200 in 179.0867 ms
+2025-10-25 20:31:26.781 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 17.5831 ms
+2025-10-25 20:31:27.017 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 10.0077 ms
+2025-10-25 20:31:29.156 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 18.0742 ms
+2025-10-25 20:31:29.359 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 8.8243 ms
+2025-10-25 20:31:30.691 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 28.6862 ms
+2025-10-25 20:31:39.432 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 28.4378 ms
+2025-10-25 20:40:52.753 -05:00 [INF] HTTP GET / responded 200 in 2212.2242 ms
+2025-10-25 20:40:52.964 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 75.0277 ms
+2025-10-25 20:40:53.010 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 8.0673 ms
+2025-10-25 20:41:00.998 -05:00 [INF] HTTP POST / responded 302 in 2968.6849 ms
+2025-10-25 20:41:01.524 -05:00 [INF] HTTP GET /Home/Index responded 200 in 511.6418 ms
+2025-10-25 20:41:01.635 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 16.7565 ms
+2025-10-25 20:41:08.908 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 92.9727 ms
+2025-10-25 20:41:09.634 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 497.0434 ms
+2025-10-25 20:41:10.679 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 101.6402 ms
+2025-10-25 20:41:10.744 -05:00 [INF] HTTP GET /js/vistas/gestionar_permisos.js responded 304 in 3.3157 ms
+2025-10-25 20:44:00.381 -05:00 [INF] HTTP GET /Acceso/Login responded 200 in 49.9974 ms
+2025-10-25 20:44:05.006 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 42.9795 ms
+2025-10-25 20:44:05.137 -05:00 [INF] HTTP GET /js/vistas/gestionar_permisos.js responded 304 in 0.3448 ms
+2025-10-25 20:44:30.146 -05:00 [INF] HTTP GET /vendor/bootstrap/js/bootstrap.bundle.min.js.map responded 304 in 1.9312 ms
+2025-10-25 20:44:30.191 -05:00 [INF] HTTP GET /vendor/toastr/toastr.js.map responded 404 in 44.9689 ms
+2025-10-25 20:57:50.707 -05:00 [INF] HTTP GET / responded 200 in 1380.1817 ms
+2025-10-25 20:57:50.969 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 49.9054 ms
+2025-10-25 20:57:51.029 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 12.4136 ms
+2025-10-25 20:57:57.158 -05:00 [INF] HTTP POST / responded 302 in 2905.4423 ms
+2025-10-25 20:57:57.647 -05:00 [INF] HTTP GET /Home/Index responded 200 in 473.9970 ms
+2025-10-25 20:57:57.737 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 18.7849 ms
+2025-10-25 20:58:02.356 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 105.8656 ms
+2025-10-25 20:58:02.477 -05:00 [INF] HTTP GET /js/vistas/Menu_Index.js responded 304 in 53.2885 ms
+2025-10-25 20:58:02.479 -05:00 [INF] HTTP GET /vendor/select2/es.min.js responded 200 in 54.3261 ms
+2025-10-25 20:58:02.658 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 74.8767 ms
+2025-10-25 20:58:04.863 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 46.6315 ms
+2025-10-25 20:58:05.530 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 479.1108 ms
+2025-10-25 20:58:06.995 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 98.1118 ms
+2025-10-25 20:58:07.047 -05:00 [INF] HTTP GET /js/vistas/gestionar_permisos.js responded 304 in 0.5151 ms
+2025-10-25 21:00:02.038 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 50.1708 ms
+2025-10-25 21:00:52.621 -05:00 [INF] HTTP GET /Acceso/Login responded 200 in 59.1639 ms
+2025-10-25 21:03:19.648 -05:00 [INF] HTTP GET / responded 200 in 2111.1787 ms
+2025-10-25 21:03:19.867 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 20.7441 ms
+2025-10-25 21:03:19.867 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 96.9362 ms
+2025-10-25 21:03:26.031 -05:00 [INF] HTTP POST / responded 302 in 2894.1443 ms
+2025-10-25 21:03:26.543 -05:00 [INF] HTTP GET /Home/Index responded 200 in 497.8990 ms
+2025-10-25 21:03:26.686 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 68.5550 ms
+2025-10-25 21:03:32.450 -05:00 [INF] HTTP GET /Menu/Index responded 200 in 94.2838 ms
+2025-10-25 21:03:32.512 -05:00 [INF] HTTP GET /vendor/select2/es.min.js responded 200 in 2.4041 ms
+2025-10-25 21:03:32.718 -05:00 [INF] HTTP GET /Menu/Lista responded 200 in 74.8945 ms
+2025-10-25 21:03:34.922 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 47.1695 ms
+2025-10-25 21:03:35.548 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 462.4448 ms
+2025-10-25 21:03:36.861 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 84.1130 ms
+2025-10-25 21:03:36.948 -05:00 [INF] HTTP GET /js/vistas/gestionar_permisos.js responded 304 in 3.8209 ms
+2025-10-25 21:06:56.932 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 82.7240 ms
+2025-10-25 21:11:46.182 -05:00 [INF] HTTP GET / responded 200 in 1582.4386 ms
+2025-10-25 21:11:46.442 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 88.0899 ms
+2025-10-25 21:11:46.529 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 30.6787 ms
+2025-10-25 21:11:52.495 -05:00 [INF] HTTP POST / responded 302 in 3478.4890 ms
+2025-10-25 21:11:53.188 -05:00 [INF] HTTP GET /Home/Index responded 200 in 679.0140 ms
+2025-10-25 21:11:53.274 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 9.3748 ms
+2025-10-25 21:11:58.971 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 104.1881 ms
+2025-10-25 21:11:59.661 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 466.5032 ms
+2025-10-25 21:12:00.743 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 134.3990 ms
+2025-10-25 21:12:00.902 -05:00 [INF] HTTP GET /js/vistas/gestionar_permisos.js responded 200 in 97.5356 ms
+2025-10-25 21:15:54.088 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 53.3455 ms
+2025-10-25 21:15:54.194 -05:00 [INF] HTTP GET /js/vistas/gestionar_permisos.js responded 200 in 66.6951 ms
+2025-10-25 21:23:49.010 -05:00 [INF] HTTP GET / responded 200 in 1377.3017 ms
+2025-10-25 21:23:49.214 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 91.8448 ms
+2025-10-25 21:23:56.215 -05:00 [INF] HTTP POST / responded 302 in 2709.4948 ms
+2025-10-25 21:23:56.696 -05:00 [INF] HTTP GET /Home/Index responded 200 in 467.2439 ms
+2025-10-25 21:23:56.799 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 8.3939 ms
+2025-10-25 21:23:59.079 -05:00 [INF] HTTP GET /Rol/Index responded 200 in 104.3350 ms
+2025-10-25 21:23:59.734 -05:00 [INF] HTTP GET /Rol/ListaRol responded 200 in 453.2642 ms
+2025-10-25 21:24:00.486 -05:00 [INF] HTTP GET /Rol/GestionarPermisos responded 200 in 107.3508 ms
+2025-10-25 21:24:00.611 -05:00 [INF] HTTP GET /js/vistas/gestionar_permisos.js responded 200 in 47.3078 ms

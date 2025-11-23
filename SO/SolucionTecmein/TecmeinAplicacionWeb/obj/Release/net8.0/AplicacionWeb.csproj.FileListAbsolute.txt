@@ -1,0 +1,1 @@
+C:\Proyectos\Tecmein\SO\SolucionTecmein\TecmeinAplicacionWeb\obj\Release\net8.0\AplicacionWeb.csproj.AssemblyReference.cache

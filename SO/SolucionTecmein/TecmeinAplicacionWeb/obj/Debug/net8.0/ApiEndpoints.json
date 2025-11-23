@@ -1,0 +1,92 @@
+[
+  {
+    "ContainingType": "TecmeinWebApp.Controllers.ConfigController",
+    "Method": "GetTinyMceApiKey",
+    "RelativePath": "api/Config/tinymce-key",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "TecmeinWebApp.Controllers.McpController",
+    "Method": "Query",
+    "RelativePath": "api/Mcp/query",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "TecmeinWebApp.Controllers.McpRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "TecmeinAplicacionWeb.Controllers.PagoController",
+    "Method": "ListarPorPlanDePago",
+    "RelativePath": "api/Pago/ListarPorPlan/{idPlanDePago}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idPlanDePago",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "TecmeinAplicacionWeb.Controllers.PagoController",
+    "Method": "Registrar",
+    "RelativePath": "api/Pago/Registrar",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "modelo",
+        "Type": "BLL.DTOs.PagoDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "TecmeinAplicacionWeb.Controllers.PlanDePagoController",
+    "Method": "Guardar",
+    "RelativePath": "api/PlanDePago/Guardar",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "modelo",
+        "Type": "BLL.DTOs.PlanDePagoDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "TecmeinAplicacionWeb.Controllers.PlanDePagoController",
+    "Method": "ObtenerPorContratoId",
+    "RelativePath": "api/PlanDePago/ObtenerPorContratoId/{idContrato}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idContrato",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

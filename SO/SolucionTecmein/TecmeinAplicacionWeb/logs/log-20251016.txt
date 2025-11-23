@@ -1,0 +1,420 @@
+2025-10-16 09:32:29.140 -05:00 [INF] HTTP GET / responded 200 in 2409.0772 ms
+2025-10-16 09:32:29.614 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 36.9186 ms
+2025-10-16 09:34:22.986 -05:00 [INF] HTTP POST / responded 302 in 6363.5147 ms
+2025-10-16 09:34:24.079 -05:00 [INF] HTTP GET /Home/Index responded 200 in 1067.3213 ms
+2025-10-16 09:34:24.393 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 90.5289 ms
+2025-10-16 09:34:31.113 -05:00 [INF] HTTP GET /Home/Salir responded 302 in 29.0173 ms
+2025-10-16 09:34:31.144 -05:00 [INF] HTTP GET / responded 200 in 10.7485 ms
+2025-10-16 09:34:34.480 -05:00 [INF] HTTP POST / responded 302 in 446.4290 ms
+2025-10-16 09:34:34.528 -05:00 [INF] HTTP GET /Home/Index responded 200 in 33.5727 ms
+2025-10-16 09:34:55.079 -05:00 [INF] HTTP GET /Usuario/Index responded 200 in 95.6583 ms
+2025-10-16 09:34:55.285 -05:00 [INF] HTTP GET /js/vistas/Usuario_Index.js responded 200 in 131.7889 ms
+2025-10-16 09:34:55.854 -05:00 [INF] HTTP GET /Usuario/Lista responded 200 in 427.1786 ms
+2025-10-16 09:35:02.186 -05:00 [INF] HTTP GET /Empresa/Index responded 200 in 42.7986 ms
+2025-10-16 09:35:02.311 -05:00 [INF] HTTP GET /js/vistas/Empresa_Index.js responded 200 in 65.4574 ms
+2025-10-16 09:35:02.481 -05:00 [INF] HTTP GET /Empresa/Lista responded 200 in 84.2979 ms
+2025-10-16 09:35:05.238 -05:00 [INF] HTTP GET /Constructora/Index responded 200 in 46.5045 ms
+2025-10-16 09:35:05.380 -05:00 [INF] HTTP GET /js/vistas/Constructora_Index.js responded 200 in 72.3848 ms
+2025-10-16 09:35:05.535 -05:00 [INF] HTTP GET /Constructora/Lista responded 200 in 65.1603 ms
+2025-10-16 09:35:09.141 -05:00 [INF] HTTP GET /Contacto/Index responded 200 in 46.0857 ms
+2025-10-16 09:35:09.314 -05:00 [INF] HTTP GET /js/vistas/Contacto_Index.js responded 200 in 109.6015 ms
+2025-10-16 09:35:09.491 -05:00 [INF] HTTP GET /Contacto/Lista responded 200 in 77.2843 ms
+2025-10-16 09:35:23.138 -05:00 [INF] HTTP GET /Catalogo/Index responded 200 in 48.4769 ms
+2025-10-16 09:35:23.291 -05:00 [INF] HTTP GET /js/vistas/Catalogo_Index.js responded 200 in 81.5577 ms
+2025-10-16 09:35:23.296 -05:00 [INF] HTTP GET /js/vistas/Controles_Generales.js responded 200 in 86.4410 ms
+2025-10-16 09:35:23.486 -05:00 [INF] HTTP GET /Catalogo/Lista responded 200 in 85.8830 ms
+2025-10-16 09:35:29.611 -05:00 [INF] HTTP GET /Visita/Index responded 200 in 134.4114 ms
+2025-10-16 09:35:29.890 -05:00 [INF] HTTP GET /js/vistas/Visita_Index.js responded 200 in 145.3346 ms
+2025-10-16 09:35:29.890 -05:00 [INF] HTTP GET /js/vistas/Visita_Contacto_Index.js responded 200 in 141.3106 ms
+2025-10-16 09:35:29.932 -05:00 [INF] HTTP GET /js/vistas/Vista_Producto_Index.js responded 200 in 154.7358 ms
+2025-10-16 09:35:29.933 -05:00 [INF] HTTP GET /js/mapa.js responded 200 in 132.6645 ms
+2025-10-16 09:35:30.004 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/js/vfs_fonts.js responded 200 in 263.5096 ms
+2025-10-16 09:35:30.310 -05:00 [INF] HTTP GET /vendor/datatables/extensiones/js/pdfmake.min.js responded 200 in 571.9443 ms
+2025-10-16 09:35:30.562 -05:00 [INF] HTTP GET /Visita/EmpresaConstructora responded 200 in 18.4454 ms
+2025-10-16 09:35:30.627 -05:00 [INF] HTTP GET /Visita/Operadores responded 200 in 92.4948 ms
+2025-10-16 09:35:30.713 -05:00 [INF] HTTP GET /Visita/GetClaims responded 200 in 11.1719 ms
+2025-10-16 09:35:30.714 -05:00 [INF] HTTP GET /Visita/Provincias responded 200 in 171.9337 ms
+2025-10-16 09:35:30.740 -05:00 [INF] HTTP GET /Visita/Contactos responded 200 in 18.6569 ms
+2025-10-16 09:35:30.752 -05:00 [INF] HTTP GET /Visita/Cantones responded 200 in 211.5156 ms
+2025-10-16 09:35:30.769 -05:00 [INF] HTTP GET /Visita/Parroquias responded 200 in 230.4646 ms
+2025-10-16 09:35:30.833 -05:00 [INF] HTTP GET /Visita/Etapas responded 200 in 295.1970 ms
+2025-10-16 09:35:31.285 -05:00 [INF] HTTP GET /Visita/Lista responded 200 in 699.2871 ms
+2025-10-16 09:36:41.640 -05:00 [INF] HTTP GET /DiccionarioParametro/Index responded 200 in 45.1813 ms
+2025-10-16 09:36:41.764 -05:00 [INF] HTTP GET /js/vistas/DiccionarioParametro_Index.js responded 200 in 64.2794 ms
+2025-10-16 09:36:41.975 -05:00 [INF] HTTP GET /DiccionarioParametro/Lista responded 200 in 98.0870 ms
+2025-10-16 10:14:07.053 -05:00 [INF] HTTP GET / responded 200 in 755.6646 ms
+2025-10-16 10:14:07.215 -05:00 [INF] HTTP GET /img/Emp2_1.jpg responded 200 in 36.7640 ms
+2025-10-16 10:14:21.221 -05:00 [ERR] HTTP POST / responded 500 in 2528.0514 ms
+System.InvalidOperationException: An exception was thrown while attempting to evaluate a LINQ query parameter expression. See the inner exception for more information. To show additional information call 'DbContextOptionsBuilder.EnableSensitiveDataLogging'.
+ ---> System.ArgumentNullException: Value cannot be null. (Parameter 's')
+   at System.ArgumentNullException.Throw(String paramName)
+   at System.Text.Encoding.GetBytes(String s)
+   at BLL.Implementacion.UtilidadesServices.ConvertirSha256(String texto) in C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\Implementacion\UtilidadesServices.cs:line 30
+   at System.Linq.Expressions.Interpreter.FuncCallInstruction`3.Run(InterpretedFrame frame)
+   at System.Linq.Expressions.Interpreter.Interpreter.Run(InterpretedFrame frame)
+   at System.Linq.Expressions.Interpreter.LightLambda.Run(Object[] arguments)
+   at System.Dynamic.Utils.DelegateHelpers.FuncThunk[TReturn](Func`2 handler)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.GetValue(Expression expression, String& parameterName)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.GetValue(Expression expression, String& parameterName)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Evaluate(Expression expression, Boolean generateParameter)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Dynamic.Utils.ExpressionVisitorUtils.VisitArguments(ExpressionVisitor visitor, IArgumentProvider nodes)
+   at System.Linq.Expressions.ExpressionVisitor.VisitMethodCall(MethodCallExpression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.VisitMethodCall(MethodCallExpression methodCallExpression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.VisitBinary(BinaryExpression binaryExpression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Linq.Expressions.ExpressionVisitor.VisitLambda[T](Expression`1 node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Linq.Expressions.ExpressionVisitor.VisitUnary(UnaryExpression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Dynamic.Utils.ExpressionVisitorUtils.VisitArguments(ExpressionVisitor visitor, IArgumentProvider nodes)
+   at System.Linq.Expressions.ExpressionVisitor.VisitMethodCall(MethodCallExpression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.VisitMethodCall(MethodCallExpression methodCallExpression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.ExtractParameters(Expression expression, Boolean clearEvaluatedValues)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.ExtractParameters(Expression expression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExtractParameters(Expression query, IParameterValues parameterValues, IDiagnosticsLogger`1 logger, Boolean parameterize, Boolean generateContextAccessors)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExecuteAsync[TResult](Expression query, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryProvider.ExecuteAsync[TResult](Expression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ExecuteAsync[TSource,TResult](MethodInfo operatorMethodInfo, IQueryable`1 source, Expression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ExecuteAsync[TSource,TResult](MethodInfo operatorMethodInfo, IQueryable`1 source, LambdaExpression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.FirstOrDefaultAsync[TSource](IQueryable`1 source, Expression`1 predicate, CancellationToken cancellationToken)
+   at DAL.Implementacion.GenericRepository`1.Obtener(Expression`1 filtro, String incluirPropiedades)
+   at BLL.Implementacion.UsuarioServices.ObtenerPorCredenciales(String correo, String clave) in C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\Implementacion\UsuarioServices.cs:line 303
+   at TecmeinWebApp.Controllers.AccesoController.Login(LoginUsuarioVM modelo) in C:\Proyectos\Tecmein\SO\SolucionTecmein\TecmeinAplicacionWeb\Controllers\AccesoController.cs:line 46
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-10-16 10:14:21.346 -05:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: An exception was thrown while attempting to evaluate a LINQ query parameter expression. See the inner exception for more information. To show additional information call 'DbContextOptionsBuilder.EnableSensitiveDataLogging'.
+ ---> System.ArgumentNullException: Value cannot be null. (Parameter 's')
+   at System.ArgumentNullException.Throw(String paramName)
+   at System.Text.Encoding.GetBytes(String s)
+   at BLL.Implementacion.UtilidadesServices.ConvertirSha256(String texto) in C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\Implementacion\UtilidadesServices.cs:line 30
+   at System.Linq.Expressions.Interpreter.FuncCallInstruction`3.Run(InterpretedFrame frame)
+   at System.Linq.Expressions.Interpreter.Interpreter.Run(InterpretedFrame frame)
+   at System.Linq.Expressions.Interpreter.LightLambda.Run(Object[] arguments)
+   at System.Dynamic.Utils.DelegateHelpers.FuncThunk[TReturn](Func`2 handler)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.GetValue(Expression expression, String& parameterName)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.GetValue(Expression expression, String& parameterName)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Evaluate(Expression expression, Boolean generateParameter)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Dynamic.Utils.ExpressionVisitorUtils.VisitArguments(ExpressionVisitor visitor, IArgumentProvider nodes)
+   at System.Linq.Expressions.ExpressionVisitor.VisitMethodCall(MethodCallExpression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.VisitMethodCall(MethodCallExpression methodCallExpression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.VisitBinary(BinaryExpression binaryExpression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Linq.Expressions.ExpressionVisitor.VisitLambda[T](Expression`1 node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Linq.Expressions.ExpressionVisitor.VisitUnary(UnaryExpression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Dynamic.Utils.ExpressionVisitorUtils.VisitArguments(ExpressionVisitor visitor, IArgumentProvider nodes)
+   at System.Linq.Expressions.ExpressionVisitor.VisitMethodCall(MethodCallExpression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.VisitMethodCall(MethodCallExpression methodCallExpression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.ExtractParameters(Expression expression, Boolean clearEvaluatedValues)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.ExtractParameters(Expression expression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExtractParameters(Expression query, IParameterValues parameterValues, IDiagnosticsLogger`1 logger, Boolean parameterize, Boolean generateContextAccessors)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExecuteAsync[TResult](Expression query, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryProvider.ExecuteAsync[TResult](Expression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ExecuteAsync[TSource,TResult](MethodInfo operatorMethodInfo, IQueryable`1 source, Expression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ExecuteAsync[TSource,TResult](MethodInfo operatorMethodInfo, IQueryable`1 source, LambdaExpression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.FirstOrDefaultAsync[TSource](IQueryable`1 source, Expression`1 predicate, CancellationToken cancellationToken)
+   at DAL.Implementacion.GenericRepository`1.Obtener(Expression`1 filtro, String incluirPropiedades)
+   at BLL.Implementacion.UsuarioServices.ObtenerPorCredenciales(String correo, String clave) in C:\Proyectos\Tecmein\SO\SolucionTecmein\BLL\Implementacion\UsuarioServices.cs:line 303
+   at TecmeinWebApp.Controllers.AccesoController.Login(LoginUsuarioVM modelo) in C:\Proyectos\Tecmein\SO\SolucionTecmein\TecmeinAplicacionWeb\Controllers\AccesoController.cs:line 46
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2025-10-16 10:14:43.423 -05:00 [INF] HTTP GET / responded 200 in 32.1512 ms
+2025-10-16 10:14:48.866 -05:00 [INF] HTTP POST / responded 302 in 1673.2444 ms
+2025-10-16 10:14:49.362 -05:00 [INF] HTTP GET /Home/Index responded 200 in 484.8836 ms
+2025-10-16 10:14:49.418 -05:00 [INF] HTTP GET /vendor/toastr/toastr.min.css responded 200 in 9.4604 ms
+2025-10-16 10:14:49.469 -05:00 [INF] HTTP GET /vendor/fontawesome-free/webfonts/fa-solid-900.woff2 responded 200 in 24.1181 ms
+2025-10-16 10:15:07.707 -05:00 [INF] HTTP GET /Contrato/index responded 200 in 51.0281 ms
+2025-10-16 10:15:07.822 -05:00 [INF] HTTP GET /js/vistas/Contrato_Index.js responded 304 in 4.0463 ms
+2025-10-16 10:15:08.474 -05:00 [INF] HTTP GET /Contrato/Listar responded 200 in 392.6864 ms
+2025-10-16 10:15:19.543 -05:00 [INF] HTTP GET /Cliente/Lista responded 200 in 155.5867 ms
+2025-10-16 10:16:52.616 -05:00 [INF] HTTP GET /Contrato/ObtenerDetalles responded 200 in 223.5503 ms
+2025-10-16 10:16:52.632 -05:00 [INF] HTTP GET /Cliente/Lista responded 200 in 5.3253 ms
+2025-10-16 10:16:58.614 -05:00 [INF] HTTP GET /api/PlanDePago/ObtenerPorContratoId/14 responded 200 in 85.0463 ms
+2025-10-16 10:16:58.664 -05:00 [INF] HTTP GET /FormaPago/Lista responded 200 in 40.3412 ms
+2025-10-16 10:17:21.061 -05:00 [INF] HTTP GET /api/Pago/ListarPorPlan/3 responded 200 in 99.9433 ms
+2025-10-16 10:18:05.141 -05:00 [INF] HTTP GET /Cliente/Index responded 200 in 23.0487 ms
+2025-10-16 10:18:05.327 -05:00 [INF] HTTP GET /js/vistas/Cliente_Index.js responded 200 in 87.0644 ms
+2025-10-16 10:18:05.445 -05:00 [INF] HTTP GET /Cliente/Lista responded 200 in 5.7458 ms
+2025-10-16 10:18:06.910 -05:00 [INF] HTTP GET /Cliente/ListarConstructoras responded 200 in 46.0331 ms
+2025-10-16 10:18:52.203 -05:00 [INF] HTTP GET /Constructora/Index responded 200 in 30.8216 ms
+2025-10-16 10:18:52.471 -05:00 [INF] HTTP GET /Constructora/Lista responded 200 in 13.7603 ms
+2025-10-16 10:19:44.511 -05:00 [INF] HTTP PUT /Constructora/Editar responded 200 in 194.8062 ms
+2025-10-16 10:19:51.545 -05:00 [INF] HTTP GET /Visita/Index responded 200 in 104.2652 ms
+2025-10-16 10:19:51.748 -05:00 [INF] HTTP GET /js/mapa.js responded 200 in 85.8780 ms
+2025-10-16 10:19:52.097 -05:00 [INF] HTTP GET /Visita/Operadores responded 200 in 141.5373 ms
+2025-10-16 10:19:52.116 -05:00 [INF] HTTP GET /Visita/Etapas responded 200 in 148.0105 ms
+2025-10-16 10:19:52.136 -05:00 [INF] HTTP GET /Visita/Provincias responded 200 in 158.6069 ms
+2025-10-16 10:19:52.143 -05:00 [INF] HTTP GET /Visita/Cantones responded 200 in 166.0934 ms
+2025-10-16 10:19:52.161 -05:00 [INF] HTTP GET /Visita/Parroquias responded 200 in 191.9172 ms
+2025-10-16 10:19:52.167 -05:00 [INF] HTTP GET /Visita/Contactos responded 200 in 220.1909 ms
+2025-10-16 10:19:52.174 -05:00 [INF] HTTP GET /Visita/EmpresaConstructora responded 200 in 24.0110 ms
+2025-10-16 10:19:52.181 -05:00 [INF] HTTP GET /Visita/GetClaims responded 200 in 11.6888 ms
+2025-10-16 10:19:52.365 -05:00 [INF] HTTP GET /Visita/Lista responded 200 in 199.9504 ms
+2025-10-16 10:21:26.588 -05:00 [INF] HTTP GET /Visita/VisitaContacto responded 200 in 52.6038 ms
+2025-10-16 10:22:19.573 -05:00 [INF] HTTP GET /Visita/VisitaContacto responded 200 in 6.1177 ms
+2025-10-16 10:22:37.747 -05:00 [INF] HTTP GET /Visita/EquiposDeVisita responded 200 in 121.5673 ms
+2025-10-16 10:26:02.784 -05:00 [INF] HTTP POST /Visita/ProcesoGuardasEquipoVisita responded 200 in 283.9261 ms
+2025-10-16 10:30:56.985 -05:00 [INF] HTTP POST /Visita/ProcesoGuardasEquipoVisita responded 200 in 61.4623 ms
+2025-10-16 10:31:36.285 -05:00 [INF] Contacto Principal obtenido: {"Secuencial":4,"SecConstructora":2,"NombreConstructora":null,"Titulo":"Sr","Nombres":"Luicia Fernanda","Apellidos":"Perez Paez","Telefono":"0987654321","Correo":"luciferPerez@gmail.com","EstaActivo":1}
+2025-10-16 10:31:36.289 -05:00 [INF] HTTP GET /Contacto/ObtenerContactoPrincipal responded 200 in 43.3312 ms
+2025-10-16 10:32:48.716 -05:00 [INF] HTTP GET /Cotizacion/Index responded 200 in 22.6094 ms
+2025-10-16 10:32:48.846 -05:00 [INF] HTTP GET /js/vistas/Cotizacion_Index.js responded 200 in 88.3163 ms
+2025-10-16 10:32:49.410 -05:00 [INF] HTTP GET /Impuesto/ListaActivos responded 200 in 105.3683 ms
+2025-10-16 10:32:49.422 -05:00 [INF] HTTP GET /Visita/ListaParaCotizacion responded 200 in 95.5172 ms
+2025-10-16 10:32:49.465 -05:00 [INF] HTTP GET /Cotizacion/Lista responded 200 in 90.2970 ms
+2025-10-16 10:32:57.932 -05:00 [INF] HTTP GET /Seguimiento/Lista responded 200 in 73.9433 ms
+2025-10-16 10:33:01.166 -05:00 [INF] HTTP GET /Cotizacion/Detalle responded 200 in 125.1791 ms
+2025-10-16 10:33:01.246 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 70.8740 ms
+2025-10-16 10:33:01.249 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 31.5212 ms
+2025-10-16 10:33:13.726 -05:00 [INF] HTTP GET /Visita/EquiposDeVisita responded 200 in 6.6282 ms
+2025-10-16 10:33:13.727 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 7.3877 ms
+2025-10-16 10:33:13.746 -05:00 [INF] HTTP GET /Cotizacion/VerificarVisita responded 200 in 28.6894 ms
+2025-10-16 10:34:51.210 -05:00 [INF] HTTP GET /Cotizacion/Detalle responded 200 in 9.5770 ms
+2025-10-16 10:34:51.227 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 6.3187 ms
+2025-10-16 10:34:51.238 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 7.3831 ms
+2025-10-16 10:34:59.816 -05:00 [INF] HTTP GET /Cotizacion/GenerarPDFSolicitud responded 200 in 830.4559 ms
+2025-10-16 10:38:14.568 -05:00 [INF] HTTP GET /Cotizacion/GenerarPDF responded 200 in 100.2419 ms
+2025-10-16 10:40:25.278 -05:00 [INF] HTTP GET /Seguimiento/Lista responded 200 in 24.6763 ms
+2025-10-16 10:40:30.383 -05:00 [INF] HTTP GET /Cotizacion/Detalle responded 200 in 8.4049 ms
+2025-10-16 10:40:30.399 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 7.8338 ms
+2025-10-16 10:40:30.408 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 4.8566 ms
+2025-10-16 10:40:35.959 -05:00 [INF] HTTP GET /Seguimiento/Lista responded 200 in 6.5503 ms
+2025-10-16 10:40:42.190 -05:00 [INF] HTTP GET /Cotizacion/Detalle responded 200 in 9.1520 ms
+2025-10-16 10:40:42.206 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 7.2047 ms
+2025-10-16 10:40:42.215 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 5.6328 ms
+2025-10-16 10:40:58.588 -05:00 [INF] HTTP GET /Seguimiento/Lista responded 200 in 8.4263 ms
+2025-10-16 10:42:09.272 -05:00 [INF] HTTP PUT /Seguimiento/Editar responded 200 in 101.0295 ms
+2025-10-16 10:42:09.286 -05:00 [INF] HTTP GET /Seguimiento/Lista responded 200 in 8.1044 ms
+2025-10-16 10:42:22.407 -05:00 [INF] HTTP GET /Cotizacion/Index responded 200 in 10.2890 ms
+2025-10-16 10:42:22.598 -05:00 [INF] HTTP GET /Impuesto/ListaActivos responded 200 in 10.3316 ms
+2025-10-16 10:42:22.607 -05:00 [INF] HTTP GET /Visita/ListaParaCotizacion responded 200 in 7.4529 ms
+2025-10-16 10:42:22.641 -05:00 [INF] HTTP GET /Cotizacion/Lista responded 200 in 4.4604 ms
+2025-10-16 10:42:53.938 -05:00 [INF] HTTP GET /Cotizacion/Detalle responded 200 in 9.8061 ms
+2025-10-16 10:42:53.952 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 5.6497 ms
+2025-10-16 10:42:53.963 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 5.5003 ms
+2025-10-16 10:44:07.839 -05:00 [INF] HTTP PUT /Cotizacion/Editar responded 200 in 150.0138 ms
+2025-10-16 10:44:13.017 -05:00 [INF] HTTP PUT /Cotizacion/Editar responded 200 in 35.6440 ms
+2025-10-16 10:44:20.455 -05:00 [INF] HTTP GET /Visita/Index responded 200 in 10.9217 ms
+2025-10-16 10:44:20.723 -05:00 [INF] HTTP GET /Visita/Operadores responded 200 in 2.8032 ms
+2025-10-16 10:44:20.728 -05:00 [INF] HTTP GET /Visita/Etapas responded 200 in 5.1753 ms
+2025-10-16 10:44:20.736 -05:00 [INF] HTTP GET /Visita/Cantones responded 200 in 7.7868 ms
+2025-10-16 10:44:20.746 -05:00 [INF] HTTP GET /Visita/EmpresaConstructora responded 200 in 3.4729 ms
+2025-10-16 10:44:20.766 -05:00 [INF] HTTP GET /Visita/GetClaims responded 200 in 1.3394 ms
+2025-10-16 10:44:20.784 -05:00 [INF] HTTP GET /Visita/Contactos responded 200 in 6.4477 ms
+2025-10-16 10:44:20.784 -05:00 [INF] HTTP GET /Visita/Provincias responded 200 in 52.7269 ms
+2025-10-16 10:44:20.786 -05:00 [INF] HTTP GET /Visita/Lista responded 200 in 42.3291 ms
+2025-10-16 10:44:20.792 -05:00 [INF] HTTP GET /Visita/Parroquias responded 200 in 66.5872 ms
+2025-10-16 10:44:27.264 -05:00 [INF] HTTP GET /Visita/EquiposDeVisita responded 200 in 9.1601 ms
+2025-10-16 10:44:39.126 -05:00 [INF] HTTP DELETE /Visita/ProcesaEliminar responded 404 in 1.3879 ms
+2025-10-16 10:44:46.235 -05:00 [INF] HTTP POST /Visita/SincronizarEquipos responded 200 in 68.3279 ms
+2025-10-16 10:51:44.972 -05:00 [INF] HTTP GET /Visita/EquiposDeVisita responded 200 in 30.6572 ms
+2025-10-16 10:52:01.797 -05:00 [INF] HTTP GET /PreContrato/Index responded 200 in 44.3795 ms
+2025-10-16 10:52:01.921 -05:00 [INF] HTTP GET /js/PreContrato_EditorModal.js responded 200 in 73.3731 ms
+2025-10-16 10:52:01.921 -05:00 [INF] HTTP GET /js/PreContrato_Index.js responded 200 in 71.2788 ms
+2025-10-16 10:52:01.984 -05:00 [INF] HTTP GET /api/config/tinymce-key responded 200 in 3.6186 ms
+2025-10-16 10:52:02.003 -05:00 [INF] HTTP GET /js/datatables/i18n/Spanish.json responded 200 in 14.8429 ms
+2025-10-16 10:52:02.114 -05:00 [INF] HTTP GET /PreContrato/Listar responded 200 in 80.7076 ms
+2025-10-16 10:52:07.559 -05:00 [INF] HTTP GET /Cotizacion/Index responded 200 in 6.4385 ms
+2025-10-16 10:52:07.764 -05:00 [INF] HTTP GET /Impuesto/ListaActivos responded 200 in 7.4526 ms
+2025-10-16 10:52:07.776 -05:00 [INF] HTTP GET /Visita/ListaParaCotizacion responded 200 in 8.7589 ms
+2025-10-16 10:52:07.809 -05:00 [INF] HTTP GET /Cotizacion/Lista responded 200 in 5.6777 ms
+2025-10-16 10:52:13.193 -05:00 [INF] HTTP GET /Cotizacion/Detalle responded 200 in 9.1246 ms
+2025-10-16 10:52:13.210 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 6.2102 ms
+2025-10-16 10:52:13.220 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 5.9911 ms
+2025-10-16 10:52:30.809 -05:00 [INF] HTTP GET /TipoImpuesto/Index responded 200 in 29.9616 ms
+2025-10-16 10:52:30.905 -05:00 [INF] HTTP GET /js/vistas/TipoImpuesto_Index.js responded 200 in 48.3805 ms
+2025-10-16 10:52:31.007 -05:00 [INF] HTTP GET /TipoImpuesto/Lista responded 200 in 20.8588 ms
+2025-10-16 10:52:49.310 -05:00 [INF] HTTP GET /Impuesto/Index responded 200 in 24.2414 ms
+2025-10-16 10:52:49.403 -05:00 [INF] HTTP GET /js/vistas/Impuesto_Index.js responded 200 in 46.8998 ms
+2025-10-16 10:52:49.501 -05:00 [INF] HTTP GET /Impuesto/Lista responded 200 in 10.0522 ms
+2025-10-16 10:52:50.984 -05:00 [INF] HTTP GET /Impuesto/ListaTipoImpuesto responded 200 in 23.5323 ms
+2025-10-16 10:53:23.358 -05:00 [INF] HTTP GET /Cotizacion/Index responded 200 in 6.5150 ms
+2025-10-16 10:53:23.518 -05:00 [INF] HTTP GET /Impuesto/ListaActivos responded 200 in 2.9010 ms
+2025-10-16 10:53:23.536 -05:00 [INF] HTTP GET /Visita/ListaParaCotizacion responded 200 in 4.6371 ms
+2025-10-16 10:53:23.567 -05:00 [INF] HTTP GET /Cotizacion/Lista responded 200 in 4.0120 ms
+2025-10-16 10:53:28.970 -05:00 [INF] HTTP GET /Cotizacion/Detalle responded 200 in 6.4109 ms
+2025-10-16 10:53:28.985 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 5.1894 ms
+2025-10-16 10:53:28.994 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 6.3172 ms
+2025-10-16 10:53:35.785 -05:00 [INF] HTTP GET /Cotizacion/Detalle responded 200 in 10.0049 ms
+2025-10-16 10:53:35.802 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 6.3581 ms
+2025-10-16 10:53:35.811 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 4.8216 ms
+2025-10-16 10:53:59.047 -05:00 [INF] HTTP GET /Cotizacion/Detalle responded 200 in 7.8677 ms
+2025-10-16 10:53:59.061 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 6.6124 ms
+2025-10-16 10:53:59.070 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 4.2057 ms
+2025-10-16 10:54:14.747 -05:00 [INF] HTTP GET /Seguimiento/Lista responded 200 in 7.7677 ms
+2025-10-16 10:54:49.298 -05:00 [INF] HTTP POST /Seguimiento/Crear responded 400 in 31.4264 ms
+2025-10-16 10:55:04.127 -05:00 [INF] HTTP GET /Cotizacion/Detalle responded 200 in 9.7415 ms
+2025-10-16 10:55:04.144 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 5.9144 ms
+2025-10-16 10:55:04.160 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 20.1724 ms
+2025-10-16 10:55:18.653 -05:00 [INF] HTTP PUT /Cotizacion/Editar responded 200 in 58.8214 ms
+2025-10-16 10:55:24.528 -05:00 [INF] HTTP GET /Cotizacion/GenerarPDF responded 200 in 43.1959 ms
+2025-10-16 10:55:27.407 -05:00 [INF] HTTP PUT /Cotizacion/Editar responded 200 in 30.0656 ms
+2025-10-16 10:55:35.258 -05:00 [INF] HTTP PUT /Cotizacion/Editar responded 200 in 31.7215 ms
+2025-10-16 10:55:45.051 -05:00 [INF] HTTP GET /Cotizacion/Detalle responded 200 in 8.2760 ms
+2025-10-16 10:55:45.066 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 4.6836 ms
+2025-10-16 10:55:45.078 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 7.4828 ms
+2025-10-16 10:55:55.341 -05:00 [INF] HTTP GET /Cotizacion/Detalle responded 200 in 6.1049 ms
+2025-10-16 10:55:55.356 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 4.9854 ms
+2025-10-16 10:55:55.358 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 4.6125 ms
+2025-10-16 10:55:59.235 -05:00 [INF] HTTP PUT /Cotizacion/Editar responded 200 in 34.9264 ms
+2025-10-16 10:56:05.139 -05:00 [INF] HTTP GET /Seguimiento/Lista responded 200 in 6.5729 ms
+2025-10-16 10:56:10.525 -05:00 [INF] HTTP GET /Seguimiento/Lista responded 200 in 5.0538 ms
+2025-10-16 10:56:21.005 -05:00 [INF] HTTP GET /PreContrato/Index responded 200 in 14.5434 ms
+2025-10-16 10:56:21.188 -05:00 [INF] HTTP GET /api/config/tinymce-key responded 200 in 0.5252 ms
+2025-10-16 10:56:21.233 -05:00 [INF] HTTP GET /PreContrato/Listar responded 200 in 4.1535 ms
+2025-10-16 10:56:23.334 -05:00 [INF] HTTP GET /PreContrato/ListaCotizacionesAprobadas responded 200 in 19.2678 ms
+2025-10-16 10:56:23.335 -05:00 [INF] HTTP GET /PreContrato/ListaFormasPago responded 200 in 17.1883 ms
+2025-10-16 10:56:23.374 -05:00 [INF] HTTP GET /PolizaGarantia/ListaParaDropdown responded 200 in 50.6383 ms
+2025-10-16 10:56:23.395 -05:00 [INF] HTTP GET /PreContrato/ListaPlantillas responded 200 in 74.2426 ms
+2025-10-16 10:56:31.709 -05:00 [INF] HTTP GET /Cotizacion/Index responded 200 in 7.4958 ms
+2025-10-16 10:56:31.864 -05:00 [INF] HTTP GET /Impuesto/ListaActivos responded 200 in 2.7827 ms
+2025-10-16 10:56:31.879 -05:00 [INF] HTTP GET /Visita/ListaParaCotizacion responded 200 in 5.4243 ms
+2025-10-16 10:56:31.908 -05:00 [INF] HTTP GET /Cotizacion/Lista responded 200 in 5.5283 ms
+2025-10-16 10:56:52.442 -05:00 [INF] HTTP GET /Cotizacion/Detalle responded 200 in 8.5169 ms
+2025-10-16 10:56:52.456 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 6.2728 ms
+2025-10-16 10:56:52.465 -05:00 [INF] HTTP GET /Visita/ObtenerDetalleVisita responded 200 in 5.2569 ms
+2025-10-16 10:57:07.829 -05:00 [INF] HTTP PUT /Cotizacion/Editar responded 200 in 31.9444 ms
+2025-10-16 10:57:07.842 -05:00 [INF] HTTP GET /Cotizacion/Lista responded 200 in 5.4148 ms
+2025-10-16 10:57:11.732 -05:00 [INF] HTTP GET /Seguimiento/Lista responded 200 in 3.6273 ms
+2025-10-16 10:57:28.837 -05:00 [INF] HTTP POST /Seguimiento/Crear responded 201 in 37.9566 ms
+2025-10-16 10:57:28.848 -05:00 [INF] HTTP GET /Seguimiento/Lista responded 200 in 4.3383 ms
+2025-10-16 10:58:09.550 -05:00 [INF] HTTP GET /Cotizacion/Index responded 200 in 7.1341 ms
+2025-10-16 10:58:09.701 -05:00 [INF] HTTP GET /Impuesto/ListaActivos responded 200 in 2.9051 ms
+2025-10-16 10:58:09.719 -05:00 [INF] HTTP GET /Visita/ListaParaCotizacion responded 200 in 4.8865 ms
+2025-10-16 10:58:09.752 -05:00 [INF] HTTP GET /Cotizacion/Lista responded 200 in 4.2703 ms
+2025-10-16 10:58:19.154 -05:00 [INF] HTTP GET /PreContrato/Index responded 200 in 8.6914 ms
+2025-10-16 10:58:19.287 -05:00 [INF] HTTP GET /api/config/tinymce-key responded 200 in 0.6668 ms
+2025-10-16 10:58:19.326 -05:00 [INF] HTTP GET /PreContrato/Listar responded 200 in 3.5207 ms
+2025-10-16 10:58:21.917 -05:00 [INF] HTTP GET /PreContrato/ListaFormasPago responded 200 in 5.0075 ms
+2025-10-16 10:58:21.918 -05:00 [INF] HTTP GET /PreContrato/ListaCotizacionesAprobadas responded 200 in 8.1486 ms
+2025-10-16 10:58:21.921 -05:00 [INF] HTTP GET /PreContrato/ListaPlantillas responded 200 in 4.5048 ms
+2025-10-16 10:58:21.924 -05:00 [INF] HTTP GET /PolizaGarantia/ListaParaDropdown responded 200 in 6.4354 ms
+2025-10-16 10:58:25.896 -05:00 [INF] HTTP GET /Cotizacion/Detalle/65 responded 200 in 7.7580 ms
+2025-10-16 10:59:15.492 -05:00 [INF] HTTP POST /PreContrato/GenerarVistaPrevia responded 200 in 132.4601 ms
+2025-10-16 11:06:18.933 -05:00 [INF] HTTP POST /PreContrato/CrearDesdeModal responded 200 in 136.3629 ms
+2025-10-16 11:06:18.963 -05:00 [INF] HTTP GET /PreContrato/Listar responded 200 in 19.0020 ms
+2025-10-16 11:06:27.267 -05:00 [INF] HTTP GET /PlantillaPreContrato/Index responded 200 in 25.9905 ms
+2025-10-16 11:06:27.411 -05:00 [INF] HTTP GET /js/vistas/PlantillaPreContrato/PlantillaPreContrato_Index.js responded 200 in 82.1264 ms
+2025-10-16 11:06:27.532 -05:00 [INF] HTTP GET /PlantillaPreContrato/Lista responded 200 in 16.8279 ms
+2025-10-16 11:06:35.396 -05:00 [INF] HTTP GET /TipoDocumento/Index responded 200 in 25.2212 ms
+2025-10-16 11:06:35.472 -05:00 [INF] HTTP GET /js/vistas/TipoDocumento/TipoDocumento_Index.js responded 304 in 1.3241 ms
+2025-10-16 11:06:35.586 -05:00 [INF] HTTP GET /TipoDocumento/Lista responded 200 in 21.3593 ms
+2025-10-16 11:06:59.504 -05:00 [INF] HTTP GET /PlantillaPreContrato/Index responded 200 in 11.2392 ms
+2025-10-16 11:06:59.676 -05:00 [INF] HTTP GET /PlantillaPreContrato/Lista responded 200 in 2.0989 ms
+2025-10-16 11:07:01.774 -05:00 [INF] HTTP GET /PlantillaPreContrato/Parrafos responded 200 in 69.5570 ms
+2025-10-16 11:07:01.862 -05:00 [INF] HTTP GET /js/vistas/PlantillaPreContratoParrafo_Parrafos.js responded 200 in 49.3880 ms
+2025-10-16 11:07:01.901 -05:00 [INF] HTTP GET /api/config/tinymce-key responded 200 in 0.7049 ms
+2025-10-16 11:07:02.219 -05:00 [INF] HTTP GET /PlantillaPreContratoParrafo/Lista responded 200 in 28.6650 ms
+2025-10-16 11:07:08.534 -05:00 [INF] HTTP GET /DiccionarioParametro/ListaActivos responded 200 in 17.2360 ms
+2025-10-16 11:07:59.171 -05:00 [INF] HTTP GET /DiccionarioParametro/ListaActivos responded 200 in 4.9001 ms
+2025-10-16 11:08:45.110 -05:00 [INF] HTTP GET /PreContrato/Index responded 200 in 4.9148 ms
+2025-10-16 11:08:45.250 -05:00 [INF] HTTP GET /api/config/tinymce-key responded 200 in 0.7440 ms
+2025-10-16 11:08:45.295 -05:00 [INF] HTTP GET /PreContrato/Listar responded 200 in 5.5366 ms
+2025-10-16 11:08:52.263 -05:00 [INF] HTTP GET /PreContrato/Historial/25 responded 200 in 31.2642 ms
+2025-10-16 11:08:55.763 -05:00 [INF] HTTP GET /PreContrato/Editor/25 responded 200 in 50.5653 ms
+2025-10-16 11:08:55.840 -05:00 [INF] HTTP GET /js/PreContrato_Editor.js responded 200 in 43.1535 ms
+2025-10-16 11:09:23.950 -05:00 [INF] HTTP POST /PreContrato/GuardarPreContrato responded 200 in 45.6226 ms
+2025-10-16 11:09:26.659 -05:00 [INF] HTTP GET /PreContrato/Index responded 200 in 7.0401 ms
+2025-10-16 11:09:26.810 -05:00 [INF] HTTP GET /api/config/tinymce-key responded 200 in 0.4018 ms
+2025-10-16 11:09:26.859 -05:00 [INF] HTTP GET /PreContrato/Listar responded 200 in 6.1199 ms
+2025-10-16 11:09:28.307 -05:00 [INF] HTTP GET /PreContrato/Historial/26 responded 200 in 5.0458 ms
+2025-10-16 11:10:10.213 -05:00 [INF] HTTP GET /PreContrato/ContenidoParrafo/26 responded 200 in 15.8510 ms
+2025-10-16 11:10:18.111 -05:00 [INF] HTTP GET /PreContrato/ContenidoParrafo/25 responded 200 in 2.5671 ms
+2025-10-16 11:10:22.707 -05:00 [INF] HTTP GET /PreContrato/ContenidoParrafo/26 responded 200 in 2.1882 ms
+2025-10-16 11:12:11.638 -05:00 [INF] HTTP GET /PreContrato/Historial/26 responded 200 in 4.2328 ms
+2025-10-16 11:12:25.251 -05:00 [INF] HTTP POST /PreContrato/Aprobar/26 responded 200 in 14.7539 ms
+2025-10-16 11:12:25.264 -05:00 [INF] HTTP GET /PreContrato/Listar responded 200 in 6.0611 ms
+2025-10-16 11:12:28.894 -05:00 [INF] HTTP GET /Contrato/index responded 200 in 5.9477 ms
+2025-10-16 11:12:29.065 -05:00 [INF] HTTP GET /Contrato/Listar responded 200 in 3.5279 ms
+2025-10-16 11:12:33.041 -05:00 [INF] HTTP GET /Cliente/Lista responded 200 in 2.6511 ms
+2025-10-16 11:12:36.469 -05:00 [INF] HTTP GET /Contrato/ListarPreContratosParaContrato responded 200 in 22.2669 ms
+2025-10-16 11:13:01.950 -05:00 [ERR] HTTP POST /Contrato/Crear responded 500 in 16.7615 ms
+2025-10-16 11:13:08.711 -05:00 [ERR] HTTP POST /Contrato/Crear responded 500 in 1.1414 ms
+2025-10-16 11:13:25.691 -05:00 [INF] HTTP GET /api/PlanDePago/ObtenerPorContratoId/13 responded 200 in 5.0798 ms
+2025-10-16 11:13:25.702 -05:00 [INF] HTTP GET /FormaPago/Lista responded 200 in 4.8895 ms
+2025-10-16 11:13:35.166 -05:00 [INF] HTTP GET /api/PlanDePago/ObtenerPorContratoId/14 responded 200 in 5.9246 ms
+2025-10-16 11:13:35.175 -05:00 [INF] HTTP GET /FormaPago/Lista responded 200 in 2.4935 ms
+2025-10-16 11:13:47.201 -05:00 [INF] HTTP GET /api/PlanDePago/ObtenerPorContratoId/13 responded 200 in 2.4808 ms
+2025-10-16 11:13:47.208 -05:00 [INF] HTTP GET /FormaPago/Lista responded 200 in 2.0043 ms
+2025-10-16 11:14:56.063 -05:00 [INF] HTTP POST /api/PlanDePago/Guardar responded 200 in 79.7767 ms
+2025-10-16 11:14:56.086 -05:00 [INF] HTTP GET /Contrato/Listar responded 200 in 3.0988 ms
+2025-10-16 11:14:59.629 -05:00 [INF] HTTP GET /api/PlanDePago/ObtenerPorContratoId/13 responded 200 in 3.9870 ms
+2025-10-16 11:14:59.639 -05:00 [INF] HTTP GET /FormaPago/Lista responded 200 in 2.4649 ms
+2025-10-16 11:15:19.575 -05:00 [INF] HTTP GET /api/Pago/ListarPorPlan/4 responded 200 in 6.0585 ms
+2025-10-16 11:15:46.126 -05:00 [INF] HTTP POST /api/Pago/Registrar responded 200 in 42.7890 ms
+2025-10-16 11:15:46.147 -05:00 [INF] HTTP GET /Contrato/Listar responded 200 in 4.0532 ms
+2025-10-16 11:15:48.730 -05:00 [INF] HTTP GET /api/PlanDePago/ObtenerPorContratoId/13 responded 200 in 3.7623 ms
+2025-10-16 11:15:48.737 -05:00 [INF] HTTP GET /FormaPago/Lista responded 200 in 1.9731 ms
+2025-10-16 11:18:43.819 -05:00 [INF] HTTP POST /api/Pago/Registrar responded 200 in 26.8248 ms
+2025-10-16 11:18:43.838 -05:00 [INF] HTTP GET /Contrato/Listar responded 200 in 3.3494 ms
+2025-10-16 11:18:46.673 -05:00 [INF] HTTP GET /api/PlanDePago/ObtenerPorContratoId/13 responded 200 in 2.9510 ms
+2025-10-16 11:18:46.680 -05:00 [INF] HTTP GET /FormaPago/Lista responded 200 in 2.3505 ms
+2025-10-16 11:19:03.184 -05:00 [INF] HTTP POST /api/Pago/Registrar responded 200 in 12.0254 ms
+2025-10-16 11:19:03.202 -05:00 [INF] HTTP GET /Contrato/Listar responded 200 in 4.2043 ms
+2025-10-16 11:19:05.988 -05:00 [INF] HTTP GET /api/PlanDePago/ObtenerPorContratoId/13 responded 200 in 3.1900 ms
+2025-10-16 11:19:05.996 -05:00 [INF] HTTP GET /FormaPago/Lista responded 200 in 2.1801 ms
+2025-10-16 11:19:16.779 -05:00 [INF] HTTP POST /api/Pago/Registrar responded 200 in 9.4317 ms
+2025-10-16 11:19:16.798 -05:00 [INF] HTTP GET /Contrato/Listar responded 200 in 3.1523 ms
+2025-10-16 11:19:19.833 -05:00 [INF] HTTP GET /api/PlanDePago/ObtenerPorContratoId/13 responded 200 in 3.6982 ms
+2025-10-16 11:19:19.841 -05:00 [INF] HTTP GET /FormaPago/Lista responded 200 in 2.1610 ms
+2025-10-16 11:19:48.331 -05:00 [INF] HTTP GET /api/Pago/ListarPorPlan/4 responded 200 in 2.3434 ms
+2025-10-16 11:36:05.753 -05:00 [INF] HTTP GET /PreContrato/Index responded 200 in 36.8095 ms
+2025-10-16 11:36:05.905 -05:00 [INF] HTTP GET /api/config/tinymce-key responded 200 in 0.5109 ms
+2025-10-16 11:36:05.913 -05:00 [INF] HTTP GET /js/datatables/i18n/Spanish.json responded 200 in 1.1316 ms
+2025-10-16 11:36:05.956 -05:00 [INF] HTTP GET /PreContrato/Listar responded 200 in 9.6771 ms
+2025-10-16 11:36:06.312 -05:00 [INF] HTTP GET /favicon.ico responded 200 in 17.9344 ms
+2025-10-16 11:37:34.299 -05:00 [INF] HTTP GET /PreContrato/Index responded 200 in 6.7238 ms
+2025-10-16 11:37:34.435 -05:00 [INF] HTTP GET /api/config/tinymce-key responded 200 in 0.6656 ms
+2025-10-16 11:37:34.482 -05:00 [INF] HTTP GET /PreContrato/Listar responded 200 in 5.9219 ms
+2025-10-16 11:37:43.251 -05:00 [INF] HTTP GET /PreContrato/ListaCotizacionesAprobadas responded 200 in 6.7015 ms
+2025-10-16 11:37:43.256 -05:00 [INF] HTTP GET /PreContrato/ListaPlantillas responded 200 in 4.8474 ms
+2025-10-16 11:37:43.264 -05:00 [INF] HTTP GET /PreContrato/ListaFormasPago responded 200 in 15.9464 ms
+2025-10-16 11:37:43.271 -05:00 [INF] HTTP GET /PolizaGarantia/ListaParaDropdown responded 200 in 18.8254 ms
+2025-10-16 11:52:42.807 -05:00 [INF] HTTP GET /Contrato/index responded 200 in 27.7711 ms
+2025-10-16 11:52:42.994 -05:00 [INF] HTTP GET /Contrato/Listar responded 200 in 8.3502 ms
+2025-10-16 11:52:44.914 -05:00 [INF] HTTP GET /api/PlanDePago/ObtenerPorContratoId/13 responded 200 in 7.2202 ms
+2025-10-16 11:52:44.922 -05:00 [INF] HTTP GET /FormaPago/Lista responded 200 in 1.8354 ms
+2025-10-16 11:53:14.525 -05:00 [INF] HTTP GET /api/Pago/ListarPorPlan/4 responded 200 in 2.5530 ms

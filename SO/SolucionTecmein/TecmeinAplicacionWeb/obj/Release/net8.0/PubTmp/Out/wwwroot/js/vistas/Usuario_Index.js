@@ -1,0 +1,298 @@
+const MODELO_BASE = {
+    secuencial: "",
+    nombre: "",
+    correo: "",
+    telefono: "",
+    secRol: 0,
+    esActivo: 1,
+    urlFoto: ""
+}
+
+let tablaData;
+let filaSeleccionada;
+
+$(document).ready(function () {
+
+    tablaData = $('#tbdata').DataTable({
+        responsive: true,
+        "ajax": {
+            "url": 'Lista',
+            "type": "GET",
+            "datatype": "json",
+            "dataSrc": function (json) {
+                // Asegurarse de que el serializador no cause problemas
+                return json.data && json.data.$values ? json.data.$values : json.data;
+            }
+        },
+        "columns": [
+            { data: "secuencial", visible: false, searchable: false },
+            {
+                data: 'urlFoto', render: function (data) {
+                    const imageUrl = data && data.trim() !== '' ? data : 'https://via.placeholder.com/60';
+                    return `<img style="height:60px" src="${imageUrl}" class="rounded mx-auto d-block"/>`;
+                }
+            },
+            { data: "nombre" },
+            { data: "correo" },
+            { data: "telefono" },
+            { data: "nombreRol" },
+            {
+                data: "esActivo", render: function (data) {
+                    if (data == 1)
+                        return '<span class="badge badge-info">Activo</span>';
+                    else
+                        return '<span class="badge badge-danger">Inactivo</span>';
+                }
+            },
+            {
+                "defaultContent": '<div class="btn-group" role="group"><button class="btn btn-primary btn-editar btn-sm"><i class="fas fa-pencil-alt"></i></button>' +
+                    '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button></div>',
+                "orderable": false,
+                "searchable": false,
+                "width": "80px"
+            }
+        ],
+        order: [[0, "desc"]],
+        dom: "Bfrtip",
+        buttons: [
+            {
+                text: 'Exportar Excel',
+                extend: 'excelHtml5',
+                title: 'Usuarios',
+                filename: 'Reporte Usuarios',
+                exportOptions: {
+                    columns: [0, 2, 3, 4, 5, 6]
+                }
+            }, 'pageLength'
+        ],
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
+        },
+    });
+
+});
+
+function mostrarModal(modelo = MODELO_BASE, listaRoles = []) {
+    $("#txtId").val(modelo.secuencial)
+    $("#txtNombre").val(modelo.nombre)
+    $("#txtCorreo").val(modelo.correo)
+    $("#txtTelefono").val(modelo.telefono)
+    $("#cboEstado").val(modelo.esActivo)
+    $("#txtFoto").val("")
+    $("#imgUsuario").attr("src", modelo.urlFoto)
+
+    const cboRol = $("#cboRol");
+    cboRol.empty();
+    if (listaRoles.length > 0) {
+        listaRoles.forEach(item => {
+            cboRol.append(
+                $("<option>").val(item.secuencial).text(item.descripcion)
+            )
+        });
+    }
+    cboRol.val(modelo.secRol);
+
+    $("#modalData").modal("show")
+};
+
+let esEdicion = false;
+
+$("#btnNuevo").click(function () {
+    esEdicion = false;
+    fetch("/Usuario/ListaRol")
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorJson => Promise.reject(errorJson));
+            }
+            return response.json();
+        })
+        .then(responseJson => {
+            mostrarModal(MODELO_BASE, responseJson.$values);
+        })
+        .catch(error => {
+            if (error && error.mensajes) {
+                Swal.fire("Fallo!", error.mensajes, "error");
+            } else {
+                console.error('Error al obtener la lista de roles:', error);
+                Swal.fire("Fallo!", "Ocurrió un error al cargar los roles.", "error");
+            }
+        });
+})
+
+$("#tbdata tbody").on("click", ".btn-editar", function () {
+    esEdicion = true;
+
+    if ($(this).closest("tr").hasClass("child")) {
+        filaSeleccionada = $(this).closest("tr").prev();
+    } else {
+        filaSeleccionada = $(this).closest("tr");
+    }
+
+    const data = tablaData.row(filaSeleccionada).data();
+    const secuencialUsuario = data.secuencial;
+
+    $("#modalData").find("div.modal-content").LoadingOverlay("show");
+
+    fetch(`/Usuario/ObtenerParaEditar?secuencialUsuario=${secuencialUsuario}`)
+        .then(response => {
+            $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+            if (!response.ok) {
+                return response.json().then(errorJson => Promise.reject(errorJson));
+            }
+            return response.json();
+        })
+        .then(responseJson => {
+            if (responseJson.estado) {
+                mostrarModal(responseJson.objeto.usuario, responseJson.objeto.listaRoles);
+            } else {
+                Swal.fire("Fallo!", responseJson.mensajes, "error");
+            }
+        })
+        .catch(error => {
+            $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+            if (error && error.mensajes) {
+                Swal.fire("Fallo!", error.mensajes, "error");
+            } else {
+                console.error("Error en la llamada fetch para editar:", error);
+                Swal.fire("Fallo!", "Ocurrió un error inesperado al cargar los datos.", "error");
+            }
+        });
+});
+
+$("#btnGuardar").click(function () {
+
+    const inputs = $("input.input-validar").serializeArray();
+    const inputs_vacios = inputs.filter(item => item.value.trim() == "");
+
+    if (inputs_vacios.length > 0) {
+        const mensaje = `Debe llenar el campo: "${inputs_vacios[0].name}"`;
+        toastr.warning("", mensaje);
+        $(`input[name="${inputs_vacios[0].name}"]`).focus();
+        return;
+    }
+
+    const modelo = structuredClone(MODELO_BASE);
+    modelo["secuencial"] = parseInt($("#txtId").val()) || 0;
+    modelo["nombre"] = $("#txtNombre").val();
+    modelo["correo"] = $("#txtCorreo").val();
+    modelo["telefono"] = $("#txtTelefono").val();
+    modelo["secRol"] = $("#cboRol").val();
+    modelo["esActivo"] = $("#cboEstado").val();
+
+    const inputImagen = document.getElementById("txtFoto");
+    const datosFormulario = new FormData();
+
+    if (inputImagen.files && inputImagen.files[0]) {
+        const imageKey = esEdicion ? "Foto" : "imagen";
+        datosFormulario.append(imageKey, inputImagen.files[0]);
+    }
+    datosFormulario.append("modelo", JSON.stringify(modelo));
+
+    const url = esEdicion ? "Editar" : "Crear";
+    const method = esEdicion ? "PUT" : "POST";
+
+    $("#modalData").find("div.modal-content").LoadingOverlay("show");
+
+    fetch(url, {
+        method: method,
+        body: datosFormulario
+    })
+    .then(response => {
+        $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+        if (!response.ok) {
+            return response.json().then(errorJson => {
+                return Promise.reject(errorJson);
+            });
+        }
+        return response.json();
+    })
+    .then(responseJson => {
+        if (responseJson.estado) {
+            if(esEdicion) {
+                tablaData.row(filaSeleccionada).data(responseJson.objeto).draw(false);
+            } else {
+                tablaData.row.add(responseJson.objeto).draw(false);
+            }
+            $("#modalData").modal("hide");
+            Swal.fire("Listo!", `Usuario ${esEdicion ? 'editado' : 'creado'} correctamente`, "success");
+        } else {
+            Swal.fire("Fallo!", responseJson.mensajes, "error");
+        }
+    })
+    .catch(error => {
+        $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+        if (error && error.mensajes) {
+            Swal.fire("Fallo!", error.mensajes, "error");
+        } else {
+            console.error("Error al guardar:", error);
+            Swal.fire("Fallo!", "Ocurrió un error inesperado.", "error");
+        }
+    });
+});
+
+    $("#tbdata tbody").on("click", ".btn-eliminar", function () {
+
+    let fila;
+    if ($(this).closest("tr").hasClass("child")) {
+        fila = $(this).closest("tr").prev();
+    } else {
+        fila = $(this).closest("tr");
+    }
+
+    const data = tablaData.row(fila).data();
+
+    Swal.fire({
+        title: "Está Seguro de Eliminar?",
+        text: `Eliminar el usuario "${data.nombre}"`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Si, eliminar",
+        cancelButtonText: "No, cancelar",
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $(".showSweetAlert").LoadingOverlay("show");
+
+            fetch(`Eliminar?secuencialUsuario=${data.secuencial}`, {
+                method: "DELETE"
+            })
+            .then(response => {
+                $(".showSweetAlert").LoadingOverlay("hide");
+                if (!response.ok) {
+                    return response.json().then(errorJson => Promise.reject(errorJson));
+                }
+                return response.json();
+            })
+            .then(responseJson => {
+                if (responseJson.estado) {
+                    tablaData.row(fila).remove().draw();
+                    Swal.fire("Listo!", "El Usuario fue eliminado", "success");
+                } else {
+                    Swal.fire("Fallo!", responseJson.mensajes, "error");
+                }
+            })
+            .catch(error => {
+                $(".showSweetAlert").LoadingOverlay("hide");
+                if (error && error.mensajes) {
+                    Swal.fire("Fallo!", error.mensajes, "error");
+                } else {
+                    console.error("Error al eliminar:", error);
+                    Swal.fire("Fallo!", "Ocurrió un error inesperado al eliminar.", "error");
+                }
+            });
+        }
+    });
+});
+
+// Lógica para la vista previa de la imagen
+$("#txtFoto").change(function() {
+    const input = this;
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            $('#imgUsuario').attr('src', e.target.result);
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+});
