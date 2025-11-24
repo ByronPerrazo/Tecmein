@@ -1,0 +1,52 @@
+@model BLL.Models.ViewModels.DetallePlanPagoVM // Assuming this ViewModel is passed
+
+<div class="modal fade" id="detallePlanPagoModal" tabindex="-1" role="dialog" aria-labelledby="detallePlanPagoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detallePlanPagoModalLabel">Detalle del Plan de Pago</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>No. Contrato:</strong> <span id="modalNumeroContrato">@Model?.NumeroContrato</span></p>
+                        <p><strong>Cliente:</strong> <span id="modalNombreCliente">@Model?.NombreCliente</span></p>
+                        <p><strong>Valor Contrato:</strong> <span id="modalValorContrato">@Model?.ValorContrato.ToString("C")</span></p>
+                        <p><strong>Valor Anticipo:</strong> <span id="modalValorAnticipo">@Model?.ValorAnticipo.ToString("C")</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>No. Cuotas:</strong> <span id="modalNumeroCuotas">@Model?.NumeroCuotas</span></p>
+                        <p><strong>Fecha Primera Cuota:</strong> <span id="modalFechaPrimeraCuota">@Model?.FechaPrimeraCuota?.ToShortDateString()</span></p>
+                        <p><strong>Monto Pagado Total:</strong> <span id="modalMontoPagadoTotal">@Model?.MontoPagadoTotal.ToString("C")</span></p>
+                        <p><strong>Saldo Pendiente Total:</strong> <span id="modalSaldoPendienteTotal">@Model?.SaldoPendienteTotal.ToString("C")</span></p>
+                    </div>
+                </div>
+
+                <hr />
+
+                <h4>Cuotas del Plan</h4>
+                <table id="tblCuotasPlanPago" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>No. Cuota</th>
+                            <th>Monto Esperado</th>
+                            <th>Monto Pagado</th>
+                            <th>Fecha Vencimiento</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data for quotas will be loaded by DataTable via AJAX or directly from Model -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnRegistrarPagoModal">Registrar Pago</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -24,7 +24,9 @@ namespace IOC
                 });
 
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddScoped<IGenericRepository<Cuota>, GenericRepository<Cuota>>(); // Nuevo
+            services.AddScoped<IGenericRepository<Cuota>, GenericRepository<Cuota>>(); // Corrected: Cuota is Cuota entity
+            services.AddScoped<IGenericRepository<Pago>, GenericRepository<Pago>>(); // Register Pago repository
+            services.AddScoped<IGenericRepository<PlanDePago>, GenericRepository<PlanDePago>>(); // Register PlanDePago repository
             services.AddScoped<IGenericRepository<RolPermiso>, GenericRepository<RolPermiso>>(); // New: Register RolPermiso repository
             services.AddSingleton<IDatosGlobalesServices, DatosGlobalesServicio>();
 
@@ -126,8 +128,8 @@ namespace IOC
             services.AddScoped<ITipoDocumentoServices, TipoDocumentoServices>();
             services.AddScoped<IPolizaGarantiaServices, PolizaGarantiaServices>();
             services.AddScoped<IGenericRepository<PolizaGarantia>, GenericRepository<PolizaGarantia>>();
-            services.AddScoped<IPlanDePagoService, PlanDePagoService>(); // Nuevo
-            services.AddScoped<IPagoService, PagoService>();
+            services.AddScoped<IPlanDePagoServices, PlanDePagoServices>(); // Corrected Service Name
+            services.AddScoped<IPagoServices, PagoServices>(); // Corrected Service Name
             services.AddScoped<IContratoService, ContratoService>(provider =>
                 new ContratoService(
                     provider.GetRequiredService<IGenericRepository<Contrato>>(),
