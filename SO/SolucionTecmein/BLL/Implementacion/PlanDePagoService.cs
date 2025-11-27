@@ -125,5 +125,58 @@ namespace BLL.Implementacion
                 throw new Exception($"Error al guardar el Plan de Pago: {ex.Message}", ex);
             }
         }
+        public async Task<IEnumerable<PlanDePagoDTO>> ListarPlanesDePago()
+        {
+            var planesDePago = await _dbContext.PlanesDePago
+                .Include(p => p.IdContratoNavigation)
+                    .ThenInclude(c => c.SecClienteNavigation)
+                        .ThenInclude(cli => cli.SecConstructoraNavigation)
+                .Include(p => p.Pagos) // Para calcular el monto pagado
+                .ToListAsync();
+
+            var dtos = new List<PlanDePagoDTO>();
+            foreach (var plan in planesDePago)
+            {
+                var dto = _mapper.Map<PlanDePagoDTO>(plan);
+                dto.NumeroContrato = plan.IdContratoNavigation?.IdContrato.ToString() ?? "N/A";
+                dto.NombreCliente = plan.IdContratoNavigation?.SecClienteNavigation?.SecConstructoraNavigation?.Nombre ?? "N/A";
+                dto.MontoPagado = plan.Pagos.Sum(p => p.Monto);
+                dto.SaldoPendiente = plan.ValorContrato - dto.MontoPagado;
+                dto.EstadoPlan = dto.SaldoPendiente <= 0 ? "Pagado" : "Pendiente";
+                dtos.Add(dto);
+            }
+            return dtos;
+        }
+
+        public async Task<PlanDePagoDTO> ObtenerDetallePlan(int idPlanDePago)
+        {
+            var planDePago = await _dbContext.PlanesDePago
+                .Include(p => p.IdContratoNavigation)
+                .Include(p => p.Cuotas)
+                .Include(p => p.Pagos)
+                .FirstOrDefaultAsync(p => p.IdPlanDePago == idPlanDePago);
+
+            if (planDePago == null)
+            {
+                return null;
+            }
+
+            var dto = _mapper.Map<PlanDePagoDTO>(planDePago);
+            dto.Cuotas = _mapper.Map<List<CuotaDTO>>(planDePago.Cuotas.OrderBy(c => c.NumeroCuota).ToList());
+            dto.MontoPagadoTotal = planDePago.Pagos.Sum(p => p.Monto);
+            dto.SaldoPendienteTotal = planDePago.ValorContrato - dto.MontoPagadoTotal;
+            dto.NumeroContrato = planDePago.IdContratoNavigation?.IdContrato.ToString();
+
+            if (planDePago.IdContratoNavigation?.SecClienteNavigation != null)
+            {
+                dto.NombreCliente = planDePago.IdContratoNavigation.SecClienteNavigation.SecConstructoraNavigation?.Nombre ?? "N/A";
+            }
+            else
+            {
+                dto.NombreCliente = "N/A";
+            }
+
+            return dto;
+        }
     }
 }

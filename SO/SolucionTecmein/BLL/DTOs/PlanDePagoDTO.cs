@@ -14,5 +14,17 @@ namespace BLL.DTOs
         public decimal? ValorAnticipo { get; set; }
         public DateTime? FechaAnticipo { get; set; }
         public List<CuotaDTO> Cuotas { get; set; } = new List<CuotaDTO>();
+        public DateTime FechaRegistro { get; set; }
+        public bool EstaActivo { get; set; }
+
+
+        // Propiedades adicionales para la vista Financiero
+        public string? NumeroContrato { get; set; }
+        public string? NombreCliente { get; set; }
+        public decimal MontoPagado { get; set; }
+        public decimal SaldoPendiente { get; set; }
+        public string? EstadoPlan { get; set; }
+        public decimal MontoPagadoTotal { get; set; }
+        public decimal SaldoPendienteTotal { get; set; }
     }
 }

@@ -1,26 +1,38 @@
-using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using BLL.DTOs;
 using BLL.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using TecmeinWebApp.Utilidades.Response;
-using TecmeinWebApp.Utilidades.ViewComponents; // Para ValidatePermissionAttribute
-using BLL.Models.ViewModels; // Added for ViewModels
-using System.Security.Claims; // Added for ClaimTypes
+using TecmeinWebApp.Utilidades.ViewComponents;
+using TecmeinAplicacionWeb.Models.ViewModels; // Add this using for VM
 
-namespace TecmeinWebApp.Controllers
+namespace TecmeinAplicacionWeb.Controllers
 {
+    // Asegurarse de que el usuario tenga permiso para ver este menú
     public class FinancieroController : Controller
     {
-        private readonly IPlanDePagoServices _planDePagoServices;
-        private readonly IPagoServices _pagoServices;
+        private readonly IPlanDePagoService _planDePagoService;
+        private readonly IPagoService _pagoService; // Add dependency
+        private readonly IMapper _mapper;
 
-        public FinancieroController(IPlanDePagoServices planDePagoServices, IPagoServices pagoServices)
+        public FinancieroController(
+            IPlanDePagoService planDePagoService, 
+            IPagoService pagoService, // Add dependency
+            IMapper mapper)
         {
-            _planDePagoServices = planDePagoServices;
-            _pagoServices = pagoServices;
+            _planDePagoService = planDePagoService;
+            _pagoService = pagoService; // Add dependency
+            _mapper = mapper;
         }
 
         [ValidatePermission("VER_MENU")]
         public IActionResult Index()
         {
+            ViewBag.CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
             return View();
         }
 
@@ -28,73 +40,39 @@ namespace TecmeinWebApp.Controllers
         [ValidatePermission("LEER")]
         public async Task<IActionResult> ListaPlanesPago()
         {
-            var rsp = new GenericResponse<List<PlanPagoDashboardVM>>();
+            // This method in the service now returns a DTO. Map it to a VM
+            var gResponse = new GenericResponse<List<PlanPagoDashboardVM>>(); 
             try
             {
-                rsp.Objeto = await _pagoServices.ObtenerPlanesDePagoParaDashboard();
-                rsp.Estado = true;
+                var planesDto = await _pagoService.ObtenerPlanesDePagoParaDashboard();
+                gResponse.Objeto = _mapper.Map<List<PlanPagoDashboardVM>>(planesDto);
+                gResponse.Estado = true;
             }
             catch (Exception ex)
             {
-                rsp.Estado = false;
-                rsp.Mensajes = ex.Message;
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
             }
-            return StatusCode(StatusCodes.Status200OK, rsp);
+            return StatusCode(200, gResponse);
         }
 
-        [HttpGet] // Added Get for detail
+        [HttpGet]
         [ValidatePermission("LEER")]
         public async Task<IActionResult> ObtenerDetallePlanDePago(int idPlanDePago)
         {
-            var rsp = new GenericResponse<DetallePlanPagoVM>();
+            var gResponse = new GenericResponse<DetallePlanPagoVM>(); // Changed to VM
             try
             {
-                rsp.Objeto = await _pagoServices.ObtenerDetallePlanDePago(idPlanDePago);
-                rsp.Estado = true;
+                var planDto = await _pagoService.ObtenerDetallePlanDePago(idPlanDePago);
+                gResponse.Objeto = _mapper.Map<DetallePlanPagoVM>(planDto);
+                gResponse.Estado = true;
             }
             catch (Exception ex)
             {
-                rsp.Estado = false;
-                rsp.Mensajes = ex.Message;
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
             }
-            return StatusCode(StatusCodes.Status200OK, rsp);
-        }
-
-        [HttpPost]
-        [ValidatePermission("CREAR")]
-        public async Task<IActionResult> RegistrarPago([FromBody] RegistrarPagoVM pagoVM)
-        {
-            var rsp = new GenericResponse<string>();
-            try
-            {
-                // Obtener el ID del usuario logueado desde los claims
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int registradoPorUsuarioId))
-                {
-                    rsp.Estado = false;
-                    rsp.Mensajes = "No se pudo identificar al usuario que registra el pago.";
-                    return StatusCode(StatusCodes.Status401Unauthorized, rsp);
-                }
-                pagoVM.RegistradoPorUsuarioId = registradoPorUsuarioId;
-
-                bool resultado = await _pagoServices.RegistrarPago(pagoVM);
-                if (resultado)
-                {
-                    rsp.Estado = true;
-                    rsp.Objeto = "Pago registrado exitosamente.";
-                }
-                else
-                {
-                    rsp.Estado = false;
-                    rsp.Mensajes = "No se pudo registrar el pago.";
-                }
-            }
-            catch (Exception ex)
-            {
-                rsp.Estado = false;
-                rsp.Mensajes = ex.Message;
-            }
-            return StatusCode(StatusCodes.Status200OK, rsp);
+            return StatusCode(200, gResponse);
         }
     }
 }

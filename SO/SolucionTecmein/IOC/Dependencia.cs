@@ -1,3 +1,4 @@
+using AutoMapper;
 using BLL.Implementacion;
 using BLL.Interfaces;
 using DAL.DBContext;
@@ -32,7 +33,7 @@ namespace IOC
 
             services.AddScoped<IUsuarioServices, UsuarioServices>();
             services.AddScoped<IRolServices, RolServices>();
-            services.AddScoped<IStorageServices, StorageServices>();
+            services.AddScoped<IStorageServices, StorageServices>(); // Reverted to AddScoped
             services.AddScoped<IUtilidadesServices, UtilidadesServices>();
             services.AddScoped<ICorreoServices, CorreoServices>();
             services.AddScoped<ISmtpClientWrapper, SmtpClientWrapper>();
@@ -128,8 +129,8 @@ namespace IOC
             services.AddScoped<ITipoDocumentoServices, TipoDocumentoServices>();
             services.AddScoped<IPolizaGarantiaServices, PolizaGarantiaServices>();
             services.AddScoped<IGenericRepository<PolizaGarantia>, GenericRepository<PolizaGarantia>>();
-            services.AddScoped<IPlanDePagoServices, PlanDePagoServices>(); // Corrected Service Name
-            services.AddScoped<IPagoServices, PagoServices>(); // Corrected Service Name
+            services.AddScoped<IPlanDePagoService, PlanDePagoService>(); // Registro para la interfaz correcta
+            services.AddScoped<IPagoService, PagoService>(); // Simple registration
             services.AddScoped<IContratoService, ContratoService>(provider =>
                 new ContratoService(
                     provider.GetRequiredService<IGenericRepository<Contrato>>(),

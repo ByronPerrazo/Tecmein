@@ -1,4 +1,5 @@
 using BLL.DTOs;
+using System.Collections.Generic; // Añadido
 using System.Threading.Tasks;
 
 namespace BLL.Interfaces
@@ -7,5 +8,7 @@ namespace BLL.Interfaces
     {
         Task<PlanDePagoDTO> ObtenerPorContratoId(int idContrato);
         Task<PlanDePagoDTO> Guardar(PlanDePagoDTO modelo);
+        Task<IEnumerable<PlanDePagoDTO>> ListarPlanesDePago(); // Añadido
+        Task<PlanDePagoDTO> ObtenerDetallePlan(int idPlanDePago); // Añadido
     }
 }

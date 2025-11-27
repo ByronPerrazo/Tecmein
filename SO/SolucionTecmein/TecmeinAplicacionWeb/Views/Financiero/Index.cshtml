@@ -11,6 +11,74 @@
     <link rel="stylesheet" href="~/css/styleGenerales.css">
 }
 
+<!-- Stat Cards Row -->
+<div class="row">
+    <!-- Total Contratado Card -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Contratado</div>
+                        <div id="totalContratado" class="h5 mb-0 font-weight-bold text-gray-800">$0.00</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-file-invoice-dollar fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Total Pagado Card -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Pagado</div>
+                        <div id="totalPagado" class="h5 mb-0 font-weight-bold text-gray-800">$0.00</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Saldo Total Card -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Saldo Total</div>
+                        <div id="saldoTotal" class="h5 mb-0 font-weight-bold text-gray-800">$0.00</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-comments-dollar fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Planes Activos Card -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Planes Activos</div>
+                        <div id="planesActivos" class="h5 mb-0 font-weight-bold text-gray-800">0</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 bg-second-primary">
@@ -40,6 +108,9 @@
         </div>
     </div>
 </div>
+
+@Html.Partial("_DetallePlanPagoModal")
+@Html.Partial("_RegistrarPagoModal")
 
 @section Scripts {
     <script src="~/vendor/datatables/jquery.dataTables.min.js"></script>

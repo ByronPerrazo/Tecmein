@@ -44,7 +44,7 @@ namespace BLL.Implementacion
                                           })
                     .Child(CarpetaDestino)
                     .Child(NombreArchivo)
-                    .PutAsync(RepositorioExterno, cancelToken.Token);
+                    .PutAsync(RepositorioExterno, cancelToken.Token); // Reverted PutAsync call
 
                 return UrlImagen = await tarea;
 

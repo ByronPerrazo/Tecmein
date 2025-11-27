@@ -141,7 +141,7 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
 
             #endregion
 
-           
+
 
             CreateMap<Catalogo, CatalogoVM>()
                 .ForMember(destino =>
@@ -288,7 +288,7 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
                                                                                          $" Nombres de Paradas: {origen.NombresParadas}" + Environment.NewLine +
                                                                                          $" Numero de Personas: {origen.NumeroPersonas} "))
                             .ForMember(destino =>
-                                       destino.DetalleEspecifico,                             opt =>
+                                       destino.DetalleEspecifico, opt =>
                              opt.MapFrom(origen => $"Sistema:{origen.Sistema} -" +
                                                    $" Tipo Eq:{origen.TipoEquipo} -" +
                                                    $" Marca:{origen.Marca} -" +
@@ -310,7 +310,7 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
                                                    $" Puertas:{origen.MaterialPuertas} -" +
                                                    $" Num. Paradas{origen.NumeroParadas}-" +
                                                    $" Nomb. Paradas{origen.NombresParadas}-" +
-                                                   $" Num Personas:{origen.NumeroPersonas} " ) );
+                                                   $" Num Personas:{origen.NumeroPersonas} "));
 
 
             CreateMap<EquiposVisitaVM, Equiposvisita>()
@@ -409,7 +409,7 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
                     opt => opt.MapFrom(origen => origen.SecUsuarioModifica))
                 .ForMember(destino =>
                     destino.NombreUsuarioModifica,
-                    opt => opt.MapFrom(origen => origen.SecUsuarioModificaNavigation != null ? origen.SecUsuarioModificaNavigation.Nombre : "N/A"));;
+                    opt => opt.MapFrom(origen => origen.SecUsuarioModificaNavigation != null ? origen.SecUsuarioModificaNavigation.Nombre : "N/A")); ;
 
             CreateMap<CotizacionVM, Cotizacion>()
                 .ForMember(destino =>
@@ -550,7 +550,7 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
                            opt => opt.MapFrom(src => src.FechaFirma.ToString("dd/MM/yyyy")));
 
             CreateMap<ContratoVM, Contrato>()
-                .ForMember(dest => dest.FechaFirma, 
+                .ForMember(dest => dest.FechaFirma,
                            opt => opt.MapFrom(src => DateTime.ParseExact(src.FechaFirma, "dd/MM/yyyy", new System.Globalization.CultureInfo("es-ES"))))
                 .ForMember(dest => dest.IdCotizacionNavigation, opt => opt.Ignore())
                 .ForMember(dest => dest.IdUsuarioCargaNavigation, opt => opt.Ignore());
@@ -595,18 +595,32 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
                            opt => opt.MapFrom(origen => DateTime.ParseExact(origen.FechaRegistro, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)));
 
             CreateMap<Cuota, CuotaVM>()
+                .ForMember(destino => destino.IdPlanDePago, opt => opt.MapFrom(origen => origen.IdPlanDePago))
+                .ForMember(destino => destino.MontoPagado, opt => opt.MapFrom(origen => origen.MontoPagado)) // Map nullable decimal
                 .ForMember(destino => destino.FechaVencimiento,
                            opt => opt.MapFrom(origen => origen.FechaVencimiento.ToString("dd/MM/yyyy")))
                 .ForMember(destino => destino.FechaRegistro,
                            opt => opt.MapFrom(origen => origen.FechaRegistro.ToString("dd/MM/yyyy")));
-            CreateMap<CuotaVM, Cuota>();
+            CreateMap<CuotaVM, Cuota>()
+                .ForMember(destino => destino.IdPlanDePago, opt => opt.MapFrom(origen => origen.IdPlanDePago))
+                .ForMember(destino => destino.MontoPagado, opt => opt.MapFrom(origen => origen.MontoPagado)) // Map nullable decimal
+                .ForMember(destino => destino.FechaVencimiento,
+                           opt => opt.MapFrom(origen => !string.IsNullOrEmpty(origen.FechaVencimiento) ? DateTime.ParseExact(origen.FechaVencimiento, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture) : DateTime.MinValue))
+                .ForMember(destino => destino.FechaRegistro,
+                           opt => opt.MapFrom(origen => !string.IsNullOrEmpty(origen.FechaRegistro) ? DateTime.ParseExact(origen.FechaRegistro, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture) : DateTime.MinValue));
 
             #region Plan de Pago DTO
             CreateMap<PlanDePago, PlanDePagoDTO>().ReverseMap();
             CreateMap<Cuota, CuotaDTO>().ReverseMap();
             CreateMap<Pago, PagoDTO>().ReverseMap();
+            
+            // DTO to VM Mappings
             CreateMap<PlanDePagoDTO, PlanDePagoVM>();
             CreateMap<CuotaDTO, CuotaVM>();
+            CreateMap<PlanPagoDashboardDTO, PlanPagoDashboardVM>();
+            CreateMap<DetallePlanPagoDTO, DetallePlanPagoVM>();
+
+            // VM to DTO Mappings
             CreateMap<PlanDePagoVM, PlanDePagoDTO>();
             CreateMap<CuotaVM, CuotaDTO>();
             #endregion
@@ -623,6 +637,19 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
             CreateMap<PreContratoCompromisoPagoVM, PreContratoCompromisoPago>()
                 .ForMember(destino => destino.FechaVencimiento,
                            opt => opt.MapFrom(origen => DateTime.ParseExact(origen.FechaVencimiento, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)));
+            #endregion
+
+            #region Pagos
+            CreateMap<RegistrarPagoVM, PagoDTO>()
+                .ForMember(destino => destino.FechaPago,
+                           opt => opt.MapFrom(origen => origen.FechaPago)) // Direct DateTime mapping
+                .ForMember(destino => destino.RegistradoPorUsuarioId, opt => opt.MapFrom(origen => origen.RegistradoPorUsuarioId))
+                .ForMember(destino => destino.IdPlanDePago, opt => opt.MapFrom(origen => origen.IdPlanDePago))
+                .ForMember(destino => destino.Monto, opt => opt.MapFrom(origen => origen.Monto))
+                .ForMember(destino => destino.ComprobanteUrl, opt => opt.MapFrom(origen => origen.ComprobanteUrl))
+                .ForMember(destino => destino.ComprobanteNombre, opt => opt.MapFrom(origen => origen.ComprobanteNombre))
+                .ForMember(destino => destino.EstaActivo, opt => opt.MapFrom(origen => true)) // Los pagos nuevos siempre están activos por defecto
+                .ForMember(destino => destino.FechaRegistro, opt => opt.MapFrom(origen => DateTime.Now)); // Fecha de registro actual
             #endregion
 
         }

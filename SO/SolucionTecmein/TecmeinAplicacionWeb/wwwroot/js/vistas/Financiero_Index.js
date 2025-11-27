@@ -11,7 +11,28 @@ $(document).ready(function () {
             "datatype": "json",
             "dataSrc": function (response) {
                 if (response.estado && response.objeto && Array.isArray(response.objeto.$values)) {
-                    return response.objeto.$values;
+                    const data = response.objeto.$values;
+                    
+                    // Calculate totals
+                    let totalContratado = 0;
+                    let totalPagado = 0;
+                    let saldoTotal = 0;
+                    data.forEach(item => {
+                        totalContratado += item.valorTotalContrato;
+                        totalPagado += item.montoPagado;
+                        saldoTotal += item.saldoPendiente;
+                    });
+
+                    // Format currency
+                    const formatCurrency = (value) => value.toLocaleString('es-ES', { style: 'currency', currency: 'USD' });
+
+                    // Update stat cards
+                    $('#totalContratado').text(formatCurrency(totalContratado));
+                    $('#totalPagado').text(formatCurrency(totalPagado));
+                    $('#saldoTotal').text(formatCurrency(saldoTotal));
+                    $('#planesActivos').text(data.length);
+
+                    return data;
                 } else {
                     console.error("Error cargando datos desde el servidor: " + (response.mensajes || "Formato de datos inesperado o sin array de valores."));
                     return [];
@@ -19,10 +40,10 @@ $(document).ready(function () {
             }
         },
         "columns": [
-            { "data": "idPlanDePago" },
-            { "data": "numeroContrato" },
+            { "data": "idPlanDePago", "visible": false }, // Hidden ID column
+            { "data": "nombreProyecto" }, // Display project name instead of contract number
             { "data": "nombreCliente" },
-            { "data": "valorTotalContrato" },
+            { "data": "valorTotalContrato" }, 
             { "data": "montoPagado" },
             { "data": "saldoPendiente" },
             { "data": "estadoPlan" },
@@ -53,34 +74,53 @@ $(document).ready(function () {
         $('#registroPagoFecha').val(new Date().toISOString().slice(0, 10)); // Fecha actual
         // Asignar RegistradoPorUsuarioId (desde un claim o variable global, ejemplo: @User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
         // Por ahora un valor quemado, esto debe venir del backend o del contexto del usuario logueado
-        $('#registroPagoUsuarioId').val(1); 
+        $('#registroPagoUsuarioId').val($('#currentUserId').val()); // Obtener del input hidden 
         $('#registrarPagoModal').modal('show');
     });
 
     // Manejar click en botón "Guardar Pago" en el modal de registro
     $('#btnGuardarPago').on('click', function () {
-        var formData = {
-            IdPlanDePago: parseInt($('#registroPagoIdPlanDePago').val()),
-            Monto: parseFloat($('#registroPagoMonto').val()),
-            FechaPago: $('#registroPagoFecha').val(),
-            ComprobanteUrl: $('#registroPagoComprobante').val(),
-            RegistradoPorUsuarioId: parseInt($('#registroPagoUsuarioId').val())
-        };
+        // Validaciones básicas antes de construir FormData
+        var monto = parseFloat($('#registroPagoMonto').val());
+        var fechaPago = $('#registroPagoFecha').val();
+        var idPlanDePago = parseInt($('#registroPagoIdPlanDePago').val());
+        var registradoPorUsuarioId = parseInt($('#registroPagoUsuarioId').val());
+        var comprobanteFile = $('#registroPagoComprobanteFile')[0].files[0];
 
-        if (isNaN(formData.Monto) || formData.Monto <= 0) {
+        if (isNaN(monto) || monto <= 0) {
             Swal.fire("Error", "Ingrese un monto válido para el pago.", "error");
             return;
         }
-        if (!formData.FechaPago) {
+        if (!fechaPago) {
             Swal.fire("Error", "Seleccione una fecha para el pago.", "error");
             return;
         }
+        if (!idPlanDePago) {
+            Swal.fire("Error", "ID de Plan de Pago no válido.", "error");
+            return;
+        }
+        //if (!registradoPorUsuarioId) {
+        //    Swal.fire("Error", "ID de Usuario no válido.", "error");
+        //    return;
+        //}
+
+
+        var formData = new FormData();
+        formData.append('IdPlanDePago', idPlanDePago);
+        formData.append('Monto', monto);
+        formData.append('FechaPago', fechaPago);
+       // formData.append('RegistradoPorUsuarioId', registradoPorUsuarioId);
+
+        if (comprobanteFile) {
+            formData.append('ComprobanteFile', comprobanteFile);
+        }
 
         $.ajax({
-            url: "/Financiero/RegistrarPago",
+            url: "/api/Pago/Registrar", // Corregida la URL para apuntar al PagoController
             type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(formData),
+            data: formData, // Usar FormData
+            processData: false, // Importante: no procesar los datos
+            contentType: false, // Importante: no establecer el tipo de contenido (FormData lo hará)
             success: function (response) {
                 if (response.estado) {
                     Swal.fire("Registrado!", "El pago ha sido registrado exitosamente.", "success");
@@ -97,6 +137,24 @@ $(document).ready(function () {
         });
     });
 
+    // Manejar cambio en el input de archivo para previsualización
+    $('#registroPagoComprobanteFile').on('change', function (event) {
+        var reader = new FileReader();
+        reader.onload = function(){
+            var output = document.getElementById('imgComprobantePreview');
+            if (event.target.files[0] && event.target.files[0].type.startsWith('image')) {
+                output.src = reader.result;
+                output.style.display = 'block';
+            } else {
+                output.style.display = 'none'; // Ocultar si no es una imagen o no hay archivo
+            }
+        };
+        if (event.target.files[0]) {
+            reader.readAsDataURL(event.target.files[0]);
+        } else {
+            $('#imgComprobantePreview').hide();
+        }
+    });
 
 
 });
@@ -113,6 +171,7 @@ function cargarDetallePlanDePago(idPlanDePago) {
                 // Actualizar los campos del modal de detalle
                 $('#modalNumeroContrato').text(plan.numeroContrato);
                 $('#modalNombreCliente').text(plan.nombreCliente);
+                $('#modalNombreProyecto').text(plan.nombreProyecto);
                 $('#modalValorContrato').text(plan.valorContrato.toLocaleString('es-ES', { style: 'currency', currency: 'USD' }));
                 $('#modalValorAnticipo').text(plan.valorAnticipo.toLocaleString('es-ES', { style: 'currency', currency: 'USD' }));
                 $('#modalNumeroCuotas').text(plan.numeroCuotas);
