@@ -625,6 +625,13 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
             CreateMap<CuotaVM, CuotaDTO>();
             #endregion
 
+            #region HistorialPagos
+            CreateMap<Pago, HistorialPagoCuotaDTO>()
+                .ForMember(destino => destino.RegistradoPorUsuarioNombre,
+                           opt => opt.MapFrom(origen => origen.RegistradoPorUsuario.Nombre ?? "Desconocido"));
+            CreateMap<HistorialPagoCuotaDTO, HistorialPagoCuotaVM>();
+            #endregion
+
             #region Auditoria
             CreateMap<AuditoriaEvento, AuditoriaEventoVM>()
                 .ForMember(dest => dest.FechaHora, opt => opt.MapFrom(src => src.FechaHora.ToString("dd/MM/yyyy HH:mm:ss")));

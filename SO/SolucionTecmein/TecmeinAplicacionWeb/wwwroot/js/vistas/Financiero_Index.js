@@ -195,7 +195,16 @@ function cargarDetallePlanDePago(idPlanDePago) {
                               return new Date(data).toLocaleDateString('es-ES');
                           }
                         },
-                        { "data": "estado" }
+                        { "data": "estado" },
+                        { // Nueva columna para las acciones
+                            "data": "idCuota", // Asumiendo que idCuota es el ID de la cuota
+                            "render": function (data, type, row) {
+                                return `<button class="btn btn-primary btn-sm btn-historial-pago" data-id-cuota="${data}"><i class="fas fa-history"></i> Ver Pagos</button>`;
+                            },
+                            "orderable": false,
+                            "searchable": false,
+                            "width": "100px" // Ancho de la columna
+                        }
                     ],
                     "language": {
                         "url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
@@ -206,6 +215,12 @@ function cargarDetallePlanDePago(idPlanDePago) {
                     "searching": false // No buscar en las cuotas
                 });
 
+                // Manejar click en botón "Ver Pagos" dentro de la tabla de cuotas
+                $('#tblCuotasPlanPago tbody').on('click', '.btn-historial-pago', function () {
+                    var idCuota = $(this).data('id-cuota');
+                    mostrarHistorialPagos(idCuota);
+                });
+
                 $('#detallePlanPagoModal').modal('show');
             } else {
                 Swal.fire("Error", response.mensajes || "No se pudo cargar el detalle del plan de pago.", "error");
@@ -214,6 +229,62 @@ function cargarDetallePlanDePago(idPlanDePago) {
         error: function (error) {
             console.error("Error al obtener detalle del plan de pago:", error);
             Swal.fire("Error", "Ocurrió un error al cargar el detalle del plan de pago.", "error");
+        }
+    });
+}
+
+// Función para mostrar el historial de pagos de una cuota específica
+function mostrarHistorialPagos(idCuota) {
+    $.ajax({
+        url: `/Financiero/ObtenerHistorialPagosPorCuota?idCuota=${idCuota}`,
+        type: "GET",
+        success: function (response) {
+            if (response.estado && response.objeto && Array.isArray(response.objeto.$values)) {
+                // Destruir y reinicializar DataTable de Historial de Pagos
+                if ($.fn.DataTable.isDataTable('#tblHistorialPagos')) {
+                    $('#tblHistorialPagos').DataTable().destroy();
+                }
+
+                $('#tblHistorialPagos').DataTable({
+                    "data": response.objeto.$values,
+                    "columns": [
+                        { "data": "monto", 
+                            "render": function (data) {
+                                return data.toLocaleString('es-ES', { style: 'currency', currency: 'USD' });
+                            }
+                        },
+                        { "data": "fechaPago",
+                          "render": function (data) {
+                              return new Date(data).toLocaleDateString('es-ES');
+                          }
+                        },
+                        { "data": "registradoPorUsuarioNombre" }, // Asumiendo este campo en el ViewModel
+                        { "data": "comprobanteUrl",
+                          "render": function (data, type, row) {
+                              if (data) {
+                                  return `<a href="${data}" target="_blank" class="btn btn-info btn-sm"><i class="fas fa-file-alt"></i> Ver Comprobante</a>`;
+                              }
+                              return 'N/A';
+                          }
+                        }
+                    ],
+                    "language": {
+                        "url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
+                    },
+                    "responsive": true,
+                    "paging": false,
+                    "info": false,
+                    "searching": false
+                });
+
+                $('#historialPagosCuotaModal').modal('show');
+            } else {
+                Swal.fire("Error", response.mensajes || "No se pudo cargar el historial de pagos.", "error");
+            }
+        },
+        error: function (error) {
+            console.error("Error al obtener historial de pagos:", error);
+            Swal.fire("Error", "Ocurrió un error al cargar el historial de pagos.", "error");
         }
     });
 }

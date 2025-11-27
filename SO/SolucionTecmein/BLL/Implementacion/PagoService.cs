@@ -85,6 +85,11 @@ namespace BLL.Implementacion
             var montoPagadoTotal = plan.Pagos?.Sum(p => p.Monto) ?? 0;
             var saldoPendienteTotal = plan.ValorContrato - montoPagadoTotal;
 
+            // Calculate SaldoVencidoTotal
+            var saldoVencidoTotal = plan.Cuotas
+                                        .Where(c => c.FechaVencimiento < DateTime.Now && c.Estado != "Pagada")
+                                        .Sum(c => c.MontoEsperado - (c.MontoPagado ?? 0)); // Sum of outstanding balance for overdue
+            
             var detalleDTO = new DetallePlanPagoDTO
             {
                 IdPlanDePago = plan.IdPlanDePago,
@@ -97,6 +102,7 @@ namespace BLL.Implementacion
                 NumeroCuotas = plan.NumeroCuotas,
                 FechaPrimeraCuota = plan.FechaPrimeraCuota,
                 MontoPagadoTotal = montoPagadoTotal,
+                SaldoVencidoTotal = saldoVencidoTotal,
                 SaldoPendienteTotal = saldoPendienteTotal,
                 Cuotas = _mapper.Map<List<CuotaDTO>>(plan.Cuotas)
             };
@@ -161,6 +167,35 @@ namespace BLL.Implementacion
         {
             var pagos = await _repositorioPago.Consultar(p => p.IdPlanDePago == idPlanDePago);
             return _mapper.Map<IEnumerable<PagoDTO>>(pagos.ToList());
+        }
+
+        public async Task<List<HistorialPagoCuotaDTO>> ObtenerHistorialPagosPorCuota(int idCuota)
+        {
+            var cuota = await _dbContext.Cuotas.FirstOrDefaultAsync(c => c.IdCuota == idCuota );
+
+            if (cuota == null) throw new KeyNotFoundException("Cuota no encontrada.");
+
+            var pagos = await _dbContext.Pagos
+                                .Include(p => p.RegistradoPorUsuario)
+                                .Where(p => p.IdPlanDePago == cuota.IdPlanDePago && p.EstaActivo == true)
+                                .OrderByDescending(p => p.FechaRegistro)
+                                .ToListAsync();
+
+            var historialDTOs = pagos.Select(p => new HistorialPagoCuotaDTO
+            {
+                IdPago = p.IdPago,
+                IdCuota = cuota.IdCuota, // Asignar el idCuota de la cuota actual para contexto
+                Monto = p.Monto,
+                FechaPago = p.FechaPago,
+                ComprobanteUrl = p.ComprobanteUrl,
+                ComprobanteNombre = p.ComprobanteNombre,
+                RegistradoPorUsuarioId = p.RegistradoPorUsuarioId, // Corregido: ya no es nullable
+                RegistradoPorUsuarioNombre = p.RegistradoPorUsuario?.Nombre ?? "Desconocido",
+                EstaActivo = p.EstaActivo,
+                FechaRegistro = p.FechaRegistro
+            }).ToList();
+
+            return historialDTOs;
         }
     }
 }

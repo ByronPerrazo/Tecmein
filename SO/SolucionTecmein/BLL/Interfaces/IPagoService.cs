@@ -10,5 +10,6 @@ namespace BLL.Interfaces
         Task<DetallePlanPagoDTO> ObtenerDetallePlanDePago(int idPlanDePago);
         Task<PagoDTO> RegistrarPago(PagoDTO pagoDTO); // Changed to accept and return DTO
         Task<IEnumerable<PagoDTO>> ListarPorPlanDePago(int idPlanDePago);
+        Task<List<HistorialPagoCuotaDTO>> ObtenerHistorialPagosPorCuota(int idCuota);
     }
 }

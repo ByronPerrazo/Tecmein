@@ -15,6 +15,7 @@ namespace BLL.DTOs
         public int NumeroCuotas { get; set; }
         public DateTime? FechaPrimeraCuota { get; set; }
         public decimal MontoPagadoTotal { get; set; }
+        public decimal SaldoVencidoTotal { get; set; }
         public decimal SaldoPendienteTotal { get; set; }
         public List<CuotaDTO>? Cuotas { get; set; }
     }

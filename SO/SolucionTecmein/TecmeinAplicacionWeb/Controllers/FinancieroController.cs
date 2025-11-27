@@ -74,5 +74,26 @@ namespace TecmeinAplicacionWeb.Controllers
             }
             return StatusCode(200, gResponse);
         }
+
+        [HttpGet]
+        [ValidatePermission("LEER")]
+        public async Task<IActionResult> ObtenerHistorialPagosPorCuota(int idCuota)
+        {
+            var gResponse = new GenericResponse<List<HistorialPagoCuotaVM>>();
+            try
+            {
+                // Implementación del servicio para obtener historial de pagos por cuota
+                // Necesitaré un nuevo método en IPagoService (o ICuotaService) para esto
+                var pagosDto = await _pagoService.ObtenerHistorialPagosPorCuota(idCuota);
+                gResponse.Objeto = _mapper.Map<List<HistorialPagoCuotaVM>>(pagosDto);
+                gResponse.Estado = true;
+            }
+            catch (Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+            }
+            return StatusCode(200, gResponse);
+        }
     }
 }

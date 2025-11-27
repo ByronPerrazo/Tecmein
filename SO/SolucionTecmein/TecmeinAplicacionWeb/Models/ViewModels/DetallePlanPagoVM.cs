@@ -15,6 +15,7 @@ namespace TecmeinAplicacionWeb.Models.ViewModels
         public int NumeroCuotas { get; set; }
         public string? FechaPrimeraCuota { get; set; }
         public decimal MontoPagadoTotal { get; set; }
+        public decimal SaldoVencidoTotal { get; set; }
         public decimal SaldoPendienteTotal { get; set; }
         public List<CuotaVM>? Cuotas { get; set; }
     }
