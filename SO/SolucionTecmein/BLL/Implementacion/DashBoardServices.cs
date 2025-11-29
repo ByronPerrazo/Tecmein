@@ -11,15 +11,24 @@ namespace BLL.Implementacion
         private readonly IGenericRepository<Visita> _visitaRepository;
         private readonly IGenericRepository<Equiposvisita> _equiposRepository;
         private readonly IGenericRepository<Contrato> _contratoRepository;
+        private readonly IGenericRepository<Cliente> _clienteRepository; // Added
+        private readonly IGenericRepository<Cuota> _cuotaRepository; // Added
+        private readonly IGenericRepository<PlanDePago> _planDePagoRepository; // Added
 
         public DashBoardServices(
             IGenericRepository<Visita> visitaRepository,
             IGenericRepository<Equiposvisita> equiposRepository,
-            IGenericRepository<Contrato> contratoRepository)
+            IGenericRepository<Contrato> contratoRepository,
+            IGenericRepository<Cliente> clienteRepository,
+            IGenericRepository<Cuota> cuotaRepository,
+            IGenericRepository<PlanDePago> planDePagoRepository)
         {
             _visitaRepository = visitaRepository;
             _equiposRepository = equiposRepository;
             _contratoRepository = contratoRepository;
+            _clienteRepository = clienteRepository; // Added
+            _cuotaRepository = cuotaRepository; // Added
+            _planDePagoRepository = planDePagoRepository; // Added
         }
 
         public async Task<int> TotalVisitasUltimaSemana()
@@ -48,6 +57,38 @@ namespace BLL.Implementacion
             IQueryable<Equiposvisita> query = await _equiposRepository.Consultar(e => e.EstaActivo == 1);
             int total = query.Select(e => e.Marca).Distinct().Count();
             return total;
+        }
+
+        public async Task<int> TotalContratos() // New method
+        {
+            IQueryable<Contrato> query = await _contratoRepository.Consultar(c => c.EsActivo == true);
+            return await query.CountAsync();
+        }
+
+        public async Task<string> IngresosMensuales() // New method
+        {
+            DateTime fechaInicioMesActual = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            IQueryable<PlanDePago> query = await _planDePagoRepository.Consultar(pp => 
+                pp.FechaRegistro.Date >= fechaInicioMesActual.Date && pp.EstaActivo == true);
+            
+            decimal total = await query.SumAsync(pp => pp.ValorContrato);
+            return total.ToString("C", CultureInfo.GetCultureInfo("es-EC")); // Format as currency, e.g., for Ecuador
+        }
+
+        public async Task<int> PagosVencidos() // New method
+        {
+            DateTime fechaActual = DateTime.Now.Date;
+            IQueryable<Cuota> query = await _cuotaRepository.Consultar(c => 
+                c.Estado == "Pendiente" && c.FechaVencimiento.Date < fechaActual);
+            return await query.CountAsync();
+        }
+
+        public async Task<int> NuevosClientesUltimoMes() // New method
+        {
+            DateTime fechaInicioMesAnterior = DateTime.Now.Date.AddMonths(-1);
+            IQueryable<Cliente> query = await _clienteRepository.Consultar(cl => 
+                cl.FechaCreacion.Date >= fechaInicioMesAnterior.Date && cl.EstaActivo == true);
+            return await query.CountAsync();
         }
 
         public async Task<Dictionary<string, int>> MarcasMasVendidas()

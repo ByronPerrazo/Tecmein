@@ -9,6 +9,11 @@ namespace TecmeinAplicacionWeb.Models.ViewModels
         public string? totalIngresosUltimaSemana { get; set; }
         public int totalMarcas { get; set; }
 
+        public int TotalContratos { get; set; }
+        public string? IngresosMensuales { get; set; }
+        public int PagosVencidos { get; set; }
+        public int NuevosClientes { get; set; }
+
         public List<MarcasMasVendidasVM> listaMarcasMasVendidasVM { get; set; }
         public List<VisitasUktimaSemanaVM> listaVisitasUktimaSemanaVM { get; set; }
         public Dictionary<string, int> VisitasPorEtapa { get; set; }

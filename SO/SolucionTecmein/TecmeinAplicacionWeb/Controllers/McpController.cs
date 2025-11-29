@@ -1,6 +1,15 @@
+using BLL.DTOs; // For McpResponseDTO
 using BLL.Mcp;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using TecmeinAplicacionWeb.Models.ViewModels; // For McpResponseVM, if needed
+using TecmeinWebApp.Utilidades.Response; // Add this using
+using TecmeinWebApp.Utilidades.ViewComponents;
 
 namespace TecmeinWebApp.Controllers
 {
@@ -16,23 +25,89 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPost("query")]
+        [AllowAnonymous]
         public async Task<IActionResult> Query([FromBody] McpRequest request)
         {
-            if (request == null || string.IsNullOrWhiteSpace(request.NaturalLanguageQuery))
+            var gResponse = new GenericResponse<McpResponseDTO>();
+            try
             {
-                return BadRequest("La consulta en lenguaje natural no puede estar vacía.");
+                if (request == null || string.IsNullOrWhiteSpace(request.NaturalLanguageQuery))
+                {
+                    gResponse.Estado = false;
+                    gResponse.Mensajes = "La consulta en lenguaje natural no puede estar vacía.";
+                    return BadRequest(gResponse);
+                }
+
+                var serviceResult = await _mcpService.ProcessNaturalLanguageQueryAsync(request.NaturalLanguageQuery);
+
+                // Check if the serviceResult is an error object
+                if (serviceResult.GetType().GetProperty("error") != null) // Check if anonymous type with error property
+                {
+                    var errorProperty = serviceResult.GetType().GetProperty("error");
+                    var errorMessage = errorProperty?.GetValue(serviceResult)?.ToString();
+
+                    gResponse.Estado = false;
+                    gResponse.Mensajes = errorMessage ?? "Error desconocido del servicio MCP.";
+                    return StatusCode(500, gResponse);
+                }
+
+                // Assuming serviceResult is IEnumerable<IDictionary<string, object>> for successful queries
+                if (serviceResult is IEnumerable<IDictionary<string, object>> queryResults)
+                {
+                    gResponse.Objeto = new McpResponseDTO { Respuesta = FormatQueryResults(queryResults) };
+                    gResponse.Estado = true;
+                }
+                else
+                {
+                    // Handle other unexpected result types from service
+                    gResponse.Estado = false;
+                    gResponse.Mensajes = "Formato de respuesta inesperado del servicio MCP.";
+                    return StatusCode(500, gResponse);
+                }
+            }
+            catch (Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+                return StatusCode(500, gResponse);
+            }
+            return StatusCode(200, gResponse);
+        }
+
+        private string FormatQueryResults(IEnumerable<IDictionary<string, object>> results)
+        {
+            if (results == null || !results.Any())
+            {
+                return "No se encontraron resultados para su consulta.";
             }
 
-            var result = await _mcpService.ProcessNaturalLanguageQueryAsync(request.NaturalLanguageQuery);
+            StringBuilder htmlTable = new StringBuilder();
+            htmlTable.Append("<table class=\"table table-bordered table-striped\">");
 
-            // Si el resultado contiene una propiedad 'error', podría ser un error del servicio.
-            // Esto es una forma simple de manejarlo.
-            if (result.GetType().GetProperty("error") != null)
+            // Headers
+            htmlTable.Append("<thead><tr>");
+            var firstRow = results.First();
+            foreach (var key in firstRow.Keys)
             {
-                return StatusCode(500, result);
+                htmlTable.Append($"<th>{key}</th>");
             }
+            htmlTable.Append("</tr></thead>");
 
-            return Ok(result);
+            // Body
+            htmlTable.Append("<tbody>");
+            foreach (var row in results)
+            {
+                htmlTable.Append("<tr>");
+                foreach (var value in row.Values)
+                {
+                    htmlTable.Append($"<td>{value?.ToString() ?? ""}</td>");
+                }
+                htmlTable.Append("</tr>");
+            }
+            htmlTable.Append("</tbody>");
+            htmlTable.Append("</table>");
+
+            return htmlTable.ToString();
         }
     }
 

@@ -53,7 +53,10 @@ namespace IOC
                 new DashBoardServices(
                     provider.GetRequiredService<IGenericRepository<Visita>>(),
                     provider.GetRequiredService<IGenericRepository<Equiposvisita>>(),
-                    provider.GetRequiredService<IGenericRepository<Contrato>>()
+                    provider.GetRequiredService<IGenericRepository<Contrato>>(),
+                    provider.GetRequiredService<IGenericRepository<Cliente>>(),
+                    provider.GetRequiredService<IGenericRepository<Cuota>>(),
+                    provider.GetRequiredService<IGenericRepository<PlanDePago>>()
                 ));
 
             services.AddScoped<IPermisoServices, PermisoServices>();

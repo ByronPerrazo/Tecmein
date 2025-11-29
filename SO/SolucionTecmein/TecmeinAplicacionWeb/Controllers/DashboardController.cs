@@ -33,6 +33,12 @@ namespace TecmeinWebApp.Controllers
                 dashBoard.totalIngresosUltimaSemana = await _dashBoarServicio.TotalIngresosUltimaSemana();
                 dashBoard.totalEquipos = await _dashBoarServicio.TotalEquipos();
 
+                // New dashboard data
+                dashBoard.TotalContratos = await _dashBoarServicio.TotalContratos();
+                dashBoard.IngresosMensuales = await _dashBoarServicio.IngresosMensuales();
+                dashBoard.PagosVencidos = await _dashBoarServicio.PagosVencidos();
+                dashBoard.NuevosClientes = await _dashBoarServicio.NuevosClientesUltimoMes();
+
                 var listaMarcasMasVendidas = new List<MarcasMasVendidasVM>();
                 var listaVisitasUltimaSemana = new List<VisitasUktimaSemanaVM>();
 

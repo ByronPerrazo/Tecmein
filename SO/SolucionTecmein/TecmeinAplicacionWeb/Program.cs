@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using QuestPDF.Infrastructure;
 using Serilog;
 using TecmeinAplicacionWeb.Utilidades.AutoMapper;
+using BLL.Mcp; // Added
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
@@ -74,6 +75,11 @@ try
         // Futuras políticas específicas se pueden añadir aquí...
     });
     // --- FIN NUEVA CONFIGURACIÓN DE AUTORIZACIÓN ---
+
+    // Configure Gemini Settings
+    builder.Services.Configure<GeminiSettings>(builder.Configuration.GetSection("GeminiSettings"));
+    builder.Services.AddHttpClient(); // Add HttpClientFactory
+    builder.Services.AddLogging(); // Added to ensure ILogger is available
 
     builder.Services.InyectarDependencia(builder.Configuration);
     builder.Services.AddAutoMapper(typeof(AutoMapperProfile));

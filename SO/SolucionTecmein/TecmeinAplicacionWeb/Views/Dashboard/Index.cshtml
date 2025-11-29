@@ -25,35 +25,35 @@
     <!-- Content Row -->
     <div class="row">
 
-        <!-- Total de ventas -->
+        <!-- Total de Contratos -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Total de Visitas
+                                Total de Contratos
                             </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalVisita">30</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalContratos">0</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-shopping-basket fa-2x text-gray-300"></i>
+                            <i class="fas fa-file-contract fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Total de Ingresos -->
+        <!-- Ingresos Mensuales -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Total de Ingresos
+                                Ingresos Mensuales
                             </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalIngresos">$215,000</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="ingresosMensuales">$0</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -63,40 +63,38 @@
             </div>
         </div>
 
-        <!-- Total de Productos -->
+        <!-- Pagos Vencidos -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
+            <div class="card border-left-danger shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Total de Marcas
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                Pagos Vencidos
                             </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalProductos">50</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="pagosVencidos">0</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                            <i class="fas fa-calendar-times fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-
-
-        <!-- Total de Categorias -->
+        <!-- Nuevos Clientes (Último Mes) -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Total de Equipos
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Nuevos Clientes (Último Mes)
                             </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalCategorias">18</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="nuevosClientes">0</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-tags fa-2x text-gray-300"></i>
+                            <i class="fas fa-user-plus fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -104,81 +102,112 @@
         </div>
     </div>
 
-    <!-- Content Row -->
-
+    <!-- MCP Section -->
     <div class="row">
+        <div class="col-xl-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-second-primary">
+                    <h6 class="m-0 font-weight-bold text-white">
+                        <i class="fas fa-robot"></i> Asistente Tecmein (MCP)
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="input-group mb-3">
+                        <input type="text" id="mcpQueryInput" class="form-control" placeholder="Escribe tu consulta o usa el micrófono..." aria-label="Consulta para el asistente" aria-describedby="mcpSendButton">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="button" id="mcpVoiceInputButton"><i class="fas fa-microphone"></i></button>
+                            <button class="btn btn-success" type="button" id="mcpSendButton"><i class="fas fa-paper-plane"></i> Enviar</button>
+                        </div>
+                    </div>
+                    <div id="mcpResponseArea" class="mt-3 p-3 bg-light rounded" style="min-height: 100px; max-height: 300px; overflow-y: auto;">
+                        <!-- Las respuestas del MCP se mostrarán aquí -->
+                        <p class="text-muted">Esperando tu consulta...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Row for Charts -->
+    <div class="row mt-4">
 
         <!-- Area Chart - Ventas de los ultimos 7 días -->
         <div class="col-xl-8 col-lg-7">
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 bg-second-primary">
-                    <h6 class="m-0 font-weight-bold text-white">Vistitas del Ultimo Año</h6>
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Ventas de los últimos 7 días</h6>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                    <div class="chart-area" style="height: 350px !important;">
+                    <div class="chart-area">
                         <canvas id="charVentas"></canvas>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Pie Chart - Productos más vendidos-->
+        <!-- Pie Chart - Marcas Más Vendidas -->
         <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 bg-second-primary">
-                    <h6 class="m-0 font-weight-bold text-white">Marcas más Vendidas</h6>
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Marcas Más Vendidas</h6>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                    <div class="chart-pie" style="height: 350px !important ;">
+                    <div class="chart-pie pt-4 pb-2">
                         <canvas id="charProductos"></canvas>
+                    </div>
+                    <div class="mt-4 text-center small">
+                        <span class="mr-2"><i class="fas fa-circle text-primary"></i> Direct</span>
+                        <span class="mr-2"><i class="fas fa-circle text-success"></i> Social</span>
+                        <span class="mr-2"><i class="fas fa-circle text-info"></i> Referral</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Content Row -->
     <div class="row">
-        <!-- Visitas por Etapa -->
-        <div class="col-xl-4 col-lg-5">
+        <!-- Pie Chart - Visitas por Etapa -->
+        <div class="col-xl-6 col-lg-6">
             <div class="card shadow mb-4">
-                <div class="card-header py-3 bg-second-primary">
-                    <h6 class="m-0 font-weight-bold text-white">Visitas por Etapa</h6>
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Visitas por Etapa</h6>
                 </div>
                 <div class="card-body">
-                    <div class="chart-pie" style="height: 350px !important ;">
+                    <div class="chart-pie pt-4 pb-2">
                         <canvas id="chartVisitasPorEtapa"></canvas>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Contratos por Mes -->
-        <div class="col-xl-8 col-lg-7">
+        <!-- Bar Chart - Contratos por Mes -->
+        <div class="col-xl-6 col-lg-6">
             <div class="card shadow mb-4">
-                <div class="card-header py-3 bg-second-primary">
-                    <h6 class="m-0 font-weight-bold text-white">Contratos por Mes (Últimos 12 meses)</h6>
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Contratos por Mes</h6>
                 </div>
                 <div class="card-body">
-                    <div class="chart-area" style="height: 350px !important;">
+                    <div class="chart-bar">
                         <canvas id="chartContratosPorMes"></canvas>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Top 5 Clientes -->
+    <div class="row">
+        <!-- Horizontal Bar Chart - Top 5 Clientes -->
         <div class="col-xl-12">
             <div class="card shadow mb-4">
-                <div class="card-header py-3 bg-second-primary">
-                    <h6 class="m-0 font-weight-bold text-white">Top 5 Clientes con más Contratos</h6>
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Top 5 Clientes con más Contratos</h6>
                 </div>
                 <div class="card-body">
-                    <div class="chart-bar" style="height: 350px !important;">
+                    <div class="chart-bar">
                         <canvas id="chartTopClientes"></canvas>
                     </div>
                 </div>
@@ -186,15 +215,11 @@
         </div>
     </div>
 
-</div>
-<!-- /.container-fluid -->
+
 
 @section Scripts {
-
-    <script src="~/vendor/chart.js/Chart.min.js"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <script>console.log('Chart.js loaded:', typeof Chart);</script>
     <script src="~/js/vistas/DashBoard_Index.js"></script>
-    @* <script src="~/js/vistas/chart-pie-demo.js"></script *@>
-
 }
-
-
