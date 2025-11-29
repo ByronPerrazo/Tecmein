@@ -106,22 +106,23 @@
     <div class="row">
         <div class="col-xl-12">
             <div class="card shadow mb-4">
-                <div class="card-header py-3 bg-second-primary">
+                <a href="#mcpCollapseContent" class="d-block card-header py-3 bg-second-primary" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="mcpCollapseContent">
                     <h6 class="m-0 font-weight-bold text-white">
                         <i class="fas fa-robot"></i> Asistente Tecmein (MCP)
                     </h6>
-                </div>
-                <div class="card-body">
-                    <div class="input-group mb-3">
-                        <input type="text" id="mcpQueryInput" class="form-control" placeholder="Escribe tu consulta o usa el micrófono..." aria-label="Consulta para el asistente" aria-describedby="mcpSendButton">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary" type="button" id="mcpVoiceInputButton"><i class="fas fa-microphone"></i></button>
-                            <button class="btn btn-success" type="button" id="mcpSendButton"><i class="fas fa-paper-plane"></i> Enviar</button>
-                        </div>
+                </a>
+                <div class="input-group p-3 pt-0"> <!-- Input visible siempre, con padding para estética -->
+                    <input type="text" id="mcpQueryInput" class="form-control" placeholder="Escribe tu consulta o usa el micrófono..." aria-label="Consulta para el asistente" aria-describedby="mcpSendButton">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button" id="mcpVoiceInputButton"><i class="fas fa-microphone"></i></button>
+                        <button class="btn btn-success" type="button" id="mcpSendButton"><i class="fas fa-paper-plane"></i> Enviar</button>
                     </div>
-                    <div id="mcpResponseArea" class="mt-3 p-3 bg-light rounded" style="min-height: 100px; max-height: 300px; overflow-y: auto;">
-                        <!-- Las respuestas del MCP se mostrarán aquí -->
-                        <p class="text-muted">Esperando tu consulta...</p>
+                </div>
+                <div class="collapse" id="mcpCollapseContent"> <!-- Contenido colapsable, inicialmente oculto -->
+                    <div class="card-body d-flex flex-column border rounded-bottom" style="height: 350px; background-color: #DAEBF5;"> <!-- Ajustar altura y rounded para que solo la parte inferior sea redondeada -->
+                        <div id="mcpResponseArea" class="p-1 flex-grow-1 overflow-auto" style="overflow-y: auto;">
+                            <!-- Las respuestas del MCP se mostrarán aquí -->
+                        </div>
                     </div>
                 </div>
             </div>

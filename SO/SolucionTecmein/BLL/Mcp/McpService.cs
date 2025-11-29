@@ -135,6 +135,7 @@ namespace BLL.Mcp
                 4. Analiza el esquema para entender las relaciones entre las tablas.
                 5. **RESPETA LA CAPITALIZACIÓN EXACTA de las tablas y columnas tal como se proporcionan en el esquema.**
                 6. Al realizar comparaciones con columnas numéricas que puedan contener valores NULL, como 'MontoPagado', usa la función COALESCE(columna, 0) para tratar los NULL como 0. Por ejemplo: COALESCE(T1.MontoPagado, 0) < T1.MontoEsperado.
+                7. Para todas las columnas calculadas, funciones de agregación (COUNT, SUM, AVG, etc.) o columnas transformadas (como CAST), utiliza un alias (AS) para que el nombre de la columna en el resultado sea legible y descriptivo (ej. CAST(CL.NumeroCliente AS UNSIGNED) AS NumeroCliente).
 
                 **Esquema de la Base de Datos:**
                 ---

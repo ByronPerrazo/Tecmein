@@ -7,6 +7,9 @@ $(document).ready(function () {
     const mcpVoiceInputButton = $('#mcpVoiceInputButton');
     const mcpSendButton = $('#mcpSendButton');
     const mcpResponseArea = $('#mcpResponseArea');
+
+    // Add initial message
+    //appendMessage('Asistente', 'Esperando tu consulta...', false);
     // #endregion
 
     fetch("ObtenerResumen")
@@ -239,13 +242,29 @@ $(document).ready(function () {
     let recognition; // Will hold the SpeechRecognition object
 
     function appendMessage(sender, message, isHtml = false) {
-        const messageElement = $(`<div class="mb-2"><strong class="${sender === 'User' ? 'text-primary' : 'text-success'}">${sender}:</strong></div>`);
-        if (isHtml) {
-            messageElement.append(`<div class="alert alert-secondary">${message}</div>`);
+        const messageContainer = $('<div class="d-flex mb-2">');
+        const messageCard = $('<div class="card p-2 border-0">');
+        const messageBody = $('<div class="card-body p-2">');
+
+        if (sender === 'Tú') {
+            messageContainer.addClass('justify-content-end');
+            messageCard.addClass('bg-primary text-white');
+            messageBody.html(`<strong>Tú:</strong> <span class="ml-2">${message}</span>`);
         } else {
-            messageElement.append(`<span class="ml-2">${message}</span>`);
+            messageContainer.addClass('justify-content-start');
+            messageCard.addClass('bg-light rounded-lg');
+            if (isHtml) {
+                // If message is already HTML, insert it directly
+                messageBody.html(`<strong style="color: #0FC233;">Asistente:</strong><div class="mt-1" style="color: #39493F;">${message}</div>`);
+            } else {
+                // If it's plain text, wrap it in a span
+                messageBody.html(`<strong style="color: #0FC233;">Asistente:</strong> <span class="ml-2" style="color: #39493F;">${message}</span>`);
+            }
         }
-        mcpResponseArea.append(messageElement);
+        
+        messageCard.append(messageBody);
+        messageContainer.append(messageCard);
+        mcpResponseArea.append(messageContainer);
         mcpResponseArea.scrollTop(mcpResponseArea[0].scrollHeight);
     }
 
@@ -254,6 +273,9 @@ $(document).ready(function () {
             Swal.fire('Atención', 'Por favor, introduce una consulta.', 'warning');
             return;
         }
+
+        // Show the chat content if it's collapsed
+        $('#mcpCollapseContent').collapse('show');
 
         appendMessage('Tú', query);
         mcpQueryInput.val('');
@@ -302,12 +324,22 @@ $(document).ready(function () {
             mcpVoiceInputButton.addClass('btn-danger').removeClass('btn-primary');
             mcpVoiceInputButton.find('i').removeClass('fa-microphone').addClass('fa-stop-circle');
             mcpVoiceInputButton.prop('title', 'Detener dictado');
-            appendMessage('Asistente', 'Escuchando...', true); // Indicar que está escuchando
+            appendMessage('Asistente', 'Escuchando...', false); // Indicar que está escuchando
+
+            // Show the chat content if it's collapsed
+            $('#mcpCollapseContent').collapse('show');
         };
 
         recognition.onresult = function (event) {
             const transcript = event.results[0][0].transcript;
             mcpQueryInput.val(transcript); // Poner el texto reconocido en el input
+
+            // Eliminar el mensaje 'Escuchando...' si aún está presente
+            const lastMessage = mcpResponseArea.children().last();
+            if (lastMessage.find('strong').text().includes('Asistente:') && lastMessage.text().includes('Escuchando...')) {
+                lastMessage.remove();
+            }
+
             sendMcpQuery(transcript); // Enviar la consulta automáticamente
         };
 
@@ -355,6 +387,9 @@ $(document).ready(function () {
             recognition.stop();
         }
         else {
+            // Show the chat content if it's collapsed
+            $('#mcpCollapseContent').collapse('show');
+
             mcpQueryInput.val(''); // Clear input field before listening
             mcpResponseArea.find('p.text-muted').remove(); // Remove initial message
             recognition.start();

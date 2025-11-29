@@ -11,8 +11,8 @@ Este archivo contiene los principios arquitectónicos, convenciones de código y
 ## Convenciones de Backend
 
 - **Nomenclatura de Claves de BD:**
-  - Clave primaria numérica autoincremental: `secuencial` (o `id_nombre_tabla` para tablas clave).
-  - Clave foránea: `sec_nombre_tabla_origen` (o `id_nombre_tabla_origen`).
+  - Clave primaria numérica autoincremental: `secuencial`.
+  - Clave foránea: `sec_nombre_tabla_origen`.
   - En general, los nombres de campos en la base de datos utilizan `snake_case`.
 - **Manejo de Decimales:** Se utiliza `CultureInfo.InvariantCulture` en el backend para todas las conversiones entre `string` y `decimal`, asegurando que el punto (`.`) sea siempre el separador decimal.
 - **Contenido HTML:** El campo `Contenido` en las entidades de párrafos (ej. `PlantillaPreContratoParrafo`) está diseñado para almacenar HTML de un editor de texto enriquecido.
