@@ -49,21 +49,18 @@ function renderMenuTree(menus, container) {
         $('input.permiso-checkbox[value="Eliminar"]').prop('checked', isChecked).trigger('change');
     });
 
-    // Eventos para checkboxes de fila
+    // Eventos para checkboxes de fila con independencia total entre Visibilidad y CRUD
     container.on('change', '.menu-checkbox', function () {
         const isChecked = $(this).prop('checked');
         const $row = $(this).closest('tr');
         const secMenu = $row.data('sec-menu');
 
-        // Marcar/desmarcar todos los permisos CRUD de esta fila
-        $row.find('.permiso-checkbox').prop('checked', isChecked);
-
-        // Marcar/desmarcar submenús y sus permisos
+        // Marcar/desmarcar SOLO la visibilidad de los submenús
         $('tr[data-parent-menu="' + secMenu + '"]').each(function () {
-            $(this).find('.menu-checkbox, .permiso-checkbox').prop('checked', isChecked);
+            $(this).find('.menu-checkbox').prop('checked', isChecked).trigger('change');
         });
 
-        // Propagar hacia arriba: si un hijo se marca, los padres también
+        // Propagar hacia arriba si se marca (solo visibilidad)
         if (isChecked) {
             let currentParentSecMenu = $row.data('parent-menu');
             while (currentParentSecMenu) {
@@ -74,31 +71,9 @@ function renderMenuTree(menus, container) {
         }
     });
 
+    // El checkbox de permiso CRUD ahora es totalmente independiente y no afecta a otros en la misma fila.
     container.on('change', '.permiso-checkbox', function () {
-        const isChecked = $(this).prop('checked');
-        const $row = $(this).closest('tr');
-        const secMenu = $row.data('sec-menu');
-        const $menuCheckbox = $row.find('.menu-checkbox');
-
-        if (isChecked) {
-            // Si un permiso se marca, el menú padre debe marcarse
-            $menuCheckbox.prop('checked', true);
-            // Propagar hacia arriba
-            let currentParentSecMenu = $row.data('parent-menu');
-            while (currentParentSecMenu) {
-                const $parentRow = $('tr[data-sec-menu="' + currentParentSecMenu + '"]');
-                $parentRow.find('.menu-checkbox').prop('checked', true);
-                currentParentSecMenu = $parentRow.data('parent-menu');
-            }
-        } else {
-            // Si un permiso se desmarca, verificar si quedan otros permisos o submenús marcados en el mismo nivel
-            const hasOtherCheckedPermisos = $row.find('.permiso-checkbox:checked').length > 0;
-            const hasCheckedSubmenus = $('tr[data-parent-menu="' + secMenu + '"]').find('.menu-checkbox:checked').length > 0;
-
-            if (!hasOtherCheckedPermisos && !hasCheckedSubmenus) {
-                $menuCheckbox.prop('checked', false);
-            }
-        }
+        // No se requiere ninguna acción de propagación automática a nivel de fila.
     });
 }
 
@@ -152,39 +127,35 @@ function renderMenuItem(menu, level) {
 }
 
 function collectPermissions(secRol, nombreRol) {
-    const menus = [];
-
-    // Recorrer todas las filas de la tabla
-    $('#menuTreeContainer tbody tr').each(function () {
-        const $row = $(this);
-        const secMenu = parseInt($row.data('sec-menu'));
-        const parentSecMenu = $row.data('parent-menu');
-
-        if (!parentSecMenu) { 
-            const menu = collectMenuItemPermissionsFromRow($row);
-            if (menu) {
-                menus.push(menu);
-            }
-        }
-    });
-
     const menuMap = new Map();
     const rootMenus = [];
 
+    // 1. Leer el estado actual de todos los checkboxes del DOM y guardarlo en un mapa.
     $('#menuTreeContainer tbody tr').each(function () {
         const $row = $(this);
         const secMenu = parseInt($row.data('sec-menu'));
-        const menuData = collectMenuItemPermissionsFromRow($row);
-        if (menuData) {
-            menuMap.set(secMenu, { ...menuData, SubMenus: [] });
-        }
+        const parentSecMenu = $row.data('parent-menu') ? parseInt($row.data('parent-menu')) : null;
+
+        const menuData = {
+            SecMenu: secMenu,
+            SecMenuPadre: parentSecMenu,
+            VerMenu: $row.find('.menu-checkbox').prop('checked'),
+            Crear: $row.find('.permiso-checkbox[value="Crear"]').prop('checked'),
+            Leer: $row.find('.permiso-checkbox[value="Leer"]').prop('checked'),
+            Actualizar: $row.find('.permiso-checkbox[value="Actualizar"]').prop('checked'),
+            Eliminar: $row.find('.permiso-checkbox[value="Eliminar"]').prop('checked'),
+            SubMenus: []
+        };
+        menuMap.set(secMenu, menuData);
     });
 
-    menuMap.forEach(menu => {
-        const parentSecMenu = $('tr[data-sec-menu="' + menu.SecMenu + '"]').data('parent-menu');
-        if (parentSecMenu && menuMap.has(parentSecMenu)) {
-            menuMap.get(parentSecMenu).SubMenus.push(menu);
+    // 2. Reconstruir la jerarquía de menús usando el mapa.
+    menuMap.forEach((menu, secMenu) => {
+        if (menu.SecMenuPadre && menuMap.has(menu.SecMenuPadre)) {
+            // Es un submenú, lo añadimos a su padre.
+            menuMap.get(menu.SecMenuPadre).SubMenus.push(menu);
         } else {
+            // Es un menú de nivel raíz.
             rootMenus.push(menu);
         }
     });
@@ -193,26 +164,5 @@ function collectPermissions(secRol, nombreRol) {
         SecRol: secRol,
         NombreRol: nombreRol,
         Menus: rootMenus
-    };
-}
-
-function collectMenuItemPermissionsFromRow($row) {
-    const secMenu = parseInt($row.data('sec-menu'));
-    const $menuCheckbox = $row.find('.menu-checkbox');
-    const verMenu = $menuCheckbox.prop('checked');
-
-    const crear = $row.find('.permiso-checkbox[value="Crear"]').prop('checked');
-    const leer = $row.find('.permiso-checkbox[value="Leer"]').prop('checked');
-    const actualizar = $row.find('.permiso-checkbox[value="Actualizar"]').prop('checked');
-    const eliminar = $row.find('.permiso-checkbox[value="Eliminar"]').prop('checked');
-
-    return {
-        SecMenu: secMenu,
-        VerMenu: verMenu,
-        Crear: crear,
-        Leer: leer,
-        Actualizar: actualizar,
-        Eliminar: eliminar,
-        SubMenus: []
     };
 }

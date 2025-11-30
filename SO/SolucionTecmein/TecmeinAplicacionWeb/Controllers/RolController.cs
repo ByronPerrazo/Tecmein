@@ -169,172 +169,97 @@ namespace TecmeinWebApp.Controllers
             return View(vm);
         }
 
-                        [HttpPost]
+        [HttpPost]
+        [ValidatePermission("ACTUALIZAR")]
+        public async Task<IActionResult> GuardarPermisos([FromBody] GestionRolMenuVM modelo)
+        {
+            var gResponse = new GenericResponse<bool>();
+            try
+            {
+                var permisosActuales = await (await _repositorioRolMenu.Consultar(rm => rm.SecRol == modelo.SecRol))
+                                        .ToDictionaryAsync(rm => rm.SecMenu);
 
-                        [ValidatePermission("ACTUALIZAR")]
-
-                        public async Task<IActionResult> GuardarPermisos([FromBody] GestionRolMenuVM modelo)
-
+                var menusRecibidos = new List<MenuPermisoVM>();
+                void AplanarMenus(IEnumerable<MenuPermisoVM> menus)
+                {
+                    if (menus == null) return;
+                    foreach (var menu in menus)
+                    {
+                        menusRecibidos.Add(menu);
+                        if (menu.SubMenus != null && menu.SubMenus.Any())
                         {
-
-                            var gResponse = new GenericResponse<bool>();
-
-                            try
-
-                            {
-
-                                var permisosActuales = await (await _repositorioRolMenu.Consultar(rm => rm.SecRol == modelo.SecRol)).ToListAsync();
-
-                
-
-                                // Eliminar todos los permisos existentes para este rol
-
-                                foreach (var permiso in permisosActuales)
-
-                                {
-
-                                    await _repositorioRolMenu.Eliminar(permiso);
-
-                                }
-
-                
-
-                                // Crear los nuevos permisos basados en el modelo
-
-                                if (modelo.Menus != null)
-
-                                {
-
-                                    var nuevosPermisos = new List<RolMenu>();
-
-                                    ProcesarMenusRecursivamente(modelo.Menus, modelo.SecRol, nuevosPermisos);
-
-                
-
-                                    foreach (var nuevoPermiso in nuevosPermisos)
-
-                                    {
-
-                                        await _repositorioRolMenu.Crear(nuevoPermiso);
-
-                                    }
-
-                
-
-                                    // Invalidar la caché de permisos para este rol
-
-                                    var acciones = new[] { "CREAR", "LEER", "ACTUALIZAR", "ELIMINAR", "VER_MENU" };
-
-                                    var todosLosMenus = await _menuServices.ObtieneMenuTotal();
-
-                
-
-                                    foreach (var menu in todosLosMenus)
-
-                                    {
-
-                                        if (!string.IsNullOrEmpty(menu.Controlador))
-
-                                        {
-
-                                            foreach (var accion in acciones)
-
-                                            {
-
-                                                var cacheKey = $"Permiso_{modelo.SecRol}_{menu.Controlador}_{accion}";
-
-                                                _cache.Remove(cacheKey);
-
-                                            }
-
-                                        }
-
-                                    }
-
-                                    var cacheMenuKey = $"Menu_{modelo.SecRol}";
-
-                                    _cache.Remove(cacheMenuKey);
-
-                
-
-                                    gResponse.Estado = true;
-
-                                }
-
-                            }
-
-                            catch (Exception ex)
-
-                            {
-
-                                gResponse.Estado = false;
-
-                                gResponse.Mensajes = ex.Message;
-
-                            }
-
-                            return StatusCode(StatusCodes.Status200OK, gResponse);
-
+                            AplanarMenus(menu.SubMenus);
                         }
-
-                
-
-                        private void ProcesarMenusRecursivamente(IEnumerable<MenuPermisoVM> menus, int secRol, List<RolMenu> nuevosPermisos)
-
-                        {
-
-                            foreach (var menuVm in menus)
-
-                            {
-
-                                // Añadir el permiso del menú actual si tiene alguna opción seleccionada
-
-                                if (menuVm.VerMenu || menuVm.Crear || menuVm.Leer || menuVm.Actualizar || menuVm.Eliminar)
-
-                                {
-
-                                    nuevosPermisos.Add(new RolMenu
-
-                                    {
-
-                                        SecRol = secRol,
-
-                                        SecMenu = menuVm.SecMenu,
-
-                                        VerMenu = menuVm.VerMenu,
-
-                                        Crear = menuVm.Crear,
-
-                                        Leer = menuVm.Leer,
-
-                                        Actualizar = menuVm.Actualizar,
-
-                                        Eliminar = menuVm.Eliminar
-
-                                    });
-
-                                }
-
-                
-
-                                // Procesar recursivamente los submenús
-
-                                if (menuVm.SubMenus != null && menuVm.SubMenus.Any())
-
-                                {
-
-                                    ProcesarMenusRecursivamente(menuVm.SubMenus, secRol, nuevosPermisos);
-
-                                }
-
-                            }
-
-                        }
-
                     }
-
                 }
+                AplanarMenus(modelo.Menus);
 
+                foreach (var menuVm in menusRecibidos)
+                {
+                    var tieneAlgunPermiso = menuVm.VerMenu || menuVm.Crear || menuVm.Leer || menuVm.Actualizar || menuVm.Eliminar;
+
+                    if (permisosActuales.TryGetValue(menuVm.SecMenu, out var permisoExistente))
+                    {
+                        // The permission exists in the DB
+                        if (tieneAlgunPermiso)
+                        {
+                            // Update it
+                            permisoExistente.VerMenu = menuVm.VerMenu;
+                            permisoExistente.Crear = menuVm.Crear;
+                            permisoExistente.Leer = menuVm.Leer;
+                            permisoExistente.Actualizar = menuVm.Actualizar;
+                            permisoExistente.Eliminar = menuVm.Eliminar;
+                            await _repositorioRolMenu.Editar(permisoExistente);
+                        }
+                        else
+                        {
+                            // All permissions were unchecked, so delete it
+                            await _repositorioRolMenu.Eliminar(permisoExistente);
+                        }
+                    }
+                    else if (tieneAlgunPermiso)
+                    {
+                        // The permission does not exist in the DB, but it has been assigned in the UI
+                        // Create it
+                        var nuevoPermiso = new RolMenu
+                        {
+                            SecRol = modelo.SecRol,
+                            SecMenu = menuVm.SecMenu,
+                            VerMenu = menuVm.VerMenu,
+                            Crear = menuVm.Crear,
+                            Leer = menuVm.Leer,
+                            Actualizar = menuVm.Actualizar,
+                            Eliminar = menuVm.Eliminar
+                        };
+                        await _repositorioRolMenu.Crear(nuevoPermiso);
+                    }
+                }
                 
+                // Invalidate permission cache for this role
+                var acciones = new[] { "CREAR", "LEER", "ACTUALIZAR", "ELIMINAR", "VER_MENU" };
+                var todosLosMenus = await _menuServices.ObtieneMenuTotal();
+                foreach (var menu in todosLosMenus)
+                {
+                    if (!string.IsNullOrEmpty(menu.Controlador))
+                    {
+                        foreach (var accion in acciones)
+                        {
+                            var cacheKey = $"Permiso_{modelo.SecRol}_{menu.Controlador}_{accion}";
+                            _cache.Remove(cacheKey);
+                        }
+                    }
+                }
+                var cacheMenuKey = $"Menu_{modelo.SecRol}";
+                _cache.Remove(cacheMenuKey);
 
-        
+                gResponse.Estado = true;
+            }
+            catch (Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+            }
+            return StatusCode(StatusCodes.Status200OK, gResponse);
+        }
+    }
+}

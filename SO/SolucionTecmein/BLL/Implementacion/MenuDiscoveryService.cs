@@ -42,7 +42,7 @@ namespace BLL.Implementacion
 
             // 3. Discover controllers from the assembly
             var discoveredControllerNames = controllerAssembly.GetTypes()
-                .Where(type => typeof(Controller).IsAssignableFrom(type) && !type.IsAbstract && type.Name.EndsWith("Controller"))
+                .Where(type => typeof(ControllerBase).IsAssignableFrom(type) && !type.IsAbstract && type.Name.EndsWith("Controller"))
                 .Select(type => type.Name.Replace("Controller", ""))
                 .Where(name => name != "Acceso" && name != "Home")
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
@@ -60,7 +60,7 @@ namespace BLL.Implementacion
                     PaginaAccion = "Index",
                     SecMenuPadre = tempParentMenu.Secuencial,
                     EsActivo = 1,
-                    Icono = "fa-puzzle-piece", // A default icon for new items
+                    Icono = "fas fa-cube", // A default icon for new items
                     FechaRegistro = DateTime.Now
                 };
                 newMenusToAdd.Add(newMenu);

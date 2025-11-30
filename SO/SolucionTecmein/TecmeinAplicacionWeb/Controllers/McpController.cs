@@ -1,14 +1,7 @@
-using BLL.DTOs; // For McpResponseDTO
 using BLL.Mcp;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using TecmeinAplicacionWeb.Models.ViewModels; // For McpResponseVM, if needed
-using TecmeinWebApp.Utilidades.Response; // Add this using
+using TecmeinWebApp.Utilidades.Response;
 using TecmeinWebApp.Utilidades.ViewComponents;
 
 namespace TecmeinWebApp.Controllers
@@ -25,7 +18,7 @@ namespace TecmeinWebApp.Controllers
         }
 
         [HttpPost("query")]
-        [AllowAnonymous]
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> Query([FromBody] McpRequest request)
         {
             var gResponse = new GenericResponse<McpResponseDTO>();

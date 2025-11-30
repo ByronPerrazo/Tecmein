@@ -1,11 +1,9 @@
 using DAL.Mcp;
-using System;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
-using Microsoft.Extensions.Logging; 
+using System.Text;
+using System.Text.Json;
 
 namespace BLL.Mcp
 {
@@ -63,13 +61,13 @@ namespace BLL.Mcp
                     FROM information_schema.columns 
                     WHERE table_schema = DATABASE() 
                     ORDER BY table_name, ordinal_position;";
-                
+
                 var schemaData = await _mySqlRepository.ExecuteDynamicQueryAsync(schemaQuery);
 
                 if (!schemaData.Any())
                 {
                     _logger.LogWarning("GetDatabaseSchemaAsync: No schema data returned by the query.");
-                    return string.Empty; 
+                    return string.Empty;
                 }
 
                 var schemaBuilder = new StringBuilder();
@@ -82,7 +80,7 @@ namespace BLL.Mcp
                     if (!row.TryGetValue("TABLE_NAME", out object? tableNameObj) || tableNameObj == null)
                     {
                         _logger.LogError("GetDatabaseSchemaAsync: 'TABLE_NAME' key not found or is null in a row. Available keys: {Keys}", string.Join(", ", row.Keys));
-                        continue; 
+                        continue;
                     }
                     var tableName = tableNameObj.ToString();
 
@@ -119,7 +117,7 @@ namespace BLL.Mcp
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting database schema.");
-                throw; 
+                throw;
             }
         }
 
@@ -199,7 +197,7 @@ namespace BLL.Mcp
 
             throw new Exception("No se pudo obtener una respuesta SQL del modelo Gemini.");
         }
-        
+
         private bool IsQuerySafe(string sqlQuery)
         {
             var lowerQuery = sqlQuery.Trim().ToLower();

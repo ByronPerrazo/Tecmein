@@ -242,6 +242,7 @@ $(document).ready(function () {
     let recognition; // Will hold the SpeechRecognition object
 
     function appendMessage(sender, message, isHtml = false) {
+        $('#mcpCollapseContent').collapse('show'); // Asegurarse de que el asistente esté visible antes de añadir un mensaje
         const messageContainer = $('<div class="d-flex mb-2">');
         const messageCard = $('<div class="card p-2 border-0">');
         const messageBody = $('<div class="card-body p-2">');
@@ -274,9 +275,6 @@ $(document).ready(function () {
             return;
         }
 
-        // Show the chat content if it's collapsed
-        $('#mcpCollapseContent').collapse('show');
-
         appendMessage('Tú', query);
         mcpQueryInput.val('');
         mcpResponseArea.append('<div id="mcpLoading" class="text-center text-muted"><i class="fas fa-spinner fa-spin"></i> Pensando...</div>');
@@ -284,29 +282,41 @@ $(document).ready(function () {
 
         console.log('Enviando consulta al MCP:', query);
 
-        try {
-            const response = await fetch('/api/Mcp/query', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ naturalLanguageQuery: query })
-            });
-
-            const responseJson = await response.json();
-
+        fetch('/api/Mcp/query', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ naturalLanguageQuery: query })
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                return response.json().then(errorJson => {
+                    return Promise.reject({ status: response.status, data: errorJson });
+                });
+            }
+        })
+        .then(responseJson => {
             $('#mcpLoading').remove();
-
             if (responseJson.estado) {
-                appendMessage('Asistente', responseJson.objeto.respuesta, true); // Assuming response.objeto.respuesta contains HTML or rich text
+                appendMessage('Asistente', responseJson.objeto.respuesta, true);
             } else {
                 appendMessage('Asistente', `Error: ${responseJson.mensajes || 'No se pudo procesar la consulta.'}`);
+                $('#mcpCollapseContent').collapse('hide'); // Ocultar el asistente en caso de error
             }
-        } catch (error) {
+        })
+        .catch(error => {
             $('#mcpLoading').remove();
-            console.error('Error al comunicarse con el MCP:', error);
-            appendMessage('Asistente', 'Hubo un error de comunicación con el asistente. Inténtalo de nuevo más tarde.');
-        }
+            $('#mcpCollapseContent').collapse('hide'); // Ocultar el asistente en caso de error
+            if (error.status === 403) {
+                Swal.fire("Acceso Denegado", "No tiene permisos para realizar esta consulta.", "error");
+                appendMessage('Asistente', 'Acceso denegado. No tienes permisos para usar esta función.');
+            } else {
+                console.error('Error al comunicarse con el MCP:', error);
+                Swal.fire("Error", "Hubo un error de comunicación con el asistente. Inténtalo de nuevo más tarde.", "error");
+                appendMessage('Asistente', 'Hubo un error de comunicación con el asistente. Inténtalo de nuevo más tarde.');
+            }
+        });
     }
 
     // #endregion MCP Logic
