@@ -225,3 +225,7 @@
 appsettings.json
 appsettings.*.json
 
+/SO/SolucionTecmein/DAL/obj/Debug/net8.0/DAL.assets.cache
+/SO/SolucionTecmein/DAL/obj/Debug/net8.0/DAL.csproj.FileListAbsolute.txt
+/SO/SolucionTecmein/Entity/obj/Debug/net8.0/Entity.assets.cache
+/SO/SolucionTecmein/Entity/obj/Debug/net8.0/Entity.csproj.FileListAbsolute.txt
