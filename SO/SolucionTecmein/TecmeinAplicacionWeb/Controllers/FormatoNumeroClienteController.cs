@@ -57,6 +57,24 @@ namespace TecmeinAplicacionWeb.Controllers
         [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> Guardar([FromBody] FormatoNumeroClienteVM modelo)
         {
+            if (modelo == null)
+            {
+                return BadRequest(new GenericResponse<FormatoNumeroClienteVM>
+                {
+                    Estado = false,
+                    Mensajes = "No se recibieron datos para guardar."
+                });
+            }
+
+            if (modelo.LongitudNumero < 3)
+            {
+                return BadRequest(new GenericResponse<FormatoNumeroClienteVM>
+                {
+                    Estado = false,
+                    Mensajes = "La longitud del número debe ser como mínimo 3."
+                });
+            }
+
             var gResponse = new GenericResponse<FormatoNumeroClienteVM>();
             try
             {

@@ -26,7 +26,8 @@ namespace BLL.Implementacion
         {
             try
             {
-                FormatoNumeroCliente formato_encontrado = await _repositorio.Obtener(f => f.SecFormatoNumeroCliente == entidad.SecFormatoNumeroCliente);
+                var secFormato = entidad.SecFormatoNumeroCliente;
+                FormatoNumeroCliente formato_encontrado = await _repositorio.Obtener(f => f.SecFormatoNumeroCliente == secFormato);
 
                 if (formato_encontrado == null)
                 {
@@ -45,6 +46,7 @@ namespace BLL.Implementacion
                     formato_encontrado.UsaFormato = entidad.UsaFormato;
                     formato_encontrado.Formato = entidad.Formato;
                     formato_encontrado.NumeroInicio = entidad.NumeroInicio;
+                    formato_encontrado.LongitudNumero = entidad.LongitudNumero;
                     await _repositorio.Editar(formato_encontrado);
                 }
 

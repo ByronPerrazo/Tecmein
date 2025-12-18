@@ -5,9 +5,9 @@ namespace TecmeinAplicacionWeb.Models.ViewModels
     {
         public int SecCliente { get; set; }
         public int SecConstructora { get; set; }
-        public string NumeroCliente { get; set; }
-        public string NombreConstructora { get; set; }
-        public string FechaCreacion { get; set; }
+        public string NumeroCliente { get; set; } = string.Empty;
+        public string NombreConstructora { get; set; } = string.Empty;
+        public string FechaCreacion { get; set; } = string.Empty;
         public bool EstaActivo { get; set; }
     }
 }

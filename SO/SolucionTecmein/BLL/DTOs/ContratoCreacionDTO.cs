@@ -10,12 +10,12 @@ namespace BLL.DTOs
         public int? SecCliente { get; set; }   // Para flujo Directo/Histórico
 
         // Datos comunes del Contrato
-        public string NombreProyecto { get; set; } // Añadido para el nombre de la obra
+        public string NombreProyecto { get; set; } = string.Empty; // Añadido para el nombre de la obra
         public DateTime FechaFirma { get; set; }
         public int IdUsuarioCarga { get; set; }
 
         // Archivo
-        public Stream ArchivoStream { get; set; }
-        public string NombreArchivo { get; set; }
+        public Stream ArchivoStream { get; set; } = Stream.Null;
+        public string NombreArchivo { get; set; } = string.Empty;
     }
 }

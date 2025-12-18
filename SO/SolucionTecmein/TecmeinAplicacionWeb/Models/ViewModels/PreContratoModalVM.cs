@@ -13,10 +13,10 @@ namespace TecmeinAplicacionWeb.Models.ViewModels
         public int NumeroCuotas { get; set; }
         public DateTime? FechaPrimeraCuota { get; set; }
         public int Dias { get; set; }
-        public string TipoDias { get; set; }
-        public string PeriodoMantenimiento { get; set; }
+        public string TipoDias { get; set; } = string.Empty;
+        public string PeriodoMantenimiento { get; set; } = string.Empty;
         public int AniosGarantia { get; set; }
         public int MesesGarantia { get; set; }
-        public string PolizaGarantia { get; set; }
+        public string PolizaGarantia { get; set; } = string.Empty;
     }
 }

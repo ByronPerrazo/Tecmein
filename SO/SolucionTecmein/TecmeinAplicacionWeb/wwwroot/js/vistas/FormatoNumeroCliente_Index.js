@@ -72,13 +72,20 @@ $("#tbdata tbody").on("click", ".btn-editar", function () {
     mostrarModal(data);
 });
 
-$("#btnGuardar").click(function () {
+$('#btnGuardar').on('click', function () {
+    const longitudNumero = parseInt($("#txtLongitudNumero").val() || "0");
+
+    if (longitudNumero < 3) {
+        Swal.fire("Valor no válido", "La longitud del número debe ser como mínimo 3.", "warning");
+        return;
+    }
+
     const modelo = {
-        secFormatoNumeroCliente: parseInt($("#txtId").val()),
-        usaFormato: $("#checkUsaFormato").is(":checked"),
-        formato: $("#txtFormato").val(),
-        numeroInicio: parseInt($("#txtNumeroInicio").val()),
-        longitudNumero: parseInt($("#txtLongitudNumero").val())
+        SecFormatoNumeroCliente: parseInt($("#txtId").val() || "0"),
+        UsaFormato: $("#checkUsaFormato").is(":checked"),
+        Formato: $("#txtFormato").val(),
+        NumeroInicio: parseInt($("#txtNumeroInicio").val() || "0"),
+        LongitudNumero: longitudNumero
     };
 
     const modalContent = $("#modalData .modal-content");

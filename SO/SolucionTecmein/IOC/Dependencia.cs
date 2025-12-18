@@ -21,7 +21,8 @@ namespace IOC
                     options
                     .UseMySql(configuration.GetConnectionString("ConexionDB"),
                               Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.37-mysql"),
-                              o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+                              o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+                    .EnableSensitiveDataLogging();
                 });
 
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));

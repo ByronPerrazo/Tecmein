@@ -14,15 +14,15 @@ namespace TecmeinAplicacionWeb.Models.ViewModels
         public int PagosVencidos { get; set; }
         public int NuevosClientes { get; set; }
 
-        public List<MarcasMasVendidasVM> listaMarcasMasVendidasVM { get; set; }
-        public List<VisitasUktimaSemanaVM> listaVisitasUktimaSemanaVM { get; set; }
-        public Dictionary<string, int> VisitasPorEtapa { get; set; }
-        public Dictionary<string, int> ContratosPorMes { get; set; }
-        public Dictionary<string, int> TopClientesConMasContratos { get; set; }
+        public List<MarcasMasVendidasVM> listaMarcasMasVendidasVM { get; set; } = new();
+        public List<VisitasUktimaSemanaVM> listaVisitasUktimaSemanaVM { get; set; } = new();
+        public Dictionary<string, int> VisitasPorEtapa { get; set; } = new();
+        public Dictionary<string, int> ContratosPorMes { get; set; } = new();
+        public Dictionary<string, int> TopClientesConMasContratos { get; set; } = new();
     }
 
     public class MarcasMasVendidasVM { 
-        public string Marca { get; set; }
+        public string Marca { get; set; } = string.Empty;
         public int TotalCantidad { get; set; }
         public MarcasMasVendidasVM()
         {
@@ -36,7 +36,7 @@ namespace TecmeinAplicacionWeb.Models.ViewModels
     }
     public class VisitasUktimaSemanaVM
     {
-        public string Fecha { get; set; }
+        public string Fecha { get; set; } = string.Empty;
         public int Total { get; set; }
         public VisitasUktimaSemanaVM()
         {

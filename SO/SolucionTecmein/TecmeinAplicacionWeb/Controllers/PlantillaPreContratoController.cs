@@ -162,5 +162,69 @@ namespace TecmeinAplicacionWeb.Controllers
                 return StatusCode(500, $"Error al generar el documento: {ex.Message}");
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CargarParrafosDesdeWord(IFormFile archivoWord, int secPlantillaPreContrato)
+        {
+            try
+            {
+                if (archivoWord == null || archivoWord.Length == 0)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new { estado = false, mensajes = "No se ha subido ningún archivo o el archivo está vacío." });
+                }
+
+                if (secPlantillaPreContrato == 0)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new { estado = false, mensajes = "ID de Plantilla no proporcionado." });
+                }
+
+                using (var stream = archivoWord.OpenReadStream())
+                {
+                    var resultado = await _plantillaPreContratoServices.CargarParrafosDesdeWordAsync(secPlantillaPreContrato, stream);
+
+                    if (resultado.Exito)
+                    {
+                        return StatusCode(StatusCodes.Status200OK, new { estado = true, mensajes = "Párrafos cargados.", advertencias = resultado.Advertencias });
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, new { estado = false, mensajes = "No se pudieron cargar los párrafos desde el archivo Word." });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { estado = false, mensajes = $"Error al procesar el archivo Word: {ex.Message}" });
+            }
+        }
+
+        public record MaquetarParrafoRequest(int secPlantillaPreContratoParrafo);
+
+        [HttpPost]
+        public async Task<IActionResult> MaquetarParrafo([FromBody] MaquetarParrafoRequest request)
+        {
+            try
+            {
+                if (request.secPlantillaPreContratoParrafo == 0)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new { estado = false, mensajes = "ID de párrafo no proporcionado." });
+                }
+
+                bool resultado = await _plantillaPreContratoServices.MaquetarParrafoAsync(request.secPlantillaPreContratoParrafo);
+
+                if (resultado)
+                {
+                    return StatusCode(StatusCodes.Status200OK, new { estado = true, mensajes = "Párrafo maquetado correctamente." });
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, new { estado = false, mensajes = "No se pudo maquetar el párrafo." });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { estado = false, mensajes = $"Error al maquetar el párrafo: {ex.Message}" });
+            }
+        }
     }
 }
