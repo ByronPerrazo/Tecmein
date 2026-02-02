@@ -193,12 +193,14 @@ $(document).ready(function () {
         $("#tablaCompromisos tbody").empty();
         $("#numCuotas, #montoCuota, #fechaPrimeraCuota").val("");
         $("#SecPreContrato").val("0"); // Limpiar SecPreContrato al crear uno nuevo
+        $("#cboTipoDocumento").val(""); // Limpiar la selección de tipo de documento
         $("#btnGenerarPreContrato").prop("disabled", true); // Deshabilitar botón para nuevos registros
         validarSumaCompromisos();
 
         $.when(
             cargarDropdown("/PreContrato/ListaCotizacionesAprobadas", "#cboCotizacionesAceptadas"),
-            cargarDropdown("/PolizaGarantia/ListaParaDropdown", "#PolizaGarantia")
+            cargarDropdown("/PolizaGarantia/ListaParaDropdown", "#PolizaGarantia"),
+            cargarDropdown("/PreContrato/ListaTipoDocumentos", "#cboTipoDocumento") // <-- Añadido
         ).done(() => $('#modalPreContrato').modal('show')).fail(() => {
             Swal.fire("Error", "Ocurrió un error al preparar el formulario.", "error");
         });
@@ -284,6 +286,7 @@ $(document).ready(function () {
         const modelo = {
             SecPreContrato: parseInt($("#SecPreContrato").val()), // Incluir SecPreContrato
             SecCotizacion: parseInt($("#cboCotizacionesAceptadas").val()),
+            SecTipoDocumento: parseInt($("#cboTipoDocumento").val()), // <-- Añadido
             Dias: parseInt($("#Dias").val()),
             TipoDias: $("#TipoDias").val(),
             PeriodoMantenimiento: $("#PeriodoMantenimiento").val(),
@@ -297,6 +300,10 @@ $(document).ready(function () {
             Swal.fire("Atención", "Por favor, seleccione una cotización.", "warning");
             return null;
         }
+        if (!modelo.SecTipoDocumento || isNaN(modelo.SecTipoDocumento)) { // Validación para el nuevo campo
+            Swal.fire("Atención", "Por favor, seleccione un tipo de contrato.", "warning");
+            return null;
+        }
         return modelo;
     }
 
@@ -304,25 +311,65 @@ $(document).ready(function () {
         const modelo = recolectarYValidarDatos();
         if (!modelo) return;
 
-        datosFormularioParaGuardar = modelo;
+        Swal.fire({
+            title: 'Generando Documento...',
+            text: 'Por favor, espere.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
 
-        $.ajax({
-            url: "/PreContrato/GenerarVistaPreviaConPagos",
-            type: "POST",
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(modelo),
-            beforeSend: () => Swal.fire({ title: 'Generando vista previa...', allowOutsideClick: false, didOpen: () => Swal.showLoading() }),
-            success: function(response) {
-                Swal.close();
-                if (response.estado) {
-                    $("#contenidoVistaPrevia").html(response.objeto);
-                    $('#modalPreContrato').modal('hide');
-                    $('#modalVistaPrevia').modal('show');
-                } else {
-                    Swal.fire("Error", response.mensajes, "error");
-                }
+        fetch("/PreContrato/GenerarPreContratoDocx", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
             },
-            error: () => Swal.fire("Error", "No se pudo generar la vista previa.", "error")
+            body: JSON.stringify(modelo)
+        })
+        .then(response => {
+            if (response.ok) {
+                // Intentar obtener el nombre del archivo de la cabecera
+                const disposition = response.headers.get('Content-Disposition');
+                let filename = 'precontrato.docx'; // Nombre por defecto
+                if (disposition && disposition.indexOf('attachment') !== -1) {
+                    const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    const matches = filenameRegex.exec(disposition);
+                    if (matches != null && matches[1]) {
+                        filename = matches[1].replace(/['"]/g, '');
+                    }
+                }
+                return response.blob().then(blob => ({ blob, filename }));
+            } else {
+                // Si hay un error, el cuerpo de la respuesta será JSON
+                return response.json().then(errorData => Promise.reject(errorData));
+            }
+        })
+        .then(({ blob, filename }) => {
+            Swal.close();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            a.remove();
+            
+            // Opcional: Cerrar el modal principal después de la descarga exitosa
+            // $('#modalPreContrato').modal('hide');
+
+            Swal.fire({
+                icon: 'success',
+                title: '¡Descarga Iniciada!',
+                text: `El archivo ${filename} debería estar descargándose.`,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        })
+        .catch(errorData => {
+            Swal.fire("Error", errorData.mensajes || "No se pudo generar el documento.", "error");
         });
     });
 
@@ -350,37 +397,64 @@ $(document).ready(function () {
         });
     });
 
-    $("#btnGuardarDefinitivo").click(function() {
-        if (!datosFormularioParaGuardar) {
-            Swal.fire("Error", "No hay datos para guardar.", "error");
+    // Actualizar label del input file con el nombre del archivo seleccionado
+    $(".custom-file-input").on("change", function() {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+
+    $("#btnSubirContratoFinal").click(function() {
+        const secPreContrato = $("#SecPreContrato").val();
+        const fileInput = $("#fileContratoFinal")[0];
+
+        if (secPreContrato == "0" || !secPreContrato) {
+            Swal.fire("Error", "Primero debe guardar el borrador del pre-contrato antes de subir el archivo final.", "warning");
             return;
         }
 
-        const contenidoHtml = $("#contenidoVistaPrevia").html();
+        if (fileInput.files.length === 0) {
+            Swal.fire("Error", "Por favor seleccione un archivo DOCX.", "warning");
+            return;
+        }
 
-        const payload = {
-            ...datosFormularioParaGuardar,
-            ContenidoHtml: contenidoHtml
-        };
+        const formData = new FormData();
+        formData.append("secPreContrato", secPreContrato);
+        formData.append("archivo", fileInput.files[0]);
+
+        Swal.fire({
+            title: 'Subiendo Contrato...',
+            text: 'Por favor, espere.',
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
 
         $.ajax({
-            url: "/PreContrato/CrearDesdeModalConPagos",
+            url: "/PreContrato/SubirContratoFinal",
             type: "POST",
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(payload),
-            beforeSend: () => Swal.fire({ title: 'Guardando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() }),
+            data: formData,
+            processData: false,
+            contentType: false,
             success: function(response) {
+                Swal.close();
                 if (response.estado) {
-                    $('#modalVistaPrevia').modal('hide');
-                    tablaPreContratos.ajax.reload(null, false);
-                    Swal.fire("¡Guardado!", "El pre-contrato ha sido creado exitosamente.", "success");
+                    Swal.fire("¡Subido!", response.mensajes, "success");
+                    // Limpiar input
+                    $("#fileContratoFinal").val("");
+                    $(".custom-file-label").html("Seleccionar archivo...");
                 } else {
                     Swal.fire("Error", response.mensajes, "error");
                 }
             },
-            error: () => Swal.fire("Error", "No se pudo comunicar con el servidor.", "error")
+            error: () => {
+                Swal.close();
+                Swal.fire("Error", "No se pudo subir el archivo.", "error");
+            }
         });
     });
+
+    // El botón #btnGuardarDefinitivo ha sido eliminado ya que la nueva modalidad es de descarga directa.
+    // La lógica anterior ha sido removida.
+
 
     $("#tablaPreContratos tbody").on("click", ".btn-editar", function (e) {
         e.preventDefault();
@@ -395,11 +469,13 @@ $(document).ready(function () {
         $("#tablaCompromisos tbody").empty();
         $("#numCuotas, #montoCuota, #fechaPrimeraCuota").val("");
         $("#SecPreContrato").val("0"); // Limpiar SecPreContrato al abrir el modal
+        $("#cboTipoDocumento").val(""); // Limpiar la selección de tipo de documento
         validarSumaCompromisos();
 
         $.when(
             cargarDropdown("/PreContrato/ListaCotizacionesAprobadas", "#cboCotizacionesAceptadas"),
-            cargarDropdown("/PolizaGarantia/ListaParaDropdown", "#PolizaGarantia")
+            cargarDropdown("/PolizaGarantia/ListaParaDropdown", "#PolizaGarantia"),
+            cargarDropdown("/PreContrato/ListaTipoDocumentos", "#cboTipoDocumento") // <-- Añadido
         ).done(function() {
             $.ajax({
                 url: `/PreContrato/DetallesParaEdicion/${id}`,
@@ -420,6 +496,7 @@ $(document).ready(function () {
                         $("#AniosGarantia").val(data.aniosGarantia);
                         $("#MesesGarantia").val(data.mesesGarantia);
                         $("#PolizaGarantia").val(data.polizaGarantia);
+                        $("#cboTipoDocumento").val(data.secTipoDocumento); // <-- Añadido para edición
 
                         // Poblar tabla de compromisos
                         if (data.compromisosDePago && data.compromisosDePago.$values && data.compromisosDePago.$values.length > 0) {

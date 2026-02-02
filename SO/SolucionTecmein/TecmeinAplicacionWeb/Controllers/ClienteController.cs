@@ -169,5 +169,21 @@ namespace TecmeinAplicacionWeb.Controllers
             }
             return StatusCode(200, gResponse);
         }
+
+        [HttpGet]
+        [ValidatePermission("LEER")]
+        public async Task<IActionResult> ListaClientesActivos()
+        {
+            try
+            {
+                var lista = await _clienteService.Listar(); // Asumo que Listar() ya filtra por activos
+                var clientesActivos = lista.Select(c => new { value = c.SecCliente, text = c.SecConstructoraNavigation.Nombre }).ToList(); // Asumo que Cliente tiene una propiedad Nombre
+                return StatusCode(StatusCodes.Status200OK, new { data = clientesActivos });
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { success = false, message = ex.Message });
+            }
+        }
     }
 }

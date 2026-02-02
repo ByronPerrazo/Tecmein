@@ -76,7 +76,8 @@ namespace BLL.Utilidades.PDF
                 column.Item().Element(ComposeTable);
 
                 // Totales
-                column.Item().AlignRight().Column(col => {
+                column.Item().AlignRight().Column(col =>
+                {
                     col.Item().Text(text =>
                     {
                         text.Span("Subtotal: ").SemiBold();

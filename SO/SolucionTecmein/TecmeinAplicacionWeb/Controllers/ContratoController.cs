@@ -50,9 +50,9 @@ namespace TecmeinAplicacionWeb.Controllers
                 ContratoVM vm = _mapper.Map<ContratoVM>(contrato);
 
                 // Determinar si proviene de un pre-contrato
-                if (contrato.IdCotizacion != 0)
+                if (contrato.IdCotizacion.HasValue && contrato.IdCotizacion.Value != 0) // Corrección
                 {
-                    var preContrato = await _preContratoServices.ObtenerUltimaVersion(contrato.IdCotizacion);
+                    var preContrato = await _preContratoServices.ObtenerUltimaVersion(contrato.IdCotizacion.Value); // Corrección
                     vm.ProvieneDePreContrato = preContrato != null;
                 }
 
@@ -109,10 +109,10 @@ namespace TecmeinAplicacionWeb.Controllers
                 vm.SecCliente = contrato.SecCliente;
                 vm.ProvieneDePreContrato = false;
                 // Determinar si proviene de un pre-contrato aprobado
-                if (contrato.IdCotizacion != 0 )
+                if (contrato.IdCotizacion.HasValue && contrato.IdCotizacion.Value != 0) // Corrección
                 {
-                    var preContrato = await _preContratoServices.ObtenerUltimaVersion(contrato.IdCotizacion);
-                    vm.ProvieneDePreContrato =  preContrato != null ;
+                    var preContrato = await _preContratoServices.ObtenerUltimaVersion(contrato.IdCotizacion.Value); // Corrección
+                    vm.ProvieneDePreContrato = preContrato != null;
                 }
 
                 // Obtener el nombre del cliente
@@ -121,7 +121,7 @@ namespace TecmeinAplicacionWeb.Controllers
                     var constructora = await _constructoraServices.ConstructoraPorSecuencial(contrato.SecCliente);
                     vm.NombreCliente = constructora?.Nombre;
                 }
-               
+
                 gResponse.Estado = true;
                 gResponse.Objeto = vm;
             }
@@ -294,6 +294,22 @@ namespace TecmeinAplicacionWeb.Controllers
                 gResponse.Mensajes = ex.Message;
             }
             return StatusCode(StatusCodes.Status200OK, gResponse);
+        }
+
+        [HttpGet]
+        [ValidatePermission("LEER")]
+        public async Task<IActionResult> ListaContratosActivos()
+        {
+            try
+            {
+                var lista = await _contratoService.Listar(); // Asumo que Listar() ya filtra por activos
+                var contratosActivos = lista.Select(c => new { value = c.IdContrato, text = $"CON-{c.IdContrato} - {c.IdCotizacionNavigation?.SecVisitaNavigation?.Nombre ?? "Sin Nombre"}" }).ToList();
+                return StatusCode(StatusCodes.Status200OK, new { data = contratosActivos });
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { success = false, message = ex.Message });
+            }
         }
     }
 }

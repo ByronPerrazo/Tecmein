@@ -11,5 +11,6 @@ namespace BLL.Interfaces
         Task<TipoDocumento> Editar(TipoDocumento entidad);
         Task<bool> Eliminar(int secTipoDocumento);
         Task<TipoDocumento> Obtener(int secTipoDocumento);
+        Task<TipoDocumento> ObtenerPorCodigo(string codigo);
     }
 }

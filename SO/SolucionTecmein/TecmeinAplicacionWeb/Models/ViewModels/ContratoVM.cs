@@ -15,5 +15,7 @@ namespace TecmeinAplicacionWeb.Models.ViewModels
         public bool? EsActivo { get; set; }
         public string? NombreCliente { get; set; }
         public bool ProvieneDePreContrato { get; set; }
+        public int SecTipoDocumento { get; set; } // Nuevo
+        public string? DescripcionTipoDocumento { get; set; } // Nuevo
     }
 }

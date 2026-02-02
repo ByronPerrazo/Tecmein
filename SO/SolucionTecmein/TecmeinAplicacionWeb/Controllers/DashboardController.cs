@@ -14,7 +14,7 @@ namespace TecmeinWebApp.Controllers
         {
             _dashBoarServicio = dashBoarServicio;
         }
-        
+
         public IActionResult Index()
         {
             return View();

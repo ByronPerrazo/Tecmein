@@ -27,7 +27,7 @@ namespace BLL.Implementacion
             _repositorioCotizacion = repositorioCotizacion; // New
             _repositorioCotizaciondetalle = repositorioCotizaciondetalle; // New
         }
-        
+
         public async Task<EquiposVisitaConEstadoCotizacion> ConsultaListaPorVisita(int secuencialVisita)
         {
             var equipos = await _repositorioEquiposVisita
@@ -72,7 +72,7 @@ namespace BLL.Implementacion
                 {
                     SecCotizacion = cotizacionActiva.Secuencial,
                     SecEquipoVisita = equipoVisitaGuardado.Secuencial, // Link to Equiposvisita
-                        DetalleEquipo = $"Sistema:{equipoVisitaGuardado.Sistema} -" +
+                    DetalleEquipo = $"Sistema:{equipoVisitaGuardado.Sistema} -" +
                                         $" Tipo Eq:{equipoVisitaGuardado.TipoEquipo} -" +
                                         $" Marca:{equipoVisitaGuardado.Marca} -" +
                                         $" Capacidad:{equipoVisitaGuardado.Capacidad} -" +

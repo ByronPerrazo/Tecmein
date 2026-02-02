@@ -41,7 +41,7 @@ namespace TecmeinAplicacionWeb.Controllers
                 {
                     lista.Add(_mapper.Map<FormatoNumeroClienteVM>(formato));
                 }
-                
+
                 gResponse.Estado = true;
                 gResponse.Objeto = lista;
             }

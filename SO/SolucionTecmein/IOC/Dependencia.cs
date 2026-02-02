@@ -131,6 +131,7 @@ namespace IOC
             services.AddScoped<IPlantillaPreContratoParrafoServices, PlantillaPreContratoParrafoServices>();
             services.AddScoped<IDiccionarioParametroService, DiccionarioParametroService>();
             services.AddScoped<ITipoDocumentoServices, TipoDocumentoServices>();
+            services.AddScoped<IActivoClienteService, ActivoClienteService>(); // Añadido
             services.AddScoped<IPolizaGarantiaServices, PolizaGarantiaServices>();
             services.AddScoped<IGenericRepository<PolizaGarantia>, GenericRepository<PolizaGarantia>>();
             services.AddScoped<IPlanDePagoService, PlanDePagoService>(); // Registro para la interfaz correcta
@@ -147,7 +148,9 @@ namespace IOC
                     provider.GetRequiredService<TecmeindbContext>(),
                     provider.GetRequiredService<IGenericRepository<PlanDePago>>(),
                     provider.GetRequiredService<IGenericRepository<Cuota>>(),
-                    provider.GetRequiredService<IGenericRepository<PreContratoCompromisoPago>>()
+                    provider.GetRequiredService<IGenericRepository<PreContratoCompromisoPago>>(),
+                    provider.GetRequiredService<ITipoDocumentoServices>(), // Añadido
+                    provider.GetRequiredService<IActivoClienteService>() // Añadido
                 ));
 
             // Registro del patrón Strategy para la generación de documentos
@@ -158,28 +161,27 @@ namespace IOC
             // Nuevo Servicio de Auditoría
             services.AddScoped<IAuditService, AuditService>();
 
-                        // Registro de IMemoryCache
+            // Registro de IMemoryCache
 
-                        services.AddMemoryCache();
+            services.AddMemoryCache();
 
-            
 
-                        // --- INICIO MCP (Model Context Protocol) ---
 
-                        services.AddHttpClient(); // Registra IHttpClientFactory
+            // --- INICIO MCP (Model Context Protocol) ---
 
-                        services.AddScoped<DAL.Mcp.IMySqlRepository, DAL.Mcp.MySqlRepository>();
+            services.AddHttpClient(); // Registra IHttpClientFactory
 
-                        services.AddScoped<BLL.Mcp.IMcpService, BLL.Mcp.McpService>();
+            services.AddScoped<DAL.Mcp.IMySqlRepository, DAL.Mcp.MySqlRepository>();
 
-                        // --- FIN MCP ---
+            services.AddScoped<BLL.Mcp.IMcpService, BLL.Mcp.McpService>();
 
-            
+            // --- FIN MCP ---
 
-                    }
 
-                }
 
-            }
+        }
 
-            
+    }
+
+}
+

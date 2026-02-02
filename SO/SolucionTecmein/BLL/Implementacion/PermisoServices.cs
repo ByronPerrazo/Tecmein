@@ -122,6 +122,6 @@ namespace BLL.Implementacion
                 _logger.LogError(ex, $"Error al obtener permisos para el rol con SecRol: {secRol}.");
                 throw;
             }
-        } 
+        }
     }
 }

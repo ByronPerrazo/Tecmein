@@ -83,8 +83,14 @@ namespace BLL.Implementacion
 
         public async Task<TipoDocumento> Obtener(int secTipoDocumento)
         {
-             TipoDocumento tipoDocumento_encontrado = await _repositorio.Obtener(c => c.SecTipoDocumento == secTipoDocumento);
-             return tipoDocumento_encontrado;
+            TipoDocumento tipoDocumento_encontrado = await _repositorio.Obtener(c => c.SecTipoDocumento == secTipoDocumento);
+            return tipoDocumento_encontrado;
+        }
+
+        public async Task<TipoDocumento> ObtenerPorCodigo(string codigo)
+        {
+            TipoDocumento tipoDocumento_encontrado = await _repositorio.Obtener(td => td.Codigo == codigo);
+            return tipoDocumento_encontrado;
         }
     }
 }

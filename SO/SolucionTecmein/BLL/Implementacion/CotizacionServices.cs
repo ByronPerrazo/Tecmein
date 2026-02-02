@@ -58,7 +58,7 @@ namespace BLL.Implementacion
                 .ToListAsync();
         }
 
-        
+
 
         public async Task<Cotizacion> Detalle(int secuencial)
         {
@@ -114,7 +114,7 @@ namespace BLL.Implementacion
 
                 entidad.ImpuestoCotizaciones.Clear();
 
-                var impuestosActivos = await _impuestoServices.Lista(); 
+                var impuestosActivos = await _impuestoServices.Lista();
 
                 var ivaImpuesto = impuestosActivos.FirstOrDefault(i => i.Vigente && i.SecTipoImpuestoNavigation.EsIva);
                 if (ivaImpuesto != null && ivaImpuesto.Porcentaje.HasValue)
@@ -141,7 +141,7 @@ namespace BLL.Implementacion
                     {
                         valorImportacionCalculado = importacionImpuesto.ValorFijo.Value;
                     }
-                    
+
                     if (valorImportacionCalculado > 0)
                     {
                         entidad.ImpuestoCotizaciones.Add(new ImpuestoCotizacion
@@ -169,7 +169,7 @@ namespace BLL.Implementacion
                 {
                     await _visitaServices.CambiarEtapa(cotizacionCreada.SecVisita, "COT");
                 }
-                
+
                 return cotizacionCreada;
             }
             catch
@@ -340,7 +340,7 @@ namespace BLL.Implementacion
                     {
                         valorImportacionCalculado = importacionImpuesto.ValorFijo.Value; // Corrected typo
                     }
-                    
+
                     if (valorImportacionCalculado > 0)
                     {
                         cotizacionAfectada.ImpuestoCotizaciones.Add(new ImpuestoCotizacion

@@ -9,7 +9,7 @@ public partial class Contrato
     [Key]
     public int IdContrato { get; set; }
 
-    public int IdCotizacion { get; set; }
+    public int? IdCotizacion { get; set; }
 
     public DateTime FechaFirma { get; set; }
 
@@ -25,11 +25,15 @@ public partial class Contrato
 
     public int SecCliente { get; set; } // Propiedad para la FK a Cliente
 
+    public int SecTipoDocumento { get; set; } // Propiedad para la FK a TipoDocumento
+
     public virtual Cotizacion IdCotizacionNavigation { get; set; } = null!;
 
     public virtual Usuario IdUsuarioCargaNavigation { get; set; } = null!;
 
     public virtual Cliente SecClienteNavigation { get; set; } = null!; // Propiedad de navegación
+
+    public virtual TipoDocumento SecTipoDocumentoNavigation { get; set; } = null!; // Propiedad de navegación
 
     public virtual PlanDePago? PlanDePagoNavigation { get; set; }
 }

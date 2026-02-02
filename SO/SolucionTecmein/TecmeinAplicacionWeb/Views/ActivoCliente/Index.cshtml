@@ -1,0 +1,86 @@
+@{
+    ViewData["Title"] = "Gestión de Activos del Cliente";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 bg-second-primary">
+        <h6 class="m-0 font-weight-bold text-white">
+            <i class="fas fa-boxes"></i> Activos del Cliente
+        </h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-12">
+                <button class="btn btn-success btn-sm ml-auto" id="btnNuevo"><i class="fas fa-plus-circle"></i> Nuevo Activo</button>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-sm-12">
+                <table id="tablaActivosCliente" class="table table-striped table-bordered compact" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Cliente</th>
+                            <th>Descripción</th>
+                            <th>Fecha Instalación</th>
+                            <th>Contrato Origen</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Crear/Editar Activo Cliente -->
+<div class="modal fade" id="modalActivoCliente" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="card shadow-sm">
+                <div class="card-header py-2 bg-second-primary">
+                    <h6 class="m-0 font-weight-bold text-white">
+                        <i class="fas fa-boxes"></i> Detalle del Activo
+                        <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" class="text-white">×</span>
+                        </button>
+                    </h6>
+                </div>
+                <div class="card-body p-2">
+                    <form>
+                        <input type="hidden" value="0" id="txtIdActivoCliente">
+                        <div class="form-group">
+                            <label for="cboCliente">Cliente</label>
+                            <select id="cboCliente" class="form-control form-control-sm"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="txtDescripcion">Descripción</label>
+                            <input type="text" class="form-control form-control-sm" id="txtDescripcion">
+                        </div>
+                        <div class="form-group">
+                            <label for="txtFechaInstalacion">Fecha de Instalación</label>
+                            <input type="date" class="form-control form-control-sm" id="txtFechaInstalacion">
+                        </div>
+                        <div class="form-group">
+                            <label for="cboContratoOrigen">Contrato de Origen</label>
+                            <select id="cboContratoOrigen" class="form-control form-control-sm"></select>
+                            <small class="form-text text-muted">Opcional. Si el activo está vinculado a un contrato específico.</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-body p-0 d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary btn-sm m-1" id="btnGuardar"><i class="fas fa-save"></i> Guardar</button>
+                    <button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/vistas/ActivoCliente_Index.js"></script>
+}

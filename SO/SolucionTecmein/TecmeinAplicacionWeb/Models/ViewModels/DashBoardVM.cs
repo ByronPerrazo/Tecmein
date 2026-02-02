@@ -21,12 +21,13 @@ namespace TecmeinAplicacionWeb.Models.ViewModels
         public Dictionary<string, int> TopClientesConMasContratos { get; set; } = new();
     }
 
-    public class MarcasMasVendidasVM { 
+    public class MarcasMasVendidasVM
+    {
         public string Marca { get; set; } = string.Empty;
         public int TotalCantidad { get; set; }
         public MarcasMasVendidasVM()
         {
-                
+
         }
         public MarcasMasVendidasVM(string marca, int totalCantidad)
         {
@@ -40,7 +41,7 @@ namespace TecmeinAplicacionWeb.Models.ViewModels
         public int Total { get; set; }
         public VisitasUktimaSemanaVM()
         {
-            
+
         }
         public VisitasUktimaSemanaVM(string fecha, int total)
         {

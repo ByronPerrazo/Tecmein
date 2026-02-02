@@ -68,9 +68,9 @@ namespace BLL.Implementacion
         public async Task<string> IngresosMensuales() // New method
         {
             DateTime fechaInicioMesActual = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-            IQueryable<PlanDePago> query = await _planDePagoRepository.Consultar(pp => 
+            IQueryable<PlanDePago> query = await _planDePagoRepository.Consultar(pp =>
                 pp.FechaRegistro.Date >= fechaInicioMesActual.Date && pp.EstaActivo == true);
-            
+
             decimal total = await query.SumAsync(pp => pp.ValorContrato);
             return total.ToString("C", CultureInfo.GetCultureInfo("es-EC")); // Format as currency, e.g., for Ecuador
         }
@@ -78,7 +78,7 @@ namespace BLL.Implementacion
         public async Task<int> PagosVencidos() // New method
         {
             DateTime fechaActual = DateTime.Now.Date;
-            IQueryable<Cuota> query = await _cuotaRepository.Consultar(c => 
+            IQueryable<Cuota> query = await _cuotaRepository.Consultar(c =>
                 c.Estado == "Pendiente" && c.FechaVencimiento.Date < fechaActual);
             return await query.CountAsync();
         }
@@ -86,7 +86,7 @@ namespace BLL.Implementacion
         public async Task<int> NuevosClientesUltimoMes() // New method
         {
             DateTime fechaInicioMesAnterior = DateTime.Now.Date.AddMonths(-1);
-            IQueryable<Cliente> query = await _clienteRepository.Consultar(cl => 
+            IQueryable<Cliente> query = await _clienteRepository.Consultar(cl =>
                 cl.FechaCreacion.Date >= fechaInicioMesAnterior.Date && cl.EstaActivo == true);
             return await query.CountAsync();
         }

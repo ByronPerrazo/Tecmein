@@ -31,6 +31,17 @@
                             </div>
                         </div>
 
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <select id="cboTipoDocumento" class="form-control form-control-sm" title="Tipo de Contrato">
+                                        <option value="" disabled selected>Seleccione el Tipo de Contrato</option>
+                                    </select>
+                                    <small class="form-text text-muted">Define el tipo de contrato (Venta, Garantía, Mantenimiento).</small>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-row">
@@ -142,9 +153,27 @@
                         </div>
                         <!-- Fin Sección de Compromisos de Pago -->
 
+                        <div class="row mt-3 border-top pt-3" id="seccionSubirContrato">
+                            <div class="col-md-12">
+                                <label class="font-weight-bold">Subir Contrato Final (DOCX)</label>
+                                <div class="input-group">
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="fileContratoFinal" accept=".docx">
+                                        <label class="custom-file-label" for="fileContratoFinal" data-browse="Buscar">Seleccionar archivo...</label>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary" type="button" id="btnSubirContratoFinal">
+                                            <i class="fas fa-upload"></i> Subir
+                                        </button>
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">Suba aquí la versión final del contrato editado localmente.</small>
+                            </div>
+                        </div>
+
                         <div class="row mt-3">
                             <div class="col-sm-12 text-center">
-                                <button class="btn btn-success" type="button" id="btnGenerarPreContrato"><i class="fas fa-file-signature"></i> Generar Pre-Contrato</button>
+                                <button class="btn btn-success" type="button" id="btnGenerarPreContrato"><i class="fas fa-file-signature"></i> Generar Pre-Contrato (Borrador)</button>
                             </div>
                         </div>
                     </form>

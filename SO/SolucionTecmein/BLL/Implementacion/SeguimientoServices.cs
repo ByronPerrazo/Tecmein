@@ -17,10 +17,10 @@ namespace BLL.Implementacion
         private readonly IGenericRepository<Cotizacion> _repositorioCotizacion;
         private readonly IGenericRepository<PreContrato> _repositorioPreContrato; // Added
 
-        public SeguimientoServices(IGenericRepository<Seguimiento> repositorio, 
-                                 ICotizacionServices cotizacionServices, 
-                                 IVisitaServices visitaServices, 
-                                 IGenericRepository<Cotizacion> repositorioCotizacion, 
+        public SeguimientoServices(IGenericRepository<Seguimiento> repositorio,
+                                 ICotizacionServices cotizacionServices,
+                                 IVisitaServices visitaServices,
+                                 IGenericRepository<Cotizacion> repositorioCotizacion,
                                  IGenericRepository<PreContrato> repositorioPreContrato) // Added
         {
             _repositorio = repositorio;

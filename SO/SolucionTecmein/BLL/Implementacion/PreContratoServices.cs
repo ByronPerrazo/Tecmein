@@ -53,27 +53,7 @@ namespace BLL.Implementacion
             return await _repositorio.Obtener(p => p.SecPreContrato == secPreContrato);
         }
 
-        public async Task<string> ObtenerContenidoPrevisualizado(int secPreContrato)
-        {
-            var preContrato = await Obtener(secPreContrato);
-            if (preContrato == null)
-            {
-                throw new Exception("Pre-contrato no encontrado para previsualización.");
-            }
 
-            var dto = new PreContratoGeneratorDTO
-            {
-                SecCotizacion = preContrato.SecCotizacion,
-                Dias = preContrato.Dias,
-                TipoDias = preContrato.TipoDias,
-                PeriodoMantenimiento = preContrato.PeriodoMantenimiento,
-                AniosGarantia = preContrato.AniosGarantia,
-                MesesGarantia = preContrato.MesesGarantia,
-                PolizaGarantia = preContrato.PolizaGarantia
-            };
-
-            return await _preContratoGeneratorService.GenerarVistaPreviaHtml(dto);
-        }
 
         public async Task<PreContrato> Crear(PreContrato entidad)
         {
@@ -156,13 +136,6 @@ namespace BLL.Implementacion
                 throw new Exception("El pre-contrato no existe.");
             }
 
-            // Eliminar párrafos asociados primero
-            var parrafos = await _repositorioPreContratoParrafo.Consultar(pp => pp.SecPreContrato == secPreContrato);
-            foreach (var parrafo in parrafos)
-            {
-                await _repositorioPreContratoParrafo.Eliminar(parrafo);
-            }
-
             return await _repositorio.Eliminar(preContrato);
         }
 
@@ -210,61 +183,7 @@ namespace BLL.Implementacion
             return preContratoCreado;
         }
 
-        public async Task<PreContrato> GuardarDesdeEditor(int cotizacionId, string contenidoHtml, int usuarioId)
-        {
-            var ultimaVersion = await ObtenerUltimaVersion(cotizacionId);
-
-            // Si existe una versión anterior, comparamos el contenido
-            if (ultimaVersion != null)
-            {
-                var parrafoActual = await ObtenerPrimerParrafo(ultimaVersion.SecPreContrato);
-                var contenidoActual = parrafoActual?.Contenido ?? "";
-
-                // Si el contenido no ha cambiado, no hacemos nada y devolvemos la versión existente para evitar data redundante.
-                if (string.Equals(contenidoActual, contenidoHtml, StringComparison.Ordinal))
-                {
-                    return ultimaVersion;
-                }
-
-                // Si el contenido cambió, desactivamos la versión anterior.
-                ultimaVersion.EstaActivo = false;
-                await _repositorio.Editar(ultimaVersion);
-            }
-
-            // Creamos el nuevo pre-contrato con la nueva versión, copiando los datos de la anterior.
-            var nuevoPreContrato = new PreContrato
-            {
-                SecCotizacion = cotizacionId,
-                SecUsuarioCrea = usuarioId,
-                Version = (ultimaVersion?.Version ?? 0) + 1,
-                Estado = "Guardado",
-                EstaActivo = true,
-                FechaRegistro = DateTime.Now,
-
-                // Copiamos los datos de la versión anterior para no perderlos en la nueva versión.
-                SecPlantillaPreContrato = ultimaVersion?.SecPlantillaPreContrato ?? 0,
-                // SecFormaPago, ValorContrato, ValorAnticipo, FechaAnticipo, NumeroCuotas, FechaPrimeraCuota movidos a PlanDePago
-                Dias = ultimaVersion?.Dias ?? 0,
-                TipoDias = ultimaVersion?.TipoDias,
-                PeriodoMantenimiento = ultimaVersion?.PeriodoMantenimiento,
-                AniosGarantia = ultimaVersion?.AniosGarantia ?? 0,
-                MesesGarantia = ultimaVersion?.MesesGarantia ?? 0,
-                PolizaGarantia = ultimaVersion?.PolizaGarantia
-            };
-
-            var preContratoCreado = await _repositorio.Crear(nuevoPreContrato);
-
-            // Creamos el nuevo párrafo con el contenido actualizado
-            var nuevoParrafo = new PreContratoParrafo
-            {
-                SecPreContrato = preContratoCreado.SecPreContrato,
-                Contenido = contenidoHtml,
-                Orden = 1
-            };
-            await _repositorioPreContratoParrafo.Crear(nuevoParrafo);
-
-            return preContratoCreado;
-        }
+        // Método GuardarDesdeEditor eliminado por migración a flujo DOCX
 
         public async Task<List<PreContrato>> ObtenerHistorial(int secPreContrato)
         {
@@ -281,13 +200,9 @@ namespace BLL.Implementacion
                                 .ToListAsync();
         }
 
-        public async Task<PreContratoParrafo> ObtenerPrimerParrafo(int secPreContrato)
-        {
-            var query = await _repositorioPreContratoParrafo.Consultar(p => p.SecPreContrato == secPreContrato);
-            return await query.OrderBy(p => p.Orden).FirstOrDefaultAsync();
-        }
+        // Método ObtenerPrimerParrafo eliminado
 
-        public async Task<PreContrato> CrearDesdeModal(PreContrato entidad, int usuarioId, string contenidoHtml)
+        public async Task<PreContrato> CrearDesdeModal(PreContrato entidad, int usuarioId /*, string contenidoHtml REMOVED */)
         {
             // Obtener el TipoDocumento para Pre-Contrato
             var tipoDocumentoPreContrato = await _repositorioTipoDocumento.Obtener(td => td.Codigo == "PRE-CONTRATO");
@@ -321,27 +236,10 @@ namespace BLL.Implementacion
                 throw new Exception("No se pudo crear el pre-contrato desde el modal.");
             }
 
-            // Crear el párrafo inicial con el contenido HTML
-            var nuevoParrafo = new PreContratoParrafo
-            {
-                SecPreContrato = preContratoCreado.SecPreContrato,
-                Contenido = contenidoHtml,
-                Orden = 1
-            };
-            await _repositorioPreContratoParrafo.Crear(nuevoParrafo);
-
             return preContratoCreado;
         }
 
-        public Task<string> GenerarDocumentoWord(int secPreContrato)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<bool> ActualizarContenido(int secPreContrato, string contenidoHtml)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<bool> Aprobar(int secPreContrato)
         {
@@ -355,152 +253,7 @@ namespace BLL.Implementacion
             return await _repositorio.Editar(preContrato);
         }
 
-        public async Task<string> ObtenerContenidoHtml(int secPreContrato)
-        {
-            var query = await _repositorio.Consultar(p => p.SecPreContrato == secPreContrato);
-            var preContrato = await query.Include(p => p.PreContratoParrafos).FirstOrDefaultAsync();
-
-            if (preContrato == null || preContrato.PreContratoParrafos == null || !preContrato.PreContratoParrafos.Any())
-            {
-                return string.Empty;
-            }
-
-            return string.Join("\n", preContrato.PreContratoParrafos.OrderBy(p => p.Orden).Select(p => p.Contenido));
-        }
-
-        public async Task<PreContrato> ActualizarContenidoPreContrato(int secPreContrato, string contenidoHtml, int usuarioId)
-        {
-            var preContratoActual = await _repositorio.Consultar(p => p.SecPreContrato == secPreContrato && p.EstaActivo == true);
-            var ultimaVersion = await preContratoActual.Include(p => p.PreContratoParrafos).FirstOrDefaultAsync();
-
-            if (ultimaVersion == null)
-            {
-                throw new Exception("Pre-contrato no encontrado o no activo.");
-            }
-
-            var contenidoActual = ultimaVersion.PreContratoParrafos != null && ultimaVersion.PreContratoParrafos.Any()
-                                ? string.Join("\n", ultimaVersion.PreContratoParrafos.OrderBy(p => p.Orden).Select(p => p.Contenido))
-                                : string.Empty;
-
-            // Si el contenido no ha cambiado, no hacemos nada y devolvemos la versión existente.
-            if (string.Equals(contenidoActual, contenidoHtml, StringComparison.Ordinal))
-            {
-                return ultimaVersion;
-            }
-
-            // Inactivar la versión actual
-            ultimaVersion.EstaActivo = false;
-            await _repositorio.Editar(ultimaVersion);
-
-            // Crear una nueva versión del pre-contrato
-            var nuevaVersionPreContrato = new PreContrato
-            {
-                SecCotizacion = ultimaVersion.SecCotizacion,
-                SecPlantillaPreContrato = ultimaVersion.SecPlantillaPreContrato,
-                SecUsuarioCrea = usuarioId,
-                //SecFormaPago = ultimaVersion.SecFormaPago,
-                Version = ultimaVersion.Version + 1,
-                Estado = "Guardado", // O el estado que corresponda después de editar
-                EstaActivo = true,
-                FechaRegistro = DateTime.Now,
-                Dias = ultimaVersion.Dias,
-                TipoDias = ultimaVersion.TipoDias,
-                //ValorContrato = ultimaVersion.ValorContrato,
-                AniosGarantia = ultimaVersion.AniosGarantia,
-                MesesGarantia = ultimaVersion.MesesGarantia,
-                PeriodoMantenimiento = ultimaVersion.PeriodoMantenimiento,
-                PolizaGarantia = ultimaVersion.PolizaGarantia,
-                //ValorAnticipo = ultimaVersion.ValorAnticipo,
-                //FechaAnticipo = ultimaVersion.FechaAnticipo,
-                //NumeroCuotas = ultimaVersion.NumeroCuotas,
-                //FechaPrimeraCuota = ultimaVersion.FechaPrimeraCuota
-            };
-
-            var preContratoCreado = await _repositorio.Crear(nuevaVersionPreContrato);
-
-            // Replicar los compromisos de pago de la versión anterior a la nueva
-            var compromisosAnteriores = await _repositorioCompromisoPago.Consultar(c => c.SecPreContrato == ultimaVersion.SecPreContrato);
-            if (compromisosAnteriores.Any())
-            {
-                foreach (var compromiso in compromisosAnteriores)
-                {
-                    var nuevoCompromiso = new PreContratoCompromisoPago
-                    {
-                        SecPreContrato = preContratoCreado.SecPreContrato,
-                        NumeroCuota = compromiso.NumeroCuota,
-                        Monto = compromiso.Monto,
-                        FechaVencimiento = compromiso.FechaVencimiento,
-                        Tipo = compromiso.Tipo,
-                        FechaRegistro = DateTime.Now
-                    };
-                    await _repositorioCompromisoPago.Crear(nuevoCompromiso);
-                }
-            }
-
-            // Guardar el nuevo párrafo con el contenido actualizado
-            var nuevoParrafo = new PreContratoParrafo
-            {
-                SecPreContrato = preContratoCreado.SecPreContrato,
-                Contenido = contenidoHtml,
-                Orden = 1
-            };
-            await _repositorioPreContratoParrafo.Crear(nuevoParrafo);
-
-            return preContratoCreado;
-        }
-
-        public async Task<string> GenerarVistaPreviaConPagos(PreContratoConPagosDTO dto)
-        {
-            var generatorDto = new PreContratoGeneratorDTO
-            {
-                SecCotizacion = dto.SecCotizacion,
-                Dias = dto.Dias,
-                TipoDias = dto.TipoDias,
-                PeriodoMantenimiento = dto.PeriodoMantenimiento,
-                AniosGarantia = dto.AniosGarantia,
-                MesesGarantia = dto.MesesGarantia,
-                PolizaGarantia = dto.PolizaGarantia
-                // Los compromisos de pago no son parte de la vista previa del contrato principal,
-                // pero podrían añadirse al HTML si fuera necesario en el futuro.
-            };
-
-            return await _preContratoGeneratorService.GenerarVistaPreviaHtml(generatorDto);
-        }
-
-        public async Task<PreContrato> CrearDesdeModalConPagos(PreContratoConPagosDTO dto, int usuarioId)
-        {
-            // 1. Obtener el pre-contrato existente que se está finalizando
-            var preContratoExistente = await _repositorio.Obtener(p => p.SecPreContrato == dto.SecPreContrato && p.EstaActivo == true);
-
-            if (preContratoExistente == null)
-            {
-                throw new Exception("Pre-contrato no encontrado o no activo para finalizar.");
-            }
-
-            // 2. Actualizar el estado del pre-contrato a 'Guardado' (o el estado final)
-            preContratoExistente.Estado = "Guardado";
-            await _repositorio.Editar(preContratoExistente);
-
-            // 3. Actualizar o crear el párrafo con el contenido HTML
-            var parrafoExistente = await _repositorioPreContratoParrafo.Obtener(p => p.SecPreContrato == preContratoExistente.SecPreContrato);
-            if (parrafoExistente != null)
-            {
-                parrafoExistente.Contenido = dto.ContenidoHtml;
-                await _repositorioPreContratoParrafo.Editar(parrafoExistente);
-            }
-            else
-            {
-                var nuevoParrafo = new PreContratoParrafo
-                {
-                    SecPreContrato = preContratoExistente.SecPreContrato,
-                    Contenido = dto.ContenidoHtml,
-                    Orden = 1
-                };
-                await _repositorioPreContratoParrafo.Crear(nuevoParrafo);
-            }
-
-            return preContratoExistente;
-        }
+        // Métodos de manejo de contenido HTML eliminados (ObtenerContenidoHtml, ActualizarContenidoPreContrato, CrearDesdeModalConPagos)
 
         public async Task<PreContrato> GuardarBorrador(PreContratoConPagosDTO dto, int usuarioId)
         {
@@ -519,7 +272,8 @@ namespace BLL.Implementacion
                 // 2. Marcar la versión anterior como inactiva y PERSISTIR EL CAMBIO
                 oldPreContrato.EstaActivo = false;
                 bool inactivado = await _repositorio.Editar(oldPreContrato);
-                if (!inactivado) {
+                if (!inactivado)
+                {
                     throw new Exception("No se pudo inactivar la versión anterior del pre-contrato.");
                 }
 
@@ -563,18 +317,7 @@ namespace BLL.Implementacion
                     throw new Exception("No se pudo crear la nueva versión del borrador del pre-contrato.");
                 }
 
-                // 5. Copiar el párrafo de contenido de la versión anterior a la nueva
-                var oldParrafo = await _repositorioPreContratoParrafo.Obtener(p => p.SecPreContrato == oldPreContrato.SecPreContrato);
-                if (oldParrafo != null)
-                {
-                    var newParrafo = new PreContratoParrafo
-                    {
-                        SecPreContrato = preContratoParaNuevosCompromisos.SecPreContrato,
-                        Contenido = oldParrafo.Contenido,
-                        Orden = oldParrafo.Orden
-                    };
-                    await _repositorioPreContratoParrafo.Crear(newParrafo);
-                }
+                // El contenido (párrafo) ya no se copia porque es generado dinámicamente en DOCX.
 
                 // Los compromisos de pago anteriores no se eliminan, simplemente no se asocian a la nueva versión.
                 // Los nuevos compromisos se crearán para la nueva versión.
@@ -583,11 +326,13 @@ namespace BLL.Implementacion
             else // Si SecPreContrato es 0 o no se proporciona, es una CREACIÓN
             {
                 // --- RUTA DE CREACIÓN ---
-                var tipoDocumentoPreContrato = await _repositorioTipoDocumento.Obtener(td => td.Codigo == "PRE-CONTRATO");
-                if (tipoDocumentoPreContrato == null) throw new Exception("No se encontró el tipo de documento 'PRE-CONTRATO'.");
+                // Obtener el TipoDocumento basándose en el SecTipoDocumento proporcionado en el DTO
+                var tipoDocumentoPreContrato = await _repositorioTipoDocumento.Obtener(td => td.SecTipoDocumento == dto.SecTipoDocumento && td.EstaActivo == true);
+                if (tipoDocumentoPreContrato == null) throw new Exception($"No se encontró el tipo de documento con SecTipoDocumento {dto.SecTipoDocumento}.");
 
+                // Obtener la plantilla por defecto activa para el tipo de documento seleccionado
                 var plantillaPorDefecto = await _repositorioPlantillaPreContrato.Obtener(p => p.SecTipoDocumento == tipoDocumentoPreContrato.SecTipoDocumento && p.EstaActivo == 1);
-                if (plantillaPorDefecto == null) throw new Exception("No se encontró una plantilla de Pre-Contrato activa por defecto.");
+                if (plantillaPorDefecto == null) throw new Exception($"No se encontró una plantilla de Pre-Contrato activa por defecto para el tipo de documento {tipoDocumentoPreContrato.Descripcion}.");
 
                 var nuevoPreContrato = new PreContrato
                 {
@@ -645,10 +390,22 @@ namespace BLL.Implementacion
                 throw new Exception("No se encontró el pre-contrato solicitado para edición.");
             }
 
+            // Obtener el SecTipoDocumento de la plantilla asociada
+            int secTipoDocumento = 0;
+            if (preContrato.SecPlantillaPreContrato > 0)
+            {
+                var plantilla = await _repositorioPlantillaPreContrato.Obtener(p => p.SecPlantillaPreContrato == preContrato.SecPlantillaPreContrato);
+                if (plantilla != null)
+                {
+                    secTipoDocumento = plantilla.SecTipoDocumento;
+                }
+            }
+
             var dto = new PreContratoParaEdicionDTO
             {
                 SecPreContrato = preContrato.SecPreContrato,
                 SecCotizacion = preContrato.SecCotizacion,
+                SecTipoDocumento = secTipoDocumento, // Asignar el SecTipoDocumento
                 Dias = preContrato.Dias,
                 TipoDias = preContrato.TipoDias,
                 PeriodoMantenimiento = preContrato.PeriodoMantenimiento,
@@ -664,6 +421,39 @@ namespace BLL.Implementacion
             };
 
             return dto;
+        }
+        public async Task<bool> SubirContratoFinal(int secPreContrato, Stream archivoStream)
+        {
+            var preContrato = await _repositorio.Consultar(p => p.SecPreContrato == secPreContrato);
+            var entidad = await preContrato.Include(p => p.PreContratoParrafos).FirstOrDefaultAsync();
+
+            if (entidad == null) throw new Exception("Pre-contrato no encontrado.");
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await archivoStream.CopyToAsync(memoryStream);
+                var bytes = memoryStream.ToArray();
+                var base64 = Convert.ToBase64String(bytes);
+                var contenido = "BASE64DOCX:" + base64;
+
+                var parrafo = entidad.PreContratoParrafos.FirstOrDefault();
+                if (parrafo != null)
+                {
+                    parrafo.Contenido = contenido;
+                    await _repositorioPreContratoParrafo.Editar(parrafo);
+                }
+                else
+                {
+                    var nuevoParrafo = new PreContratoParrafo
+                    {
+                        SecPreContrato = secPreContrato,
+                        Contenido = contenido,
+                        Orden = 1
+                    };
+                    await _repositorioPreContratoParrafo.Crear(nuevoParrafo);
+                }
+            }
+            return true;
         }
     }
 }

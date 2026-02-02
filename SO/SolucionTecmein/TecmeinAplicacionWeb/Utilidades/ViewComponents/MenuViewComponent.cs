@@ -47,7 +47,7 @@ namespace TecmeinWebApp.Utilidades.ViewComponents
                     while (menuActual?.SecMenuPadre.HasValue == true)
                     {
                         int idPadre = menuActual.SecMenuPadre.Value;
-                        if (idsFinalesParaMostrar.Contains(idPadre)) break; 
+                        if (idsFinalesParaMostrar.Contains(idPadre)) break;
 
                         idsFinalesParaMostrar.Add(idPadre);
                         menuActual = todosLosMenus.FirstOrDefault(m => m.Secuencial == idPadre);

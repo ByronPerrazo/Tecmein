@@ -12,8 +12,8 @@ namespace BLL.Implementacion
         private readonly IEtapaServices _etapaServices;
 
         public VisitaServices(
-            IGenericRepository<Visita> repositorio, 
-            IGenericRepository<Equiposvisita> repositorioEquipos, 
+            IGenericRepository<Visita> repositorio,
+            IGenericRepository<Equiposvisita> repositorioEquipos,
             IEtapaServices etapaServices
             )
         {
@@ -25,7 +25,7 @@ namespace BLL.Implementacion
         public async Task<Visita> ConsultaVisita(int secuencial)
         {
             IQueryable<Visita> query = await _repositorio.Consultar(x => x.Secuencial == secuencial);
-            
+
             Visita visitaEncontrada = await query.Include(x => x.SecProvinciaNavigation)
                                                  .Include(x => x.SecCantonNavigation)
                                                  .Include(x => x.SecParroquiaNavigation)

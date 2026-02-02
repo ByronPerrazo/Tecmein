@@ -24,6 +24,8 @@ namespace BLL.Implementacion
         private readonly IGenericRepository<PlanDePago> _repositorioPlanDePago;
         private readonly IGenericRepository<Cuota> _repositorioCuota;
         private readonly IGenericRepository<PreContratoCompromisoPago> _repositorioCompromisoPago;
+        private readonly ITipoDocumentoServices _tipoDocumentoServices;
+        private readonly IActivoClienteService _activoClienteService; // Inyectado
 
         public ContratoService(
             IGenericRepository<Contrato> repositorioContrato,
@@ -36,7 +38,9 @@ namespace BLL.Implementacion
             TecmeindbContext dbContext,
             IGenericRepository<PlanDePago> repositorioPlanDePago,
             IGenericRepository<Cuota> repositorioCuota,
-            IGenericRepository<PreContratoCompromisoPago> repositorioCompromisoPago)
+            IGenericRepository<PreContratoCompromisoPago> repositorioCompromisoPago,
+            ITipoDocumentoServices tipoDocumentoServices,
+            IActivoClienteService activoClienteService) // Inyectado
         {
             _repositorioContrato = repositorioContrato;
             _repositorioCotizacion = repositorioCotizacion;
@@ -49,6 +53,8 @@ namespace BLL.Implementacion
             _repositorioPlanDePago = repositorioPlanDePago;
             _repositorioCuota = repositorioCuota;
             _repositorioCompromisoPago = repositorioCompromisoPago;
+            _tipoDocumentoServices = tipoDocumentoServices;
+            _activoClienteService = activoClienteService; // Asignado
         }
 
         public async Task<Contrato> Crear(ContratoCreacionDTO dto)
@@ -56,8 +62,8 @@ namespace BLL.Implementacion
             await using var transaction = await _dbContext.Database.BeginTransactionAsync();
             try
             {
-                int idCotizacionFinal;
-                int secClienteFinal;
+                int idCotizacionFinal = 0;
+                int secClienteFinal = 0;
 
                 // Determinar el cliente y la cotización a asociar
                 if (dto.IdCotizacion.HasValue && dto.IdCotizacion > 0)
@@ -96,20 +102,69 @@ namespace BLL.Implementacion
                 }
 
                 // Crear la entidad Contrato
-                var contrato = new Contrato
+                Contrato contrato = new Contrato
                 {
                     IdCotizacion = idCotizacionFinal,
                     SecCliente = secClienteFinal,
                     FechaFirma = dto.FechaFirma,
                     IdUsuarioCarga = dto.IdUsuarioCarga,
+                    SecTipoDocumento = dto.SecTipoDocumento,
                     NombreArchivo = dto.NombreArchivo,
-                    RutaArchivo = "", // Se actualizará después de subir el archivo
+                    RutaArchivo = "",
                     FechaCreacion = DateTime.Now,
                     EsActivo = true
                 };
 
                 var contratoCreado = await _repositorioContrato.Crear(contrato);
                 if (contratoCreado.IdContrato == 0) throw new Exception("No se pudo crear el registro del contrato.");
+
+                // Obtener el tipo de documento del contrato creado
+                var tipoContratoCreado = await _tipoDocumentoServices.Obtener(contratoCreado.SecTipoDocumento);
+
+                // --- Lógica para generación automática de Contrato de Garantía si el contrato es de VENTA ---
+                if (tipoContratoCreado != null && tipoContratoCreado.Codigo == "VENTA")
+                {
+                    var tipoGarantia = await _tipoDocumentoServices.ObtenerPorCodigo("GARANTIA");
+                    if (tipoGarantia == null) throw new Exception("Tipo de documento 'GARANTIA' no configurado.");
+
+                    // TODO: Aquí se debería obtener la lista de ActivoCliente asociados a esta venta
+                    // Por ahora, creamos un contrato de garantía general si no hay activos específicos aún.
+
+                    var contratoGarantia = new Contrato
+                    {
+                        IdCotizacion = null, // Contrato de garantía no directamente asociado a una cotización, o se crea una dummy si es necesario
+                        SecCliente = secClienteFinal,
+                        FechaFirma = contratoCreado.FechaFirma, // O una fecha de inicio de garantía específica
+                        IdUsuarioCarga = contratoCreado.IdUsuarioCarga,
+                        SecTipoDocumento = tipoGarantia.SecTipoDocumento,
+                        NombreArchivo = $"Garantía_{contratoCreado.IdContrato}.pdf", // Nombre genérico
+                        RutaArchivo = "", // Se actualizará al subir el archivo (si aplica)
+                        FechaCreacion = DateTime.Now,
+                        EsActivo = true
+                    };
+                    await _repositorioContrato.Crear(contratoGarantia);
+
+                    // Generar ActivoCliente aquí, vinculando al contrato de venta original (contratoCreado.IdContrato)
+                    // y al contrato de garantía (contratoGarantia.IdContrato).
+                    if (contratoCreado.IdCotizacion.HasValue && contratoCreado.IdCotizacion > 0)
+                    {
+                        var cotizacionOriginal = await _repositorioCotizacion.Consultar(c => c.Secuencial == contratoCreado.IdCotizacion.Value);
+                        var detallesCotizacion = await cotizacionOriginal.Include(c => c.Cotizaciondetalles).SelectMany(c => c.Cotizaciondetalles).ToListAsync();
+
+                        foreach (var detalle in detallesCotizacion)
+                        {
+                            var activoCliente = new ActivoCliente
+                            {
+                                SecCliente = secClienteFinal,
+                                SecEquipo = null, // TODO: Si hay una entidad Equipo, vincular aquí
+                                Descripcion = detalle.DetalleEquipo,
+                                FechaInstalacion = contratoCreado.FechaFirma, // Fecha de instalación podría ser la de firma del contrato
+                                SecContratoOrigen = contratoCreado.IdContrato
+                            };
+                            await _activoClienteService.Crear(activoCliente);
+                        }
+                    }
+                }
 
                 // --- LÓGICA PARA CREAR PLAN DE PAGO AUTOMÁTICAMENTE ---
                 var preContrato = await _repositorioPreContrato.Obtener(p => p.SecCotizacion == idCotizacionFinal && p.Estado == "Aprobado");
@@ -178,7 +233,7 @@ namespace BLL.Implementacion
                 throw new Exception($"Error al crear el contrato: {ex.Message}", ex);
             }
         }
-        
+
         public async Task<Contrato> Editar(Contrato entidad, string nombreProyecto, Stream archivoStream, string nombreArchivo)
         {
             await using var transaction = await _dbContext.Database.BeginTransactionAsync();
@@ -262,6 +317,7 @@ namespace BLL.Implementacion
             return await query.Include(c => c.IdCotizacionNavigation).ThenInclude(cot => cot.SecVisitaNavigation)
                               .Include(c => c.IdUsuarioCargaNavigation)
                               .Include(c => c.SecClienteNavigation).ThenInclude(cli => cli.SecConstructoraNavigation)
+                              .Include(c => c.SecTipoDocumentoNavigation) // <-- Añadido
                               .ToListAsync();
         }
 
@@ -318,7 +374,7 @@ namespace BLL.Implementacion
                 contrato.EsActivo = false;
                 bool resultado = await _repositorioContrato.Editar(contrato);
 
-                if(resultado)
+                if (resultado)
                 {
                     await transaction.CommitAsync();
                     return true;

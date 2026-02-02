@@ -116,7 +116,7 @@ namespace TecmeinWebApp.Controllers
 
         [HttpGet]
         [ValidatePermission("LEER")]
-        public async Task<IActionResult> GestionarPermisos(int secRol)                            
+        public async Task<IActionResult> GestionarPermisos(int secRol)
         {
             var rol = await _rolServices.RolPorSecuencial(secRol);
 
@@ -234,7 +234,7 @@ namespace TecmeinWebApp.Controllers
                         await _repositorioRolMenu.Crear(nuevoPermiso);
                     }
                 }
-                
+
                 // Invalidate permission cache for this role
                 var acciones = new[] { "CREAR", "LEER", "ACTUALIZAR", "ELIMINAR", "VER_MENU" };
                 var todosLosMenus = await _menuServices.ObtieneMenuTotal();

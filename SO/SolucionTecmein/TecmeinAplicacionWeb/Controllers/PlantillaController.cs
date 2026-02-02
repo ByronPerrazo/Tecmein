@@ -8,7 +8,7 @@ namespace TecmeinWebApp.Controllers
 {
     public class PlantillaController : Controller
     {
-  
+
         [AllowAnonymous]
         public IActionResult EnviarClave(string correo, string clave)
         {

@@ -15,18 +15,15 @@ namespace TecmeinWebApp.Controllers
     {
 
         private readonly ICatalogoServices _catalogoServices;
-        //private readonly IRolServices _rolServices;
         private readonly IMapper _mapper;
 
         public CatalogoController(
 
                                   ICatalogoServices catalogoServices,
-                                  //IRolServices rolServices,
                                   IMapper mapper
             )
         {
             _catalogoServices = catalogoServices;
-            //_rolServices = rolServices;
             _mapper = mapper;
         }
 

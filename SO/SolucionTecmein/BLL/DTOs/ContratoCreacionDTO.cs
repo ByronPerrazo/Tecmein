@@ -13,6 +13,7 @@ namespace BLL.DTOs
         public string NombreProyecto { get; set; } = string.Empty; // Añadido para el nombre de la obra
         public DateTime FechaFirma { get; set; }
         public int IdUsuarioCarga { get; set; }
+        public int SecTipoDocumento { get; set; }
 
         // Archivo
         public Stream ArchivoStream { get; set; } = Stream.Null;

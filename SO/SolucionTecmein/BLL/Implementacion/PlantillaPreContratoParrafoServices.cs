@@ -44,7 +44,11 @@ namespace BLL.Implementacion
             parrafoExistente.Contenido = entidad.Contenido;
             parrafoExistente.EstaActivo = entidad.EstaActivo;
 
-            await _repositorio.Editar(parrafoExistente);
+            bool resultado = await _repositorio.Editar(parrafoExistente);
+            if (!resultado)
+            {
+                throw new Exception("No se pudo editar el párrafo.");
+            }
             return parrafoExistente;
         }
 

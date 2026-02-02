@@ -83,6 +83,8 @@ public partial class TecmeindbContext : DbContext
 
     public virtual DbSet<AuditoriaEvento> AuditoriaEventos { get; set; }
 
+    public virtual DbSet<ActivoCliente> ActivosCliente { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -464,7 +466,7 @@ public partial class TecmeindbContext : DbContext
                 .HasConstraintName("FK_Rol_Menu");
         });
 
-        
+
 
         modelBuilder.Entity<Usuario>(entity =>
         {
@@ -656,7 +658,7 @@ public partial class TecmeindbContext : DbContext
             entity.HasIndex(e => e.SecConstructora, "FK_Cliente_Constructora_idx").IsUnique();
 
             entity.Property(e => e.SecCliente).HasColumnName("SecCliente");
-            
+
             entity.Property(e => e.SecConstructora).HasColumnName("SecConstructora");
 
             entity.Property(e => e.NumeroCliente)
@@ -711,7 +713,7 @@ public partial class TecmeindbContext : DbContext
             entity.HasIndex(e => e.SecCotizacion, "FK_Seguimiento_Cotizacion_idx");
 
             entity.Property(e => e.SecSeguimiento).HasColumnName("SecSeguimiento");
-            
+
             entity.Property(e => e.SecCotizacion).HasColumnName("SecCotizacion");
 
             entity.Property(e => e.Accion)
@@ -823,10 +825,10 @@ public partial class TecmeindbContext : DbContext
             entity.Property(e => e.SecUsuarioModifica).HasColumnName("secUsuarioModifica");
 
             // Relationships
-            entity.HasOne(d => d.SecVisitaNavigation).WithMany() 
+            entity.HasOne(d => d.SecVisitaNavigation).WithMany()
                 .HasForeignKey(d => d.SecVisita)
-                .OnDelete(DeleteBehavior.ClientSetNull) 
-                .HasConstraintName("FK_Cotizacion_Visita"); 
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Cotizacion_Visita");
 
             entity.HasOne(d => d.SecUsuarioNavigation).WithMany()
                 .HasForeignKey(d => d.SecUsuario)
@@ -841,13 +843,13 @@ public partial class TecmeindbContext : DbContext
             entity.HasOne(d => d.SecUsuarioModificaNavigation).WithMany()
                 .HasForeignKey(d => d.SecUsuarioModifica)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Cotizacion_UsuarioModifica"); 
+                .HasConstraintName("FK_Cotizacion_UsuarioModifica");
 
             entity.HasMany(d => d.ImpuestoCotizaciones)
                 .WithOne(p => p.SecCotizacionNavigation)
                 .HasForeignKey(d => d.SecCotizacion)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_ImpuestoCotizacion_Cotizacion"); 
+                .HasConstraintName("FK_ImpuestoCotizacion_Cotizacion");
         });
 
         modelBuilder.Entity<Cotizaciondetalle>(entity =>
@@ -892,7 +894,7 @@ public partial class TecmeindbContext : DbContext
             entity.Property(e => e.CodigoSri)
                 .HasMaxLength(5)
                 .HasColumnName("CodigoSri");
-            
+
             entity.Property(e => e.Vigente).HasColumnName("Vigente");
             entity.Property(e => e.SecTipoImpuesto).HasColumnName("SecTipoImpuesto");
 
@@ -1047,7 +1049,7 @@ public partial class TecmeindbContext : DbContext
             entity.Property(e => e.SecPlantillaPreContratoParrafo).HasColumnName("SecPlantillaPreContratoParrafo");
             entity.Property(e => e.SecPlantillaPreContrato).HasColumnName("SecPlantillaPreContrato");
             entity.Property(e => e.Orden).HasColumnName("Orden");
-            entity.Property(e => e.Contenido).HasColumnType("TEXT");
+            entity.Property(e => e.Contenido).HasColumnType("LONGBLOB");
             entity.Property(e => e.EstaActivo).HasColumnName("EstaActivo");
 
             entity.HasOne(d => d.SecPlantillaPreContratoNavigation)
@@ -1108,6 +1110,35 @@ public partial class TecmeindbContext : DbContext
             entity.HasOne(c => c.PlanDePagoNavigation)
                 .WithOne(pp => pp.IdContratoNavigation)
                 .HasForeignKey<PlanDePago>(pp => pp.IdContrato);
+        });
+
+        modelBuilder.Entity<ActivoCliente>(entity =>
+        {
+            entity.HasKey(e => e.IdActivoCliente).HasName("PRIMARY");
+            entity.ToTable("activocliente");
+
+            entity.Property(e => e.IdActivoCliente).HasColumnName("IdActivoCliente");
+            entity.Property(e => e.SecCliente).HasColumnName("SecCliente");
+            entity.Property(e => e.SecEquipo).HasColumnName("SecEquipo");
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(500)
+                .HasColumnName("Descripcion");
+            entity.Property(e => e.FechaInstalacion)
+                .HasColumnType("datetime")
+                .HasColumnName("FechaInstalacion");
+            entity.Property(e => e.SecContratoOrigen).HasColumnName("SecContratoOrigen");
+
+            entity.HasOne(d => d.SecClienteNavigation)
+                .WithMany()
+                .HasForeignKey(d => d.SecCliente)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ActivoCliente_Cliente");
+
+            entity.HasOne(d => d.SecContratoOrigenNavigation)
+                .WithMany()
+                .HasForeignKey(d => d.SecContratoOrigen)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ActivoCliente_Contrato");
         });
 
         OnModelCreatingPartial(modelBuilder);

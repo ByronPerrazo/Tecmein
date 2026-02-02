@@ -5,7 +5,7 @@ namespace BLL.Interfaces
 {
     public interface IPreContratoGeneratorService
     {
-        Task<string> GenerarVistaPreviaHtml(PreContratoGeneratorDTO preContratoData);
+        Task<byte[]> GenerarVistaPreviaDocx(PreContratoGeneratorDTO preContratoData);
         Task<PlaceholderDataDTO> ObtenerDatosParaPlaceholders(PreContratoGeneratorDTO preContratoData);
     }
 }

@@ -12,7 +12,5 @@ namespace BLL.Interfaces
         Task<PlantillaPreContrato> Editar(PlantillaPreContrato entidad);
         Task<bool> Eliminar(int secPlantillaPreContrato);
         Task<(bool Exito, List<string> Advertencias)> CargarParrafosDesdeWordAsync(int secPlantillaPreContrato, Stream archivoStream);
-        Task<string> MaquetarContenidoAsync(string htmlContent, int secPlantillaPreContrato);
-        Task<bool> MaquetarParrafoAsync(int secPlantillaPreContratoParrafo);
     }
 }

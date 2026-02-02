@@ -2,12 +2,17 @@ using BLL.DTOs;
 using BLL.Interfaces;
 using DAL.DBContext;
 using DAL.Interfaces;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Entity;
+using Humanizer;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BLL.Implementacion
@@ -23,77 +28,172 @@ namespace BLL.Implementacion
             _repositorioDiccionario = repositorioDiccionario;
         }
 
-        public async Task<string> GenerarVistaPreviaHtml(PreContratoGeneratorDTO preContratoData)
+        public async Task<byte[]> GenerarVistaPreviaDocx(PreContratoGeneratorDTO preContratoData)
         {
             var plantilla = await _context.PlantillaPreContratos
                                           .Include(p => p.PlantillaPreContratoParrafos)
                                           .AsNoTracking()
-                                          .FirstOrDefaultAsync(p => p.SecTipoDocumentoNavigation.Codigo == "PRE-CONTRATO");
+                                          .FirstOrDefaultAsync(p => p.SecTipoDocumento == preContratoData.SecTipoDocumento && p.EstaActivo == 1);
 
             if (plantilla == null || !plantilla.PlantillaPreContratoParrafos.Any())
             {
                 throw new InvalidOperationException("La plantilla seleccionada no tiene contenido o no existe.");
             }
-            
-            var contenidoOriginal = string.Join("", plantilla.PlantillaPreContratoParrafos.OrderBy(p => p.Orden).Select(p => p.Contenido));
-            var datosParaReemplazar = await RecopilarDatosDeReemplazo(preContratoData);
-            
-            var contenidoProcesado = new StringBuilder(contenidoOriginal);
-            foreach (var kvp in datosParaReemplazar)
+
+            var parrafoPlantilla = plantilla.PlantillaPreContratoParrafos.OrderBy(p => p.Orden).FirstOrDefault();
+            if (parrafoPlantilla?.Contenido == null)
             {
-                contenidoProcesado.Replace(kvp.Key, kvp.Value);
+                throw new InvalidOperationException("El párrafo de la plantilla no contiene un documento DOCX.");
             }
 
-            return contenidoProcesado.ToString();
-        }
+            var (datosTexto, datosTabla) = await RecopilarDatosDeReemplazo(preContratoData);
+            
+            byte[] docBytes = parrafoPlantilla.Contenido;
 
-        public async Task<PlaceholderDataDTO> ObtenerDatosParaPlaceholders(PreContratoGeneratorDTO preContratoData)
-        {
-            var datosReemplazo = await RecopilarDatosDeReemplazo(preContratoData);
-            var cotizacionData = await _context.Cotizacion.FindAsync(preContratoData.SecCotizacion);
-
-            var dto = new PlaceholderDataDTO
+            using (var ms = new MemoryStream())
             {
-                ValorContrato = datosReemplazo.GetValueOrDefault("{{valor_contrato}}", ""),
-                ValorAnticipo = datosReemplazo.GetValueOrDefault("{{valor_anticipo}}", ""),
-                FechaAnticipo = datosReemplazo.GetValueOrDefault("{{fecha_anticipo}}", ""),
-                NumeroCuotas = datosReemplazo.GetValueOrDefault("{{numero_cuotas}}", ""),
-                FechaPrimeraCuota = datosReemplazo.GetValueOrDefault("{{fecha_primera_cuota}}", ""),
-                DiasEntrega = datosReemplazo.GetValueOrDefault("{{dias}}", ""),
-                TipoDias = datosReemplazo.GetValueOrDefault("{{tipo_dias}}", ""),
-                PeriodoMantenimiento = datosReemplazo.GetValueOrDefault("{{periodo_mantenimiento}}", ""),
-                AniosGarantia = datosReemplazo.GetValueOrDefault("{{anios_garantia}}", ""),
-                MesesGarantia = datosReemplazo.GetValueOrDefault("{{meses_garantia}}", ""),
-                PolizaGarantia = datosReemplazo.GetValueOrDefault("{{poliza_garantia}}", ""),
-                Cotizacion = new CotizacionPlaceholderDTO
+                ms.Write(docBytes, 0, docBytes.Length);
+                ms.Seek(0, SeekOrigin.Begin);
+
+                using (var wordDoc = WordprocessingDocument.Open(ms, true))
                 {
-                    Numero = cotizacionData?.Secuencial.ToString() ?? "",
-                    Fecha = cotizacionData?.FechaRegistro?.ToString("dd/MM/yyyy") ?? "",
-                    Total = (cotizacionData?.TotalConImpuestos)?.ToString("N2") ?? ""
-                },
-                Cliente = new ClientePlaceholderDTO
-                {
-                    Nombre = datosReemplazo.GetValueOrDefault("{{cliente_nombre}}", ""),
-                    Direccion = datosReemplazo.GetValueOrDefault("{{cliente_direccion}}", ""),
-                    Telefono = datosReemplazo.GetValueOrDefault("{{cliente_telefono}}", ""),
-                    Correo = datosReemplazo.GetValueOrDefault("{{cliente_correo}}", ""),
-                    Administrador = datosReemplazo.GetValueOrDefault("{{cliente_representante_legal}}", "")
+                    // 1. Reemplazo de Tablas (DOM)
+                    ReplaceTablePlaceholders(wordDoc.MainDocumentPart, datosTabla);
+
+                    // 2. Reemplazo de Texto (DOM - "Split Run" safe)
+                    // Ahora que usamos lógica DOM para texto también, podemos hacerlo en la misma sesión
+                    ProcessTextReplacements(wordDoc.MainDocumentPart, datosTexto);
+                    foreach (var headerPart in wordDoc.MainDocumentPart.HeaderParts) ProcessTextReplacements(headerPart, datosTexto);
+                    foreach (var footerPart in wordDoc.MainDocumentPart.FooterParts) ProcessTextReplacements(footerPart, datosTexto);
+                    
+                    wordDoc.Save();
                 }
-            };
+                return ms.ToArray();
+            }
+        } 
 
-            return dto;
+
+        private void ProcessTextReplacements(OpenXmlPart part, Dictionary<string, string> replacements)
+        {
+            if (part == null || part.RootElement == null) return;
+
+            // Estrategia "DOM Reconstruction":
+            // Iteramos por todos los párrafos. Si el texto completo del párrafo contiene un placeholder,
+            // reconstruimos el párrafo con el texto reemplazado.
+            // Esto soluciona el problema de "Split Runs" (donde "{{key}}" se divide en múltiples nodos XML).
+            
+            var paragraphs = part.RootElement.Descendants<Paragraph>().ToList();
+
+            foreach (var paragraph in paragraphs)
+            {
+                string text = paragraph.InnerText;
+                bool modified = false;
+
+                foreach (var replacement in replacements)
+                {
+                    if (text.IndexOf(replacement.Key, StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        // Usamos Regex para reemplazo case-insensitive
+                        string pattern = Regex.Escape(replacement.Key);
+                        text = Regex.Replace(text, pattern, replacement.Value ?? "", RegexOptions.IgnoreCase);
+                        modified = true;
+                    }
+                }
+
+                if (modified)
+                {
+                    // Guardar propiedades del párrafo anterior (alineación, estilo, etc.)
+                    var pPr = paragraph.ParagraphProperties?.CloneNode(true);
+
+                    // Guardar propiedades del primer Run para intentar preservar fuente/tamaño
+                    var rPr = paragraph.Descendants<Run>().FirstOrDefault()?.RunProperties?.CloneNode(true);
+
+                    paragraph.RemoveAllChildren();
+
+                    if (pPr != null) paragraph.AppendChild(pPr);
+
+                    var newRun = new Run();
+                    if (rPr != null) newRun.AppendChild(rPr);
+                    
+                    // Manejo básico de saltos de línea en el valor de reemplazo
+                    if (text.Contains("\n") || text.Contains("\r"))
+                    {
+                         var lines = text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                         for(int i=0; i<lines.Length; i++)
+                         {
+                             newRun.AppendChild(new Text(lines[i]) { Space = SpaceProcessingModeValues.Preserve });
+                             if(i < lines.Length - 1) newRun.AppendChild(new Break());
+                         }
+                    }
+                    else
+                    {
+                        newRun.AppendChild(new Text(text) { Space = SpaceProcessingModeValues.Preserve });
+                    }
+                    
+                    paragraph.AppendChild(newRun);
+                }
+            }
         }
 
-        private async Task<Dictionary<string, string>> RecopilarDatosDeReemplazo(PreContratoGeneratorDTO preContratoData)
+        private void ReplaceTablePlaceholders(MainDocumentPart mainPart, Dictionary<string, Table> tableReplacements)
         {
-            if (preContratoData.SecCotizacion == 0)
+            var body = mainPart.Document.Body;
+
+            foreach (var replacement in tableReplacements)
             {
-                throw new ArgumentException("Se debe seleccionar una cotización.");
+                var placeholder = replacement.Key;
+                var table = replacement.Value;
+
+                // Buscar el párrafo que contiene el placeholder (case-insensitive)
+                // Usamos loop para reemplazar TODAS las ocurrencias de la tabla, no solo la primera
+                var paragraph = body.Descendants<Paragraph>()
+                                    .FirstOrDefault(p => p.InnerText.IndexOf(placeholder, StringComparison.OrdinalIgnoreCase) >= 0);
+
+                while (paragraph != null)
+                {
+                    // Limpiar el contenido del párrafo
+                    paragraph.RemoveAllChildren();
+
+                    // Cloning table for multiple insertions
+                    var tableClone = table.CloneNode(true);
+
+                    // Insertar la tabla después del párrafo
+                    body.InsertAfter(tableClone, paragraph);
+                    
+                    // Eliminar el párrafo vacío del placeholder
+                    paragraph.Remove();
+
+                    // Buscar el siguiente (si hay más)
+                    paragraph = body.Descendants<Paragraph>()
+                                    .FirstOrDefault(p => p.InnerText.IndexOf(placeholder, StringComparison.OrdinalIgnoreCase) >= 0);
+                }
+
+                if (paragraph != null)
+                {
+                    // Limpiar el contenido del párrafo (eliminar texto restante si comparte párrafo)
+                    // Ojo: Si el párrafo tiene texto crucial además del placeholder, esto lo borra. 
+                    // Se asume según guía que el placeholder va en línea propia.
+                    paragraph.RemoveAllChildren();
+
+                    // Insertar la tabla después del párrafo
+                    body.InsertAfter(table, paragraph);
+                    
+                    // Eliminar el párrafo vacío del placeholder
+                    paragraph.Remove();
+                }
             }
+        }
+
+        private async Task<(Dictionary<string, string> Textos, Dictionary<string, Table> Tablas)> RecopilarDatosDeReemplazo(PreContratoGeneratorDTO preContratoData)
+        {
+            if (preContratoData.SecCotizacion == 0) throw new ArgumentException("Se debe seleccionar una cotización.");
 
             var cotizacion = await _context.Cotizacion
                 .Include(c => c.SecVisitaNavigation).ThenInclude(v => v.SecEmpresaNavigation)
                 .Include(c => c.SecVisitaNavigation).ThenInclude(v => v.Contactovisita).ThenInclude(cv => cv.SecContactoNavigation).ThenInclude(con => con.SecConstructoraNavigation).ThenInclude(cs => cs.Cliente)
+                .Include(c => c.SecVisitaNavigation).ThenInclude(v => v.SecProvinciaNavigation)
+                .Include(c => c.SecVisitaNavigation).ThenInclude(v => v.SecCantonNavigation)
+                .Include(c => c.SecVisitaNavigation).ThenInclude(v => v.SecParroquiaNavigation)
                 .Include(c => c.SecUsuarioNavigation)
                 .Include(c => c.Cotizaciondetalles)
                 .AsNoTracking()
@@ -103,88 +203,196 @@ namespace BLL.Implementacion
             var empresa = visita?.SecEmpresaNavigation;
             var contactoVisita = visita?.Contactovisita?.FirstOrDefault()?.SecContactoNavigation;
             var constructora = contactoVisita?.SecConstructoraNavigation;
-            var usuarioCreaCotizacion = cotizacion.SecUsuarioNavigation;
-            //var formaPago = preContratoData.SecFormaPago.HasValue ? await _context.FormasPago.FindAsync(preContratoData.SecFormaPago.Value) : null;
+            
+            var equiposVisita = await _context.Equiposvisita
+                .AsNoTracking()
+                .Where(ev => ev.SecVisita == cotizacion.SecVisita)
+                .ToListAsync();
 
-            var diccionario = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            var parametros = await (await _repositorioDiccionario.Consultar(p => p.EstaActivo)).ToListAsync();
+            // Diccionarios de resultados
+            var dicTexto = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var dicTablas = new Dictionary<string, Table>(StringComparer.OrdinalIgnoreCase);
+            
+            var parametros = await _repositorioDiccionario.Consultar(p => p.EstaActivo);
+            var listaParametros = await parametros.ToListAsync();
 
-            void AddToDict(string key, string value)
+            foreach (var param in listaParametros)
             {
-                if (!string.IsNullOrEmpty(value))
-                {
-                    diccionario[key] = value;
-                }
-            }
-
-            foreach (var parametro in parametros)
-            {
+                string key = $"{{{{{param.Parametro}}}}}";
                 string valor = "";
-                switch (parametro.Parametro.ToLower())
+                
+                switch (param.Parametro.ToLower())
                 {
-                    //case "{{valor_contrato}}": valor = preContratoData.ValorContrato.ToString("N2"); break;
-                    //case "{{valor_anticipo}}": valor = preContratoData.ValorAnticipo.ToString("N2"); break;
-                    //case "{{fecha_anticipo}}": valor = preContratoData.FechaAnticipo?.ToString("dd/MM/yyyy"); break;
-                    //case "{{numero_cuotas}}": valor = preContratoData.NumeroCuotas.ToString(); break;
-                    //case "{{fecha_primera_cuota}}": valor = preContratoData.FechaPrimeraCuota?.ToString("dd/MM/yyyy"); break;
-                    case "{{dias}}": valor = preContratoData.Dias.ToString(); break;
-                    case "{{tipo_dias}}": valor = preContratoData.TipoDias; break;
-                    case "{{periodo_mantenimiento}}": valor = preContratoData.PeriodoMantenimiento; break;
-                    case "{{anios_garantia}}": valor = preContratoData.AniosGarantia.ToString(); break;
-                    case "{{meses_garantia}}": valor = preContratoData.MesesGarantia.ToString(); break;
-                    case "{{poliza_garantia}}": valor = preContratoData.PolizaGarantia; break;
-                    //case "{{forma_pago}}": valor = formaPago?.Descripcion; break;
-                    case "{{cotizacion_numero}}": valor = cotizacion.Secuencial.ToString(); break;
-                    case "{{cotizacion_fecha}}": valor = cotizacion.FechaRegistro?.ToString("dd/MM/yyyy"); break;
-                    case "{{cotizacion_subtotal}}": valor = cotizacion.Subtotal.ToString("N2"); break;
-                    case "{{cotizacion_impuestos}}": valor = cotizacion.ValorImpuestos.ToString("N2"); break;
-                    case "{{cotizacion_total}}": valor = cotizacion.TotalConImpuestos.ToString("N2"); break;
-                    case "{{cotizacion_creado_por}}": valor = usuarioCreaCotizacion?.Nombre; break;
-                    case "{{proyecto_nombre}}": valor = visita?.Nombre; break;
-                    case "{{visita_nombre_obra}}": valor = visita?.Nombre; break;
-                    case "{{visita_fecha}}": valor = visita?.FechaRegistro?.ToString("dd/MM/yyyy"); break;
-                    case "{{empresa_nombre}}": valor = empresa?.Nombre; break;
-                    case "{{empresa_identificacion}}": valor = empresa?.Identificacion; break;
-                    case "{{empresa_direccion}}": valor = empresa?.Direccion; break;
-                    case "{{empresa_telefono}}": valor = empresa?.Telefono; break;
-                    case "{{nombres contrato}}": valor = constructora?.Nombre; break;
-                    case "{{cliente_nombre}}": valor = constructora?.Nombre; break;
-                    case "{{cliente_numero}}": valor = constructora?.Cliente?.NumeroCliente; break;
-                    case "{{cliente_direccion}}": valor = constructora?.Direccion; break;
-                    case "{{cliente_telefono}}": valor = constructora?.Telefono; break;
-                    case "{{cliente_correo}}": valor = constructora?.Correo; break;
-                    case "{{cliente_representante_legal}}": valor = constructora?.Administrador; break;
-                    case "{{contacto_nombre}}": valor = (contactoVisita?.Nombres + " " + contactoVisita?.Apellidos).Trim(); break;
-                    case "{{contacto_cargo}}": valor = contactoVisita?.Titulo; break;
-                    case "{{contacto_telefono}}": valor = contactoVisita?.Telefono; break;
-                    case "{{contacto_correo}}": valor = contactoVisita?.Correo; break;
-                    case "{{tabla_detalle_cotizacion}}":
-                        var tablaDetalleHtml = new StringBuilder();
-                        tablaDetalleHtml.Append("<table border='1' style='width:100%; border-collapse: collapse;'>");
-                        tablaDetalleHtml.Append("<tr><th style='padding: 8px; text-align: left;'>Detalle</th><th style='padding: 8px; text-align: right;'>Total</th></tr>");
-                        if (cotizacion.Cotizaciondetalles != null && cotizacion.Cotizaciondetalles.Any())
-                        {
-                            foreach (var item in cotizacion.Cotizaciondetalles)
-                            {
-                                tablaDetalleHtml.AppendFormat("<tr><td style='padding: 8px;'>{0}</td><td style='padding: 8px; text-align: right;'>{1:N2}</td></tr>", item.DetalleEquipo, item.Total);
-                            }
-                        }
-                        else
-                        {
-                            tablaDetalleHtml.Append("<tr><td colspan='2' style='padding: 8px; text-align: center;'>No hay detalles disponibles.</td></tr>");
-                        }
-                        tablaDetalleHtml.Append("</table>");
-                        valor = tablaDetalleHtml.ToString();
+                    // --- Generación de Tablas ---
+                    case "tablaespecificacionesequipo":
+                        dicTablas[key] = GenerarTablaEspecificaciones(equiposVisita);
+                        continue; 
+                    case "detalleinstalacionyducto":
+                        dicTablas[key] = GenerarTablaInstalacion(equiposVisita);
+                        continue;
+                    case "tabladepagosconfechasytotales":
+                        dicTablas[key] = GenerarTablaPagos(preContratoData); // Usamos la data del DTO por ahora, luego de la BD si aplica
+                        continue;
+
+                    // --- Datos de Texto ---
+                    case "diasdeentrega": valor = preContratoData.Dias.ToString(); break;
+                    case "aniosgarantia": valor = preContratoData.AniosGarantia.ToString(); break;
+                    case "mesesgarantia": valor = preContratoData.MesesGarantia.ToString(); break;
+                    case "periodomantenimiento": valor = preContratoData.PeriodoMantenimiento; break;
+                    case "polizagarantia": valor = preContratoData.PolizaGarantia; break;
+                    case "totalcontrato": valor = cotizacion.TotalConImpuestos.ToString("N2"); break;
+                    case "totalcontratoenterosenletras":
+                        var totalEnLetras = (int)Math.Truncate(cotizacion.TotalConImpuestos);
+                        valor = totalEnLetras.ToWords(new System.Globalization.CultureInfo("es")).ToUpper();
                         break;
-                    case "{{fecha_actual}}": valor = DateTime.Now.ToString("dd/MM/yyyy"); break;
-                    case "{{fecha_actual_larga}}": valor = DateTime.Now.ToLongDateString(); break;
+                    case "centavoscontrato":
+                        var centavos = (int)Math.Round((cotizacion.TotalConImpuestos - Math.Truncate(cotizacion.TotalConImpuestos)) * 100);
+                        valor = centavos.ToString("00");
+                        break;
+                    case "nombreproyecto": valor = visita?.Nombre; break;
+                    case "nombreproyectoenmayusculas": valor = visita?.Nombre?.ToUpper(); break;
+                    case "nombreprovincia": valor = visita?.SecProvinciaNavigation?.Nombre; break;
+                    case "nombrecanton": valor = visita?.SecCantonNavigation?.Nombre; break;
+                    case "nombreparroquia": valor = visita?.SecParroquiaNavigation?.Nombre; break;
+                    case "direccionproyecto": valor = visita?.Direccion; break;
+                    case "empresanombre": valor = empresa?.Nombre; break;
+                    case "empresaid": valor = empresa?.Identificacion; break;
+                    case "empresa_direccion": valor = empresa?.Direccion; break;
+                    case "empresa_telefono": valor = empresa?.Telefono; break;
+                    case "nombrecompletocliente": valor = constructora?.Nombre; break;
+                    case "identificacioncliente": valor = constructora?.Cliente?.NumeroCliente; break;
+                    case "clientedireccion": valor = constructora?.Direccion; break;
+                    case "clientetelefono": valor = constructora?.Telefono; break;
+                    case "clientecorreo": valor = constructora?.Correo; break;
+                    case "clienterepresentantelegal": valor = constructora?.Administrador; break;
+                    case "emailcontacto": valor = contactoVisita?.Correo; break;
+                    case "identificacioncontacto": valor = "No disponible"; break;
+                    case "marcaequipo": valor = equiposVisita.FirstOrDefault()?.Marca; break;
+                    case "numerodeparadas": valor = equiposVisita.FirstOrDefault()?.NumeroParadas.ToString(); break;
+                    case "cantidad": valor = equiposVisita.FirstOrDefault()?.Cantidad.ToString(); break;
+                    
+                    case "fechafirmacontratoenletras": valor = DateTime.Now.ToString("dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-ES")); break;
+                    case "fecha_actual": valor = DateTime.Now.ToString("dd/MM/yyyy"); break;
+                    case "fecha_actual_larga": valor = DateTime.Now.ToString("dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-ES")); break;
                 }
-                AddToDict(parametro.Parametro, valor);
+                
+                dicTexto[key] = valor ?? "";
             }
 
-            return diccionario;
+            return (dicTexto, dicTablas);
         }
 
-        // El método de depuración ya no es necesario, se elimina.
+        private Table GenerarTablaEspecificaciones(List<Equiposvisita> equipos)
+        {
+            var table = CreateBaseTable();
+            AddHeaderRow(table, "Cantidad", "Tipo Equipo", "Marca", "Motor", "Capacidad", "Paradas");
+
+            foreach (var e in equipos)
+            {
+                AddRow(table, 
+                    e.Cantidad.ToString(), 
+                    e.TipoEquipo ?? "", 
+                    e.Marca ?? "", 
+                    e.TipoMotor ?? "", 
+                    e.Capacidad.ToString(), 
+                    e.NumeroParadas.ToString());
+            }
+            return table;
+        }
+
+        private Table GenerarTablaInstalacion(List<Equiposvisita> equipos)
+        {
+            var table = CreateBaseTable();
+            AddHeaderRow(table, "Ducto", "Medidas", "Recorrido (m)", "Foso (m)", "Sala Máq.");
+
+            foreach (var e in equipos)
+            {
+                AddRow(table, 
+                    e.TipoDucto ?? "-", 
+                    e.MedidasAfducto ?? "-", 
+                    e.Recorrido.HasValue ? e.Recorrido.Value.ToString() : "-", 
+                    e.Foso.HasValue ? e.Foso.Value.ToString() : "-", 
+                    e.SalaMaquinas ?? "-");
+            }
+            return table;
+        }
+
+        private Table GenerarTablaPagos(PreContratoGeneratorDTO data)
+        {
+            var table = CreateBaseTable();
+            AddHeaderRow(table, "Detalle", "Monto", "Fecha Vencimiento");
+
+            // TODO: Cuando se conecte con BD real de pagos, iterar sobre PreContratoCompromisoPago
+            // Por ahora simulamos con el DTO si tuviera esa lista, o texto genérico si no
+             if (data is BLL.DTOs.PreContratoConPagosDTO dataConPagos && dataConPagos.CompromisosDePago != null)
+             {
+                 foreach(var pago in dataConPagos.CompromisosDePago)
+                 {
+                     AddRow(table, pago.Tipo, pago.Monto.ToString("N2"), pago.FechaVencimiento.ToString("dd/MM/yyyy"));
+                 }
+             }
+             else
+             {
+                 AddRow(table, "Anticipo", "---", "---");
+                 AddRow(table, "Saldo contra entrega", "---", "---");
+             }
+
+            return table;
+        }
+
+        // --- Helpers de OpenXML ---
+
+        private Table CreateBaseTable()
+        {
+            var table = new Table();
+            var tblPr = new TableProperties(
+                new TableStyle { Val = "TableGrid" }, // Estilo básico de Word
+                new TableWidth { Width = "5000", Type = TableWidthUnitValues.Pct }, // 100%
+                new TableBorders(
+                    new TopBorder { Val = BorderValues.Single, Size = 4 },
+                    new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                    new LeftBorder { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder { Val = BorderValues.Single, Size = 4 },
+                    new InsideHorizontalBorder { Val = BorderValues.Single, Size = 4 },
+                    new InsideVerticalBorder { Val = BorderValues.Single, Size = 4 }
+                )
+            );
+            table.AppendChild(tblPr);
+            return table;
+        }
+
+        private void AddHeaderRow(Table table, params string[] headers)
+        {
+            var tr = new TableRow();
+            foreach (var header in headers)
+            {
+                var tc = new TableCell(new Paragraph(new Run(new Text(header) { Space = SpaceProcessingModeValues.Preserve })));
+                tc.Append(new TableCellProperties(
+                    new Shading { Val = ShadingPatternValues.Clear, Fill = "E0E0E0" }, // Fondo gris
+                    new TableCellWidth { Type = TableWidthUnitValues.Auto }
+                ));
+                // Poner texto en negrita
+                tc.GetFirstChild<Paragraph>().GetFirstChild<Run>().RunProperties = new RunProperties(new Bold());
+                tr.Append(tc);
+            }
+            table.Append(tr);
+        }
+
+        private void AddRow(Table table, params string[] values)
+        {
+            var tr = new TableRow();
+            foreach (var val in values)
+            {
+                tr.Append(new TableCell(new Paragraph(new Run(new Text(val ?? "") { Space = SpaceProcessingModeValues.Preserve }))));
+            }
+            table.Append(tr);
+        }
+
+        public Task<PlaceholderDataDTO> ObtenerDatosParaPlaceholders(PreContratoGeneratorDTO preContratoData)
+        {
+            // Este método era para la vista previa HTML. Ya no es prioritario, pero se mantiene para compatibilidad
+            // si alguna UI lo llama. Implementación simplificada.
+            return Task.FromResult(new PlaceholderDataDTO());
+        }
     }
 }

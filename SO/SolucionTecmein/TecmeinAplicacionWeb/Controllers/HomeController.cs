@@ -89,7 +89,7 @@ public class HomeController : Controller
         try
         {
             string idUsuario = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            
+
             bool claveCambiada = await _usuarioServices.CambiarClave(int.Parse(idUsuario), modelo.claveActual, modelo.claveNueva);
 
             if (!claveCambiada)

@@ -20,7 +20,7 @@ namespace TecmeinAplicacionWeb.Controllers
         private readonly IMapper _mapper;
 
         public FinancieroController(
-            IPlanDePagoService planDePagoService, 
+            IPlanDePagoService planDePagoService,
             IPagoService pagoService, // Add dependency
             IMapper mapper)
         {
@@ -41,7 +41,7 @@ namespace TecmeinAplicacionWeb.Controllers
         public async Task<IActionResult> ListaPlanesPago()
         {
             // This method in the service now returns a DTO. Map it to a VM
-            var gResponse = new GenericResponse<List<PlanPagoDashboardVM>>(); 
+            var gResponse = new GenericResponse<List<PlanPagoDashboardVM>>();
             try
             {
                 var planesDto = await _pagoService.ObtenerPlanesDePagoParaDashboard();

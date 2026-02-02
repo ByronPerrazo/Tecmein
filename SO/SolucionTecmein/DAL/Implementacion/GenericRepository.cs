@@ -93,7 +93,7 @@ namespace DAL.Implementacion
                     query = query.Include(includeProperty);
                 }
             }
-            
+
             return await Task.FromResult(query);
         }
 

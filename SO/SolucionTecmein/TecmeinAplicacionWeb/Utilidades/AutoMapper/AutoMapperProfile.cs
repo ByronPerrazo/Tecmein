@@ -432,7 +432,13 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
                     opt => opt.MapFrom(origen => origen.SecCotizacionOriginal))
                 .ForMember(destino =>
                     destino.SecUsuarioModifica,
-                    opt => opt.MapFrom(origen => origen.SecUsuarioModifica));
+                    opt => opt.MapFrom(origen => origen.SecUsuarioModifica))
+                .ForMember(destino =>
+                    destino.FechaRegistro,
+                    opt => opt.MapFrom(origen => !string.IsNullOrEmpty(origen.FechaRegistro) ? DateTime.ParseExact(origen.FechaRegistro, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture) : (DateTime?)null))
+                .ForMember(destino =>
+                    destino.FechaModificacion,
+                    opt => opt.MapFrom(origen => !string.IsNullOrEmpty(origen.FechaModificacion) ? DateTime.ParseExact(origen.FechaModificacion, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture) : (DateTime?)null));
 
             CreateMap<Cotizaciondetalle, CotizaciondetalleVM>()
                 .ForMember(destino =>
@@ -547,7 +553,11 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
                 .ForMember(dest => dest.NombreUsuarioCarga,
                            opt => opt.MapFrom(src => src.IdUsuarioCargaNavigation.Nombre))
                 .ForMember(dest => dest.FechaFirma,
-                           opt => opt.MapFrom(src => src.FechaFirma.ToString("dd/MM/yyyy")));
+                           opt => opt.MapFrom(src => src.FechaFirma.ToString("dd/MM/yyyy")))
+                .ForMember(dest => dest.SecTipoDocumento,
+                           opt => opt.MapFrom(src => src.SecTipoDocumento))
+                .ForMember(dest => dest.DescripcionTipoDocumento,
+                           opt => opt.MapFrom(src => src.SecTipoDocumentoNavigation.Descripcion)); // Mapear la descripción del tipo de documento
 
             CreateMap<ContratoVM, Contrato>()
                 .ForMember(dest => dest.FechaFirma,
@@ -613,7 +623,7 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
             CreateMap<PlanDePago, PlanDePagoDTO>().ReverseMap();
             CreateMap<Cuota, CuotaDTO>().ReverseMap();
             CreateMap<Pago, PagoDTO>().ReverseMap();
-            
+
             // DTO to VM Mappings
             CreateMap<PlanDePagoDTO, PlanDePagoVM>();
             CreateMap<CuotaDTO, CuotaVM>();
@@ -659,6 +669,21 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
                 .ForMember(destino => destino.FechaRegistro, opt => opt.MapFrom(origen => DateTime.Now)); // Fecha de registro actual
             #endregion
 
+            CreateMap<ActivoCliente, ActivoClienteVM>()
+                .ForMember(destino => destino.NombreCliente,
+                           opt => opt.MapFrom(origen => origen.SecClienteNavigation.SecConstructoraNavigation.Nombre)) // Cliente no tiene Nombre, se obtiene de la Constructora asociada
+                .ForMember(destino => destino.ContratoOrigenNumero,
+                           opt => opt.MapFrom(origen => origen.SecContratoOrigenNavigation.IdContrato.ToString())) // Asumiendo IdContrato
+                .ForMember(destino => destino.FechaInstalacionString,
+                           opt => opt.MapFrom(origen => origen.FechaInstalacion.ToString("dd/MM/yyyy")));
+
+            CreateMap<ActivoClienteVM, ActivoCliente>()
+                .ForMember(destino => destino.SecClienteNavigation,
+                           opt => opt.Ignore())
+                .ForMember(destino => destino.SecContratoOrigenNavigation,
+                           opt => opt.Ignore())
+                .ForMember(destino => destino.FechaInstalacion,
+                           opt => opt.MapFrom(origen => DateTime.ParseExact(origen.FechaInstalacionString, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)));
         }
     }
 }

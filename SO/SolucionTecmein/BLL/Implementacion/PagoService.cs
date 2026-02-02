@@ -89,7 +89,7 @@ namespace BLL.Implementacion
             var saldoVencidoTotal = plan.Cuotas
                                         .Where(c => c.FechaVencimiento < DateTime.Now && c.Estado != "Pagada")
                                         .Sum(c => c.MontoEsperado - (c.MontoPagado ?? 0)); // Sum of outstanding balance for overdue
-            
+
             var detalleDTO = new DetallePlanPagoDTO
             {
                 IdPlanDePago = plan.IdPlanDePago,
@@ -171,7 +171,7 @@ namespace BLL.Implementacion
 
         public async Task<List<HistorialPagoCuotaDTO>> ObtenerHistorialPagosPorCuota(int idCuota)
         {
-            var cuota = await _dbContext.Cuotas.FirstOrDefaultAsync(c => c.IdCuota == idCuota );
+            var cuota = await _dbContext.Cuotas.FirstOrDefaultAsync(c => c.IdCuota == idCuota);
 
             if (cuota == null) throw new KeyNotFoundException("Cuota no encontrada.");
 

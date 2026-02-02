@@ -25,7 +25,7 @@ namespace DAL.Mcp
         public async Task<List<Dictionary<string, object>>> ExecuteDynamicQueryAsync(string sqlQuery)
         {
             var results = new List<Dictionary<string, object>>();
-            
+
             if (string.IsNullOrWhiteSpace(sqlQuery))
             {
                 _logger.LogWarning("Attempted to execute an empty or whitespace SQL query."); // Added

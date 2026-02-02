@@ -38,7 +38,7 @@ namespace BLL.Implementacion
                 bool seEdito = await _repositorio.Editar(registroExistente);
                 if (!seEdito)
                     throw new TaskCanceledException("No se pudo actualizar la configuración de almacenamiento.");
-                
+
                 return registroExistente;
             }
             else

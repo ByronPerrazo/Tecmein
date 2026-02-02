@@ -1,22 +1,22 @@
-
 using BLL.Interfaces;
 using Entity;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using HtmlAgilityPack;
 
 namespace BLL.Implementacion
 {
     public class EstrategiaPreContrato : IEstrategiaGeneradorDocumento
     {
         public string CodigoTipoDocumento => "PRECONTRATO";
+        private const string TablaPagosPlaceholder = "{{TablaDePagosConFechasYTotales}}";
 
         private readonly IPlantillaPreContratoServices _plantillaPreContratoServices;
         private readonly IPlantillaPreContratoParrafoServices _plantillaPreContratoParrafoServices;
@@ -31,102 +31,152 @@ namespace BLL.Implementacion
 
         public async Task<byte[]> Generar(int secPlantilla, object datos)
         {
-            // Phase 1: Fetching Template and Paragraphs
             PlantillaPreContrato plantilla = await _plantillaPreContratoServices.Obtener(secPlantilla);
-
             if (plantilla == null)
-            {
                 throw new Exception($"Plantilla de Pre-Contrato con ID {secPlantilla} no encontrada.");
-            }
 
-            var parrafos = await _plantillaPreContratoParrafoServices.Lista(secPlantilla);
+            var parrafoConContenido = (await _plantillaPreContratoParrafoServices.Lista(secPlantilla))
+                .FirstOrDefault(p => p.Contenido != null && p.Contenido.Length > 0);
+            if (parrafoConContenido == null)
+                throw new Exception($"No se encontró contenido de plantilla para la plantilla {secPlantilla}.");
 
-            if (parrafos == null || !parrafos.Any())
-            {
-                Console.WriteLine($"No se encontraron párrafos para la plantilla {secPlantilla}.");
-            }
+            byte[] templateBytes = parrafoConContenido.Contenido;
 
-            // Phase 2: Parameter Replacement
-            StringBuilder documentContentBuilder = new StringBuilder();
-            Type dataType = datos.GetType();
-
-            foreach (var p in parrafos.OrderBy(p => p.Orden)) // Assuming 'Orden' property exists
-            {
-                string processedContent = p.Contenido;
-
-                // Replace placeholders using reflection
-                foreach (PropertyInfo prop in dataType.GetProperties())
-                {
-                    string placeholder = "{{" + prop.Name + "}}";
-                    object value = prop.GetValue(datos);
-                    processedContent = processedContent.Replace(placeholder, value?.ToString() ?? string.Empty);
-                }
-                documentContentBuilder.AppendLine(processedContent);
-            }
-
-            // Phase 3: Word Document Generation using Open-XML-SDK
             using (MemoryStream memStream = new MemoryStream())
             {
-                using (WordprocessingDocument wordDocument = WordprocessingDocument.Create(memStream, WordprocessingDocumentType.Document, true))
+                await memStream.WriteAsync(templateBytes, 0, templateBytes.Length);
+
+                using (WordprocessingDocument wordDocument = WordprocessingDocument.Open(memStream, true))
                 {
-                    MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
-                    mainPart.Document = new Document();
-                    Body body = mainPart.Document.AppendChild(new Body());
+                    // 1. Handle complex placeholders like tables first
+                    HandleComplexPlaceholders(wordDocument, datos);
 
-                    HtmlDocument htmlDoc = new HtmlDocument();
-                    htmlDoc.LoadHtml("<body>" + documentContentBuilder.ToString() + "</body>");
-
-                    foreach (HtmlNode node in htmlDoc.DocumentNode.SelectNodes("//body//*"))
+                    // 2. Prepare dictionary for simple text replacements
+                    var simpleReplacements = new Dictionary<string, string>();
+                    Type dataType = datos.GetType();
+                    foreach (PropertyInfo prop in dataType.GetProperties())
                     {
-                        if (node.NodeType == HtmlNodeType.Element)
+                        // Only process simple types or strings, ignore collections
+                        if (!typeof(IEnumerable).IsAssignableFrom(prop.PropertyType) || prop.PropertyType == typeof(string))
                         {
-                            Paragraph p = new Paragraph();
-                            Run r = new Run();
-                            RunProperties rp = new RunProperties();
-                            
-                            switch (node.Name.ToLower())
-                            {
-                                case "h1":
-                                    rp.Append(new Bold());
-                                    rp.Append(new FontSize() { Val = "32" }); // 16pt
-                                    r.Append(rp);
-                                    r.Append(new Text(node.InnerText));
-                                    p.Append(r);
-                                    body.Append(p);
-                                    break;
-                                case "p":
-                                    r.Append(new Text(node.InnerText));
-                                    p.Append(r);
-                                    body.Append(p);
-                                    break;
-                                case "b":
-                                case "strong":
-                                    rp.Append(new Bold());
-                                    r.Append(rp);
-                                    r.Append(new Text(node.InnerText));
-                                    p.Append(r);
-                                    body.Append(p);
-                                    break;
-                                case "i":
-                                case "em":
-                                    rp.Append(new Italic());
-                                    r.Append(rp);
-                                    r.Append(new Text(node.InnerText));
-                                    p.Append(r);
-                                    body.Append(p);
-                                    break;
-                                case "u":
-                                    rp.Append(new Underline() { Val = UnderlineValues.Single });
-                                    r.Append(rp);
-                                    r.Append(new Text(node.InnerText));
-                                    p.Append(r);
-                                    body.Append(p);
-                                    break;
-                            }
+                            string placeholder = "{{" + prop.Name + "}}";
+                            object value = prop.GetValue(datos);
+                            simpleReplacements[placeholder] = value?.ToString() ?? string.Empty;
                         }
+                    }
+
+                    // 3. Perform simple text replacements everywhere
+                    await ReplaceInPart(wordDocument.MainDocumentPart, simpleReplacements);
+                    foreach (var headerPart in wordDocument.MainDocumentPart.HeaderParts)
+                    {
+                        await ReplaceInPart(headerPart, simpleReplacements);
+                    }
+                    foreach (var footerPart in wordDocument.MainDocumentPart.FooterParts)
+                    {
+                        await ReplaceInPart(footerPart, simpleReplacements);
                     }
                 }
                 return memStream.ToArray();
+            }
+        }
+
+        private void HandleComplexPlaceholders(WordprocessingDocument wordDoc, object datos)
+        {
+            // Find payment commitments property
+            var compromisosProp = datos.GetType().GetProperty("CompromisosDePago");
+            if (compromisosProp != null)
+            {
+                var compromisos = compromisosProp.GetValue(datos) as IEnumerable<PreContratoCompromisoPago>;
+                if (compromisos != null && compromisos.Any())
+                {
+                    // Find the paragraph containing the table placeholder in the main body
+                    var body = wordDoc.MainDocumentPart.Document.Body;
+                    var paraToReplace = body.Descendants<Paragraph>()
+                        .FirstOrDefault(p => p.InnerText.Contains(TablaPagosPlaceholder));
+
+                    if (paraToReplace != null)
+                    {
+                        // Create the table
+                        Table table = CreatePaymentTable(compromisos);
+                        // Replace paragraph with the table
+                        paraToReplace.Parent.InsertBefore(table, paraToReplace);
+                        paraToReplace.Remove();
+                    }
+                }
+            }
+        }
+
+        private Table CreatePaymentTable(IEnumerable<PreContratoCompromisoPago> compromisos)
+        {
+            Table table = new Table();
+
+            // Set table properties for borders
+            TableProperties props = new TableProperties(
+                new TableBorders(
+                    new TopBorder { Val = new EnumValue<BorderValues>(BorderValues.Single), Size = 6 },
+                    new BottomBorder { Val = new EnumValue<BorderValues>(BorderValues.Single), Size = 6 },
+                    new LeftBorder { Val = new EnumValue<BorderValues>(BorderValues.Single), Size = 6 },
+                    new RightBorder { Val = new EnumValue<BorderValues>(BorderValues.Single), Size = 6 },
+                    new InsideHorizontalBorder { Val = new EnumValue<BorderValues>(BorderValues.Single), Size = 6 },
+                    new InsideVerticalBorder { Val = new EnumValue<BorderValues>(BorderValues.Single), Size = 6 }
+                )
+            );
+            table.AppendChild(props);
+
+            // Create header row
+            TableRow headerRow = new TableRow();
+            headerRow.Append(CreateTableCell("Tipo", true), CreateTableCell("Fecha de Vencimiento", true), CreateTableCell("Monto", true));
+            table.Append(headerRow);
+
+            // Create data rows
+            foreach (var item in compromisos)
+            {
+                TableRow dataRow = new TableRow();
+                dataRow.Append(
+                    CreateTableCell(item.Tipo),
+                    CreateTableCell(item.FechaVencimiento.ToString("dd/MM/yyyy")),
+                    CreateTableCell(item.Monto.ToString("C")) // "C" for currency format
+                );
+                table.Append(dataRow);
+            }
+            return table;
+        }
+
+        private TableCell CreateTableCell(string text, bool isHeader = false)
+        {
+            var paragraph = new Paragraph(new Run(new Text(text)));
+            if (isHeader)
+            {
+                var runProperties = new RunProperties(new Bold());
+                paragraph.GetFirstChild<Run>().PrependChild(runProperties);
+            }
+            return new TableCell(paragraph);
+        }
+
+        private async Task ReplaceInPart(OpenXmlPart part, Dictionary<string, string> replacements)
+        {
+            string docText;
+            using (var reader = new StreamReader(part.GetStream()))
+            {
+                docText = await reader.ReadToEndAsync();
+            }
+
+            bool updated = false;
+            foreach (var replacement in replacements)
+            {
+                if (docText.Contains(replacement.Key))
+                {
+                    docText = docText.Replace(replacement.Key, replacement.Value);
+                    updated = true;
+                }
+            }
+
+            if (updated)
+            {
+                using (var writer = new StreamWriter(part.GetStream(FileMode.Create)))
+                {
+                    await writer.WriteAsync(docText);
+                }
             }
         }
     }

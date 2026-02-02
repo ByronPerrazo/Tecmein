@@ -2,7 +2,6 @@ using BLL.Interfaces;
 using DAL.Interfaces;
 using Entity;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace BLL.Implementacion
 {
@@ -11,13 +10,12 @@ namespace BLL.Implementacion
 
         private IGenericRepository<Rol> _repositorio;
         private IUsuarioServices _usuarioServices;
-        // private IPermisosRolServices _permisosRolServices; // ELIMINADO
 
-        public RolServices(IGenericRepository<Rol> repositorio, IUsuarioServices usuarioServices /*, IPermisosRolServices permisosRolServices */)
+        public RolServices(IGenericRepository<Rol> repositorio, IUsuarioServices usuarioServices)
         {
             _repositorio = repositorio;
             _usuarioServices = usuarioServices;
-            // _permisosRolServices = permisosRolServices; // ELIMINADO
+            _usuarioServices = usuarioServices;
         }
 
         public async Task<List<Rol>> Lista()

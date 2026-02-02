@@ -27,8 +27,8 @@ namespace TecmeinAplicacionWeb.Controllers
         private readonly TecmeindbContext _dbContext; // Changed from IGenericRepository<PlanDePago>
 
         public PagoController(
-            IPagoService pagoService, 
-            IMapper mapper, 
+            IPagoService pagoService,
+            IMapper mapper,
             IStorageServices storageService,
             TecmeindbContext dbContext) // Changed constructor parameter
         {
@@ -71,7 +71,7 @@ namespace TecmeinAplicacionWeb.Controllers
                     string numeroContrato = planDePago.IdContratoNavigation?.IdContrato.ToString() ?? "Desconocido";
                     string carpetaDestino = $"ComprobantesPago/{numeroCliente}/{numeroContrato}"; // Reconstructed path
                     string nombreArchivo = $"{Guid.NewGuid()}_{modelo.ComprobanteFile.FileName}";
-                
+
                     using (var stream = modelo.ComprobanteFile.OpenReadStream())
                     {
                         string urlArchivo = await _storageService.SubirStorage(stream, carpetaDestino, nombreArchivo);

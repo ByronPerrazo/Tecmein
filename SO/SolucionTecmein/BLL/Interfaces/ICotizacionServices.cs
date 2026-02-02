@@ -14,6 +14,6 @@ namespace BLL.Interfaces
         Task<bool> EnviarCorreoCliente(int idCotizacion);
         Task<byte[]> GenerarPdfCotizacion(int idCotizacion);
         Task<byte[]> GenerarPdfSolicitudEquipos(int idCotizacion);
-        
+
     }
 }

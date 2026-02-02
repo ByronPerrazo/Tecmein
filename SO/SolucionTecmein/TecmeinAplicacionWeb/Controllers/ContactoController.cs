@@ -65,7 +65,7 @@ namespace TecmeinWebApp.Controllers
             return new JsonResult(listaConstructorasVM, jsonOptions);
         }
 
-        
+
         [HttpGet]
         [ValidatePermission("LEER")]
         public async Task<IActionResult> ObtenerParaEditar(int secuencial)
@@ -160,7 +160,7 @@ namespace TecmeinWebApp.Controllers
             return StatusCode(StatusCodes.Status200OK, genericResponse);
         }
 
-       [HttpDelete]
+        [HttpDelete]
         [ValidatePermission("ELIMINAR")]
         public async Task<IActionResult> Eliminar(int secuencial)
         {

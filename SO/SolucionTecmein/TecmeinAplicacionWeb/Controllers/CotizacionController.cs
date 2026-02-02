@@ -220,7 +220,7 @@ namespace TecmeinWebApp.Controllers
             return StatusCode(StatusCodes.Status200OK, new { data = eventosVM });
         }
 
-                
+
     }
 }
 

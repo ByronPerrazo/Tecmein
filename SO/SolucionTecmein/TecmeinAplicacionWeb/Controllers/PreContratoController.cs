@@ -23,8 +23,9 @@ namespace TecmeinAplicacionWeb.Controllers
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly IPreContratoGeneratorService _preContratoGeneratorService;
+        private readonly ITipoDocumentoServices _tipoDocumentoServices; // Inyectado
 
-        public PreContratoController(IPreContratoServices preContratoService, ICotizacionServices cotizacionService, IFormaPagoServices formaPagoService, IPlantillaPreContratoServices plantillaPreContratoService, IPolizaGarantiaServices polizaGarantiaService, IMapper mapper, IConfiguration configuration, IPreContratoGeneratorService preContratoGeneratorService)
+        public PreContratoController(IPreContratoServices preContratoService, ICotizacionServices cotizacionService, IFormaPagoServices formaPagoService, IPlantillaPreContratoServices plantillaPreContratoService, IPolizaGarantiaServices polizaGarantiaService, IMapper mapper, IConfiguration configuration, IPreContratoGeneratorService preContratoGeneratorService, ITipoDocumentoServices tipoDocumentoServices)
         {
             _preContratoService = preContratoService;
             _cotizacionService = cotizacionService;
@@ -34,6 +35,7 @@ namespace TecmeinAplicacionWeb.Controllers
             _mapper = mapper;
             _configuration = configuration;
             _preContratoGeneratorService = preContratoGeneratorService;
+            _tipoDocumentoServices = tipoDocumentoServices;
         }
 
         [ValidatePermission("VER_MENU")]
@@ -97,56 +99,7 @@ namespace TecmeinAplicacionWeb.Controllers
             }
         }
 
-        [HttpGet]
-        [ValidatePermission("LEER")]
-        public async Task<IActionResult> ContenidoParrafo(int id)
-        {
-            try
-            {
-                var parrafo = await _preContratoService.ObtenerPrimerParrafo(id);
-                if (parrafo == null)
-                {
-                    return StatusCode(StatusCodes.Status404NotFound, new { estado = false, mensajes = "Contenido no encontrado." });
-                }
-                return StatusCode(StatusCodes.Status200OK, new { estado = true, objeto = new { contenido = parrafo.Contenido } });
-            }
-            catch (System.Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { estado = false, mensajes = ex.Message });
-            }
-        }
-
-        [HttpGet]
-        [ValidatePermission("LEER")]
-        public async Task<IActionResult> Editor(int id)
-        {
-            try
-            {
-                // Obtener el modelo base (sin párrafos) para el @Model de la vista
-                var preContrato = await _preContratoService.Obtener(id);
-                if (preContrato == null)
-                {
-                    // Considerar una página de error amigable
-                    return NotFound($"Pre-contrato con ID {id} no encontrado.");
-                }
-                var vmPreContrato = _mapper.Map<PreContratoVM>(preContrato);
-
-                // Obtener el contenido HTML por separado y pasarlo por ViewBag
-                string contenidoHtml = await _preContratoService.ObtenerContenidoHtml(id);
-                ViewBag.Contenido = contenidoHtml;
-
-                // Obtener la clave de TinyMCE desde la configuración
-                ViewBag.TinyMceApiKey = _configuration["ApiKeys:TinyMCE"];
-
-                return View(vmPreContrato);
-            }
-            catch (Exception ex)
-            {
-                // Loggear el error y mostrar una vista de error
-                // Log.Error(ex, "Error al cargar el editor para PreContrato ID {id}");
-                return View("Error"); // Asumiendo que tienes una vista de error genérica
-            }
-        }
+        // Método Editor eliminado (flujo DOCX)
 
         [HttpGet]
         [ValidatePermission("LEER")]
@@ -222,21 +175,24 @@ namespace TecmeinAplicacionWeb.Controllers
 
         [HttpPost]
         [ValidatePermission("ACTUALIZAR")]
-        public async Task<IActionResult> GuardarPreContrato([FromBody] GuardarPreContratoRequest request)
+        public async Task<IActionResult> SubirContratoFinal(int secPreContrato, IFormFile archivo)
         {
             try
             {
-                // Obtener el ID del usuario autenticado
-                var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (usuarioIdClaim == null || !int.TryParse(usuarioIdClaim.Value, out int usuarioId))
+                if (archivo == null || archivo.Length == 0)
+                    return Json(new { estado = false, mensajes = "Debe subir un archivo válido." });
+
+                // Validar extensión
+                var extension = Path.GetExtension(archivo.FileName).ToLower();
+                if (extension != ".docx")
+                    return Json(new { estado = false, mensajes = "Solo se permiten archivos DOCX." });
+
+                using (var stream = archivo.OpenReadStream())
                 {
-                    return Json(new { estado = false, mensajes = "Usuario no autenticado o ID de usuario inválido." });
+                    await _preContratoService.SubirContratoFinal(secPreContrato, stream);
                 }
 
-                // Llamar al servicio para guardar el pre-contrato con el nuevo contenido
-                await _preContratoService.ActualizarContenidoPreContrato(request.SecPreContrato, request.Contenido, usuarioId);
-
-                return Json(new { estado = true, mensajes = "Pre-contrato guardado exitosamente." });
+                return Json(new { estado = true, mensajes = "Contrato final guardado exitosamente." });
             }
             catch (Exception ex)
             {
@@ -244,13 +200,35 @@ namespace TecmeinAplicacionWeb.Controllers
             }
         }
 
+        [HttpGet]
+        [ValidatePermission("LEER")]
+        public async Task<IActionResult> DescargarContratoFinal(int id)
+        {
+             try
+             {
+                 // Como no tenemos método 'ObtenerContenido' público expuesto que devuelva el string raw, 
+                 // usamos 'ObtenerParaEdicion' o similar si expone el contenido, o agregamos método.
+                 // Hack rápido: Usar ObtenerParaEdicion que devuelve DTO, si DTO tiene contenido.
+                 // PreContratoParaEdicionDTO tiene Contenido?
+                 // Si no, necesitamos un método en servicio para obtener el documento final.
+                 // Dado que 'ObtenerPrimerParrafo' fue eliminado, necesitamos algo.
+                 // Por ahora, asumimos que el usuario solo descarga lo que Generó (GenerarPreContratoDocx)
+                 // o lo que Subió. Si subió, está en Base64 en la BD.
+                 // TODO: Implementar Descarga de lo subido.
+                 return StatusCode(StatusCodes.Status501NotImplemented, new { mensajes = "Descarga de contrato final no implementada aún." });
+             }
+             catch(Exception ex)
+             {
+                 return StatusCode(StatusCodes.Status500InternalServerError, new { estado = false, mensajes = ex.Message });
+             }
+        }
+
         [HttpPost]
-        [ValidatePermission("LEER")] // Generar vista previa es una acción de lectura
-        public async Task<IActionResult> GenerarVistaPrevia([FromBody] GenerarVistaPreviaRequest request)
+        [ValidatePermission("LEER")] // Generar un documento es una acción de lectura/exportación
+        public async Task<IActionResult> GenerarPreContratoDocx([FromBody] GenerarVistaPreviaRequest request)
         {
             try
             {
-                // Mapear el request a PreContratoGeneratorDTO
                 var preContratoData = new BLL.DTOs.PreContratoGeneratorDTO
                 {
                     SecCotizacion = request.SecCotizacion,
@@ -259,16 +237,20 @@ namespace TecmeinAplicacionWeb.Controllers
                     PeriodoMantenimiento = request.PeriodoMantenimiento,
                     AniosGarantia = request.AniosGarantia,
                     MesesGarantia = request.MesesGarantia,
-                    PolizaGarantia = request.PolizaGarantia
+                    PolizaGarantia = request.PolizaGarantia,
+                    SecTipoDocumento = request.SecTipoDocumento
                 };
 
-                string htmlPreview = await _preContratoGeneratorService.GenerarVistaPreviaHtml(preContratoData);
+                byte[] docxBytes = await _preContratoGeneratorService.GenerarVistaPreviaDocx(preContratoData);
 
-                return Json(new { estado = true, objeto = htmlPreview });
+                string fileName = $"PreContrato_COT-{request.SecCotizacion}_{DateTime.Now:yyyyMMddHHmmss}.docx";
+
+                return File(docxBytes, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", fileName);
             }
             catch (Exception ex)
             {
-                return Json(new { estado = false, mensajes = $"Error al generar la vista previa: {ex.Message}" });
+                // Devolvemos un error en formato JSON para que el cliente pueda manejarlo
+                return StatusCode(StatusCodes.Status500InternalServerError, new { estado = false, mensajes = $"Error al generar el documento: {ex.Message}" });
             }
         }
 
@@ -304,7 +286,7 @@ namespace TecmeinAplicacionWeb.Controllers
                     PolizaGarantia = request.PolizaGarantia
                 };
 
-                var preContratoCreado = await _preContratoService.CrearDesdeModal(entidad, usuarioId, request.ContenidoHtml);
+                var preContratoCreado = await _preContratoService.CrearDesdeModal(entidad, usuarioId);
                 if (preContratoCreado == null || preContratoCreado.SecPreContrato == 0)
                 {
                     return Json(new { estado = false, mensajes = "No se pudo crear el pre-contrato." });
@@ -318,46 +300,9 @@ namespace TecmeinAplicacionWeb.Controllers
             }
         }
 
-        [HttpPost]
-        [ValidatePermission("LEER")] // Generar vista previa es una acción de lectura
-        public async Task<IActionResult> GenerarVistaPreviaConPagos([FromBody] BLL.DTOs.PreContratoConPagosDTO dto)
-        {
-            try
-            {
-                string htmlPreview = await _preContratoService.GenerarVistaPreviaConPagos(dto);
-                return Json(new { estado = true, objeto = htmlPreview });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { estado = false, mensajes = $"Error al generar la vista previa: {ex.Message}" });
-            }
-        }
 
-        [HttpPost]
-        [ValidatePermission("CREAR")]
-        public async Task<IActionResult> CrearDesdeModalConPagos([FromBody] BLL.DTOs.PreContratoConPagosDTO dto)
-        {
-            try
-            {
-                var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (usuarioIdClaim == null || !int.TryParse(usuarioIdClaim.Value, out int usuarioId))
-                {
-                    return Json(new { estado = false, mensajes = "Usuario no autenticado o ID de usuario inválido." });
-                }
 
-                var preContratoCreado = await _preContratoService.CrearDesdeModalConPagos(dto, usuarioId);
-                if (preContratoCreado == null || preContratoCreado.SecPreContrato == 0)
-                {
-                    return Json(new { estado = false, mensajes = "No se pudo crear el pre-contrato." });
-                }
-
-                return Json(new { estado = true, mensajes = "Pre-contrato creado exitosamente." });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { estado = false, mensajes = ex.Message });
-            }
-        }
+        // Método CrearDesdeModalConPagos eliminado (viejo modal HTML)
 
         [HttpPost]
         [ValidatePermission("ACTUALIZAR")]
@@ -399,12 +344,25 @@ namespace TecmeinAplicacionWeb.Controllers
                 return Json(new { estado = false, mensajes = ex.Message });
             }
         }
+
+        [HttpGet]
+        [ValidatePermission("LEER")]
+        public async Task<IActionResult> ListaTipoDocumentos()
+        {
+            try
+            {
+                var lista = await _tipoDocumentoServices.Lista();
+                var tiposDocumento = lista.Where(td => td.EstaActivo == true)
+                                          .Select(td => new { value = td.SecTipoDocumento, text = td.Descripcion })
+                                          .ToList();
+                return StatusCode(StatusCodes.Status200OK, new { data = tiposDocumento });
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { success = false, message = ex.Message });
+            }
+        }
     }
 
-    // ViewModel interno para la solicitud de guardado
-    public class GuardarPreContratoRequest
-    {
-        public int SecPreContrato { get; set; }
-        public string Contenido { get; set; }
-    }
+        // GuardarPreContratoRequest eliminado
 }

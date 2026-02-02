@@ -135,7 +135,7 @@ namespace TecmeinWebApp.Controllers
             {
                 var lista = await _formaPagoServices.Lista();
                 var formasPago = lista.Where(fp => fp.EstaActivo == 1).Select(fp => new { value = fp.SecFormaPago, text = fp.Descripcion }).ToList();
-                
+
                 return StatusCode(StatusCodes.Status200OK, new { data = formasPago });
             }
             catch (System.Exception ex)

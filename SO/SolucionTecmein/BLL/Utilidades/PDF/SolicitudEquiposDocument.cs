@@ -46,11 +46,11 @@ namespace BLL.Utilidades.PDF
                         text.Span("Fecha de Solicitud: ").SemiBold();
                         text.Span($"{DateTime.Now:yyyy-MM-dd}");
                     });
-                     column.Item().Text(text =>
-                    {
-                        text.Span("Proyecto: ").SemiBold();
-                        text.Span(_cotizacion.SecVisitaNavigation?.Nombre ?? "N/A");
-                    });
+                    column.Item().Text(text =>
+                   {
+                       text.Span("Proyecto: ").SemiBold();
+                       text.Span(_cotizacion.SecVisitaNavigation?.Nombre ?? "N/A");
+                   });
                 });
             });
         }

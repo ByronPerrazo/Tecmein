@@ -5,6 +5,7 @@ namespace TecmeinAplicacionWeb.Models.ViewModels
         public int SecCotizacion { get; set; }
         public int SecFormaPago { get; set; }
         public int SecPlantillaPreContrato { get; set; }
+        public int SecTipoDocumento { get; set; }
         public decimal ValorContrato { get; set; }
         public decimal ValorAnticipo { get; set; }
         public string FechaAnticipo { get; set; } = string.Empty;

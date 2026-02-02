@@ -17,7 +17,7 @@ namespace Entity
         public decimal Monto { get; set; }
 
         public DateTime FechaVencimiento { get; set; }
-        
+
         public string Tipo { get; set; } // "Anticipo" o "Cuota"
 
         public DateTime FechaRegistro { get; set; } = DateTime.Now;

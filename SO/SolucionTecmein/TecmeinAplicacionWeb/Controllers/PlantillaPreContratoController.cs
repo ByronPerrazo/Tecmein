@@ -9,8 +9,7 @@ using System.Linq;
 using AutoMapper;
 using TecmeinWebApp.Utilidades.Response;
 using TecmeinWebApp.Utilidades.ViewComponents;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using DAL.Interfaces; // Añadido para IGenericRepository
 
 namespace TecmeinAplicacionWeb.Controllers
 {
@@ -19,7 +18,8 @@ namespace TecmeinAplicacionWeb.Controllers
         private readonly IPlantillaPreContratoServices _plantillaPreContratoServices;
         private readonly IPlantillaPreContratoParrafoServices _plantillaPreContratoParrafoServices;
         private readonly ITipoDocumentoServices _tipoDocumentoServices;
-        private readonly IPreContratoServices _preContratoServices; // Injected
+        private readonly IPreContratoServices _preContratoServices;
+        private readonly IGenericRepository<PreContratoCompromisoPago> _repositorioCompromisos; // Añadido
         private readonly IMapper _mapper;
         private readonly IGeneradorDocumentoService _generadorDocumentoService;
 
@@ -27,14 +27,16 @@ namespace TecmeinAplicacionWeb.Controllers
             IPlantillaPreContratoServices plantillaPreContratoServices,
             IPlantillaPreContratoParrafoServices plantillaPreContratoParrafoServices,
             ITipoDocumentoServices tipoDocumentoServices,
-            IPreContratoServices preContratoServices, // Injected
+            IPreContratoServices preContratoServices,
+            IGenericRepository<PreContratoCompromisoPago> repositorioCompromisos, // Añadido
             IMapper mapper,
             IGeneradorDocumentoService generadorDocumentoService)
         {
             _plantillaPreContratoServices = plantillaPreContratoServices;
             _plantillaPreContratoParrafoServices = plantillaPreContratoParrafoServices;
             _tipoDocumentoServices = tipoDocumentoServices;
-            _preContratoServices = preContratoServices; // Injected
+            _preContratoServices = preContratoServices;
+            _repositorioCompromisos = repositorioCompromisos; // Añadido
             _mapper = mapper;
             _generadorDocumentoService = generadorDocumentoService;
         }
@@ -142,13 +144,29 @@ namespace TecmeinAplicacionWeb.Controllers
                     return NotFound($"PreContrato con ID {secPreContrato} no encontrado.");
                 }
 
+                // Obtener compromisos de pago
+                var compromisos = (await _repositorioCompromisos.Consultar(c => c.SecPreContrato == secPreContrato))
+                                                                 .OrderBy(c => c.NumeroCuota)
+                                                                 .ToList();
+
                 var datos = new
                 {
+                    // Datos básicos y de navegación
                     SecPreContrato = preContrato.SecPreContrato,
                     FechaRegistro = preContrato.FechaRegistro.ToShortDateString(),
                     NombreObra = preContrato.SecCotizacionNavigation?.SecVisitaNavigation?.Nombre,
                     NombreCliente = preContrato.SecCotizacionNavigation?.SecVisitaNavigation?.SecEmpresaNavigation?.Nombre,
-                    NombreUsuario = preContrato.SecUsuarioCreaNavigation?.Nombre
+                    NombreUsuario = preContrato.SecUsuarioCreaNavigation?.Nombre,
+
+                    // Campos de negocio del PreContrato
+                    DiasDeEntrega = $"{preContrato.Dias} {preContrato.TipoDias}",
+                    AniosGarantia = preContrato.AniosGarantia,
+                    MesesGarantia = preContrato.MesesGarantia,
+                    PeriodoMantenimiento = preContrato.PeriodoMantenimiento,
+                    PolizaGarantia = preContrato.PolizaGarantia,
+
+                    // Lista para la tabla de pagos
+                    CompromisosDePago = compromisos
                 };
 
                 string codigoTipoDocumento = preContrato.SecPlantillaPreContratoNavigation.SecTipoDocumentoNavigation.Codigo;
@@ -198,33 +216,6 @@ namespace TecmeinAplicacionWeb.Controllers
             }
         }
 
-        public record MaquetarParrafoRequest(int secPlantillaPreContratoParrafo);
 
-        [HttpPost]
-        public async Task<IActionResult> MaquetarParrafo([FromBody] MaquetarParrafoRequest request)
-        {
-            try
-            {
-                if (request.secPlantillaPreContratoParrafo == 0)
-                {
-                    return StatusCode(StatusCodes.Status400BadRequest, new { estado = false, mensajes = "ID de párrafo no proporcionado." });
-                }
-
-                bool resultado = await _plantillaPreContratoServices.MaquetarParrafoAsync(request.secPlantillaPreContratoParrafo);
-
-                if (resultado)
-                {
-                    return StatusCode(StatusCodes.Status200OK, new { estado = true, mensajes = "Párrafo maquetado correctamente." });
-                }
-                else
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, new { estado = false, mensajes = "No se pudo maquetar el párrafo." });
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { estado = false, mensajes = $"Error al maquetar el párrafo: {ex.Message}" });
-            }
-        }
     }
 }

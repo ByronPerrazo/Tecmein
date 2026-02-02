@@ -1,0 +1,2 @@
+ALTER TABLE Contrato
+ADD COLUMN SecTipoDocumento INT NOT NULL;

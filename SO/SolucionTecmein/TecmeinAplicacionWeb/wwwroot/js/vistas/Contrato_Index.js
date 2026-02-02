@@ -225,6 +225,7 @@ $(document).ready(function () {
         },
         columns: [
             { data: "nombreProyecto" },
+            { data: "descripcionTipoDocumento" }, // Nueva columna
             { 
                 data: "fechaFirma",
                 render: function(data) {

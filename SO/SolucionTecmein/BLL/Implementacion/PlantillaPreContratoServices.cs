@@ -7,10 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Xml.Linq;
-using DocumentFormat.OpenXml.Packaging;
-using OpenXmlPowerTools;
-using System.Drawing.Imaging;
+using DocumentFormat.OpenXml.Packaging; // Añadido para Open XML SDK
 
 namespace BLL.Implementacion
 {
@@ -72,63 +69,54 @@ namespace BLL.Implementacion
         public async Task<(bool Exito, List<string> Advertencias)> CargarParrafosDesdeWordAsync(int secPlantillaPreContrato, Stream archivoStream)
         {
             var advertencias = new List<string>();
+            byte[] documentoBytes;
+            string textoDocumento = ""; // Para extraer placeholders
+
             try
             {
-                byte[] byteArray;
+                // Leer el stream del archivo directamente en un array de bytes
                 using (var memoryStream = new MemoryStream())
                 {
                     await archivoStream.CopyToAsync(memoryStream);
-                    byteArray = memoryStream.ToArray();
-                }
+                    documentoBytes = memoryStream.ToArray();
+                    memoryStream.Position = 0; // Reset para OpenXml
 
-                string htmlContent;
-                using (var wDoc = WordprocessingDocument.Open(new MemoryStream(byteArray), true)) // true para modo editable
-                {
-                    var settings = new HtmlConverterSettings()
+                    // Extraer texto del DOCX para identificar placeholders usando Open XML SDK
+                    // No se necesita el 'using' DocumentFormat.OpenXml.Wordprocessing; aquí para InnerText
+                    using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memoryStream, false)) // false para solo lectura
                     {
-                        ImageHandler = imageInfo =>
-                        {
-                            var extension = imageInfo.ContentType.Split('/')[1].ToLower();
-                            ImageFormat imageFormat = ImageFormat.Png; // Default
-                            if (extension == "gif") imageFormat = ImageFormat.Gif;
-                            else if (extension == "bmp") imageFormat = ImageFormat.Bmp;
-                            else if (extension == "jpeg" || extension == "jpg") imageFormat = ImageFormat.Jpeg;
-                            else if (extension == "tiff") imageFormat = ImageFormat.Tiff;
-
-                            byte[] imageBytes;
-                            using (var ms = new MemoryStream())
-                            {
-                                imageInfo.Bitmap.Save(ms, imageFormat);
-                                imageBytes = ms.ToArray();
-                            }
-
-                            var base64 = Convert.ToBase64String(imageBytes);
-                            return new XElement("img",
-                                new XAttribute("src", $"data:image/{extension};base64,{base64}"),
-                                imageInfo.ImgStyleAttribute);
-                        }
-                    };
-                    var htmlElement = HtmlConverter.ConvertToHtml(wDoc, settings);
-                    htmlContent = htmlElement.ToString();
-                }
-
-                var placeholdersValidos = (await _repositorioDiccionario.Consultar())
-                                          .Select(p => p.Parametro)
-                                          .ToHashSet();
-
-                var placeholdersEncontrados = Regex.Matches(htmlContent, @"{{(.*?)}}");
-                foreach (Match match in placeholdersEncontrados)
-                {
-                    if (!placeholdersValidos.Contains(match.Value))
-                    {
-                        advertencias.Add($"El placeholder '{{match.Value}}' no es válido.");
+                        textoDocumento = wordDoc.MainDocumentPart?.Document.Body?.InnerText ?? "";
                     }
                 }
+
+                // --- Lógica para detectar y añadir placeholders al DiccionarioParametro ---
+                var parametrosExistentes = (await _repositorioDiccionario.Consultar())
+                                           .ToDictionary(p => p.Parametro, p => p.Secuencial, StringComparer.OrdinalIgnoreCase);
+
+                var placeholdersEncontrados = Regex.Matches(textoDocumento, @"{{(.*?)}}"); // Usar textoDocumento
+                foreach (Match match in placeholdersEncontrados)
+                {
+                    string placeholderSinCorchetes = match.Groups[1].Value.Trim();
+
+                    if (!string.IsNullOrEmpty(placeholderSinCorchetes) && !parametrosExistentes.ContainsKey(placeholderSinCorchetes))
+                    {
+                        var nuevoParametro = new DiccionarioParametro
+                        {
+                            Parametro = placeholderSinCorchetes,
+                            Descripcion = $"Generado automáticamente desde plantilla ({DateTime.Now:yyyy-MM-dd HH:mm})",
+                            EstaActivo = true
+                        };
+                        await _repositorioDiccionario.Crear(nuevoParametro);
+                        parametrosExistentes.Add(placeholderSinCorchetes, nuevoParametro.Secuencial);
+                        advertencias.Add($"Placeholder '{placeholderSinCorchetes}' agregado automáticamente al diccionario.");
+                    }
+                }
+                // --- Fin Lógica placeholders ---
 
                 var nuevoParrafo = new PlantillaPreContratoParrafo
                 {
                     SecPlantillaPreContrato = secPlantillaPreContrato,
-                    Contenido = htmlContent,
+                    Contenido = documentoBytes, // Guardar los bytes del DOCX
                     Orden = 1,
                     EstaActivo = true
                 };
@@ -138,59 +126,8 @@ namespace BLL.Implementacion
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al procesar y convertir el archivo Word a HTML: " + ex.Message, ex);
+                throw new Exception("Error al procesar el archivo Word: " + ex.Message, ex);
             }
-        }
-
-        public async Task<string> MaquetarContenidoAsync(string htmlContent, int secPlantillaPreContrato)
-        {
-            // 1. Obtener la lista de placeholders válidos desde la base de datos
-            var placeholders = await _repositorioDiccionario.Consultar();
-            var placeholderInfo = placeholders.Select(p => $"'{p.Parametro}': {p.Descripcion}").ToList();
-            string placeholderList = string.Join("\n- ", placeholderInfo);
-
-            // 2. Construir el prompt para el MCP/LLM
-            string prompt = @$"Eres un asistente experto en la creación de plantillas de contratos.
-Tu tarea es tomar un bloque de HTML que representa un contrato y reemplazar los datos específicos (nombres, RUCs, fechas, valores) por los placeholders apropiados de la siguiente lista.
-No debes alterar la estructura HTML, solo reemplazar el texto de los datos.
-
-Lista de placeholders disponibles:
-- {placeholderList}
-
-Ahora, procesa el siguiente contenido HTML:
----
-{htmlContent}
----";
-
-            // 3. Simular la llamada al servicio del MCP/LLM
-            // TODO: En una implementación real, aquí se haría la llamada al API del modelo de lenguaje grande.
-            // Por ejemplo: string resultadoDelLLM = await _mcpService.GenerarTextoAsync(prompt);
-            
-            // Para esta demostración, simulamos el resultado reemplazando un valor conocido del ejemplo del usuario.
-            string resultadoSimulado = htmlContent.Replace("COLOMA ROMAN", "{{Nombre_Proyecto}}")
-                                                  .Replace("1791733649001", "{{Proyecto_identificacion}}");
-
-
-            // 4. Devolver el contenido modificado
-            return await Task.FromResult(resultadoSimulado);
-        }
-
-        public async Task<bool> MaquetarParrafoAsync(int secPlantillaPreContratoParrafo)
-        {
-            var parrafo = await _repositorioParrafos.Obtener(p => p.SecPlantillaPreContratoParrafo == secPlantillaPreContratoParrafo);
-            if (parrafo == null) throw new Exception("Párrafo de plantilla no encontrado.");
-
-            string htmlContentOriginal = parrafo.Contenido;
-            int secPlantilla = parrafo.SecPlantillaPreContrato;
-
-            // Reutilizar la lógica de maquetado que ya tenemos
-            string htmlContentMaquetado = await MaquetarContenidoAsync(htmlContentOriginal, secPlantilla);
-
-            // Actualizar el contenido del párrafo y guardarlo
-            parrafo.Contenido = htmlContentMaquetado;
-            await _repositorioParrafos.Editar(parrafo);
-
-            return true;
         }
     }
 }

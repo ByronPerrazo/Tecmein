@@ -16,21 +16,21 @@ namespace TecmeinWebApp.Controllers
         private readonly IUsuarioServices _usuarioServices;
         private readonly IGenericRepository<RolPermiso> _repositorioRolPermiso;
         private readonly IGenericRepository<RolMenu> _repositorioRolMenu; // NUEVO
-                private readonly IMenuServices _menuServices; // NUEVO
-                private readonly IAuditService _auditService; // AUDITORÍA
-        
-                public AccesoController(IUsuarioServices usuarioServices, 
-                                        IGenericRepository<RolPermiso> repositorioRolPermiso,
-                                        IGenericRepository<RolMenu> repositorioRolMenu, // NUEVO
-                                        IMenuServices menuServices, // NUEVO
-                                        IAuditService auditService) // AUDITORÍA
-                {
-                    _usuarioServices = usuarioServices;
-                    _repositorioRolPermiso = repositorioRolPermiso;
-                    _repositorioRolMenu = repositorioRolMenu; // NUEVO
-                    _menuServices = menuServices; // NUEVO
-                    _auditService = auditService; // AUDITORÍA
-                }
+        private readonly IMenuServices _menuServices; // NUEVO
+        private readonly IAuditService _auditService; // AUDITORÍA
+
+        public AccesoController(IUsuarioServices usuarioServices,
+                                IGenericRepository<RolPermiso> repositorioRolPermiso,
+                                IGenericRepository<RolMenu> repositorioRolMenu, // NUEVO
+                                IMenuServices menuServices, // NUEVO
+                                IAuditService auditService) // AUDITORÍA
+        {
+            _usuarioServices = usuarioServices;
+            _repositorioRolPermiso = repositorioRolPermiso;
+            _repositorioRolMenu = repositorioRolMenu; // NUEVO
+            _menuServices = menuServices; // NUEVO
+            _auditService = auditService; // AUDITORÍA
+        }
         public IActionResult Login()
         {
             if (HttpContext.User.Identity.IsAuthenticated)
