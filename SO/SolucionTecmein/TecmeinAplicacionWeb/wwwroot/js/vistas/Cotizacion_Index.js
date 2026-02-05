@@ -2,6 +2,7 @@ const MODELO_BASE = {
     secuencial: 0,
     secVisita: 0,
     nombreObra: "",
+    tipoContrato: "",
     nombreContacto: "",
     enviadoProveedor: false,
     enviadoCliente: false,
@@ -81,7 +82,7 @@ function calcularFilaDetalle(fila) {
 
 function calcularTotalesGenerales() {
     let subtotal = 0;
-    $('.total-fila').each(function() { subtotal += parseFloat($(this).text()) || 0; });
+    $('.total-fila').each(function () { subtotal += parseFloat($(this).text()) || 0; });
     $('#spanSubtotal').text(subtotal.toFixed(2));
 
     const calculosImpuestos = calcularImpuestosEnFrontend(subtotal);
@@ -99,7 +100,7 @@ function handleVisitaChange(visitaId, idCotizacionActual) {
         fetch(`/Cotizacion/VerificarVisita?visitaId=${visitaId}`)
             .then(response => response.ok ? response.json() : Promise.reject(response))
             .then(responseJson => {
-                if(responseJson.valor) {
+                if (responseJson.valor) {
                     toastr.warning(`La visita seleccionada ya tiene una cotización activa.`);
                 } else {
                     $('#btnGuardar').prop('disabled', false);
@@ -126,7 +127,7 @@ function handleVisitaChange(visitaId, idCotizacionActual) {
         // If we are editing, the save button should be enabled by default
         $('#btnGuardar').prop('disabled', false);
     }
-    
+
     fetch(`/Visita/ObtenerDetalleVisita?secuencialVisita=${visitaId}`)
         .then(response => response.ok ? response.json() : Promise.reject(response))
         .then(responseJson => {
@@ -156,6 +157,7 @@ function handleVisitaChange(visitaId, idCotizacionActual) {
 function limpiarModal() {
     $("#txtId").val("0");
     $("#cboVisita").val("");
+    $("#cboTipoContrato").val("");
     $('#txtNombreObra').val('');
     $("#tbDetalles tbody").empty();
     $('#visitDetailsContent, #hrContactDetails, #contactDetailsContent, #hrUserGenerator, #userGeneratorContent').hide();
@@ -170,6 +172,12 @@ function mostrarModal(modelo = MODELO_BASE) {
     limpiarModal();
     $("#txtId").val(modelo.secuencial);
     $("#cboVisita").val(modelo.secVisita);
+    // Usamos secTipoDocumento si existe, si no, intentamos por texto (compatibilidad legacy) o dejamos vacío
+    if (modelo.secTipoDocumento && modelo.secTipoDocumento > 0) {
+        $("#cboTipoContrato").val(modelo.secTipoDocumento);
+    } else {
+        $("#cboTipoContrato").val("");
+    }
     $("#txtNombreObra").val(modelo.nombreObra);
     $("#pUsuarioCotizador").text(modelo.nombreUsuario || "N/A");
     $("#pUsuarioModifica").text(modelo.nombreUsuarioModifica || "N/A");
@@ -204,7 +212,7 @@ function mostrarModal(modelo = MODELO_BASE) {
         $("#cboVisita").off('change');
         $("#cboVisita").val(modelo.secVisita);
         // Rebind the change event after setting the value
-        $("#cboVisita").on('change', function() {
+        $("#cboVisita").on('change', function () {
             handleVisitaChange($(this).val(), parseInt($('#txtId').val()));
         });
         // Manually trigger the logic for obtaining visit details, but not equipment if editing
@@ -243,6 +251,7 @@ $(document).ready(function () {
         },
         "columns": [
             { data: "secuencial", visible: false },
+            { data: "tipoContrato" },
             { data: "nombreObra" },
             { data: "nombreContacto" },
             { data: "enviadoProveedor", render: function (data) { return data ? '<span class="badge badge-success">Sí</span>' : '<span class="badge badge-danger">No</span>'; } },
@@ -292,6 +301,21 @@ $(document).ready(function () {
         },
     });
 
+    // Cargar Tipos de Documento para el combo
+    fetch('/TipoDocumento/Lista') // Asumiendo que existe el endpoint estándar
+        .then(response => response.ok ? response.json() : Promise.reject(response))
+        .then(responseJson => {
+            const tipos = responseJson.data.$values || responseJson.data;
+            const cbo = $('#cboTipoContrato');
+            cbo.empty().append('<option value="">Seleccione...</option>');
+            if (tipos && Array.isArray(tipos)) {
+                tipos.forEach(t => {
+                    // Filtrar solo activos si es necesario, aunque el endpoint suele filtrar.
+                    if (t.estaActivo) cbo.append(`<option value="${t.secTipoDocumento}">${t.descripcion}</option>`);
+                });
+            }
+        }).catch(err => console.error("Error al cargar Tipos de Documento", err));
+
     fetch('/Visita/ListaParaCotizacion')
         .then(response => response.ok ? response.json() : Promise.reject(response))
         .then(respuestaJson => {
@@ -305,7 +329,7 @@ $(document).ready(function () {
             }
         }).catch(err => manejarErrorFetch(err, "Carga de Visitas"));
 
-    $('#cboVisita').change(function() {
+    $('#cboVisita').change(function () {
         handleVisitaChange($(this).val(), parseInt($('#txtId').val()));
     });
 
@@ -402,6 +426,10 @@ $(document).ready(function () {
         const modelo = structuredClone(MODELO_BASE);
         modelo.secuencial = parseInt($('#txtId').val());
         modelo.secVisita = parseInt($('#cboVisita').val());
+        // modelo.tipoContrato se mantiene por compatibilidad si es necesario, o se envía vacío/texto
+        // Pero lo importante es secTipoDocumento
+        modelo.secTipoDocumento = parseInt($('#cboTipoContrato').val());
+        modelo.tipoContrato = $('#cboTipoContrato option:selected').text(); // Guardamos el nombre como backup en el campo string antiguo
         modelo.enviadoProveedor = $('#chkEnviadoProveedor').is(':checked');
         modelo.enviadoCliente = $('#chkEnviadoCliente').is(':checked');
 
@@ -483,28 +511,47 @@ $(document).ready(function () {
     });
 
     $("#tbdata tbody").on("click", ".btn-eliminar", function () {
-        // ...
-        Swal.fire({ /* ... */ }).then((result) => {
-            if (result.isConfirmed) {
-                $(".showSweetAlert").LoadingOverlay("show");
-                fetch(`/Cotizacion/Eliminar?id=${data.secuencial}`, { method: "DELETE" })
+        let fila;
+        if ($(this).closest("tr").hasClass("child")) {
+            fila = $(this).closest("tr").prev();
+        } else {
+            fila = $(this).closest("tr");
+        }
+        const data = tablaData.row(fila).data();
+
+        Swal.fire({
+            title: "¿Está seguro?",
+            text: `Eliminar la cotización de la obra "${data.nombreObra}"`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sí, eliminar",
+            cancelButtonText: "Cancelar",
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                return fetch(`/Cotizacion/Eliminar?secuencial=${data.secuencial}`, { method: "DELETE" })
                     .then(response => {
-                        $(".showSweetAlert").LoadingOverlay("hide");
-                        if (!response.ok) return response.json().then(err => Promise.reject(err));
+                        if (!response.ok) {
+                            return response.json().then(error => { throw new Error(error.mensajes || "Error al eliminar") });
+                        }
                         return response.json();
                     })
-                    .then(responseJson => {
-                        if (responseJson.estado) {
-                            tablaData.row(fila).remove().draw();
-                            Swal.fire('Listo!', 'La cotización fue eliminada.', 'success');
-                        } else {
-                            Swal.fire('Error', responseJson.mensajes, 'error');
-                        }
-                    })
-                    .catch(err => {
-                        $(".showSweetAlert").LoadingOverlay("hide");
-                        manejarErrorFetch(err, "Eliminar Cotización");
+                    .catch(error => {
+                        Swal.showValidationMessage(
+                            `Error: ${error.message}`
+                        );
                     });
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.isConfirmed) {
+                if (result.value && result.value.estado) {
+                    tablaData.row(fila).remove().draw(false);
+                    Swal.fire('Listo!', 'La cotización fue eliminada.', 'success');
+                } else if (result.value && !result.value.estado) {
+                    Swal.fire('Error', result.value.mensajes, 'error');
+                }
             }
         });
     });

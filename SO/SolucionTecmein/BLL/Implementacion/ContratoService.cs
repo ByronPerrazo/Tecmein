@@ -68,11 +68,34 @@ namespace BLL.Implementacion
                 // Determinar el cliente y la cotización a asociar
                 if (dto.IdCotizacion.HasValue && dto.IdCotizacion > 0)
                 {
-                    var cotizacion = await _dbContext.Cotizacion.Include(c => c.SecVisitaNavigation).ThenInclude(v => v.SecConstructoraNavigation).FirstOrDefaultAsync(c => c.Secuencial == dto.IdCotizacion.Value);
-                    if (cotizacion == null) throw new Exception("La cotización especificada no fue encontrada.");
-                    if (cotizacion.SecVisitaNavigation?.SecConstructora == null) throw new Exception("La visita de la cotización debe tener una constructora asociada.");
+                    var cotizacion = await _dbContext.Cotizacion
+                        .Include(c => c.SecVisitaNavigation)
+                            .ThenInclude(v => v.SecConstructoraNavigation)
+                        .Include(c => c.SecVisitaNavigation)
+                            .ThenInclude(v => v.Contactovisita)
+                                .ThenInclude(cv => cv.SecContactoNavigation)
+                        .FirstOrDefaultAsync(c => c.Secuencial == dto.IdCotizacion.Value);
 
-                    var cliente = await _clienteServices.ObtenerOCrearPorConstructora(cotizacion.SecVisitaNavigation.SecConstructora.Value);
+                    if (cotizacion == null) throw new Exception("La cotización especificada no fue encontrada.");
+                    
+                    int? secConstructora = cotizacion.SecVisitaNavigation?.SecConstructora;
+
+                    // Lógica de respaldo: Si SecConstructora es nulo, buscar a través de ContactoVisita
+                    if (secConstructora == null)
+                    {
+                        var contactoVisita = cotizacion.SecVisitaNavigation?.Contactovisita?.FirstOrDefault();
+                        if (contactoVisita?.SecContactoNavigation?.SecConstructora != null)
+                        {
+                            secConstructora = contactoVisita.SecContactoNavigation.SecConstructora;
+                            
+                            // Opcional: Actualizar el campo en Visita para futuras referencias
+                            // cotizacion.SecVisitaNavigation.SecConstructora = secConstructora;
+                        }
+                    }
+
+                    if (secConstructora == null) throw new Exception("La visita de la cotización debe tener una constructora asociada.");
+
+                    var cliente = await _clienteServices.ObtenerOCrearPorConstructora(secConstructora.Value);
                     if (cliente == null) throw new Exception("No se pudo obtener o crear el cliente a partir de la constructora.");
 
                     // Actualizar el nombre de la obra en la visita si se proporciona
@@ -101,6 +124,20 @@ namespace BLL.Implementacion
                     throw new Exception("Datos insuficientes. Se requiere una IdCotizacion o un SecCliente.");
                 }
 
+                // Recuperar SecTipoDocumento desde PreContrato si no viene en el DTO
+                int? secTipoDocumentoFinal = dto.SecTipoDocumento > 0 ? dto.SecTipoDocumento : (int?)null;
+                
+                if ((secTipoDocumentoFinal == null || secTipoDocumentoFinal == 0) && idCotizacionFinal > 0)
+                {
+                    var preContratoOrigen = await _repositorioPreContrato.Consultar(p => p.SecCotizacion == idCotizacionFinal && p.Estado == "Aprobado");
+                    var preContratoConPlantilla = await preContratoOrigen.Include(p => p.SecPlantillaPreContratoNavigation).FirstOrDefaultAsync();
+                    
+                    if (preContratoConPlantilla != null && preContratoConPlantilla.SecPlantillaPreContratoNavigation != null)
+                    {
+                        secTipoDocumentoFinal = preContratoConPlantilla.SecPlantillaPreContratoNavigation.SecTipoDocumento;
+                    }
+                }
+
                 // Crear la entidad Contrato
                 Contrato contrato = new Contrato
                 {
@@ -108,7 +145,7 @@ namespace BLL.Implementacion
                     SecCliente = secClienteFinal,
                     FechaFirma = dto.FechaFirma,
                     IdUsuarioCarga = dto.IdUsuarioCarga,
-                    SecTipoDocumento = dto.SecTipoDocumento,
+                    SecTipoDocumento = secTipoDocumentoFinal, // Usar valor calculado
                     NombreArchivo = dto.NombreArchivo,
                     RutaArchivo = "",
                     FechaCreacion = DateTime.Now,
@@ -119,7 +156,7 @@ namespace BLL.Implementacion
                 if (contratoCreado.IdContrato == 0) throw new Exception("No se pudo crear el registro del contrato.");
 
                 // Obtener el tipo de documento del contrato creado
-                var tipoContratoCreado = await _tipoDocumentoServices.Obtener(contratoCreado.SecTipoDocumento);
+                var tipoContratoCreado = await _tipoDocumentoServices.Obtener(contratoCreado.SecTipoDocumento.GetValueOrDefault());
 
                 // --- Lógica para generación automática de Contrato de Garantía si el contrato es de VENTA ---
                 if (tipoContratoCreado != null && tipoContratoCreado.Codigo == "VENTA")

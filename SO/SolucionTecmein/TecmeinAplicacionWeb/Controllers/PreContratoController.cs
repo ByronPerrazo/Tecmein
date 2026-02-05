@@ -229,7 +229,7 @@ namespace TecmeinAplicacionWeb.Controllers
         {
             try
             {
-                var preContratoData = new BLL.DTOs.PreContratoGeneratorDTO
+                var preContratoData = new BLL.DTOs.PreContratoConPagosDTO
                 {
                     SecCotizacion = request.SecCotizacion,
                     Dias = request.Dias,
@@ -238,7 +238,8 @@ namespace TecmeinAplicacionWeb.Controllers
                     AniosGarantia = request.AniosGarantia,
                     MesesGarantia = request.MesesGarantia,
                     PolizaGarantia = request.PolizaGarantia,
-                    SecTipoDocumento = request.SecTipoDocumento
+                    SecTipoDocumento = request.SecTipoDocumento,
+                    CompromisosDePago = request.CompromisosDePago
                 };
 
                 byte[] docxBytes = await _preContratoGeneratorService.GenerarVistaPreviaDocx(preContratoData);

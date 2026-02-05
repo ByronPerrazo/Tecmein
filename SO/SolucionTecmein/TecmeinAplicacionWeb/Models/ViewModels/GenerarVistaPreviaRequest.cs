@@ -17,5 +17,6 @@ namespace TecmeinAplicacionWeb.Models.ViewModels
         public int AniosGarantia { get; set; }
         public int MesesGarantia { get; set; }
         public string PolizaGarantia { get; set; } = string.Empty;
+        public System.Collections.Generic.List<BLL.DTOs.CompromisoPagoDTO> CompromisosDePago { get; set; } = new System.Collections.Generic.List<BLL.DTOs.CompromisoPagoDTO>();
     }
 }

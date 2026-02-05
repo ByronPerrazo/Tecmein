@@ -23,5 +23,10 @@ namespace Entity
         public bool? EstaActivo { get; set; }
 
         public DateTime? FechaRegistro { get; set; }
+
+        public int? SecPlantilla { get; set; }
+
+        [ForeignKey("SecPlantilla")]
+        public virtual PlantillaPreContrato? SecPlantillaNavigation { get; set; }
     }
 }

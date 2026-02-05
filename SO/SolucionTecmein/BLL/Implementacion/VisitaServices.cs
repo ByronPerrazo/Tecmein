@@ -192,7 +192,7 @@ namespace BLL.Implementacion
             return await visitasQuery.AsNoTracking().ToListAsync();
         }
 
-        public async Task<bool> CambiarEtapa(int secVisita, string nuevoCodigoEtapa)
+        public async Task<bool> CambiarEtapa(int secVisita, string nuevoCodigoEtapa, bool permitirRetroceso = false)
         {
             try
             {
@@ -204,15 +204,17 @@ namespace BLL.Implementacion
 
                 if (nuevaEtapa == null) throw new KeyNotFoundException("La nueva etapa no es válida.");
 
-                // Regla de negocio: Si la etapa actual es "SEG", no se puede retroceder a "COT".
-                if (etapaActual.Codigo == "SEG" && nuevoCodigoEtapa == "COT")
+                // Regla de negocio: Si la etapa actual es "SEG", no se puede retroceder a "COT" (SALVO que sea rollback).
+                if (etapaActual.Codigo == "SEG" && nuevoCodigoEtapa == "COT" && !permitirRetroceso)
                 {
                     // No se hace nada, se mantiene en SEG
-                    return true; // Se considera exitoso porque no se necesita cambiar
+                    return true; 
                 }
 
                 // Regla de negocio general: No se puede retroceder en el flujo de etapas (basado en orden).
-                if (nuevaEtapa.Orden < etapaActual.Orden)
+                // Excepción 1: Se puede mover a "RCH" (Rechazada) desde cualquier etapa.
+                // Excepción 2: Se permite retroceso si el flag permitirRetroceso es true.
+                if (nuevaEtapa.Orden < etapaActual.Orden && nuevoCodigoEtapa != "RCH" && !permitirRetroceso)
                 {
                     throw new InvalidOperationException("No se puede retroceder a una etapa anterior.");
                 }

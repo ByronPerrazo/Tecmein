@@ -74,11 +74,14 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
 
             CreateMap<TipoDocumento, TipoDocumentoVM>()
                 .ForMember(destino => destino.FechaRegistro,
-                           opt => opt.MapFrom(origen => origen.FechaRegistro.HasValue ? origen.FechaRegistro.Value.ToString("dd/MM/yyyy") : null));
+                           opt => opt.MapFrom(origen => origen.FechaRegistro.HasValue ? origen.FechaRegistro.Value.ToString("dd/MM/yyyy") : null))
+                .ForMember(destino => destino.NombrePlantilla,
+                           opt => opt.MapFrom(origen => origen.SecPlantillaNavigation != null ? origen.SecPlantillaNavigation.Nombre : "Ninguna"));
 
             CreateMap<TipoDocumentoVM, TipoDocumento>()
                 .ForMember(destino => destino.FechaRegistro,
-                           opt => opt.MapFrom(origen => !string.IsNullOrEmpty(origen.FechaRegistro) ? DateTime.ParseExact(origen.FechaRegistro, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture) : (DateTime?)null));
+                           opt => opt.MapFrom(origen => !string.IsNullOrEmpty(origen.FechaRegistro) ? DateTime.ParseExact(origen.FechaRegistro, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture) : (DateTime?)null))
+                .ForMember(destino => destino.SecPlantillaNavigation, opt => opt.Ignore());
 
             CreateMap<Provincia, ProvinciaVM>().ReverseMap();
             CreateMap<Canton, CantonVM>().ReverseMap();
@@ -557,7 +560,7 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
                 .ForMember(dest => dest.SecTipoDocumento,
                            opt => opt.MapFrom(src => src.SecTipoDocumento))
                 .ForMember(dest => dest.DescripcionTipoDocumento,
-                           opt => opt.MapFrom(src => src.SecTipoDocumentoNavigation.Descripcion)); // Mapear la descripción del tipo de documento
+                           opt => opt.MapFrom(src => src.SecTipoDocumentoNavigation != null ? src.SecTipoDocumentoNavigation.Descripcion : "Sin Tipo")); // Mapear la descripción del tipo de documento
 
             CreateMap<ContratoVM, Contrato>()
                 .ForMember(dest => dest.FechaFirma,

@@ -30,10 +30,28 @@ namespace BLL.Implementacion
 
         public async Task<byte[]> GenerarVistaPreviaDocx(PreContratoGeneratorDTO preContratoData)
         {
-            var plantilla = await _context.PlantillaPreContratos
+            // 1. Obtener TipoDocumento para ver si tiene plantilla explícita
+            var tipoDocumento = await _context.TipoDocumentos.FindAsync(preContratoData.SecTipoDocumento);
+
+            PlantillaPreContrato? plantilla = null;
+
+            if (tipoDocumento != null && tipoDocumento.SecPlantilla.HasValue)
+            {
+                // Estrategia Prioritaria: Cargar la plantilla vinculada explícitamente
+                plantilla = await _context.PlantillaPreContratos
+                                          .Include(p => p.PlantillaPreContratoParrafos)
+                                          .AsNoTracking()
+                                          .FirstOrDefaultAsync(p => p.SecPlantillaPreContrato == tipoDocumento.SecPlantilla && p.EstaActivo == 1);
+            }
+
+            if (plantilla == null)
+            {
+                // Estrategia Fallback: Buscar plantilla por relación inversa (legacy)
+                plantilla = await _context.PlantillaPreContratos
                                           .Include(p => p.PlantillaPreContratoParrafos)
                                           .AsNoTracking()
                                           .FirstOrDefaultAsync(p => p.SecTipoDocumento == preContratoData.SecTipoDocumento && p.EstaActivo == 1);
+            }
 
             if (plantilla == null || !plantilla.PlantillaPreContratoParrafos.Any())
             {
@@ -260,7 +278,7 @@ namespace BLL.Implementacion
                     case "empresa_direccion": valor = empresa?.Direccion; break;
                     case "empresa_telefono": valor = empresa?.Telefono; break;
                     case "nombrecompletocliente": valor = constructora?.Nombre; break;
-                    case "identificacioncliente": valor = constructora?.Cliente?.NumeroCliente; break;
+                    case "identificacioncliente": valor = constructora?.Ruc ?? constructora?.Cliente?.NumeroCliente; break;
                     case "clientedireccion": valor = constructora?.Direccion; break;
                     case "clientetelefono": valor = constructora?.Telefono; break;
                     case "clientecorreo": valor = constructora?.Correo; break;
@@ -322,14 +340,15 @@ namespace BLL.Implementacion
             var table = CreateBaseTable();
             AddHeaderRow(table, "Detalle", "Monto", "Fecha Vencimiento");
 
-            // TODO: Cuando se conecte con BD real de pagos, iterar sobre PreContratoCompromisoPago
-            // Por ahora simulamos con el DTO si tuviera esa lista, o texto genérico si no
-             if (data is BLL.DTOs.PreContratoConPagosDTO dataConPagos && dataConPagos.CompromisosDePago != null)
+             if (data is BLL.DTOs.PreContratoConPagosDTO dataConPagos && dataConPagos.CompromisosDePago != null && dataConPagos.CompromisosDePago.Any())
              {
                  foreach(var pago in dataConPagos.CompromisosDePago)
                  {
-                     AddRow(table, pago.Tipo, pago.Monto.ToString("N2"), pago.FechaVencimiento.ToString("dd/MM/yyyy"));
+                     AddRow(table, pago.Tipo, pago.Monto.ToString("N2"), pago.FechaVencimiento.ToString("dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-ES"))); 
                  }
+                 // Agregar fila de Total
+                 decimal total = dataConPagos.CompromisosDePago.Sum(p => p.Monto);
+                 AddRowTotal(table, "TOTAL:", total.ToString("N2"), "");
              }
              else
              {
@@ -338,6 +357,28 @@ namespace BLL.Implementacion
              }
 
             return table;
+        }
+
+        private void AddRowTotal(Table table, string label, string amount, string date)
+        {
+            var tr = new TableRow();
+            
+            // Label
+            var tcLabel = new TableCell(new Paragraph(new Run(new Text(label) { Space = SpaceProcessingModeValues.Preserve })));
+            tcLabel.Append(new TableCellProperties(new GridSpan { Val = 1 })); 
+            tcLabel.GetFirstChild<Paragraph>().GetFirstChild<Run>().RunProperties = new RunProperties(new Bold());
+            tr.Append(tcLabel);
+
+            // Amount
+            var tcAmount = new TableCell(new Paragraph(new Run(new Text(amount) { Space = SpaceProcessingModeValues.Preserve })));
+            tcAmount.Append(new TableCellProperties(new GridSpan { Val = 1 })); 
+            tcAmount.GetFirstChild<Paragraph>().GetFirstChild<Run>().RunProperties = new RunProperties(new Bold());
+            tr.Append(tcAmount);
+
+            // Date (Empty)
+            tr.Append(new TableCell(new Paragraph(new Run(new Text(date) { Space = SpaceProcessingModeValues.Preserve }))));
+
+            table.Append(tr);
         }
 
         // --- Helpers de OpenXML ---

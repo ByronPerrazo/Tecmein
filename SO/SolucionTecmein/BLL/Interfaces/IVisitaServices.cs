@@ -12,7 +12,7 @@ namespace BLL.Interfaces
         Task<bool> Eliminar(int secuencial);
         Task<Visita> ObtenerDetalleVisita(int secuencial);
         Task<List<Visita>> ListaConEquipos();
-        Task<bool> CambiarEtapa(int secVisita, string nuevoCodigoEtapa);
+        Task<bool> CambiarEtapa(int secVisita, string nuevoCodigoEtapa, bool permitirRetroceso = false);
 
     }
 }

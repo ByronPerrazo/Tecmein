@@ -136,7 +136,14 @@ namespace BLL.Implementacion
                 throw new Exception("El pre-contrato no existe.");
             }
 
-            return await _repositorio.Eliminar(preContrato);
+            var resultado = await _repositorio.Eliminar(preContrato);
+            if (resultado)
+            {
+                // Rollback: Si se elimina el pre-contrato, regresar la visita a etapa "COT"
+                // Pasamos permitirRetroceso = true para saltar la validación de orden.
+                await _visitaServices.CambiarEtapa(preContrato.SecCotizacionNavigation.SecVisita, "COT", permitirRetroceso: true);
+            }
+            return resultado;
         }
 
         public async Task<PreContrato> ObtenerUltimaVersion(int secCotizacion)
@@ -211,10 +218,19 @@ namespace BLL.Implementacion
                 throw new Exception("No se encontró el tipo de documento 'PRE-CONTRATO'.");
             }
 
-            // Obtener la plantilla por defecto activa para Pre-Contrato
-            var plantillaPorDefecto = await _repositorioPlantillaPreContrato.Obtener(
-                p => p.SecTipoDocumento == tipoDocumentoPreContrato.SecTipoDocumento && p.EstaActivo == 1); // Assuming EstaActivo is short for bool
+            // Obtener la plantilla: Prioridad 1 = Vinculada explícitamente, Prioridad 2 = Relación antigua
+            PlantillaPreContrato plantillaPorDefecto = null;
+            if (tipoDocumentoPreContrato.SecPlantilla.HasValue)
+            {
+                plantillaPorDefecto = await _repositorioPlantillaPreContrato.Obtener(p => p.SecPlantillaPreContrato == tipoDocumentoPreContrato.SecPlantilla && p.EstaActivo == 1);
+            }
 
+            if (plantillaPorDefecto == null)
+            {
+               plantillaPorDefecto = await _repositorioPlantillaPreContrato.Obtener(
+                p => p.SecTipoDocumento == tipoDocumentoPreContrato.SecTipoDocumento && p.EstaActivo == 1);
+            }
+            
             if (plantillaPorDefecto == null)
             {
                 throw new Exception("No se encontró una plantilla de Pre-Contrato activa por defecto. Por favor, configure una.");
@@ -330,8 +346,21 @@ namespace BLL.Implementacion
                 var tipoDocumentoPreContrato = await _repositorioTipoDocumento.Obtener(td => td.SecTipoDocumento == dto.SecTipoDocumento && td.EstaActivo == true);
                 if (tipoDocumentoPreContrato == null) throw new Exception($"No se encontró el tipo de documento con SecTipoDocumento {dto.SecTipoDocumento}.");
 
-                // Obtener la plantilla por defecto activa para el tipo de documento seleccionado
-                var plantillaPorDefecto = await _repositorioPlantillaPreContrato.Obtener(p => p.SecTipoDocumento == tipoDocumentoPreContrato.SecTipoDocumento && p.EstaActivo == 1);
+                // Estrategia de Selección de Plantilla:
+                // 1. Si el TipoDocumento tiene una Plantilla explícita (SecPlantilla), usar esa.
+                // 2. Si no, buscar una plantilla que apunte a ese TipoDocumento (Legacy).
+                PlantillaPreContrato plantillaPorDefecto = null;
+
+                if (tipoDocumentoPreContrato.SecPlantilla.HasValue)
+                {
+                    plantillaPorDefecto = await _repositorioPlantillaPreContrato.Obtener(p => p.SecPlantillaPreContrato == tipoDocumentoPreContrato.SecPlantilla && p.EstaActivo == 1);
+                }
+
+                if (plantillaPorDefecto == null)
+                {
+                    plantillaPorDefecto = await _repositorioPlantillaPreContrato.Obtener(p => p.SecTipoDocumento == tipoDocumentoPreContrato.SecTipoDocumento && p.EstaActivo == 1);
+                }
+
                 if (plantillaPorDefecto == null) throw new Exception($"No se encontró una plantilla de Pre-Contrato activa por defecto para el tipo de documento {tipoDocumentoPreContrato.Descripcion}.");
 
                 var nuevoPreContrato = new PreContrato

@@ -136,6 +136,9 @@ public partial class TecmeindbContext : DbContext
             entity.Property(e => e.Telefono)
                 .HasMaxLength(50)
                 .HasColumnName("telefono");
+            entity.Property(e => e.Ruc)
+                .HasMaxLength(20)
+                .HasColumnName("ruc");
             entity.Property(e => e.TelefonoAdministrador)
                 .HasMaxLength(10)
                 .HasColumnName("telefonoAdministrador");
@@ -581,7 +584,9 @@ public partial class TecmeindbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Fk_Visita_Usuario");
 
-
+            entity.HasOne(d => d.SecConstructoraNavigation).WithMany(p => p.Visita)
+                .HasForeignKey(d => d.SecConstructora)
+                .HasConstraintName("FK_Visita_Constructora");
         });
 
         modelBuilder.Entity<Equiposvisita>(entity =>
@@ -819,6 +824,7 @@ public partial class TecmeindbContext : DbContext
             entity.Property(e => e.EstaActivo).HasColumnName("estaActivo");
             entity.Property(e => e.FechaRegistro).HasColumnType("datetime").HasColumnName("fechaRegistro");
             entity.Property(e => e.FechaModificacion).HasColumnType("datetime").HasColumnName("fechaModificacion");
+            entity.Property(e => e.TipoContrato).HasMaxLength(50).HasColumnName("tipo_contrato");
 
             entity.Property(e => e.SecUsuario).HasColumnName("secUsuario");
             entity.Property(e => e.SecCotizacionOriginal).HasColumnName("secCotizacionOriginal");
@@ -1087,6 +1093,7 @@ public partial class TecmeindbContext : DbContext
             entity.Property(e => e.RutaArchivo).HasMaxLength(1024).HasColumnName("RutaArchivo");
             entity.Property(e => e.FechaCreacion).HasColumnType("datetime").HasColumnName("FechaCreacion");
             entity.Property(e => e.EsActivo).HasColumnName("EsActivo");
+            entity.Property(e => e.SecTipoDocumento).HasColumnName("SecTipoDocumento");
 
             entity.HasOne(d => d.SecClienteNavigation)
                 .WithMany(p => p.Contratos)
@@ -1105,6 +1112,12 @@ public partial class TecmeindbContext : DbContext
                 .HasForeignKey(d => d.IdUsuarioCarga)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Contrato_Usuario");
+
+            entity.HasOne(d => d.SecTipoDocumentoNavigation)
+                .WithMany()
+                .HasForeignKey(d => d.SecTipoDocumento)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Contrato_TipoDocumento");
 
             // Configuración para la relación uno a uno con PlanDePago
             entity.HasOne(c => c.PlanDePagoNavigation)

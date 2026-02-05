@@ -262,6 +262,7 @@ namespace BLL.Implementacion
                     {
                         Secuencial = 0, // Para que EF la inserte como nueva
                         SecVisita = entidad.SecVisita,
+                        TipoContrato = entidad.TipoContrato,
                         EnviadoProveedor = entidad.EnviadoProveedor,
                         EnviadoCliente = entidad.EnviadoCliente,
                         Confirmacion = entidad.Confirmacion,
@@ -278,6 +279,7 @@ namespace BLL.Implementacion
                     // Actualizar el registro existente (modo borrador)
                     cotizacionAfectada = cotizacionActual;
                     cotizacionAfectada.SecVisita = entidad.SecVisita;
+                    cotizacionAfectada.TipoContrato = entidad.TipoContrato;
                     cotizacionAfectada.EnviadoProveedor = entidad.EnviadoProveedor;
                     cotizacionAfectada.EnviadoCliente = entidad.EnviadoCliente;
                     cotizacionAfectada.Confirmacion = entidad.Confirmacion;
@@ -406,6 +408,14 @@ namespace BLL.Implementacion
 
                 cotizacion.EstaActivo = 0;
                 bool resultado = await _repositorio.Editar(cotizacion);
+                
+                if (resultado)
+                {
+                    // Rollback: Si se elimina la cotización, regresar la visita a etapa "VIS"
+                    // Permitimos el retroceso explícitamente.
+                    await _visitaServices.CambiarEtapa(cotizacion.SecVisita, "VIS", permitirRetroceso: true);
+                }
+
                 return resultado;
             }
             catch

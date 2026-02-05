@@ -18,9 +18,14 @@ public partial class Cotizacion
     public decimal ValorIVA { get; set; }
     public decimal ValorImportacion { get; set; }
     public short? EstaActivo { get; set; }
+    public string? TipoContrato { get; set; }
     public DateTime? FechaRegistro { get; set; }
     public DateTime? FechaModificacion { get; set; }
     public int? SecUsuario { get; set; }
+
+    public int? SecTipoDocumento { get; set; } // Nuevo campo foráneo
+    [ForeignKey("SecTipoDocumento")]
+    public virtual TipoDocumento? SecTipoDocumentoNavigation { get; set; }
 
     [ForeignKey("SecUsuario")]
     public virtual Usuario SecUsuarioNavigation { get; set; }

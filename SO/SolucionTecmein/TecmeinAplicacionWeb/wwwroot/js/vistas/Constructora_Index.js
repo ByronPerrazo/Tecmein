@@ -1,6 +1,7 @@
 const MODELO_BASE = {
     secuencial: 0,
     nombre: "",
+    ruc: "",
     direccion: "",
     telefono: "",
     correo: "",
@@ -32,6 +33,7 @@ $(document).ready(function () {
             "columns": [
                 { data: "secuencial", visible: false, searchable: false },
                 { data: "nombre", searchable: true },
+                { data: "ruc", searchable: true },
                 { data: "direccion", searchable: true },
                 { data: "atencion", searchable: true },
                 { data: "administrador", searchable: true },
@@ -75,6 +77,7 @@ $(document).ready(function () {
 function mostrarModal(modelo = MODELO_BASE) {
     $("#txtId").val(modelo.secuencial)
     $("#txtNombre").val(modelo.nombre)
+    $("#txtRuc").val(modelo.ruc)
     $("#txtDireccion").val(modelo.direccion)
     $("#txtAtencion").val(modelo.atencion)
     $("#txtTelefono").val(modelo.telefono)
@@ -108,6 +111,7 @@ $("#btnGuardar").click(function () {
     const modelo = structuredClone(MODELO_BASE);
     modelo["secuencial"] = $("#txtId").val();
     modelo["nombre"] = $("#txtNombre").val();
+    modelo["ruc"] = $("#txtRuc").val();
     modelo["direccion"] = $("#txtDireccion").val();
     modelo["atencion"] = $("#txtAtencion").val();
     modelo["telefono"] = $("#txtTelefono").val();

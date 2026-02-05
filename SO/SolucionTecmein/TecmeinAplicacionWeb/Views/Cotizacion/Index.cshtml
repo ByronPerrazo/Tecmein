@@ -47,7 +47,8 @@
                      <thead>
                          <tr>
                              <th>Id</th>
-                             <th>Obra</th>
+                            <th>Tipo Contrato</th>
+                            <th>Obra</th>
                              <th>Cliente</th>
                              <th>Enviado Proveedor</th>
                              <th>Enviado Cliente</th>
@@ -98,13 +99,20 @@
                                     <div class="collapse show" id="collapseGeneralInfo">
                                         <div class="card-body py-0">
                                             <div class="form-row">
-                                                <div class="form-group col-sm-6 mb-2">
+                                                <div class="form-group col-sm-4 mb-2">
                                                     <label for="cboVisita" class="text-xs">Seleccionar Visita</label>
                                                     <select id="cboVisita" class="form-control form-control-sm text-xs"></select>
                                                 </div>
-                                                <div class="form-group col-sm-6 mb-2">
+                                                <div class="form-group col-sm-4 mb-2">
                                                     <label class="text-xs">Nombre de la Obra</label>
                                                     <input type="text" id="txtNombreObra" class="form-control form-control-sm text-xs" readonly>
+                                                </div>
+                                                <div class="form-group col-sm-4 mb-2">
+                                                    <label for="cboTipoContrato" class="text-xs">Tipo de Contrato</label>
+                                                    <select id="cboTipoContrato" class="form-control form-control-sm text-xs">
+                                                        <option value="">Seleccione...</option>
+                                                        <!-- Opciones cargadas dinámicamente -->
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="card py-0 shadow-sm mb-3">

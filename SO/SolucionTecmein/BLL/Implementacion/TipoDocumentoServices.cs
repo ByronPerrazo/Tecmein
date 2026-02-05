@@ -1,6 +1,7 @@
 using BLL.Interfaces;
 using DAL.Interfaces;
 using Entity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace BLL.Implementacion
         public async Task<List<TipoDocumento>> Lista()
         {
             IQueryable<TipoDocumento> query = await _repositorio.Consultar();
-            return query.ToList();
+            return query.Include(t => t.SecPlantillaNavigation).ToList();
         }
 
         public async Task<TipoDocumento> Crear(TipoDocumento entidad)
@@ -51,6 +52,8 @@ namespace BLL.Implementacion
                 tipoDocumento_encontrado.Codigo = entidad.Codigo;
                 tipoDocumento_encontrado.Descripcion = entidad.Descripcion;
                 tipoDocumento_encontrado.EstaActivo = entidad.EstaActivo;
+                tipoDocumento_encontrado.SecPlantilla = entidad.SecPlantilla;
+
 
                 bool respuesta = await _repositorio.Editar(tipoDocumento_encontrado);
                 if (!respuesta)

@@ -9,6 +9,8 @@ public partial class Constructora
 
     public string? Nombre { get; set; }
 
+    public string? Ruc { get; set; }
+
     public string? Direccion { get; set; }
 
     public string? Telefono { get; set; }
@@ -26,6 +28,8 @@ public partial class Constructora
     public short? EstaActivo { get; set; }
 
     public virtual ICollection<Contacto> Contactos { get; set; } = new List<Contacto>();
+
+    public virtual ICollection<Visita> Visita { get; set; } = new List<Visita>();
 
     public virtual Cliente Cliente { get; set; }
 }

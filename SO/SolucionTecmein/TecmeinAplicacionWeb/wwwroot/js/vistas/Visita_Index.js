@@ -57,7 +57,7 @@ function cargarConstantesEquipos() {
             .then(data => {
                 const selectElement = $(`#${selectInfo.id}`);
                 selectElement.empty().append(`<option value="" disabled selected>${selectInfo.placeholder}</option>`);
-                
+
                 // Iterar sobre las claves del objeto JSON, excluyendo la propiedad "$id"
                 Object.keys(data).filter(key => key !== "$id").forEach(key => {
                     selectElement.append($("<option>").val(key).text(data[key]));
@@ -203,9 +203,9 @@ $(document).ready(function () {
         });
 
 
-let userPermissions = []; // Global variable to store permissions
+    let userPermissions = []; // Global variable to store permissions
 
-     Promise.all([
+    Promise.all([
         fetch("Lista").then(response => response.text()).then(text => JSON.parse(text)),
         fetch("GetClaims").then(response => response.json())
     ]).then(([listaResponse, claimsResponse]) => {
@@ -247,8 +247,9 @@ let userPermissions = []; // Global variable to store permissions
                     "defaultContent":
                         '<div class="btn-group" role="group">' +
                         '<button class="btn btn-primary btn-editar btn-sm" title="Editar"><i class="fas fa-pencil-alt"></i></button>' +
-                        '<button class="btn btn-primary btn-default btn-sm" title="Ver Archivo"><i class="fas fa-file-alt"></i></button>' +
-                        '<button class="btn btn-primary btn-info btn-sm" title="Ver Detalles"><i class="fas fa-list-alt"></i></button>' +
+                        '<button class="btn btn-secondary btn-default btn-sm" title="Ver Archivo"><i class="fas fa-file-alt"></i></button>' +
+                        '<button class="btn btn-info btn-sm" title="Ver Detalles"><i class="fas fa-list-alt"></i></button>' +
+                        '<button class="btn btn-warning btn-rechazar btn-sm" title="Marcar como Rechazada"><i class="fas fa-ban"></i></button>' +
                         '<button class="btn btn-danger btn-eliminar btn-sm" title="Eliminar"><i class="fas fa-trash-alt"></i></button>' +
                         '</div>',
                     "orderable": false, "searchable": false
@@ -282,8 +283,6 @@ let userPermissions = []; // Global variable to store permissions
             },
         });
     });
-
-
 });
 
 const tieneSigVisita = document.getElementById('chkEsSigVisita');
@@ -295,8 +294,8 @@ tieneSigVisita.addEventListener('change', function () {
         fechaSiguienteVisita.style.display = '';
         validaFecha = true;
     } else {
-        var minDate = new Date(-8640000000000); 
-            $("#dtpkFechaSigVisita").val('');
+        var minDate = new Date(-8640000000000);
+        $("#dtpkFechaSigVisita").val('');
         fechaSiguienteVisita.style.display = 'none';
         validaFecha = false;
     }
@@ -310,7 +309,7 @@ function mostrarDiv() {
     const seleccion = document.getElementById('cboEtapaObra').value;
     document.getElementById('detalleVisita_Vista').style.display = 'none';
     document.getElementById('Datos_ContratoObra').style.display = 'none'
-    
+
     estadoVisita = seleccion;
 
     document.getElementById('div_fechaContrato').style.display = 'none';
@@ -390,13 +389,13 @@ function mostrarModalVisita(esEdicion, modeloVisita = MODELO_BASEVISITA) {
     $("#txtId").val(modeloVisita.Secuencial)
     $("#txtNombreObra").val(modeloVisita.Nombre)
     $("#cboOperador").val(modeloVisita.SecEmpresa);
-    
+
     if (esEdicion) {
         $("#cboEtapaObra").val(modeloVisita.IdEtapa).prop('disabled', true);
     } else {
         $("#cboEtapaObra").val(idEtapaVisita).prop('disabled', true);
     }
-    
+
     // Carga y selección de combos en cascada
     if (modeloVisita.SecProvincia) {
         $("#cboProvincia").val(modeloVisita.SecProvincia);
@@ -418,9 +417,9 @@ function mostrarModalVisita(esEdicion, modeloVisita = MODELO_BASEVISITA) {
     $("#cboEstado").val(modeloVisita.EstaActivo)
 
     loadDateFromString(modeloVisita.FechaSiguienteVisita)
-    
+
     $("#txtDescripcion").val(modeloVisita.Detalle)
-    
+
     // Forzar a la validación no intrusiva a parsear el formulario del modal
     $.validator.unobtrusive.parse("#formVisita");
 
@@ -454,22 +453,22 @@ function loadDateFromString(dateString) {
 }
 
 let esEdicion;
-    $("#btnNuevo").click(function () {
-        esEdicion = false;
+$("#btnNuevo").click(function () {
+    esEdicion = false;
 
-        obtenerGeoubicacion()
-            .then((ubicacion) => {
-                var geo = ubicacion.toString();
-                $("#txtGeolocallizacion").val(geo)
-            })
-            .catch((error) => {
-                geo = "";
-                const mensaje = `Error al obtener la ubicación : "${error}"\n`;
-                toastr.warning("", mensaje);
-            });
+    obtenerGeoubicacion()
+        .then((ubicacion) => {
+            var geo = ubicacion.toString();
+            $("#txtGeolocallizacion").val(geo)
+        })
+        .catch((error) => {
+            geo = "";
+            const mensaje = `Error al obtener la ubicación : "${error}"\n`;
+            toastr.warning("", mensaje);
+        });
 
-        mostrarModalVisita(false, MODELO_BASEVISITA)
-    })
+    mostrarModalVisita(false, MODELO_BASEVISITA)
+})
 $("#btnGuardarVisitas").click(function () {
 
     // Validar el formulario usando jQuery Validate
@@ -509,172 +508,223 @@ $("#btnGuardarVisitas").click(function () {
         method: "POST",
         body: datosFormulario
     })
-    .then(response => {
-        $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-        if (response.ok) {
-            return response.json();
-        } else {
-            // Si la respuesta no es OK, intenta leer el cuerpo del error
-            return response.json().then(errorJson => {
-                // Rechaza la promesa con el JSON del error para que sea capturado por el .catch
-                return Promise.reject({ status: response.status, data: errorJson });
-            });
-        }
-    })
-    .then(responseJson => {
-        if (responseJson.estado) {
-            // Convertir propiedades a PascalCase para DataTables
-            const dataForRow = {
-                Secuencial: responseJson.objeto.secuencial,
-                Nombre: responseJson.objeto.nombre,
-                SecProvincia: responseJson.objeto.secProvincia,
-                NombreProvincia: $("#cboProvincia option:selected").text(),
-                SecCanton: responseJson.objeto.secCanton,
-                NombreCanton: $("#cboCanton option:selected").text(),
-                SecParroquia: responseJson.objeto.secParroquia,
-                NombreParroquia: $("#cboParroquia option:selected").text(),
-                Direccion: responseJson.objeto.direccion,
-                FechaRegistro: responseJson.objeto.fechaRegistro,
-                GeoUbicacion: responseJson.objeto.geoUbicacion,
-                EstaActivo: responseJson.objeto.estaActivo,
-                SecUsuario: responseJson.objeto.secUsuario,
-                FechaSiguienteVisita: responseJson.objeto.fechaSiguienteVisita,
-                Detalle: responseJson.objeto.detalle,
-                IdEtapa: responseJson.objeto.idEtapa,
-                DescripcionEtapa: $("#cboEtapaObra option:selected").text(),
-                CodigoEtapa: responseJson.objeto.codigoEtapa,
-                SecEmpresa: responseJson.objeto.secEmpresa,
-                NombreEmpresa: $("#cboOperador option:selected").text(),
-                SecConstructora: responseJson.objeto.secConstructora,
-                NombreConstructora: responseJson.objeto.nombreConstructora
-            };
-
-            if (esEdicion) {
-                tablaData.row(filaSeleccionada).data(dataForRow).draw(false);
+        .then(response => {
+            $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+            if (response.ok) {
+                return response.json();
             } else {
-                tablaData.row.add(dataForRow).draw(false);
+                // Si la respuesta no es OK, intenta leer el cuerpo del error
+                return response.json().then(errorJson => {
+                    // Rechaza la promesa con el JSON del error para que sea capturado por el .catch
+                    return Promise.reject({ status: response.status, data: errorJson });
+                });
             }
+        })
+        .then(responseJson => {
+            if (responseJson.estado) {
+                // Convertir propiedades a PascalCase para DataTables
+                const dataForRow = {
+                    Secuencial: responseJson.objeto.secuencial,
+                    Nombre: responseJson.objeto.nombre,
+                    SecProvincia: responseJson.objeto.secProvincia,
+                    NombreProvincia: $("#cboProvincia option:selected").text(),
+                    SecCanton: responseJson.objeto.secCanton,
+                    NombreCanton: $("#cboCanton option:selected").text(),
+                    SecParroquia: responseJson.objeto.secParroquia,
+                    NombreParroquia: $("#cboParroquia option:selected").text(),
+                    Direccion: responseJson.objeto.direccion,
+                    FechaRegistro: responseJson.objeto.fechaRegistro,
+                    GeoUbicacion: responseJson.objeto.geoUbicacion,
+                    EstaActivo: responseJson.objeto.estaActivo,
+                    SecUsuario: responseJson.objeto.secUsuario,
+                    FechaSiguienteVisita: responseJson.objeto.fechaSiguienteVisita,
+                    Detalle: responseJson.objeto.detalle,
+                    IdEtapa: responseJson.objeto.idEtapa,
+                    DescripcionEtapa: $("#cboEtapaObra option:selected").text(),
+                    CodigoEtapa: responseJson.objeto.codigoEtapa,
+                    SecEmpresa: responseJson.objeto.secEmpresa,
+                    NombreEmpresa: $("#cboOperador option:selected").text(),
+                    SecConstructora: responseJson.objeto.secConstructora,
+                    NombreConstructora: responseJson.objeto.nombreConstructora
+                };
 
-            $("#modalData").modal("hide");
-            Swal.fire("Listo!", `Visita a ${dataForRow.Nombre} ${successMessage}`, "success");
-        } else {
-            Swal.fire("Fallo!", responseJson.mensajes, "error");
-        }
-    })
-    .catch(error => {
-        $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-        if (error.status === 400) {
-            // Error de validación del servidor
-            Swal.fire("Datos Inválidos", error.data.mensajes, "error");
-        } else if (error.status === 403) {
-            Swal.fire("Acceso Denegado", `No tiene permisos para ${successMessage} visitas.`, "error");
-        } else {
-            Swal.fire("Error", `Ocurrió un error al ${successMessage} la visita.`, "error");
+                if (esEdicion) {
+                    tablaData.row(filaSeleccionada).data(dataForRow).draw(false);
+                } else {
+                    tablaData.row.add(dataForRow).draw(false);
+                }
+
+                $("#modalData").modal("hide");
+                Swal.fire("Listo!", `Visita a ${dataForRow.Nombre} ${successMessage}`, "success");
+            } else {
+                Swal.fire("Fallo!", responseJson.mensajes, "error");
+            }
+        })
+        .catch(error => {
+            $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+            if (error.status === 400) {
+                // Error de validación del servidor
+                Swal.fire("Datos Inválidos", error.data.mensajes, "error");
+            } else if (error.status === 403) {
+                Swal.fire("Acceso Denegado", `No tiene permisos para ${successMessage} visitas.`, "error");
+            } else {
+                Swal.fire("Error", `Ocurrió un error al ${successMessage} la visita.`, "error");
+            }
+        });
+});
+
+let filaSeleccionada;
+$("#tbdata tbody").on("click", ".btn-editar", function () {
+    esEdicion = true;
+    if ($(this).closest("tr").hasClass("child")) {
+        filaSeleccionada = $(this).closest("tr").prev();
+    } else {
+        filaSeleccionada = $(this).closest("tr");
+    }
+
+    const data = tablaData.row(filaSeleccionada).data();
+
+    mostrarModalVisita(true, data);
+})
+
+$("#tbdata tbody").on("click", ".btn-rechazar", function () {
+    let fila;
+    if ($(this).closest("tr").hasClass("child")) {
+        fila = $(this).closest("tr").prev();
+    } else {
+        fila = $(this).closest("tr");
+    }
+    const data = tablaData.row(fila).data();
+
+    Swal.fire({
+        title: "¿Rechazar Visita?",
+        text: `¿Está seguro de marcar la visita "${data.Nombre}" como RECHAZADA? Esta acción puede ser reversible pero indica una pérdida.`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Sí, rechazar",
+        cancelButtonText: "Cancelar"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $(".showSweetAlert").LoadingOverlay("show");
+
+            const formData = new FormData();
+            formData.append("secVisita", data.Secuencial);
+            formData.append("nuevoCodigoEtapa", "RCH");
+
+            fetch("/Visita/CambiarEtapa", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => {
+                    $(".showSweetAlert").LoadingOverlay("hide");
+                    return response.ok ? response.json() : Promise.reject(response);
+                })
+                .then(responseJson => {
+                    if (responseJson.estado) {
+                        tablaData.ajax.reload(null, false);
+                        Swal.fire("Rechazada", "La visita ha sido marcada como rechazada.", "success");
+                    } else {
+                        Swal.fire("Error", responseJson.mensajes, "error");
+                    }
+                })
+                .catch(err => {
+                    $(".showSweetAlert").LoadingOverlay("hide");
+                    Swal.fire("Error", "No se pudo conectar con el servidor.", "error");
+                });
         }
     });
 });
 
-let filaSeleccionada;
-    $("#tbdata tbody").on("click", ".btn-editar", function () {
-        esEdicion = true;
-        if ($(this).closest("tr").hasClass("child")) {
-            filaSeleccionada = $(this).closest("tr").prev();
-        } else {
-            filaSeleccionada = $(this).closest("tr");
-        }
+$("#tbdata tbody").on("click", ".btn-eliminar", function () {
+    let fila
+    if ($(this).closest("tr").hasClass("child")) {
+        fila = $(this).closest("tr").prev();
+    } else {
+        fila = $(this).closest("tr");
+    }
 
-        const data = tablaData.row(filaSeleccionada).data();
+    const data = tablaData.row(fila).data();
 
-        mostrarModalVisita(true, data);
-    })
-    $("#tbdata tbody").on("click", ".btn-eliminar", function () {
-        let fila
-        if ($(this).closest("tr").hasClass("child")) {
-            fila = $(this).closest("tr").prev();
-        } else {
-            fila = $(this).closest("tr");
-        }
+    Swal.fire({
+        title: "Está Seguro de Eliminar?",
+        text: `Eliminar la visita "${data.Nombre}"`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si, eliminar",
+        cancelButtonText: "No, cancelar"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $(".showSweetAlert").LoadingOverlay("show");
 
-        const data = tablaData.row(fila).data();
+            fetch(`Eliminar?secuencial=${data.Secuencial}`, {
+                method: "DELETE"
+            })
+                .then(response => {
+                    $(".showSweetAlert").LoadingOverlay("hide");
+                    return response.ok
+                        ? response.json()
+                        : Promise.reject(response);
+                }).then(responseJson => {
+                    if (responseJson.estado) {
+                        tablaData.row(fila).remove().draw(false);
 
-        Swal.fire({
-            title: "Está Seguro de Eliminar?",
-            text: `Eliminar la visita "${data.Nombre}"`, 
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Si, eliminar",
-            cancelButtonText: "No, cancelar"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $(".showSweetAlert").LoadingOverlay("show");
-
-                fetch(`Eliminar?secuencial=${data.Secuencial}`, { 
-                    method: "DELETE"
+                        Swal.fire("Listo!", " La Visita a " + data.Nombre + " fue Eliminada", "success");
+                    }
+                    else {
+                        Swal.fire("Fallo!", responseJson.mensajes, "error");
+                    }
                 })
-                    .then(response => {
-                        $(".showSweetAlert").LoadingOverlay("hide");
-                        return response.ok
-                            ? response.json()
-                            : Promise.reject(response);
-                    }).then(responseJson => {
-                        if (responseJson.estado) {
-                            tablaData.row(fila).remove().draw(false);
-
-                            Swal.fire("Listo!", " La Visita a " + data.Nombre + " fue Eliminada", "success");
-                        }
-                        else {
-                            Swal.fire("Fallo!", responseJson.mensajes, "error");
-                        }
-                    })
-                    .catch(error => {
-                        $(".showSweetAlert").LoadingOverlay("hide");
-                        if (error.status === 403) {
-                            Swal.fire("Acceso Denegado", "No tiene permisos para eliminar visitas.", "error");
-                        } else {
-                            Swal.fire("Error", "Ocurrió un error al eliminar la visita.", "error");
-                        }
-                    });
-            }
-        })
+                .catch(error => {
+                    $(".showSweetAlert").LoadingOverlay("hide");
+                    if (error.status === 403) {
+                        Swal.fire("Acceso Denegado", "No tiene permisos para eliminar visitas.", "error");
+                    } else {
+                        Swal.fire("Error", "Ocurrió un error al eliminar la visita.", "error");
+                    }
+                });
+        }
     })
-    $("#tbdata tbody").on("click", ".btn-avanzar-etapa", function () {
-        // Check for "AVANZAR_ETAPA" permission
-        if (!userPermissions.includes("AVANZAR_ETAPA")) { // Assuming "AVANZAR_ETAPA" is the permission name
-            Swal.fire("Acceso Denegado", "No tiene permisos para avanzar la etapa de visitas.", "error");
-            return; // Stop execution if no permission
-        }
+})
+$("#tbdata tbody").on("click", ".btn-avanzar-etapa", function () {
+    // Check for "AVANZAR_ETAPA" permission
+    if (!userPermissions.includes("AVANZAR_ETAPA")) { // Assuming "AVANZAR_ETAPA" is the permission name
+        Swal.fire("Acceso Denegado", "No tiene permisos para avanzar la etapa de visitas.", "error");
+        return; // Stop execution if no permission
+    }
 
-        let fila;
-        if ($(this).closest("tr").hasClass("child")) {
-            fila = $(this).closest("tr").prev();
-        } else {
-            fila = $(this).closest("tr");
-        }
-        const data = tablaData.row(fila).data();
+    let fila;
+    if ($(this).closest("tr").hasClass("child")) {
+        fila = $(this).closest("tr").prev();
+    } else {
+        fila = $(this).closest("tr");
+    }
+    const data = tablaData.row(fila).data();
 
-        Swal.fire({
-            title: "Avanzar Etapa",
-            text: `¿Está seguro de avanzar la etapa de la visita "${data.Nombre}"?`,
-            icon: "info",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Sí, avanzar",
-            cancelButtonText: "No, cancelar"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $(".showSweetAlert").LoadingOverlay("show");
+    Swal.fire({
+        title: "Avanzar Etapa",
+        text: `¿Está seguro de avanzar la etapa de la visita "${data.Nombre}"?`,
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, avanzar",
+        cancelButtonText: "No, cancelar"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $(".showSweetAlert").LoadingOverlay("show");
 
-                const formData = new FormData();
-                formData.append("secVisita", data.Secuencial);
-                formData.append("nuevoCodigoEtapa", ""); // Dejamos el código vacío para que el backend decida la siguiente etapa
+            const formData = new FormData();
+            formData.append("secVisita", data.Secuencial);
+            formData.append("nuevoCodigoEtapa", ""); // Dejamos el código vacío para que el backend decida la siguiente etapa
 
-                fetch("/Visita/CambiarEtapa", {
-                    method: "POST",
-                    body: formData
-                })
+            fetch("/Visita/CambiarEtapa", {
+                method: "POST",
+                body: formData
+            })
                 .then(response => {
                     $(".showSweetAlert").LoadingOverlay("hide");
                     return response.ok ? response.json() : Promise.reject(response);
@@ -688,12 +738,12 @@ let filaSeleccionada;
                     }
                 })
                 .catch(err => {
-                     $(".showSweetAlert").LoadingOverlay("hide");
-                     Swal.fire("Error", "No se pudo conectar con el servidor.", "error");
+                    $(".showSweetAlert").LoadingOverlay("hide");
+                    Swal.fire("Error", "No se pudo conectar con el servidor.", "error");
                 });
-            }
-        });
+        }
     });
+});
 
 $("#tbdata tbody").on("click", ".btn-mapa", function () {
     esEdicion = true;

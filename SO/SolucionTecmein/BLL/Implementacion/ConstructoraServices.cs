@@ -44,6 +44,7 @@ namespace BLL.Implementacion
             {
 
                 registro.Nombre = entidad.Nombre;
+                registro.Ruc = entidad.Ruc;
                 registro.Direccion = entidad.Direccion;
                 registro.Telefono = entidad.Telefono;
                 registro.Correo = entidad.Correo;

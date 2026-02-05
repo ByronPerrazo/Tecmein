@@ -10,11 +10,13 @@ namespace TecmeinAplicacionWeb.Controllers
     public class TipoDocumentoController : Controller
     {
         private readonly ITipoDocumentoServices _tipoDocumentoServices;
+        private readonly IPlantillaPreContratoServices _plantillaPreContratoServices; // Injected
         private readonly IMapper _mapper;
 
-        public TipoDocumentoController(ITipoDocumentoServices tipoDocumentoServices, IMapper mapper)
+        public TipoDocumentoController(ITipoDocumentoServices tipoDocumentoServices, IPlantillaPreContratoServices plantillaPreContratoServices, IMapper mapper)
         {
             _tipoDocumentoServices = tipoDocumentoServices;
+            _plantillaPreContratoServices = plantillaPreContratoServices;
             _mapper = mapper;
         }
 
@@ -89,6 +91,24 @@ namespace TecmeinAplicacionWeb.Controllers
                 resultado = false;
             }
             return Json(new { resultado = resultado });
+        }
+
+        [HttpGet]
+        [ValidatePermission("LEER")]
+        public async Task<IActionResult> ListaPlantillas()
+        {
+            try
+            {
+                var lista = await _plantillaPreContratoServices.Lista();
+                var plantillas = lista.Where(p => p.EstaActivo == 1)
+                                      .Select(p => new { value = p.SecPlantillaPreContrato, text = p.Nombre })
+                                      .ToList();
+                return StatusCode(StatusCodes.Status200OK, new { data = plantillas });
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { success = false, message = ex.Message });
+            }
         }
     }
 }

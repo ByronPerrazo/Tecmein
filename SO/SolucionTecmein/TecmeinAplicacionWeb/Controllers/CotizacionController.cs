@@ -188,12 +188,12 @@ namespace TecmeinWebApp.Controllers
 
         [HttpDelete]
         [ValidatePermission("ELIMINAR")]
-        public async Task<IActionResult> Eliminar(int id)
+        public async Task<IActionResult> Eliminar(int secuencial)
         {
             var response = new GenericResponse<string>();
             try
             {
-                response.Estado = await _cotizacionServices.Eliminar(id);
+                response.Estado = await _cotizacionServices.Eliminar(secuencial);
             }
             catch (Exception ex)
             {

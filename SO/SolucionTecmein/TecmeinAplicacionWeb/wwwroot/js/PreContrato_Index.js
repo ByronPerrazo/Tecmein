@@ -8,14 +8,14 @@ $(document).ready(function () {
 
     // --- Lógica de UI y Validaciones para Compromisos ---
     function reEnumerarCuotas() {
-        $("#tablaCompromisos tbody tr").each(function(index) {
+        $("#tablaCompromisos tbody tr").each(function (index) {
             $(this).find(".numero-cuota").text(index + 1);
         });
     }
 
     function validarSumaCompromisos() {
         let sumaCompromisos = 0;
-        $("#tablaCompromisos tbody .monto-compromiso").each(function() {
+        $("#tablaCompromisos tbody .monto-compromiso").each(function () {
             const monto = parseFloat($(this).val());
             if (!isNaN(monto)) {
                 sumaCompromisos += monto;
@@ -40,7 +40,7 @@ $(document).ready(function () {
         filas.find('.fecha-compromiso').removeClass('is-invalid');
 
         for (let i = 1; i < filas.length; i++) {
-            const fechaAnteriorStr = $(filas[i-1]).find('.fecha-compromiso').val();
+            const fechaAnteriorStr = $(filas[i - 1]).find('.fecha-compromiso').val();
             const fechaActualStr = $(filas[i]).find('.fecha-compromiso').val();
 
             if (fechaAnteriorStr && fechaActualStr) {
@@ -49,7 +49,7 @@ $(document).ready(function () {
 
                 if (fechaActual <= fechaAnterior) {
                     hayConflicto = true;
-                    $(filas[i-1]).find('.fecha-compromiso').addClass('is-invalid');
+                    $(filas[i - 1]).find('.fecha-compromiso').addClass('is-invalid');
                     $(filas[i]).find('.fecha-compromiso').addClass('is-invalid');
                 }
             }
@@ -101,7 +101,7 @@ $(document).ready(function () {
             nuevaFecha.setDate(nuevaFecha.getDate() + (i * 30));
 
             const nuevaFila = $("#plantillaCompromiso").clone().removeAttr('id').removeAttr('style');
-            
+
             if (i === 0) {
                 nuevaFila.find(".tipo-compromiso").val("Anticipo");
             } else {
@@ -110,7 +110,7 @@ $(document).ready(function () {
 
             nuevaFila.find(".monto-compromiso").val(montoActualCuota.toFixed(2));
             nuevaFila.find(".fecha-compromiso").val(nuevaFecha.toISOString().split('T')[0]);
-            
+
             $("#tablaCompromisos tbody").append(nuevaFila);
             totalAcumulado += montoBase;
         }
@@ -141,7 +141,7 @@ $(document).ready(function () {
                 { "data": "secPreContrato" },
                 { "data": "numeroCotizacion" },
                 { "data": "nombreObra" },
-                { 
+                {
                     "data": "fechaRegistro",
                     "render": function (data) {
                         return data ? new Date(data).toLocaleDateString() : "";
@@ -172,7 +172,7 @@ $(document).ready(function () {
     }
 
     function cargarDropdown(url, selector) {
-        return $.ajax({ url: url, type: "GET" }).then(function(response) {
+        return $.ajax({ url: url, type: "GET" }).then(function (response) {
             const lista = response.data && response.data.$values ? response.data.$values : response.data;
             const $dropdown = $(selector);
             $dropdown.empty().append($("<option>").val("").text("Seleccionar..."));
@@ -193,7 +193,7 @@ $(document).ready(function () {
         $("#tablaCompromisos tbody").empty();
         $("#numCuotas, #montoCuota, #fechaPrimeraCuota").val("");
         $("#SecPreContrato").val("0"); // Limpiar SecPreContrato al crear uno nuevo
-        $("#cboTipoDocumento").val(""); // Limpiar la selección de tipo de documento
+        $("#cboTipoDocumento").val("").prop('disabled', true); // Limpiar y bloquear selección inicial
         $("#btnGenerarPreContrato").prop("disabled", true); // Deshabilitar botón para nuevos registros
         validarSumaCompromisos();
 
@@ -206,13 +206,17 @@ $(document).ready(function () {
         });
     });
 
-    $("#cboCotizacionesAceptadas").change(function() {
+    $("#cboCotizacionesAceptadas").change(function () {
         const cotizacionId = $(this).val();
+
+        // Reset inicial del combo de tipo de documento
+        $("#cboTipoDocumento").val("").prop('disabled', true);
+
         if (cotizacionId) {
             $.ajax({
                 url: `/Cotizacion/Detalle/${cotizacionId}`,
                 type: "GET",
-                success: function(response) {
+                success: function (response) {
                     if (!response || typeof response.subtotal === 'undefined' || typeof response.valorImpuestos === 'undefined') {
                         totalCotizacion = 0;
                         $("#totalCotizacionDisplay").text("0.00");
@@ -222,6 +226,36 @@ $(document).ready(function () {
                     totalCotizacion = parseFloat(response.subtotal) + parseFloat(response.valorImpuestos);
                     $("#totalCotizacionDisplay").text(isNaN(totalCotizacion) ? "0.00" : totalCotizacion.toFixed(2));
                     validarSumaCompromisos();
+
+                    // --- Nueva Lógica: Selección Automática y Bloqueo de Tipo de Documento ---
+                    // --- Nueva Lógica: Selección Automática y Bloqueo de Tipo de Documento ---
+                    if (response.secTipoDocumento && response.secTipoDocumento > 0) {
+                        $("#cboTipoDocumento").val(response.secTipoDocumento);
+                        if ($("#cboTipoDocumento").val() == response.secTipoDocumento) {
+                            $("#cboTipoDocumento").prop('disabled', true);
+                        } else {
+                            // El ID no está en el combo (tal vez no activo)
+                            $("#cboTipoDocumento").prop('disabled', false);
+                            Swal.fire("Aviso", `La cotización tiene un Tipo de Documento asignado que no está disponible en la lista. Por favor seleccione manualmente.`, "warning");
+                        }
+                    } else if (response.tipoContrato) {
+                        let encontrado = false;
+                        $("#cboTipoDocumento option").each(function () {
+                            if ($(this).text().toLowerCase().includes(response.tipoContrato.toLowerCase())) {
+                                $(this).prop('selected', true);
+                                encontrado = true;
+                                return false;
+                            }
+                        });
+
+                        if (!encontrado) {
+                            $("#cboTipoDocumento").prop('disabled', false);
+                            Swal.fire("Aviso", `La cotización es de tipo "${response.tipoContrato}", pero no se encontró un Tipo de Documento con ese nombre exacto. Por favor seleccione el Tipo de Documento manualmente.`, "info");
+                        }
+                    } else {
+                        Swal.fire("Aviso", "La cotización seleccionada no tiene definido un Tipo de Contrato.", "info");
+                    }
+                    // ----------------------------------------------------------------
                 },
                 error: () => {
                     totalCotizacion = 0;
@@ -237,13 +271,13 @@ $(document).ready(function () {
     });
 
     // --- Lógica para Compromisos de Pago ---
-    $("#modalPreContrato").on('click', '#btnAnadirCompromiso', function() {
+    $("#modalPreContrato").on('click', '#btnAnadirCompromiso', function () {
         const nuevaFila = $("#plantillaCompromiso").clone().removeAttr('id').removeAttr('style');
         $("#tablaCompromisos tbody").append(nuevaFila);
         reEnumerarCuotas();
     });
 
-    $("#tablaCompromisos").on('click', '.btn-eliminar-compromiso', function() {
+    $("#tablaCompromisos").on('click', '.btn-eliminar-compromiso', function () {
         $(this).closest('tr').remove();
         reEnumerarCuotas();
         validarSumaCompromisos();
@@ -271,7 +305,7 @@ $(document).ready(function () {
         }
 
         const compromisos = [];
-        $("#tablaCompromisos tbody tr").each(function() {
+        $("#tablaCompromisos tbody tr").each(function () {
             const fila = $(this);
             const compromiso = {
                 Tipo: fila.find(".tipo-compromiso").val(),
@@ -307,7 +341,7 @@ $(document).ready(function () {
         return modelo;
     }
 
-    $("#btnGenerarPreContrato").click(function() {
+    $("#btnGenerarPreContrato").click(function () {
         const modelo = recolectarYValidarDatos();
         if (!modelo) return;
 
@@ -327,53 +361,53 @@ $(document).ready(function () {
             },
             body: JSON.stringify(modelo)
         })
-        .then(response => {
-            if (response.ok) {
-                // Intentar obtener el nombre del archivo de la cabecera
-                const disposition = response.headers.get('Content-Disposition');
-                let filename = 'precontrato.docx'; // Nombre por defecto
-                if (disposition && disposition.indexOf('attachment') !== -1) {
-                    const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-                    const matches = filenameRegex.exec(disposition);
-                    if (matches != null && matches[1]) {
-                        filename = matches[1].replace(/['"]/g, '');
+            .then(response => {
+                if (response.ok) {
+                    // Intentar obtener el nombre del archivo de la cabecera
+                    const disposition = response.headers.get('Content-Disposition');
+                    let filename = 'precontrato.docx'; // Nombre por defecto
+                    if (disposition && disposition.indexOf('attachment') !== -1) {
+                        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                        const matches = filenameRegex.exec(disposition);
+                        if (matches != null && matches[1]) {
+                            filename = matches[1].replace(/['"]/g, '');
+                        }
                     }
+                    return response.blob().then(blob => ({ blob, filename }));
+                } else {
+                    // Si hay un error, el cuerpo de la respuesta será JSON
+                    return response.json().then(errorData => Promise.reject(errorData));
                 }
-                return response.blob().then(blob => ({ blob, filename }));
-            } else {
-                // Si hay un error, el cuerpo de la respuesta será JSON
-                return response.json().then(errorData => Promise.reject(errorData));
-            }
-        })
-        .then(({ blob, filename }) => {
-            Swal.close();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            a.remove();
-            
-            // Opcional: Cerrar el modal principal después de la descarga exitosa
-            // $('#modalPreContrato').modal('hide');
+            })
+            .then(({ blob, filename }) => {
+                Swal.close();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
 
-            Swal.fire({
-                icon: 'success',
-                title: '¡Descarga Iniciada!',
-                text: `El archivo ${filename} debería estar descargándose.`,
-                timer: 2000,
-                showConfirmButton: false
+                // Opcional: Cerrar el modal principal después de la descarga exitosa
+                // $('#modalPreContrato').modal('hide');
+
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Descarga Iniciada!',
+                    text: `El archivo ${filename} debería estar descargándose.`,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            })
+            .catch(errorData => {
+                Swal.fire("Error", errorData.mensajes || "No se pudo generar el documento.", "error");
             });
-        })
-        .catch(errorData => {
-            Swal.fire("Error", errorData.mensajes || "No se pudo generar el documento.", "error");
-        });
     });
 
-    $("#btnGuardarBorrador").click(function() {
+    $("#btnGuardarBorrador").click(function () {
         const modelo = recolectarYValidarDatos();
         if (!modelo) return;
 
@@ -383,7 +417,7 @@ $(document).ready(function () {
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(modelo),
             beforeSend: () => Swal.fire({ title: 'Guardando Borrador...', allowOutsideClick: false, didOpen: () => Swal.showLoading() }),
-            success: function(response) {
+            success: function (response) {
                 Swal.close();
                 if (response.estado) {
                     $('#modalPreContrato').modal('hide');
@@ -398,12 +432,12 @@ $(document).ready(function () {
     });
 
     // Actualizar label del input file con el nombre del archivo seleccionado
-    $(".custom-file-input").on("change", function() {
+    $(".custom-file-input").on("change", function () {
         var fileName = $(this).val().split("\\").pop();
         $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     });
 
-    $("#btnSubirContratoFinal").click(function() {
+    $("#btnSubirContratoFinal").click(function () {
         const secPreContrato = $("#SecPreContrato").val();
         const fileInput = $("#fileContratoFinal")[0];
 
@@ -434,7 +468,7 @@ $(document).ready(function () {
             data: formData,
             processData: false,
             contentType: false,
-            success: function(response) {
+            success: function (response) {
                 Swal.close();
                 if (response.estado) {
                     Swal.fire("¡Subido!", response.mensajes, "success");
@@ -476,12 +510,12 @@ $(document).ready(function () {
             cargarDropdown("/PreContrato/ListaCotizacionesAprobadas", "#cboCotizacionesAceptadas"),
             cargarDropdown("/PolizaGarantia/ListaParaDropdown", "#PolizaGarantia"),
             cargarDropdown("/PreContrato/ListaTipoDocumentos", "#cboTipoDocumento") // <-- Añadido
-        ).done(function() {
+        ).done(function () {
             $.ajax({
                 url: `/PreContrato/DetallesParaEdicion/${id}`,
                 type: "GET",
                 beforeSend: () => Swal.fire({ title: 'Cargando Datos...', allowOutsideClick: false, didOpen: () => Swal.showLoading() }),
-                success: function(response) {
+                success: function (response) {
                     Swal.close();
                     if (response.estado) {
                         const data = response.objeto;
@@ -496,11 +530,11 @@ $(document).ready(function () {
                         $("#AniosGarantia").val(data.aniosGarantia);
                         $("#MesesGarantia").val(data.mesesGarantia);
                         $("#PolizaGarantia").val(data.polizaGarantia);
-                        $("#cboTipoDocumento").val(data.secTipoDocumento); // <-- Añadido para edición
+                        $("#cboTipoDocumento").val(data.secTipoDocumento).prop('disabled', true); // <-- Añadido para edición (Bloqueado)
 
                         // Poblar tabla de compromisos
                         if (data.compromisosDePago && data.compromisosDePago.$values && data.compromisosDePago.$values.length > 0) {
-                            data.compromisosDePago.$values.forEach(function(compromiso) {
+                            data.compromisosDePago.$values.forEach(function (compromiso) {
                                 const nuevaFila = $("#plantillaCompromiso").clone().removeAttr('id').removeAttr('style');
                                 nuevaFila.find(".tipo-compromiso").val(compromiso.tipo);
                                 nuevaFila.find(".monto-compromiso").val(compromiso.monto.toFixed(2));
@@ -606,10 +640,10 @@ $(document).ready(function () {
             },
             "columns": [
                 { "data": "version" },
-                { "data": "fechaRegistro", "render": function(data) { return new Date(data).toLocaleString(); } },
+                { "data": "fechaRegistro", "render": function (data) { return new Date(data).toLocaleString(); } },
                 { "data": "nombreUsuarioCrea" },
-                { "data": "estaActivo", "render": function(data) { return data ? '<span class="badge badge-success">Activa</span>' : '<span class="badge badge-secondary">Histórica</span>'; } },
-                { "data": "secPreContrato", "render": function(data) { return `<button class="btn btn-info btn-sm btn-ver-version-historica" data-id="${data}" title="Ver Contenido"><i class="fas fa-eye"></i></button>`; }, "orderable": false, "searchable": false }
+                { "data": "estaActivo", "render": function (data) { return data ? '<span class="badge badge-success">Activa</span>' : '<span class="badge badge-secondary">Histórica</span>'; } },
+                { "data": "secPreContrato", "render": function (data) { return `<button class="btn btn-info btn-sm btn-ver-version-historica" data-id="${data}" title="Ver Contenido"><i class="fas fa-eye"></i></button>`; }, "orderable": false, "searchable": false }
             ],
             "order": [[0, "desc"]],
             "language": spanishLanguage
@@ -617,10 +651,10 @@ $(document).ready(function () {
         $('#modalHistorial').modal('show');
     });
 
-    $("#tablaHistorial tbody").on("click", ".btn-ver-version-historica", function() {
+    $("#tablaHistorial tbody").on("click", ".btn-ver-version-historica", function () {
         var id = $(this).data("id");
-        $.get(`/PreContrato/ContenidoParrafo/${id}`, function(response) {
-            if(response.estado) {
+        $.get(`/PreContrato/ContenidoParrafo/${id}`, function (response) {
+            if (response.estado) {
                 const iframe = document.getElementById('iframeContenidoHistorico');
                 if (iframe) {
                     const iframeDoc = iframe.contentWindow.document;
