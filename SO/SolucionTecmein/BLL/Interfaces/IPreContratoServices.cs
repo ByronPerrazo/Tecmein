@@ -18,5 +18,6 @@ namespace BLL.Interfaces
         Task<PreContratoParaEdicionDTO> ObtenerParaEdicion(int secPreContrato);
         Task<bool> Aprobar(int secPreContrato);
         Task<bool> SubirContratoFinal(int secPreContrato, System.IO.Stream archivoStream);
+        Task<byte[]> ObtenerContenidoDocumento(int secPreContrato);
     }
 }

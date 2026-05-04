@@ -64,7 +64,7 @@ namespace BLL.Implementacion
                 throw new InvalidOperationException("El párrafo de la plantilla no contiene un documento DOCX.");
             }
 
-            var (datosTexto, datosTabla) = await RecopilarDatosDeReemplazo(preContratoData);
+            var (datosTexto, datosTabla) = await RecopilarDatosDeReemplazo(preContratoData, parrafoPlantilla.Contenido);
             
             byte[] docBytes = parrafoPlantilla.Contenido;
 
@@ -202,7 +202,7 @@ namespace BLL.Implementacion
             }
         }
 
-        private async Task<(Dictionary<string, string> Textos, Dictionary<string, Table> Tablas)> RecopilarDatosDeReemplazo(PreContratoGeneratorDTO preContratoData)
+        private async Task<(Dictionary<string, string> Textos, Dictionary<string, Table> Tablas)> RecopilarDatosDeReemplazo(PreContratoGeneratorDTO preContratoData, byte[] plantillaContenido)
         {
             if (preContratoData.SecCotizacion == 0) throw new ArgumentException("Se debe seleccionar una cotización.");
 
@@ -284,10 +284,19 @@ namespace BLL.Implementacion
                     case "clientecorreo": valor = constructora?.Correo; break;
                     case "clienterepresentantelegal": valor = constructora?.Administrador; break;
                     case "emailcontacto": valor = contactoVisita?.Correo; break;
-                    case "identificacioncontacto": valor = "No disponible"; break;
+                    case "identificacioncontacto": valor = contactoVisita?.SecConstructoraNavigation?.Ruc ?? "No disponible"; break;
                     case "marcaequipo": valor = equiposVisita.FirstOrDefault()?.Marca; break;
                     case "numerodeparadas": valor = equiposVisita.FirstOrDefault()?.NumeroParadas.ToString(); break;
                     case "cantidad": valor = equiposVisita.FirstOrDefault()?.Cantidad.ToString(); break;
+                    case "numerohojasdocumentogenerado":
+                        // Intentamos obtener el número de páginas de las propiedades del documento
+                        // Nota: Word calcula esto al abrir, pero la plantilla suele traer el valor de su última versión.
+                        using (var msHojas = new MemoryStream(plantillaContenido))
+                        using (var wordDocHojas = WordprocessingDocument.Open(msHojas, false))
+                        {
+                            valor = wordDocHojas.ExtendedFilePropertiesPart?.Properties?.Pages?.Text ?? "1";
+                        }
+                        break;
                     
                     case "fechafirmacontratoenletras": valor = DateTime.Now.ToString("dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-ES")); break;
                     case "fecha_actual": valor = DateTime.Now.ToString("dd/MM/yyyy"); break;

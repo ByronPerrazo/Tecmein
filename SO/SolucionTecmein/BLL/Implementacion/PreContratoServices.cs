@@ -484,5 +484,23 @@ namespace BLL.Implementacion
             }
             return true;
         }
+
+        public async Task<byte[]> ObtenerContenidoDocumento(int secPreContrato)
+        {
+            var parrafo = await _repositorioPreContratoParrafo.Obtener(p => p.SecPreContrato == secPreContrato);
+            if (parrafo == null || string.IsNullOrEmpty(parrafo.Contenido))
+            {
+                return null;
+            }
+
+            if (parrafo.Contenido.StartsWith("BASE64DOCX:"))
+            {
+                var base64 = parrafo.Contenido.Substring("BASE64DOCX:".Length);
+                return Convert.FromBase64String(base64);
+            }
+
+            // Si no tiene el prefijo, podría ser legado (HTML), devolvemos null para que se genere uno nuevo
+            return null;
+        }
     }
 }

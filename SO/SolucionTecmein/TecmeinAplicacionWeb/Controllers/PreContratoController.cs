@@ -223,8 +223,46 @@ namespace TecmeinAplicacionWeb.Controllers
              }
         }
 
+        [HttpGet]
+        [ValidatePermission("LEER")]
+        public async Task<IActionResult> DescargarDocumentoActual(int id)
+        {
+            try
+            {
+                // 1. Intentar obtener el contenido guardado (editado por el usuario)
+                byte[] documentoGuardado = await _preContratoService.ObtenerContenidoDocumento(id);
+                
+                if (documentoGuardado != null)
+                {
+                    return File(documentoGuardado, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", $"PreContrato_Editado_{id}.docx");
+                }
+
+                // 2. Si no hay contenido guardado, generamos uno nuevo basándonos en los datos actuales
+                var datosEdicion = await _preContratoService.ObtenerParaEdicion(id);
+                var preContratoData = new BLL.DTOs.PreContratoConPagosDTO
+                {
+                    SecCotizacion = datosEdicion.SecCotizacion,
+                    SecTipoDocumento = datosEdicion.SecTipoDocumento,
+                    Dias = datosEdicion.Dias,
+                    TipoDias = datosEdicion.TipoDias,
+                    PeriodoMantenimiento = datosEdicion.PeriodoMantenimiento,
+                    AniosGarantia = datosEdicion.AniosGarantia,
+                    MesesGarantia = datosEdicion.MesesGarantia,
+                    PolizaGarantia = datosEdicion.PolizaGarantia,
+                    CompromisosDePago = datosEdicion.CompromisosDePago
+                };
+
+                byte[] docxBytes = await _preContratoGeneratorService.GenerarVistaPreviaDocx(preContratoData);
+                return File(docxBytes, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", $"PreContrato_Generado_{id}.docx");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { estado = false, mensajes = $"Error al descargar el documento: {ex.Message}" });
+            }
+        }
+
         [HttpPost]
-        [ValidatePermission("LEER")] // Generar un documento es una acción de lectura/exportación
+        [ValidatePermission("LEER")]
         public async Task<IActionResult> GenerarPreContratoDocx([FromBody] GenerarVistaPreviaRequest request)
         {
             try

@@ -153,13 +153,14 @@ $(document).ready(function () {
                     "data": "secPreContrato",
                     "render": function (data, type, row) {
                         const btnEditar = `<button class="btn btn-primary btn-sm btn-editar" data-id="${data}" title="Editar"><i class="fas fa-pencil-alt"></i></button>`;
+                        const btnDescargar = `<button class="btn btn-info btn-sm btn-descargar-actual" data-id="${data}" title="Descargar DOCX Actual"><i class="fas fa-file-word"></i></button>`;
                         const btnHistorial = `<button class="btn btn-secondary btn-sm btn-historial" data-id="${data}" title="Ver Historial"><i class="fas fa-history"></i></button>`;
                         const btnEliminar = `<button class="btn btn-danger btn-sm btn-eliminar" data-id="${data}" title="Eliminar"><i class="fas fa-trash-alt"></i></button>`;
                         let btnAprobar = '';
                         if (row.estado !== "Aprobado") {
                             btnAprobar = `<button class="btn btn-success btn-sm btn-aprobar" data-id="${data}" title="Aprobar"><i class="fas fa-check"></i></button>`;
                         }
-                        return `<div class="btn-group" role="group">${btnEditar}${btnHistorial}${btnAprobar}${btnEliminar}</div>`;
+                        return `<div class="btn-group" role="group">${btnEditar}${btnDescargar}${btnHistorial}${btnAprobar}${btnEliminar}</div>`;
                     },
                     "orderable": false,
                     "searchable": false,
@@ -643,7 +644,7 @@ $(document).ready(function () {
                 { "data": "fechaRegistro", "render": function (data) { return new Date(data).toLocaleString(); } },
                 { "data": "nombreUsuarioCrea" },
                 { "data": "estaActivo", "render": function (data) { return data ? '<span class="badge badge-success">Activa</span>' : '<span class="badge badge-secondary">Histórica</span>'; } },
-                { "data": "secPreContrato", "render": function (data) { return `<button class="btn btn-info btn-sm btn-ver-version-historica" data-id="${data}" title="Ver Contenido"><i class="fas fa-eye"></i></button>`; }, "orderable": false, "searchable": false }
+                { "data": "secPreContrato", "render": function (data) { return `<button class="btn btn-info btn-sm btn-descargar-actual" data-id="${data}" title="Descargar Versión"><i class="fas fa-file-download"></i></button>`; }, "orderable": false, "searchable": false }
             ],
             "order": [[0, "desc"]],
             "language": spanishLanguage
@@ -651,25 +652,14 @@ $(document).ready(function () {
         $('#modalHistorial').modal('show');
     });
 
-    $("#tablaHistorial tbody").on("click", ".btn-ver-version-historica", function () {
-        var id = $(this).data("id");
-        $.get(`/PreContrato/ContenidoParrafo/${id}`, function (response) {
-            if (response.estado) {
-                const iframe = document.getElementById('iframeContenidoHistorico');
-                if (iframe) {
-                    const iframeDoc = iframe.contentWindow.document;
-                    iframeDoc.open();
-                    iframeDoc.write(response.objeto.contenido);
-                    iframeDoc.close();
-                }
-                $('#modalVerVersion').modal('show');
-            } else {
-                Swal.fire("Error", response.mensajes, "error");
-            }
-        }).fail(() => Swal.fire("Error", "No se pudo obtener el contenido de la versión.", "error"));
-    });
+    // El evento btn-descargar-actual ya está definido globalmente arriba y funcionará para los botones del historial también.
 
     $("#btnCerrarVerVersion").click(() => $('#modalVerVersion').modal('hide'));
+
+    $("#tablaPreContratos tbody").on("click", ".btn-descargar-actual", function () {
+        const id = $(this).data("id");
+        window.location.href = `/PreContrato/DescargarDocumentoActual/${id}`;
+    });
 
     cargarDatos();
 });
