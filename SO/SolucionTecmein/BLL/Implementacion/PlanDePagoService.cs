@@ -14,17 +14,20 @@ namespace BLL.Implementacion
         private readonly IGenericRepository<Cuota> _repositorioCuota;
         private readonly TecmeindbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
 
         public PlanDePagoService(
             IGenericRepository<PlanDePago> repositorioPlanDePago,
             IGenericRepository<Cuota> repositorioCuota,
             TecmeindbContext dbContext,
-            IMapper mapper)
+            IMapper mapper,
+            IUnitOfWork unitOfWork)
         {
             _repositorioPlanDePago = repositorioPlanDePago;
             _repositorioCuota = repositorioCuota;
             _dbContext = dbContext;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<PlanDePagoDTO> ObtenerPorContratoId(int idContrato)
@@ -45,7 +48,7 @@ namespace BLL.Implementacion
 
         public async Task<PlanDePagoDTO> Guardar(PlanDePagoDTO modelo)
         {
-            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            await _unitOfWork.BeginTransactionAsync();
             try
             {
                 var planDePagoEntity = await _dbContext.PlanesDePago
@@ -114,14 +117,14 @@ namespace BLL.Implementacion
                 }
 
                 await _dbContext.SaveChangesAsync();
-                await transaction.CommitAsync();
+                await _unitOfWork.CommitTransactionAsync();
 
                 var dtoResult = _mapper.Map<PlanDePagoDTO>(planDePagoEntity);
                 return dtoResult;
             }
             catch (Exception ex)
             {
-                await transaction.RollbackAsync();
+                await _unitOfWork.RollbackTransactionAsync();
                 throw new Exception($"Error al guardar el Plan de Pago: {ex.Message}", ex);
             }
         }

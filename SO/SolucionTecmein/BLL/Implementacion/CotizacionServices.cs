@@ -19,6 +19,7 @@ namespace BLL.Implementacion
         private readonly ITipoImpuestoServices _tipoImpuestoServices;
         private readonly IAuditService _auditService;
         private readonly IUsuarioServices _usuarioServices;
+        private readonly IUnitOfWork _unitOfWork;
 
         public CotizacionServices(
             IGenericRepository<Cotizacion> repositorio,
@@ -28,8 +29,9 @@ namespace BLL.Implementacion
             IVisitaServices visitaServices,
             ITipoImpuestoServices tipoImpuestoServices,
             IEquiposVisitaServices equiposVisitaServices,
-            IAuditService auditService, // Added
-            IUsuarioServices usuarioServices // Added
+            IAuditService auditService, 
+            IUsuarioServices usuarioServices,
+            IUnitOfWork unitOfWork
             )
         {
             _repositorio = repositorio;
@@ -40,6 +42,7 @@ namespace BLL.Implementacion
             _equiposVisitaServices = equiposVisitaServices;
             _auditService = auditService;
             _usuarioServices = usuarioServices;
+            _unitOfWork = unitOfWork;
         }
 
         private readonly IVisitaServices _visitaServices;
@@ -180,6 +183,7 @@ namespace BLL.Implementacion
 
         public async Task<Cotizacion> Editar(Cotizacion entidad, int secUsuarioActual)
         {
+            await _unitOfWork.BeginTransactionAsync();
             try
             {
                 var visita = await _visitaServices.ConsultaVisita(entidad.SecVisita);
@@ -382,10 +386,12 @@ namespace BLL.Implementacion
                     await _visitaServices.CambiarEtapa(cotizacionAfectada.SecVisita, "COT");
                 }
 
+                await _unitOfWork.CommitTransactionAsync();
                 return cotizacionResult;
             }
             catch
             {
+                await _unitOfWork.RollbackTransactionAsync();
                 throw;
             }
         }

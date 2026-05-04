@@ -25,7 +25,8 @@ namespace BLL.Implementacion
         private readonly IGenericRepository<Cuota> _repositorioCuota;
         private readonly IGenericRepository<PreContratoCompromisoPago> _repositorioCompromisoPago;
         private readonly ITipoDocumentoServices _tipoDocumentoServices;
-        private readonly IActivoClienteService _activoClienteService; // Inyectado
+        private readonly IActivoClienteService _activoClienteService;
+        private readonly IUnitOfWork _unitOfWork;
 
         public ContratoService(
             IGenericRepository<Contrato> repositorioContrato,
@@ -40,7 +41,8 @@ namespace BLL.Implementacion
             IGenericRepository<Cuota> repositorioCuota,
             IGenericRepository<PreContratoCompromisoPago> repositorioCompromisoPago,
             ITipoDocumentoServices tipoDocumentoServices,
-            IActivoClienteService activoClienteService) // Inyectado
+            IActivoClienteService activoClienteService,
+            IUnitOfWork unitOfWork)
         {
             _repositorioContrato = repositorioContrato;
             _repositorioCotizacion = repositorioCotizacion;
@@ -54,12 +56,13 @@ namespace BLL.Implementacion
             _repositorioCuota = repositorioCuota;
             _repositorioCompromisoPago = repositorioCompromisoPago;
             _tipoDocumentoServices = tipoDocumentoServices;
-            _activoClienteService = activoClienteService; // Asignado
+            _activoClienteService = activoClienteService;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Contrato> Crear(ContratoCreacionDTO dto)
         {
-            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            await _unitOfWork.BeginTransactionAsync();
             try
             {
                 int idCotizacionFinal = 0;
@@ -261,19 +264,19 @@ namespace BLL.Implementacion
                     await _repositorioContrato.Editar(contratoCreado); // Guardar la ruta del archivo
                 }
 
-                await transaction.CommitAsync();
+                await _unitOfWork.CommitTransactionAsync();
                 return contratoCreado;
             }
             catch (Exception ex)
             {
-                await transaction.RollbackAsync();
+                await _unitOfWork.RollbackTransactionAsync();
                 throw new Exception($"Error al crear el contrato: {ex.Message}", ex);
             }
         }
 
         public async Task<Contrato> Editar(Contrato entidad, string nombreProyecto, Stream archivoStream, string nombreArchivo)
         {
-            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            await _unitOfWork.BeginTransactionAsync();
             try
             {
                 var contratoExistente = await _repositorioContrato.Obtener(c => c.IdContrato == entidad.IdContrato);
@@ -301,12 +304,12 @@ namespace BLL.Implementacion
                 }
 
                 await _dbContext.SaveChangesAsync();
-                await transaction.CommitAsync();
+                await _unitOfWork.CommitTransactionAsync();
                 return contratoExistente;
             }
             catch (Exception ex)
             {
-                await transaction.RollbackAsync();
+                await _unitOfWork.RollbackTransactionAsync();
                 throw new Exception($"Error al editar el contrato: {ex.Message}", ex);
             }
         }
@@ -375,7 +378,7 @@ namespace BLL.Implementacion
 
         public async Task<bool> Eliminar(int id)
         {
-            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            await _unitOfWork.BeginTransactionAsync();
             try
             {
                 var contrato = await _repositorioContrato.Obtener(c => c.IdContrato == id);
@@ -413,18 +416,18 @@ namespace BLL.Implementacion
 
                 if (resultado)
                 {
-                    await transaction.CommitAsync();
+                    await _unitOfWork.CommitTransactionAsync();
                     return true;
                 }
                 else
                 {
-                    await transaction.RollbackAsync();
+                    await _unitOfWork.RollbackTransactionAsync();
                     throw new Exception("No se pudo actualizar el estado del contrato a inactivo.");
                 }
             }
             catch (Exception)
             {
-                await transaction.RollbackAsync();
+                await _unitOfWork.RollbackTransactionAsync();
                 throw;
             }
         }

@@ -18,17 +18,20 @@ namespace BLL.Implementacion
         private readonly IGenericRepository<Cuota> _repositorioCuota;
         private readonly TecmeindbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
 
         public PagoService(
             IGenericRepository<Pago> repositorioPago,
             IGenericRepository<Cuota> repositorioCuota,
             TecmeindbContext dbContext,
-            IMapper mapper)
+            IMapper mapper,
+            IUnitOfWork unitOfWork)
         {
             _repositorioPago = repositorioPago;
             _repositorioCuota = repositorioCuota;
             _dbContext = dbContext;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<List<PlanPagoDashboardDTO>> ObtenerPlanesDePagoParaDashboard()
@@ -112,7 +115,7 @@ namespace BLL.Implementacion
 
         public async Task<PagoDTO> RegistrarPago(PagoDTO pagoDTO)
         {
-            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            await _unitOfWork.BeginTransactionAsync();
             try
             {
                 var planDePago = await _dbContext.PlanesDePago
@@ -153,12 +156,12 @@ namespace BLL.Implementacion
                     }
                     await _repositorioCuota.Editar(cuota);
                 }
-                await transaction.CommitAsync();
+                await _unitOfWork.CommitTransactionAsync();
                 return _mapper.Map<PagoDTO>(pagoCreado);
             }
             catch (Exception)
             {
-                await transaction.RollbackAsync();
+                await _unitOfWork.RollbackTransactionAsync();
                 throw;
             }
         }

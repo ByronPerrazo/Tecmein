@@ -15,19 +15,22 @@ namespace BLL.Implementacion
         private readonly ICotizacionServices _cotizacionServices;
         private readonly IVisitaServices _visitaServices;
         private readonly IGenericRepository<Cotizacion> _repositorioCotizacion;
-        private readonly IGenericRepository<PreContrato> _repositorioPreContrato; // Added
+        private readonly IGenericRepository<PreContrato> _repositorioPreContrato;
+        private readonly IUnitOfWork _unitOfWork;
 
         public SeguimientoServices(IGenericRepository<Seguimiento> repositorio,
                                  ICotizacionServices cotizacionServices,
                                  IVisitaServices visitaServices,
                                  IGenericRepository<Cotizacion> repositorioCotizacion,
-                                 IGenericRepository<PreContrato> repositorioPreContrato) // Added
+                                 IGenericRepository<PreContrato> repositorioPreContrato,
+                                 IUnitOfWork unitOfWork)
         {
             _repositorio = repositorio;
             _cotizacionServices = cotizacionServices;
             _visitaServices = visitaServices;
             _repositorioCotizacion = repositorioCotizacion;
-            _repositorioPreContrato = repositorioPreContrato; // Added
+            _repositorioPreContrato = repositorioPreContrato;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<List<Seguimiento>> Lista(int secCotizacion)
@@ -48,74 +51,79 @@ namespace BLL.Implementacion
 
         public async Task<Seguimiento> Crear(Seguimiento entidad)
         {
-            if (entidad == null) throw new ArgumentNullException(nameof(entidad));
-
-            var cotizacion = await _repositorioCotizacion.Obtener(c => c.Secuencial == entidad.SecCotizacion);
-            if (cotizacion == null)
+            await _unitOfWork.BeginTransactionAsync();
+            try
             {
-                throw new Exception("La cotización especificada no existe.");
-            }
+                if (entidad == null) throw new ArgumentNullException(nameof(entidad));
 
-            entidad.FechaRegistro = DateTime.Now;
-            var seguimientoCreado = await _repositorio.Crear(entidad);
-
-            await _visitaServices.CambiarEtapa(cotizacion.SecVisita, "SEG");
-
-            if (entidad.AceptacionCliente)
-            {
-                await _visitaServices.CambiarEtapa(cotizacion.SecVisita, "ACE");
-
-                cotizacion.Confirmacion = true;
-                await _repositorioCotizacion.Editar(cotizacion);
-
-                // Se comenta la creación automática para moverla a un proceso manual desde la pantalla de Pre-Contratos.
-                /*
-                var nuevoPreContrato = new PreContrato
+                var cotizacion = await _repositorioCotizacion.Obtener(c => c.Secuencial == entidad.SecCotizacion);
+                if (cotizacion == null)
                 {
-                    SecCotizacion = cotizacion.Secuencial,
-                    SecPlantillaPreContrato = 1, 
-                    SecUsuarioCrea = cotizacion.SecUsuario ?? 1, 
-                    Version = 1,
-                    Estado = "Borrador",
-                    EstaActivo = true,
-                    FechaRegistro = DateTime.Now
-                };
-                await _preContratoServices.Crear(nuevoPreContrato);
-                */
-            }
+                    throw new Exception("La cotización especificada no existe.");
+                }
 
-            return seguimientoCreado;
+                entidad.FechaRegistro = DateTime.Now;
+                var seguimientoCreado = await _repositorio.Crear(entidad);
+
+                await _visitaServices.CambiarEtapa(cotizacion.SecVisita, "SEG");
+
+                if (entidad.AceptacionCliente)
+                {
+                    await _visitaServices.CambiarEtapa(cotizacion.SecVisita, "ACE");
+
+                    cotizacion.Confirmacion = true;
+                    await _repositorioCotizacion.Editar(cotizacion);
+                }
+
+                await _unitOfWork.CommitTransactionAsync();
+                return seguimientoCreado;
+            }
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
 
         public async Task<Seguimiento> Editar(Seguimiento entidad)
         {
-            if (entidad == null) throw new ArgumentNullException(nameof(entidad));
-
-            var seguimientoExistente = await _repositorio.Obtener(s => s.SecSeguimiento == entidad.SecSeguimiento);
-            if (seguimientoExistente == null)
+            await _unitOfWork.BeginTransactionAsync();
+            try
             {
-                throw new Exception("El seguimiento no existe.");
-            }
+                if (entidad == null) throw new ArgumentNullException(nameof(entidad));
 
-            seguimientoExistente.Accion = entidad.Accion;
-            seguimientoExistente.Detalle = entidad.Detalle;
-            seguimientoExistente.FechaAccion = entidad.FechaAccion;
-            seguimientoExistente.AceptacionCliente = entidad.AceptacionCliente;
-
-            await _repositorio.Editar(seguimientoExistente);
-
-            if (seguimientoExistente.AceptacionCliente)
-            {
-                var cotizacion = await _repositorioCotizacion.Obtener(c => c.Secuencial == seguimientoExistente.SecCotizacion);
-                if (cotizacion != null)
+                var seguimientoExistente = await _repositorio.Obtener(s => s.SecSeguimiento == entidad.SecSeguimiento);
+                if (seguimientoExistente == null)
                 {
-                    cotizacion.Confirmacion = true;
-                    await _repositorioCotizacion.Editar(cotizacion);
-                    await _visitaServices.CambiarEtapa(cotizacion.SecVisita, "ACE");
+                    throw new Exception("El seguimiento no existe.");
                 }
-            }
 
-            return seguimientoExistente;
+                seguimientoExistente.Accion = entidad.Accion;
+                seguimientoExistente.Detalle = entidad.Detalle;
+                seguimientoExistente.FechaAccion = entidad.FechaAccion;
+                seguimientoExistente.AceptacionCliente = entidad.AceptacionCliente;
+
+                await _repositorio.Editar(seguimientoExistente);
+
+                if (seguimientoExistente.AceptacionCliente)
+                {
+                    var cotizacion = await _repositorioCotizacion.Obtener(c => c.Secuencial == seguimientoExistente.SecCotizacion);
+                    if (cotizacion != null)
+                    {
+                        cotizacion.Confirmacion = true;
+                        await _repositorioCotizacion.Editar(cotizacion);
+                        await _visitaServices.CambiarEtapa(cotizacion.SecVisita, "ACE");
+                    }
+                }
+
+                await _unitOfWork.CommitTransactionAsync();
+                return seguimientoExistente;
+            }
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
 
         public async Task<bool> Eliminar(int secuencial)

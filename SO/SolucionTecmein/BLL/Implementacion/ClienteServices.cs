@@ -24,8 +24,8 @@ namespace BLL.Implementacion
         private readonly IGenericRepository<FormaPago> _repositorioFormaPago;
         private readonly IConstructoraServices _constructoraServices;
         private readonly IStorageServices _storageServices;
-        private readonly IGenericRepository<Cuota> _repositorioCuota; // Nuevo
-        private readonly TecmeindbContext _dbContext;
+        private readonly IGenericRepository<Cuota> _repositorioCuota;
+        private readonly IUnitOfWork _unitOfWork;
 
         public ClienteServices(
             IGenericRepository<Cliente> repositorioCliente,
@@ -38,8 +38,8 @@ namespace BLL.Implementacion
             IGenericRepository<FormaPago> repositorioFormaPago,
             IConstructoraServices constructoraServices,
             IStorageServices storageServices,
-            IGenericRepository<Cuota> repositorioCuota, // Nuevo
-            TecmeindbContext dbContext)
+            IGenericRepository<Cuota> repositorioCuota,
+            IUnitOfWork unitOfWork)
         {
             _repositorioCliente = repositorioCliente;
             _repositorioFormato = repositorioFormato;
@@ -51,8 +51,8 @@ namespace BLL.Implementacion
             _repositorioFormaPago = repositorioFormaPago;
             _constructoraServices = constructoraServices;
             _storageServices = storageServices;
-            _repositorioCuota = repositorioCuota; // Asignación
-            _dbContext = dbContext;
+            _repositorioCuota = repositorioCuota;
+            _unitOfWork = unitOfWork;
         }
 
         private async Task<string> FormatearNumeroCliente(int numero)
@@ -99,42 +99,51 @@ namespace BLL.Implementacion
 
         public async Task<Cliente> Crear(Cliente entidad)
         {
-            if (entidad == null) throw new ArgumentNullException(nameof(entidad));
-
-            var clienteExistente = await _repositorioCliente.Obtener(c => c.SecConstructora == entidad.SecConstructora);
-            if (clienteExistente != null)
+            await _unitOfWork.BeginTransactionAsync();
+            try
             {
-                throw new Exception("La constructora ya es un cliente.");
-            }
+                if (entidad == null) throw new ArgumentNullException(nameof(entidad));
 
-            var constructora = await _constructoraServices.ConstructoraPorSecuencial(entidad.SecConstructora);
-            if (constructora == null)
-            {
-                throw new Exception("La constructora especificada no existe.");
-            }
-
-            // Si se proporciona un número de cliente, se formatea. Si no, se genera.
-            if (!string.IsNullOrEmpty(entidad.NumeroCliente))
-            {
-                if (int.TryParse(entidad.NumeroCliente, out int numeroManual))
+                var clienteExistente = await _repositorioCliente.Obtener(c => c.SecConstructora == entidad.SecConstructora);
+                if (clienteExistente != null)
                 {
-                    entidad.NumeroCliente = await FormatearNumeroCliente(numeroManual);
+                    throw new Exception("La constructora ya es un cliente.");
+                }
+
+                var constructora = await _constructoraServices.ConstructoraPorSecuencial(entidad.SecConstructora);
+                if (constructora == null)
+                {
+                    throw new Exception("La constructora especificada no existe.");
+                }
+
+                if (!string.IsNullOrEmpty(entidad.NumeroCliente))
+                {
+                    if (int.TryParse(entidad.NumeroCliente, out int numeroManual))
+                    {
+                        entidad.NumeroCliente = await FormatearNumeroCliente(numeroManual);
+                    }
+                    else
+                    {
+                        throw new Exception("El valor ingresado para 'Número Cliente' no es un número válido.");
+                    }
                 }
                 else
                 {
-                    throw new Exception("El valor ingresado para 'Número Cliente' no es un número válido.");
+                    entidad.NumeroCliente = await GenerarSiguienteNumeroCliente();
                 }
+
+                entidad.FechaCreacion = DateTime.Now;
+                entidad.EstaActivo = true;
+
+                await _repositorioCliente.Crear(entidad);
+                await _unitOfWork.CommitTransactionAsync();
+                return entidad;
             }
-            else
+            catch
             {
-                entidad.NumeroCliente = await GenerarSiguienteNumeroCliente();
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
             }
-
-            entidad.FechaCreacion = DateTime.Now;
-            entidad.EstaActivo = true;
-
-            await _repositorioCliente.Crear(entidad);
-            return entidad;
         }
 
         public async Task<Cliente> Editar(Cliente entidad)
@@ -147,8 +156,6 @@ namespace BLL.Implementacion
                 throw new Exception("El cliente no existe.");
             }
 
-            // No se debería poder cambiar el número de cliente una vez creado
-            // clienteExistente.NumeroCliente = entidad.NumeroCliente;
             clienteExistente.EstaActivo = entidad.EstaActivo;
 
             await _repositorioCliente.Editar(clienteExistente);
@@ -181,12 +188,6 @@ namespace BLL.Implementacion
             IQueryable<Cliente> query = await _repositorioCliente.Consultar();
             return await query.Include(c => c.SecConstructoraNavigation).ToListAsync();
         }
-
-
-
-
-
-
 
         public async Task<List<Cliente>> BuscarClientes(string terminoBusqueda)
         {
@@ -227,23 +228,34 @@ namespace BLL.Implementacion
 
         public async Task<Cliente> ObtenerOCrearPorConstructora(int secConstructora)
         {
-            var clienteExistente = await ObtenerPorIdConstructora(secConstructora);
-            if (clienteExistente != null)
+            await _unitOfWork.BeginTransactionAsync();
+            try
             {
-                return clienteExistente;
+                var clienteExistente = await ObtenerPorIdConstructora(secConstructora);
+                if (clienteExistente != null)
+                {
+                    // Si ya existe, no necesitamos la transacción. Pero como ya se inició, la cerramos limpiamente.
+                    await _unitOfWork.CommitTransactionAsync(); 
+                    return clienteExistente;
+                }
+
+                var nuevoCliente = new Cliente
+                {
+                    SecConstructora = secConstructora,
+                    NumeroCliente = await GenerarSiguienteNumeroCliente(),
+                    FechaCreacion = DateTime.Now,
+                    EstaActivo = true
+                };
+
+                var clienteCreado = await _repositorioCliente.Crear(nuevoCliente);
+                await _unitOfWork.CommitTransactionAsync();
+                return clienteCreado;
             }
-
-            // Si no existe, se crea uno nuevo.
-            var nuevoCliente = new Cliente
+            catch
             {
-                SecConstructora = secConstructora,
-                NumeroCliente = await GenerarSiguienteNumeroCliente(),
-                FechaCreacion = DateTime.Now,
-                EstaActivo = true
-            };
-
-            var clienteCreado = await _repositorioCliente.Crear(nuevoCliente);
-            return clienteCreado;
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
     }
 }

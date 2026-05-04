@@ -16,6 +16,7 @@ namespace BLL.Implementacion
         private readonly IGenericRepository<TipoDocumento> _repositorioTipoDocumento; // Added
         private readonly IGenericRepository<PlantillaPreContrato> _repositorioPlantillaPreContrato; // Added
         private readonly IGenericRepository<PreContratoCompromisoPago> _repositorioCompromisoPago;
+        private readonly IUnitOfWork _unitOfWork;
 
         public PreContratoServices(
             IGenericRepository<PreContrato> repositorio,
@@ -24,8 +25,9 @@ namespace BLL.Implementacion
             IPreContratoGeneratorService preContratoGeneratorService,
             IVisitaServices visitaServices,
             IGenericRepository<TipoDocumento> repositorioTipoDocumento, // Added
-            IGenericRepository<PlantillaPreContrato> repositorioPlantillaPreContrato, // Added
-            IGenericRepository<PreContratoCompromisoPago> repositorioCompromisoPago)
+            IGenericRepository<PlantillaPreContrato> repositorioPlantillaPreContrato, 
+            IGenericRepository<PreContratoCompromisoPago> repositorioCompromisoPago,
+            IUnitOfWork unitOfWork)
         {
             _repositorio = repositorio;
             _cotizacionServices = cotizacionServices;
@@ -33,8 +35,9 @@ namespace BLL.Implementacion
             _preContratoGeneratorService = preContratoGeneratorService;
             _visitaServices = visitaServices; // Added
             _repositorioTipoDocumento = repositorioTipoDocumento; // Added
-            _repositorioPlantillaPreContrato = repositorioPlantillaPreContrato; // Added
+            _repositorioPlantillaPreContrato = repositorioPlantillaPreContrato;
             _repositorioCompromisoPago = repositorioCompromisoPago;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<List<PreContrato>> Lista()
@@ -273,9 +276,12 @@ namespace BLL.Implementacion
 
         public async Task<PreContrato> GuardarBorrador(PreContratoConPagosDTO dto, int usuarioId)
         {
-            PreContrato preContratoParaNuevosCompromisos;
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                PreContrato preContratoParaNuevosCompromisos;
 
-            if (dto.SecPreContrato > 0) // Si se proporciona SecPreContrato, es una ACTUALIZACIÓN (con versionado)
+                if (dto.SecPreContrato > 0) // Si se proporciona SecPreContrato, es una ACTUALIZACIÓN (con versionado)
             {
                 // 1. Obtener la versión activa actual del pre-contrato
                 var oldPreContrato = await _repositorio.Obtener(p => p.SecPreContrato == dto.SecPreContrato && p.EstaActivo == true);
@@ -406,8 +412,15 @@ namespace BLL.Implementacion
                 }
             }
 
+            await _unitOfWork.CommitTransactionAsync();
             return preContratoParaNuevosCompromisos;
         }
+        catch
+        {
+            await _unitOfWork.RollbackTransactionAsync();
+            throw;
+        }
+    }
 
         public async Task<PreContratoParaEdicionDTO> ObtenerParaEdicion(int secPreContrato)
         {

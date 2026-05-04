@@ -75,9 +75,8 @@ namespace IOC
                     provider.GetRequiredService<ITipoImpuestoServices>(),
                     provider.GetRequiredService<IEquiposVisitaServices>(),
                     provider.GetRequiredService<IAuditService>(),
-                    provider.GetRequiredService<IUsuarioServices>()
-
-
+                    provider.GetRequiredService<IUsuarioServices>(),
+                    provider.GetRequiredService<IUnitOfWork>()
                 ));
             services.AddScoped<IEtapaServices, EtapaServices>();
             services.AddScoped<IVisitaServices, VisitaServices>();
@@ -93,8 +92,8 @@ namespace IOC
                     provider.GetRequiredService<IGenericRepository<FormaPago>>(),
                     provider.GetRequiredService<IConstructoraServices>(),
                     provider.GetRequiredService<IStorageServices>(),
-                    provider.GetRequiredService<IGenericRepository<Cuota>>(), // Nuevo
-                    provider.GetRequiredService<TecmeindbContext>()
+                    provider.GetRequiredService<IGenericRepository<Cuota>>(),
+                    provider.GetRequiredService<IUnitOfWork>()
                 ));
             services.AddScoped<IFormatoNumeroClienteService, FormatoNumeroClienteService>();
             services.AddScoped<ISeguimientoServices, SeguimientoServices>(provider =>
@@ -103,7 +102,8 @@ namespace IOC
                     provider.GetRequiredService<ICotizacionServices>(),
                     provider.GetRequiredService<IVisitaServices>(),
                     provider.GetRequiredService<IGenericRepository<Cotizacion>>(),
-                    provider.GetRequiredService<IGenericRepository<PreContrato>>()
+                    provider.GetRequiredService<IGenericRepository<PreContrato>>(),
+                    provider.GetRequiredService<IUnitOfWork>()
                 ));
             services.AddScoped<AutorizacionService>();
             services.AddScoped<IGenericRepository<Contactovisita>, GenericRepository<Contactovisita>>();
@@ -115,10 +115,11 @@ namespace IOC
                     provider.GetRequiredService<ICotizacionServices>(),
                     provider.GetRequiredService<IGenericRepository<PreContratoParrafo>>(),
                     provider.GetRequiredService<IPreContratoGeneratorService>(),
-                    provider.GetRequiredService<IVisitaServices>(), // Added IVisitaServices
-                    provider.GetRequiredService<IGenericRepository<TipoDocumento>>(), // Added
-                    provider.GetRequiredService<IGenericRepository<PlantillaPreContrato>>(), // Added
-                    provider.GetRequiredService<IGenericRepository<PreContratoCompromisoPago>>()
+                    provider.GetRequiredService<IVisitaServices>(),
+                    provider.GetRequiredService<IGenericRepository<TipoDocumento>>(),
+                    provider.GetRequiredService<IGenericRepository<PlantillaPreContrato>>(),
+                    provider.GetRequiredService<IGenericRepository<PreContratoCompromisoPago>>(),
+                    provider.GetRequiredService<IUnitOfWork>()
                 ));
             services.AddScoped<IFormaPagoServices, FormaPagoServices>();
             services.AddScoped<IPreContratoGeneratorService, PreContratoGeneratorService>(provider =>
@@ -149,8 +150,9 @@ namespace IOC
                     provider.GetRequiredService<IGenericRepository<PlanDePago>>(),
                     provider.GetRequiredService<IGenericRepository<Cuota>>(),
                     provider.GetRequiredService<IGenericRepository<PreContratoCompromisoPago>>(),
-                    provider.GetRequiredService<ITipoDocumentoServices>(), // Añadido
-                    provider.GetRequiredService<IActivoClienteService>() // Añadido
+                    provider.GetRequiredService<ITipoDocumentoServices>(),
+                    provider.GetRequiredService<IActivoClienteService>(),
+                    provider.GetRequiredService<IUnitOfWork>()
                 ));
 
             // Registro del patrón Strategy para la generación de documentos
@@ -160,6 +162,9 @@ namespace IOC
 
             // Nuevo Servicio de Auditoría
             services.AddScoped<IAuditService, AuditService>();
+
+            // Registro de Unit of Work para Atomicidad
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             // Registro de IMemoryCache
 
