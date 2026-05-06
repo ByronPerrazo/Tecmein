@@ -319,15 +319,15 @@ $(document).ready(function () {
         });
 
         const modelo = {
-            SecPreContrato: parseInt($("#SecPreContrato").val()), // Incluir SecPreContrato
-            SecCotizacion: parseInt($("#cboCotizacionesAceptadas").val()),
-            SecTipoDocumento: parseInt($("#cboTipoDocumento").val()), // <-- Añadido
-            Dias: parseInt($("#Dias").val()),
-            TipoDias: $("#TipoDias").val(),
-            PeriodoMantenimiento: $("#PeriodoMantenimiento").val(),
-            AniosGarantia: parseInt($("#AniosGarantia").val()),
-            MesesGarantia: parseInt($("#MesesGarantia").val()),
-            PolizaGarantia: $("#PolizaGarantia").val(),
+            SecPreContrato: parseInt($("#SecPreContrato").val()) || 0,
+            SecCotizacion: parseInt($("#cboCotizacionesAceptadas").val()) || 0,
+            SecTipoDocumento: parseInt($("#cboTipoDocumento").val()) || 0,
+            Dias: parseInt($("#Dias").val()) || 0,
+            TipoDias: $("#TipoDias").val() || "",
+            PeriodoMantenimiento: $("#PeriodoMantenimiento").val() || "",
+            AniosGarantia: parseInt($("#AniosGarantia").val()) || 0,
+            MesesGarantia: parseInt($("#MesesGarantia").val()) || 0,
+            PolizaGarantia: $("#PolizaGarantia").val() || "",
             CompromisosDePago: compromisos
         };
 

@@ -10,6 +10,7 @@ using System.Security.Claims;
 using TecmeinWebApp.Utilidades.Response;
 using TecmeinWebApp.Utilidades.ViewComponents;
 using BLL.DTOs;
+using System.Linq;
 
 namespace TecmeinAplicacionWeb.Controllers
 {
@@ -347,12 +348,25 @@ namespace TecmeinAplicacionWeb.Controllers
         [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> GuardarBorrador([FromBody] BLL.DTOs.PreContratoConPagosDTO dto)
         {
+            if (!ModelState.IsValid)
+            {
+                var errores = string.Join(" | ", ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                return Json(new { estado = false, mensajes = $"Error de validación: {errores}" });
+            }
+
             try
             {
                 var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
                 if (usuarioIdClaim == null || !int.TryParse(usuarioIdClaim.Value, out int usuarioId))
                 {
                     return Json(new { estado = false, mensajes = "Usuario no autenticado o ID de usuario inválido." });
+                }
+
+                if (dto == null)
+                {
+                     return Json(new { estado = false, mensajes = "El servidor recibió un objeto nulo. Verifique el formato de los datos." });
                 }
 
                 var preContratoGuardado = await _preContratoService.GuardarBorrador(dto, usuarioId);

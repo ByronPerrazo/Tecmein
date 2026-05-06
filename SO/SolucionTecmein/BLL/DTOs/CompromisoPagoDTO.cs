@@ -6,6 +6,6 @@ namespace BLL.DTOs
     {
         public string Tipo { get; set; } = string.Empty;
         public decimal Monto { get; set; }
-        public DateTime FechaVencimiento { get; set; }
+        public DateTime? FechaVencimiento { get; set; }
     }
 }

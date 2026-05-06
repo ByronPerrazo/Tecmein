@@ -16,6 +16,7 @@ namespace BLL.Implementacion
         private readonly IGenericRepository<TipoDocumento> _repositorioTipoDocumento; // Added
         private readonly IGenericRepository<PlantillaPreContrato> _repositorioPlantillaPreContrato; // Added
         private readonly IGenericRepository<PreContratoCompromisoPago> _repositorioCompromisoPago;
+        private readonly IStorageServices _storageService;
         private readonly IUnitOfWork _unitOfWork;
 
         public PreContratoServices(
@@ -27,6 +28,7 @@ namespace BLL.Implementacion
             IGenericRepository<TipoDocumento> repositorioTipoDocumento, // Added
             IGenericRepository<PlantillaPreContrato> repositorioPlantillaPreContrato, 
             IGenericRepository<PreContratoCompromisoPago> repositorioCompromisoPago,
+            IStorageServices storageService,
             IUnitOfWork unitOfWork)
         {
             _repositorio = repositorio;
@@ -37,6 +39,7 @@ namespace BLL.Implementacion
             _repositorioTipoDocumento = repositorioTipoDocumento; // Added
             _repositorioPlantillaPreContrato = repositorioPlantillaPreContrato;
             _repositorioCompromisoPago = repositorioCompromisoPago;
+            _storageService = storageService;
             _unitOfWork = unitOfWork;
         }
 
@@ -276,6 +279,8 @@ namespace BLL.Implementacion
 
         public async Task<PreContrato> GuardarBorrador(PreContratoConPagosDTO dto, int usuarioId)
         {
+            if (dto == null) throw new ArgumentNullException(nameof(dto), "Los datos del pre-contrato son nulos o inválidos.");
+
             await _unitOfWork.BeginTransactionAsync();
             try
             {
@@ -326,11 +331,11 @@ namespace BLL.Implementacion
                 };
 
                 // 4. Actualizar la nueva entidad con los datos del DTO
-                newPreContrato.Dias = dto.Dias;
+                newPreContrato.Dias = dto.Dias ?? 0;
                 newPreContrato.TipoDias = dto.TipoDias;
                 newPreContrato.PeriodoMantenimiento = dto.PeriodoMantenimiento;
-                newPreContrato.AniosGarantia = dto.AniosGarantia;
-                newPreContrato.MesesGarantia = dto.MesesGarantia;
+                newPreContrato.AniosGarantia = dto.AniosGarantia ?? 0;
+                newPreContrato.MesesGarantia = dto.MesesGarantia ?? 0;
                 newPreContrato.PolizaGarantia = dto.PolizaGarantia;
 
                 preContratoParaNuevosCompromisos = await _repositorio.Crear(newPreContrato);
@@ -372,11 +377,11 @@ namespace BLL.Implementacion
                 var nuevoPreContrato = new PreContrato
                 {
                     SecCotizacion = dto.SecCotizacion,
-                    Dias = dto.Dias,
+                    Dias = dto.Dias ?? 0,
                     TipoDias = dto.TipoDias,
                     PeriodoMantenimiento = dto.PeriodoMantenimiento,
-                    AniosGarantia = dto.AniosGarantia,
-                    MesesGarantia = dto.MesesGarantia,
+                    AniosGarantia = dto.AniosGarantia ?? 0,
+                    MesesGarantia = dto.MesesGarantia ?? 0,
                     PolizaGarantia = dto.PolizaGarantia,
                     SecPlantillaPreContrato = plantillaPorDefecto.SecPlantillaPreContrato,
                     SecUsuarioCrea = usuarioId,
@@ -404,7 +409,7 @@ namespace BLL.Implementacion
                         SecPreContrato = preContratoParaNuevosCompromisos.SecPreContrato,
                         NumeroCuota = compromisoDto.Tipo == "Anticipo" ? 0 : numeroCuota++,
                         Monto = compromisoDto.Monto,
-                        FechaVencimiento = compromisoDto.FechaVencimiento,
+                        FechaVencimiento = compromisoDto.FechaVencimiento ?? DateTime.Now,
                         Tipo = compromisoDto.Tipo,
                         FechaRegistro = DateTime.Now
                     };
@@ -471,29 +476,26 @@ namespace BLL.Implementacion
 
             if (entidad == null) throw new Exception("Pre-contrato no encontrado.");
 
-            using (var memoryStream = new MemoryStream())
-            {
-                await archivoStream.CopyToAsync(memoryStream);
-                var bytes = memoryStream.ToArray();
-                var base64 = Convert.ToBase64String(bytes);
-                var contenido = "BASE64DOCX:" + base64;
+            string nombreArchivo = $"Contrato_{secPreContrato}_{DateTime.Now:yyyyMMddHHmmss}.docx";
+            string rutaRelativa = await _storageService.SubirStorage(archivoStream, "Contratos", nombreArchivo);
 
-                var parrafo = entidad.PreContratoParrafos.FirstOrDefault();
-                if (parrafo != null)
+            if (string.IsNullOrEmpty(rutaRelativa)) throw new Exception("No se pudo guardar el archivo en el almacenamiento local.");
+
+            var parrafo = entidad.PreContratoParrafos.FirstOrDefault();
+            if (parrafo != null)
+            {
+                parrafo.Contenido = "FILEPATH:" + rutaRelativa;
+                await _repositorioPreContratoParrafo.Editar(parrafo);
+            }
+            else
+            {
+                var nuevoParrafo = new PreContratoParrafo
                 {
-                    parrafo.Contenido = contenido;
-                    await _repositorioPreContratoParrafo.Editar(parrafo);
-                }
-                else
-                {
-                    var nuevoParrafo = new PreContratoParrafo
-                    {
-                        SecPreContrato = secPreContrato,
-                        Contenido = contenido,
-                        Orden = 1
-                    };
-                    await _repositorioPreContratoParrafo.Crear(nuevoParrafo);
-                }
+                    SecPreContrato = secPreContrato,
+                    Contenido = "FILEPATH:" + rutaRelativa,
+                    Orden = 1
+                };
+                await _repositorioPreContratoParrafo.Crear(nuevoParrafo);
             }
             return true;
         }
@@ -506,13 +508,24 @@ namespace BLL.Implementacion
                 return null;
             }
 
+            if (parrafo.Contenido.StartsWith("FILEPATH:"))
+            {
+                string rutaRelativa = parrafo.Contenido.Substring("FILEPATH:".Length);
+                // Construimos la ruta absoluta basándonos en C:\TecmeinFiles (hardcoded por ahora en LocalStorageService)
+                string rutaAbsoluta = Path.Combine(@"C:\TecmeinFiles", rutaRelativa.Replace("/", "\\"));
+                
+                if (File.Exists(rutaAbsoluta))
+                {
+                    return await File.ReadAllBytesAsync(rutaAbsoluta);
+                }
+            }
+
             if (parrafo.Contenido.StartsWith("BASE64DOCX:"))
             {
                 var base64 = parrafo.Contenido.Substring("BASE64DOCX:".Length);
                 return Convert.FromBase64String(base64);
             }
 
-            // Si no tiene el prefijo, podría ser legado (HTML), devolvemos null para que se genere uno nuevo
             return null;
         }
     }

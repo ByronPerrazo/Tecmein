@@ -1,5 +1,6 @@
 using AutoMapper;
 using BLL.Implementacion;
+using BLL.Implementacion.ContractEngine;
 using BLL.Interfaces;
 using DAL.DBContext;
 using DAL.Implementacion;
@@ -34,7 +35,7 @@ namespace IOC
 
             services.AddScoped<IUsuarioServices, UsuarioServices>();
             services.AddScoped<IRolServices, RolServices>();
-            services.AddScoped<IStorageServices, StorageServices>(); // Reverted to AddScoped
+            services.AddScoped<IStorageServices, LocalStorageService>();
             services.AddScoped<IUtilidadesServices, UtilidadesServices>();
             services.AddScoped<ICorreoServices, CorreoServices>();
             services.AddScoped<ISmtpClientWrapper, SmtpClientWrapper>();
@@ -119,14 +120,17 @@ namespace IOC
                     provider.GetRequiredService<IGenericRepository<TipoDocumento>>(),
                     provider.GetRequiredService<IGenericRepository<PlantillaPreContrato>>(),
                     provider.GetRequiredService<IGenericRepository<PreContratoCompromisoPago>>(),
+                    provider.GetRequiredService<IStorageServices>(),
                     provider.GetRequiredService<IUnitOfWork>()
                 ));
             services.AddScoped<IFormaPagoServices, FormaPagoServices>();
-            services.AddScoped<IPreContratoGeneratorService, PreContratoGeneratorService>(provider =>
-                new PreContratoGeneratorService(
-                    provider.GetRequiredService<TecmeindbContext>(),
-                    provider.GetRequiredService<IGenericRepository<DiccionarioParametro>>()
-                ));
+            
+            // Motores de resolución de plantillas
+            services.AddScoped<IPlaceholderProvider, FinancialPlaceholderProvider>();
+            services.AddScoped<IPlaceholderProvider, GeneralPlaceholderProvider>();
+            services.AddScoped<IPlaceholderProvider, EquipmentPlaceholderProvider>();
+            
+            services.AddScoped<IPreContratoGeneratorService, PreContratoGeneratorService>();
 
             services.AddScoped<IPlantillaPreContratoServices, PlantillaPreContratoServices>();
             services.AddScoped<IPlantillaPreContratoParrafoServices, PlantillaPreContratoParrafoServices>();
