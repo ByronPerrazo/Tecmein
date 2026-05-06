@@ -173,6 +173,10 @@ namespace IOC
             // Registro de Unit of Work para Atomicidad
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            // Contexto de Usuario para Filtros Globales y Auditoría
+            services.AddHttpContextAccessor();
+            services.AddScoped<IUserSession, UserSession>();
+
             // Registro de IMemoryCache
 
             services.AddMemoryCache();

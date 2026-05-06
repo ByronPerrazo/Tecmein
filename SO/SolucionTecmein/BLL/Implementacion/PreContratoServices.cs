@@ -52,16 +52,7 @@ namespace BLL.Implementacion
 
         public async Task<List<PreContratoDTO>> Lista(int secUsuario)
         {
-            var usuario = await _usuarioServices.ObtenerPorId(secUsuario);
-            bool esAdmin = usuario?.SecRol == 1;
-
             IQueryable<PreContrato> query = await _repositorio.Consultar(p => p.EstaActivo == true);
-
-            // Filtrado de Seguridad (Punto 1)
-            if (!esAdmin)
-            {
-                query = query.Where(p => p.SecUsuarioCrea == secUsuario);
-            }
 
             var lista = await query.Include(p => p.SecCotizacionNavigation)
                                     .ThenInclude(c => c.SecVisitaNavigation)
@@ -80,12 +71,6 @@ namespace BLL.Implementacion
         {
             var preContrato = await _repositorio.Obtener(p => p.SecPreContrato == secPreContrato);
             if (preContrato == null) return null;
-
-            var usuario = await _usuarioServices.ObtenerPorId(secUsuario);
-            if (usuario?.SecRol != 1 && preContrato.SecUsuarioCrea != secUsuario)
-            {
-                throw new UnauthorizedAccessException("No tiene permisos para acceder a este pre-contrato.");
-            }
 
             return _mapper.Map<PreContratoDTO>(preContrato);
         }

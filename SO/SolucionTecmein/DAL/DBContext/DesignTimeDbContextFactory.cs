@@ -22,7 +22,7 @@ namespace DAL.DBContext
 
             builder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 
-            return new TecmeindbContext(builder.Options);
+            return new TecmeindbContext(builder.Options, null!);
         }
     }
 }

@@ -6,9 +6,12 @@ namespace DAL.DBContext;
 
 public partial class TecmeindbContext : DbContext
 {
-    public TecmeindbContext(DbContextOptions<TecmeindbContext> options)
+    private readonly IUserSession _userSession;
+
+    public TecmeindbContext(DbContextOptions<TecmeindbContext> options, IUserSession userSession)
        : base(options)
     {
+        _userSession = userSession;
     }
 
 
@@ -90,6 +93,9 @@ public partial class TecmeindbContext : DbContext
         modelBuilder
             .UseCollation("utf8mb3_general_ci")
             .HasCharSet("utf8mb3");
+
+        // Aplicar Filtros Globales de Seguridad
+        ApplyGlobalFilters(modelBuilder);
 
         modelBuilder.Entity<Etapa>(entity =>
         {
@@ -1235,4 +1241,18 @@ public partial class TecmeindbContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+    private void ApplyGlobalFilters(ModelBuilder modelBuilder)
+    {
+        // Visita: SecUsuario
+        modelBuilder.Entity<Visita>().HasQueryFilter(e => _userSession == null || _userSession.SecRol == 1 || e.SecUsuario == _userSession.SecUsuario);
+
+        // Cotizacion: SecUsuario
+        modelBuilder.Entity<Cotizacion>().HasQueryFilter(e => _userSession == null || _userSession.SecRol == 1 || e.SecUsuario == _userSession.SecUsuario);
+
+        // PreContrato: SecUsuarioCrea
+        modelBuilder.Entity<PreContrato>().HasQueryFilter(e => _userSession == null || _userSession.SecRol == 1 || e.SecUsuarioCrea == _userSession.SecUsuario);
+
+        // Contrato: IdUsuarioCarga
+        modelBuilder.Entity<Contrato>().HasQueryFilter(e => _userSession == null || _userSession.SecRol == 1 || e.IdUsuarioCarga == _userSession.SecUsuario);
+    }
 }
