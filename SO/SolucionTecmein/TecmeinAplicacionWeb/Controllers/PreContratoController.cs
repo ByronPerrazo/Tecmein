@@ -49,7 +49,10 @@ namespace TecmeinAplicacionWeb.Controllers
         [ValidatePermission("LEER")]
         public async Task<IActionResult> Listar()
         {
-            var lista = await _preContratoService.Lista();
+            var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            int usuarioId = usuarioIdClaim != null ? int.Parse(usuarioIdClaim.Value) : 0;
+
+            var lista = await _preContratoService.Lista(usuarioId);
             List<PreContratoVM> vmLista = _mapper.Map<List<PreContratoVM>>(lista);
             return StatusCode(StatusCodes.Status200OK, new { data = vmLista });
         }
@@ -73,15 +76,11 @@ namespace TecmeinAplicacionWeb.Controllers
         [ValidatePermission("ELIMINAR")]
         public async Task<IActionResult> Eliminar(int id)
         {
-            try
-            {
-                bool resultado = await _preContratoService.Eliminar(id);
-                return StatusCode(StatusCodes.Status200OK, new { estado = resultado, mensajes = resultado ? "Pre-contrato eliminado correctamente." : "No se pudo eliminar el pre-contrato." });
-            }
-            catch (System.Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { estado = false, mensajes = ex.Message });
-            }
+            var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            int usuarioId = usuarioIdClaim != null ? int.Parse(usuarioIdClaim.Value) : 0;
+
+            bool resultado = await _preContratoService.Eliminar(id, usuarioId);
+            return StatusCode(StatusCodes.Status200OK, new { estado = resultado, mensajes = resultado ? "Pre-contrato eliminado correctamente." : "No se pudo eliminar el pre-contrato." });
         }
 
         [HttpGet]
@@ -108,13 +107,16 @@ namespace TecmeinAplicacionWeb.Controllers
         {
             try
             {
-                var cotizaciones = await _cotizacionService.Lista();
+                var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                int usuarioId = usuarioIdClaim != null ? int.Parse(usuarioIdClaim.Value) : 0;
+
+                var cotizaciones = await _cotizacionService.Lista(usuarioId);
                 var cotizacionesAprobadas = cotizaciones
-                    .Where(c => c.EstaActivo == 1 && c.Confirmacion == true && c.SecVisitaNavigation != null)
+                    .Where(c => c.EstaActivo == 1 && c.Confirmacion == true)
                     .Select(c => new
                     {
                         value = c.Secuencial,
-                        text = $"COT-{c.Secuencial} - {(c.SecVisitaNavigation != null ? c.SecVisitaNavigation.Nombre : "Sin Nombre de Obra")}"
+                        text = $"COT-{c.Secuencial} - {(!string.IsNullOrEmpty(c.NombreObra) ? c.NombreObra : "Sin Nombre de Obra")}"
                     })
                     .ToList();
 
@@ -178,27 +180,22 @@ namespace TecmeinAplicacionWeb.Controllers
         [ValidatePermission("ACTUALIZAR")]
         public async Task<IActionResult> SubirContratoFinal(int secPreContrato, IFormFile archivo)
         {
-            try
+            if (archivo == null || archivo.Length == 0)
+                return Json(new { estado = false, mensajes = "Debe subir un archivo válido." });
+
+            var extension = Path.GetExtension(archivo.FileName).ToLower();
+            if (extension != ".docx")
+                return Json(new { estado = false, mensajes = "Solo se permiten archivos DOCX." });
+
+            var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            int usuarioId = usuarioIdClaim != null ? int.Parse(usuarioIdClaim.Value) : 0;
+
+            using (var stream = archivo.OpenReadStream())
             {
-                if (archivo == null || archivo.Length == 0)
-                    return Json(new { estado = false, mensajes = "Debe subir un archivo válido." });
-
-                // Validar extensión
-                var extension = Path.GetExtension(archivo.FileName).ToLower();
-                if (extension != ".docx")
-                    return Json(new { estado = false, mensajes = "Solo se permiten archivos DOCX." });
-
-                using (var stream = archivo.OpenReadStream())
-                {
-                    await _preContratoService.SubirContratoFinal(secPreContrato, stream);
-                }
-
-                return Json(new { estado = true, mensajes = "Contrato final guardado exitosamente." });
+                await _preContratoService.SubirContratoFinal(secPreContrato, stream, usuarioId);
             }
-            catch (Exception ex)
-            {
-                return Json(new { estado = false, mensajes = ex.Message });
-            }
+
+            return Json(new { estado = true, mensajes = "Contrato final guardado exitosamente." });
         }
 
         [HttpGet]
@@ -207,15 +204,6 @@ namespace TecmeinAplicacionWeb.Controllers
         {
              try
              {
-                 // Como no tenemos método 'ObtenerContenido' público expuesto que devuelva el string raw, 
-                 // usamos 'ObtenerParaEdicion' o similar si expone el contenido, o agregamos método.
-                 // Hack rápido: Usar ObtenerParaEdicion que devuelve DTO, si DTO tiene contenido.
-                 // PreContratoParaEdicionDTO tiene Contenido?
-                 // Si no, necesitamos un método en servicio para obtener el documento final.
-                 // Dado que 'ObtenerPrimerParrafo' fue eliminado, necesitamos algo.
-                 // Por ahora, asumimos que el usuario solo descarga lo que Generó (GenerarPreContratoDocx)
-                 // o lo que Subió. Si subió, está en Base64 en la BD.
-                 // TODO: Implementar Descarga de lo subido.
                  return StatusCode(StatusCodes.Status501NotImplemented, new { mensajes = "Descarga de contrato final no implementada aún." });
              }
              catch(Exception ex)
@@ -228,38 +216,32 @@ namespace TecmeinAplicacionWeb.Controllers
         [ValidatePermission("LEER")]
         public async Task<IActionResult> DescargarDocumentoActual(int id)
         {
-            try
-            {
-                // 1. Intentar obtener el contenido guardado (editado por el usuario)
-                byte[] documentoGuardado = await _preContratoService.ObtenerContenidoDocumento(id);
-                
-                if (documentoGuardado != null)
-                {
-                    return File(documentoGuardado, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", $"PreContrato_Editado_{id}.docx");
-                }
+            var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            int usuarioId = usuarioIdClaim != null ? int.Parse(usuarioIdClaim.Value) : 0;
 
-                // 2. Si no hay contenido guardado, generamos uno nuevo basándonos en los datos actuales
-                var datosEdicion = await _preContratoService.ObtenerParaEdicion(id);
-                var preContratoData = new BLL.DTOs.PreContratoConPagosDTO
-                {
-                    SecCotizacion = datosEdicion.SecCotizacion,
-                    SecTipoDocumento = datosEdicion.SecTipoDocumento,
-                    Dias = datosEdicion.Dias,
-                    TipoDias = datosEdicion.TipoDias,
-                    PeriodoMantenimiento = datosEdicion.PeriodoMantenimiento,
-                    AniosGarantia = datosEdicion.AniosGarantia,
-                    MesesGarantia = datosEdicion.MesesGarantia,
-                    PolizaGarantia = datosEdicion.PolizaGarantia,
-                    CompromisosDePago = datosEdicion.CompromisosDePago
-                };
-
-                byte[] docxBytes = await _preContratoGeneratorService.GenerarVistaPreviaDocx(preContratoData);
-                return File(docxBytes, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", $"PreContrato_Generado_{id}.docx");
-            }
-            catch (Exception ex)
+            byte[] documentoGuardado = await _preContratoService.ObtenerContenidoDocumento(id, usuarioId);
+            
+            if (documentoGuardado != null)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { estado = false, mensajes = $"Error al descargar el documento: {ex.Message}" });
+                return File(documentoGuardado, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", $"PreContrato_Editado_{id}.docx");
             }
+
+            var datosEdicion = await _preContratoService.ObtenerParaEdicion(id, usuarioId);
+            var preContratoData = new BLL.DTOs.PreContratoConPagosDTO
+            {
+                SecCotizacion = datosEdicion.SecCotizacion,
+                SecTipoDocumento = datosEdicion.SecTipoDocumento,
+                Dias = datosEdicion.Dias,
+                TipoDias = datosEdicion.TipoDias,
+                PeriodoMantenimiento = datosEdicion.PeriodoMantenimiento,
+                AniosGarantia = datosEdicion.AniosGarantia,
+                MesesGarantia = datosEdicion.MesesGarantia,
+                PolizaGarantia = datosEdicion.PolizaGarantia,
+                CompromisosDePago = datosEdicion.CompromisosDePago
+            };
+
+            byte[] docxBytes = await _preContratoGeneratorService.GenerarVistaPreviaDocx(preContratoData);
+            return File(docxBytes, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", $"PreContrato_Generado_{id}.docx");
         }
 
         [HttpPost]
@@ -387,15 +369,11 @@ namespace TecmeinAplicacionWeb.Controllers
         [ValidatePermission("LEER")]
         public async Task<IActionResult> DetallesParaEdicion(int id)
         {
-            try
-            {
-                var dto = await _preContratoService.ObtenerParaEdicion(id);
-                return Json(new { estado = true, objeto = dto });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { estado = false, mensajes = ex.Message });
-            }
+            var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            int usuarioId = usuarioIdClaim != null ? int.Parse(usuarioIdClaim.Value) : 0;
+
+            var dto = await _preContratoService.ObtenerParaEdicion(id, usuarioId);
+            return Json(new { estado = true, objeto = dto });
         }
 
         [HttpGet]

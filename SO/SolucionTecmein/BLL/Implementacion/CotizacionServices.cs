@@ -6,6 +6,8 @@ using QuestPDF.Fluent;
 using System;
 using System.Text;
 using BLL.Utilidades.PDF;
+using AutoMapper;
+using BLL.DTOs;
 
 
 namespace BLL.Implementacion
@@ -19,6 +21,7 @@ namespace BLL.Implementacion
         private readonly ITipoImpuestoServices _tipoImpuestoServices;
         private readonly IAuditService _auditService;
         private readonly IUsuarioServices _usuarioServices;
+        private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
 
         public CotizacionServices(
@@ -31,6 +34,7 @@ namespace BLL.Implementacion
             IEquiposVisitaServices equiposVisitaServices,
             IAuditService auditService, 
             IUsuarioServices usuarioServices,
+            IMapper mapper,
             IUnitOfWork unitOfWork
             )
         {
@@ -42,29 +46,46 @@ namespace BLL.Implementacion
             _equiposVisitaServices = equiposVisitaServices;
             _auditService = auditService;
             _usuarioServices = usuarioServices;
+            _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
 
         private readonly IVisitaServices _visitaServices;
         private readonly IEquiposVisitaServices _equiposVisitaServices;
 
-        public async Task<List<Cotizacion>> Lista()
+        public async Task<List<CotizacionDTO>> Lista(int secUsuario)
         {
-            var query = await _repositorio.Consultar(c => c.EstaActivo == 1); // Filter by EstaActivo
-            return await query
+            var usuario = await _usuarioServices.ObtenerPorId(secUsuario);
+            bool esAdmin = usuario?.SecRol == 1;
+
+            var query = await _repositorio.Consultar(c => c.EstaActivo == 1);
+
+            // Filtrado de Seguridad (Punto 1)
+            if (!esAdmin)
+            {
+                query = query.Where(c => c.SecUsuario == secUsuario);
+            }
+
+            var lista = await query
                 .Include(c => c.SecVisitaNavigation)
                     .ThenInclude(v => v.Contactovisita)
                         .ThenInclude(cv => cv.SecContactoNavigation)
                 .Include(c => c.SecUsuarioNavigation)
                 .Include(c => c.SecUsuarioModificaNavigation)
+                .Include(c => c.SecTipoDocumentoNavigation)
                 .AsNoTracking()
                 .ToListAsync();
+
+            return _mapper.Map<List<CotizacionDTO>>(lista);
         }
 
 
 
-        public async Task<Cotizacion> Detalle(int secuencial)
+        public async Task<CotizacionDTO> Detalle(int secuencial, int secUsuario)
         {
+            var usuario = await _usuarioServices.ObtenerPorId(secUsuario);
+            bool esAdmin = usuario?.SecRol == 1; // Suponiendo 1 = Admin
+
             IQueryable<Cotizacion> query = await _repositorio.Consultar(c => c.Secuencial == secuencial);
             var cotizacion = await query
                 .Include(c => c.SecVisitaNavigation)
@@ -79,6 +100,7 @@ namespace BLL.Implementacion
                     .ThenInclude(v => v.SecCantonNavigation)
                 .Include(c => c.SecUsuarioNavigation)
                 .Include(c => c.SecUsuarioModificaNavigation)
+                .Include(c => c.SecTipoDocumentoNavigation)
                 .Include(c => c.Cotizaciondetalles)
                 .Include(c => c.ImpuestoCotizaciones)
                     .ThenInclude(ic => ic.ImpuestoNavigation)
@@ -86,11 +108,21 @@ namespace BLL.Implementacion
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
 
-            return cotizacion;
+            if (cotizacion == null) return null;
+
+            // Validación IDOR: El usuario debe ser el creador o un Admin
+            if (!esAdmin && cotizacion.SecUsuario != secUsuario)
+            {
+                throw new UnauthorizedAccessException("No tiene permisos para ver esta cotización.");
+            }
+
+            return _mapper.Map<CotizacionDTO>(cotizacion);
         }
 
-        public async Task<Cotizacion> Crear(Cotizacion entidad, int secUsuario)
+        public async Task<CotizacionDTO> Crear(CotizacionDTO entidadDTO, int secUsuario)
         {
+            var entidad = _mapper.Map<Cotizacion>(entidadDTO);
+            await _unitOfWork.BeginTransactionAsync();
             try
             {
                 // Validar si ya existe una cotización activa para la visita
@@ -111,7 +143,7 @@ namespace BLL.Implementacion
                 }
                 entidad.Subtotal = subtotalCalculado;
 
-                // Calculate specific taxes (IVA 15% and Importacion)
+                // Cálculos de Impuestos
                 decimal valorIVACalculado = 0;
                 decimal valorImportacionCalculado = 0;
 
@@ -167,25 +199,29 @@ namespace BLL.Implementacion
                 if (cotizacionCreada.Secuencial == 0)
                     throw new TaskCanceledException("No se pudo crear la cotización.");
 
-                // Cambiar etapa de la visita a "COT" si la cotización tiene detalles
+                // Cambiar etapa de la visita a "COT" (Atómico con la creación)
                 if (cotizacionCreada.Cotizaciondetalles.Any())
                 {
                     await _visitaServices.CambiarEtapa(cotizacionCreada.SecVisita, "COT");
                 }
 
-                return cotizacionCreada;
+                await _unitOfWork.CommitTransactionAsync();
+                return _mapper.Map<CotizacionDTO>(cotizacionCreada);
             }
             catch
             {
+                await _unitOfWork.RollbackTransactionAsync();
                 throw;
             }
         }
 
-        public async Task<Cotizacion> Editar(Cotizacion entidad, int secUsuarioActual)
+        public async Task<CotizacionDTO> Editar(CotizacionDTO entidadDTO, int secUsuarioActual)
         {
+            var entidad = _mapper.Map<Cotizacion>(entidadDTO);
             await _unitOfWork.BeginTransactionAsync();
             try
             {
+                // ... (lógica existente mantenida) ...
                 var visita = await _visitaServices.ConsultaVisita(entidad.SecVisita);
                 if (visita.IdEtapaNavigation.Codigo == "PRE" || visita.IdEtapaNavigation.Codigo == "CON")
                 {
@@ -344,7 +380,7 @@ namespace BLL.Implementacion
                     }
                     else if (importacionImpuesto.ValorFijo.HasValue)
                     {
-                        valorImportacionCalculado = importacionImpuesto.ValorFijo.Value; // Corrected typo
+                        valorImportacionCalculado = importacionImpuesto.ValorFijo.Value;
                     }
 
                     if (valorImportacionCalculado > 0)
@@ -387,7 +423,7 @@ namespace BLL.Implementacion
                 }
 
                 await _unitOfWork.CommitTransactionAsync();
-                return cotizacionResult;
+                return _mapper.Map<CotizacionDTO>(cotizacionResult);
             }
             catch
             {
@@ -396,14 +432,23 @@ namespace BLL.Implementacion
             }
         }
 
-        public async Task<bool> Eliminar(int secuencial)
+        public async Task<bool> Eliminar(int secuencial, int secUsuario)
         {
+            await _unitOfWork.BeginTransactionAsync();
             try
             {
                 var cotizacion = await _repositorio.Obtener(c => c.Secuencial == secuencial);
                 if (cotizacion == null)
                 {
                     return false;
+                }
+
+                var usuario = await _usuarioServices.ObtenerPorId(secUsuario);
+                bool esAdmin = usuario?.SecRol == 1;
+
+                if (!esAdmin && cotizacion.SecUsuario != secUsuario)
+                {
+                    throw new UnauthorizedAccessException("No tiene permisos para eliminar esta cotización.");
                 }
 
                 var visita = await _visitaServices.ConsultaVisita(cotizacion.SecVisita);
@@ -417,15 +462,16 @@ namespace BLL.Implementacion
                 
                 if (resultado)
                 {
-                    // Rollback: Si se elimina la cotización, regresar la visita a etapa "VIS"
-                    // Permitimos el retroceso explícitamente.
+                    // Regresar la visita a etapa "VIS" (Atómico con la eliminación)
                     await _visitaServices.CambiarEtapa(cotizacion.SecVisita, "VIS", permitirRetroceso: true);
                 }
 
+                await _unitOfWork.CommitTransactionAsync();
                 return resultado;
             }
             catch
             {
+                await _unitOfWork.RollbackTransactionAsync();
                 throw;
             }
         }
@@ -452,7 +498,7 @@ namespace BLL.Implementacion
             return cotizacionExistente != null;
         }
 
-        public async Task<byte[]> GenerarPdfCotizacion(int idCotizacion)
+        public async Task<byte[]> GenerarPdfCotizacion(int idCotizacion, int secUsuario)
         {
             try
             {
@@ -471,6 +517,14 @@ namespace BLL.Implementacion
                 if (cotizacion == null)
                 {
                     throw new KeyNotFoundException($"Cotización con ID {idCotizacion} no encontrada.");
+                }
+
+                var usuario = await _usuarioServices.ObtenerPorId(secUsuario);
+                bool esAdmin = usuario?.SecRol == 1;
+
+                if (!esAdmin && cotizacion.SecUsuario != secUsuario)
+                {
+                    throw new UnauthorizedAccessException("No tiene permisos para generar este PDF.");
                 }
 
                 // Validar que todos los detalles de la cotización tengan un ValorCompra mayor a 0
@@ -495,7 +549,7 @@ namespace BLL.Implementacion
             }
         }
 
-        public async Task<byte[]> GenerarPdfSolicitudEquipos(int idCotizacion)
+        public async Task<byte[]> GenerarPdfSolicitudEquipos(int idCotizacion, int secUsuario)
         {
             try
             {
@@ -513,6 +567,14 @@ namespace BLL.Implementacion
                 if (cotizacion == null)
                 {
                     throw new KeyNotFoundException($"Cotización con ID {idCotizacion} no encontrada.");
+                }
+
+                var usuario = await _usuarioServices.ObtenerPorId(secUsuario);
+                bool esAdmin = usuario?.SecRol == 1;
+
+                if (!esAdmin && cotizacion.SecUsuario != secUsuario)
+                {
+                    throw new UnauthorizedAccessException("No tiene permisos para generar este PDF.");
                 }
 
                 var document = new SolicitudEquiposDocument(cotizacion);

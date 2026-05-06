@@ -470,6 +470,30 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
                 .ForMember(destino =>
                     destino.Cantidad,
                     opt => opt.MapFrom(origen => origen.Cantidad));
+            #region Cotizacion DTO
+            CreateMap<Cotizacion, CotizacionDTO>()
+                .ForMember(destino => destino.NombreObra, opt => opt.MapFrom(origen => origen.SecVisitaNavigation.Nombre))
+                .ForMember(destino => destino.NombreUsuario, opt => opt.MapFrom(origen => origen.SecUsuarioNavigation != null ? origen.SecUsuarioNavigation.Nombre : "N/A"))
+                .ForMember(destino => destino.NombreUsuarioModifica, opt => opt.MapFrom(origen => origen.SecUsuarioModificaNavigation != null ? origen.SecUsuarioModificaNavigation.Nombre : "N/A"))
+                .ForMember(destino => destino.DescripcionTipoDocumento, opt => opt.MapFrom(origen => origen.SecTipoDocumentoNavigation != null ? origen.SecTipoDocumentoNavigation.Descripcion : ""))
+                .ReverseMap();
+
+            CreateMap<CotizacionDTO, CotizacionVM>();
+            CreateMap<CotizacionVM, CotizacionDTO>();
+            CreateMap<CotizaciondetalleDTO, CotizaciondetalleVM>();
+            CreateMap<CotizaciondetalleVM, CotizaciondetalleDTO>();
+            CreateMap<ImpuestoCotizacionDTO, ImpuestoCotizacionVM>();
+            CreateMap<ImpuestoCotizacionVM, ImpuestoCotizacionDTO>();
+
+            CreateMap<Cotizaciondetalle, CotizaciondetalleDTO>()
+                .ForMember(destino => destino.NombreEquipo, opt => opt.MapFrom(origen => origen.DetalleEquipo ?? ""))
+                .ReverseMap();
+
+            CreateMap<ImpuestoCotizacion, ImpuestoCotizacionDTO>()
+                .ForMember(destino => destino.NombreImpuesto, opt => opt.MapFrom(origen => origen.ImpuestoNavigation.Descripcion))
+                .ForMember(destino => destino.Porcentaje, opt => opt.MapFrom(origen => origen.ImpuestoNavigation.Porcentaje))
+                .ReverseMap();
+            #endregion
             #endregion
 
             CreateMap<Etapa, EtapaVM>().ReverseMap();
@@ -545,6 +569,28 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
                            ))
                 .ForMember(destino => destino.NumeroCotizacion,
                            opt => opt.MapFrom(origen => origen.SecCotizacion.ToString()));
+
+            CreateMap<PreContrato, PreContratoDTO>()
+                .ForMember(destino => destino.NombreUsuarioCrea, opt => opt.MapFrom(origen => origen.SecUsuarioCreaNavigation != null ? origen.SecUsuarioCreaNavigation.Nombre : "N/A"))
+                .ForMember(destino => destino.NombreObra, opt => opt.MapFrom(origen => (origen.SecCotizacionNavigation != null && origen.SecCotizacionNavigation.SecVisitaNavigation != null) ? (origen.SecCotizacionNavigation.SecVisitaNavigation.Nombre ?? "Sin Nombre de Obra") : "N/A"))
+                .ForMember(destino => destino.NumeroCotizacion, opt => opt.MapFrom(origen => origen.SecCotizacionNavigation != null ? origen.SecCotizacionNavigation.Secuencial.ToString() : "N/A"))
+                .ForMember(destino => destino.NombreCliente, opt => opt.MapFrom(origen =>
+                    (origen.SecCotizacionNavigation != null && origen.SecCotizacionNavigation.SecVisitaNavigation != null && origen.SecCotizacionNavigation.SecVisitaNavigation.Contactovisita != null && origen.SecCotizacionNavigation.SecVisitaNavigation.Contactovisita.Any())
+                    ? $"{origen.SecCotizacionNavigation.SecVisitaNavigation.Contactovisita.FirstOrDefault().SecContactoNavigation.Nombres} {origen.SecCotizacionNavigation.SecVisitaNavigation.Contactovisita.FirstOrDefault().SecContactoNavigation.Apellidos}"
+                    : "N/A"))
+                .ForMember(destino => destino.CodigoTipoDocumento, opt => opt.MapFrom(origen => (origen.SecPlantillaPreContratoNavigation != null && origen.SecPlantillaPreContratoNavigation.SecTipoDocumentoNavigation != null) ? origen.SecPlantillaPreContratoNavigation.SecTipoDocumentoNavigation.Codigo : ""))
+                .ForMember(destino => destino.PreContratoCompromisoPagos, opt => opt.MapFrom(origen => origen.PreContratoCompromisoPagos))
+                .ForMember(destino => destino.Dias, opt => opt.MapFrom(origen => origen.Dias))
+                .ForMember(destino => destino.TipoDias, opt => opt.MapFrom(origen => origen.TipoDias))
+                .ForMember(destino => destino.PeriodoMantenimiento, opt => opt.MapFrom(origen => origen.PeriodoMantenimiento))
+                .ForMember(destino => destino.AniosGarantia, opt => opt.MapFrom(origen => origen.AniosGarantia))
+                .ForMember(destino => destino.MesesGarantia, opt => opt.MapFrom(origen => origen.MesesGarantia))
+                .ForMember(destino => destino.PolizaGarantia, opt => opt.MapFrom(origen => origen.PolizaGarantia))
+                .ReverseMap();
+
+            CreateMap<PreContratoCompromisoPago, CompromisoPagoDTO>().ReverseMap();
+
+            CreateMap<PreContratoDTO, PreContratoVM>().ReverseMap();
             CreateMap<PreContratoVM, PreContrato>();
 
             #region Contrato
@@ -652,8 +698,12 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
 
             #region PreContratoCompromisoPago
             CreateMap<PreContratoCompromisoPago, PreContratoCompromisoPagoVM>()
-                .ForMember(destino => destino.FechaVencimiento,
-                           opt => opt.MapFrom(origen => origen.FechaVencimiento.ToString("dd/MM/yyyy")));
+                .ForMember(destino => destino.Monto, opt => opt.MapFrom(origen => origen.Monto))
+                .ForMember(destino => destino.FechaVencimiento, opt => opt.MapFrom(origen => origen.FechaVencimiento.ToString("dd/MM/yyyy")));
+
+            CreateMap<CompromisoPagoDTO, PreContratoCompromisoPagoVM>()
+                .ForMember(destino => destino.Monto, opt => opt.MapFrom(origen => origen.Monto))
+                .ForMember(destino => destino.FechaVencimiento, opt => opt.MapFrom(origen => origen.FechaVencimiento.HasValue ? origen.FechaVencimiento.Value.ToString("dd/MM/yyyy") : ""));
             CreateMap<PreContratoCompromisoPagoVM, PreContratoCompromisoPago>()
                 .ForMember(destino => destino.FechaVencimiento,
                            opt => opt.MapFrom(origen => DateTime.ParseExact(origen.FechaVencimiento, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)));

@@ -9,7 +9,8 @@ using System.Linq;
 using AutoMapper;
 using TecmeinWebApp.Utilidades.Response;
 using TecmeinWebApp.Utilidades.ViewComponents;
-using DAL.Interfaces; // Añadido para IGenericRepository
+using DAL.Interfaces;
+using BLL.DTOs; // Añadido para IGenericRepository
 
 namespace TecmeinAplicacionWeb.Controllers
 {
@@ -138,7 +139,10 @@ namespace TecmeinAplicacionWeb.Controllers
         {
             try
             {
-                PreContrato preContrato = await _preContratoServices.Obtener(secPreContrato);
+                var gCurrentUser = HttpContext.User;
+                int usuarioId = int.Parse(gCurrentUser.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
+
+                PreContratoDTO preContrato = await _preContratoServices.Obtener(secPreContrato, usuarioId);
                 if (preContrato == null)
                 {
                     return NotFound($"PreContrato con ID {secPreContrato} no encontrado.");
@@ -151,25 +155,28 @@ namespace TecmeinAplicacionWeb.Controllers
 
                 var datos = new
                 {
-                    // Datos básicos y de navegación
+                    // Datos básicos y de navegación (vienen mapeados en el DTO)
                     SecPreContrato = preContrato.SecPreContrato,
-                    FechaRegistro = preContrato.FechaRegistro.ToShortDateString(),
-                    NombreObra = preContrato.SecCotizacionNavigation?.SecVisitaNavigation?.Nombre,
-                    NombreCliente = preContrato.SecCotizacionNavigation?.SecVisitaNavigation?.SecEmpresaNavigation?.Nombre,
-                    NombreUsuario = preContrato.SecUsuarioCreaNavigation?.Nombre,
+                    SecCotizacion = preContrato.SecCotizacion,
+                    SecTipoDocumento = preContrato.SecPlantillaPreContrato > 0 ? 0 : 0, // El motor lo resolverá si es necesario, pero el DTO ya tiene lo básico
+                    FechaRegistro = preContrato.FechaRegistro?.ToShortDateString(),
+                    NombreObra = preContrato.NombreObra,
+                    NombreCliente = preContrato.NombreCliente,
+                    NombreUsuario = preContrato.NombreUsuarioCrea,
 
                     // Campos de negocio del PreContrato
-                    DiasDeEntrega = $"{preContrato.Dias} {preContrato.TipoDias}",
+                    Dias = preContrato.Dias,
+                    TipoDias = preContrato.TipoDias,
                     AniosGarantia = preContrato.AniosGarantia,
                     MesesGarantia = preContrato.MesesGarantia,
                     PeriodoMantenimiento = preContrato.PeriodoMantenimiento,
                     PolizaGarantia = preContrato.PolizaGarantia,
 
                     // Lista para la tabla de pagos
-                    CompromisosDePago = compromisos
+                    CompromisosDePago = preContrato.PreContratoCompromisoPagos
                 };
 
-                string codigoTipoDocumento = preContrato.SecPlantillaPreContratoNavigation.SecTipoDocumentoNavigation.Codigo;
+                string codigoTipoDocumento = preContrato.CodigoTipoDocumento ?? "";
                 byte[] documentBytes = await _generadorDocumentoService.GenerarDocumento(codigoTipoDocumento, preContrato.SecPlantillaPreContrato, datos);
 
                 return File(documentBytes, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", $"precontrato_{secPreContrato}.docx");

@@ -1,4 +1,5 @@
 using System;
+using BLL.ContractEngine;
 using BLL.DTOs;
 using BLL.Interfaces;
 using DAL.DBContext;
@@ -21,13 +22,12 @@ namespace BLL.Implementacion.ContractEngine
             _context = context;
         }
 
-        public async Task ResolveAsync(Dictionary<string, string> textPlaceholders, Dictionary<string, Table> tablePlaceholders, PreContratoGeneratorDTO data)
+        public Task ResolveAsync(Dictionary<string, string> textPlaceholders, Dictionary<string, Table> tablePlaceholders, ContractEngineContext context)
         {
-            var cotizacion = await _context.Cotizacion
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Secuencial == data.SecCotizacion);
+            var cotizacion = context.Cotizacion;
+            var data = context.Data;
 
-            if (cotizacion == null) return;
+            if (cotizacion == null) return Task.CompletedTask;
 
             // Tags de Texto Financieros
             textPlaceholders["{{totalcontrato}}"] = cotizacion.TotalConImpuestos.ToString("N2");
@@ -41,6 +41,8 @@ namespace BLL.Implementacion.ContractEngine
             // Tabla de Pagos
             textPlaceholders["{{tabladepagosconfechasytotales}}"] = ""; // Placeholder para la tabla
             tablePlaceholders["{{tabladepagosconfechasytotales}}"] = GenerarTablaPagos(data);
+
+            return Task.CompletedTask;
         }
 
         private Table GenerarTablaPagos(PreContratoGeneratorDTO data)

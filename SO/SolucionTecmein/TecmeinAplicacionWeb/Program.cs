@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using QuestPDF.Infrastructure;
 using Serilog;
 using TecmeinAplicacionWeb.Utilidades.AutoMapper;
-using BLL.Mcp; // Added
+using BLL.Mcp;
+using TecmeinWebApp.Utilidades.Filters;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
@@ -42,6 +43,7 @@ try
                          .RequireAuthenticatedUser()
                          .Build();
         options.Filters.Add(new AuthorizeFilter(policy));
+        options.Filters.Add<GlobalExceptionFilter>(); // Registro global
     }).AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;

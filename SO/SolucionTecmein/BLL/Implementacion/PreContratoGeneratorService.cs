@@ -1,3 +1,4 @@
+using BLL.ContractEngine;
 using BLL.DTOs;
 using BLL.Interfaces;
 using DAL.DBContext;
@@ -95,9 +96,35 @@ namespace BLL.Implementacion
             var dicTexto = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             var dicTablas = new Dictionary<string, Table>(StringComparer.OrdinalIgnoreCase);
 
+            // Carga Única de Datos (Optimización: Evitar N+1 y consultas redundantes)
+            var cotizacion = await _context.Cotizacion
+                .Include(c => c.Cotizaciondetalles)
+                .Include(c => c.SecVisitaNavigation).ThenInclude(v => v.SecEmpresaNavigation)
+                .Include(c => c.SecVisitaNavigation).ThenInclude(v => v.SecProvinciaNavigation)
+                .Include(c => c.SecVisitaNavigation).ThenInclude(v => v.SecCantonNavigation)
+                .Include(c => c.SecVisitaNavigation).ThenInclude(v => v.SecParroquiaNavigation)
+                .Include(c => c.SecVisitaNavigation)
+                    .ThenInclude(v => v.Contactovisita)
+                        .ThenInclude(cv => cv.SecContactoNavigation)
+                            .ThenInclude(con => con.SecConstructoraNavigation)
+                                .ThenInclude(cs => cs.Cliente)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Secuencial == data.SecCotizacion);
+
+            if (cotizacion == null)
+            {
+                throw new InvalidOperationException($"No se encontró la cotización con secuencial {data.SecCotizacion}");
+            }
+
+            var context = new BLL.ContractEngine.ContractEngineContext
+            {
+                Data = data,
+                Cotizacion = cotizacion
+            };
+
             foreach (var provider in _providers)
             {
-                await provider.ResolveAsync(dicTexto, dicTablas, data);
+                await provider.ResolveAsync(dicTexto, dicTablas, context);
             }
 
             return (dicTexto, dicTablas);
@@ -107,22 +134,28 @@ namespace BLL.Implementacion
         {
             if (part == null || part.RootElement == null) return;
 
-            // Buscamos en todos los párrafos, incluso los que están dentro de celdas de tablas
-            var paragraphs = part.RootElement.Descendants<Paragraph>().ToList();
+            // 1. Simplificar los Runs: Unir textos adyacentes con el mismo formato
+            // Esto resuelve el problema de Word dividiendo "{{placeholder}}" en varios runs.
+            SimplifyRuns(part.RootElement);
 
-            foreach (var paragraph in paragraphs)
+            // 2. Realizar el reemplazo a nivel de Text nodes (Preserva Formato)
+            var textNodes = part.RootElement.Descendants<Text>().ToList();
+            
+            foreach (var textNode in textNodes)
             {
-                string text = paragraph.InnerText;
+                string text = textNode.Text;
                 if (string.IsNullOrEmpty(text)) continue;
 
                 bool modified = false;
-
                 foreach (var replacement in replacements)
                 {
-                    if (text.Contains(replacement.Key, StringComparison.OrdinalIgnoreCase))
+                    // Crear un patrón que permita espacios opcionales dentro de las llaves
+                    // Ejemplo: {{ nombre }} coincidirá con {{nombre}}
+                    string keyContent = replacement.Key.Trim('{', '}');
+                    string pattern = @"\{\{\s*" + Regex.Escape(keyContent) + @"\s*\}\}";
+                    
+                    if (Regex.IsMatch(text, pattern, RegexOptions.IgnoreCase))
                     {
-                        // Usamos Regex para reemplazo case-insensitive y robusto
-                        string pattern = Regex.Escape(replacement.Key);
                         text = Regex.Replace(text, pattern, replacement.Value ?? "", RegexOptions.IgnoreCase);
                         modified = true;
                     }
@@ -130,25 +163,81 @@ namespace BLL.Implementacion
 
                 if (modified)
                 {
-                    // Preservar propiedades de párrafo
-                    var pPr = paragraph.ParagraphProperties?.CloneNode(true);
-                    var rPr = paragraph.Descendants<Run>().FirstOrDefault()?.RunProperties?.CloneNode(true);
-
-                    paragraph.RemoveAllChildren();
-                    if (pPr != null) paragraph.AppendChild(pPr);
-
-                    var newRun = new Run();
-                    if (rPr != null) newRun.AppendChild(rPr);
-
-                    // Manejo de saltos de línea
-                    string[] lines = text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-                    for (int i = 0; i < lines.Length; i++)
+                    // Si hay saltos de línea en el reemplazo, debemos manejarlo con <Break/>
+                    if (text.Contains("\n") || text.Contains("\r"))
                     {
-                        newRun.AppendChild(new Text(lines[i]) { Space = SpaceProcessingModeValues.Preserve });
-                        if (i < lines.Length - 1) newRun.AppendChild(new Break());
+                        InsertTextWithBreaks(textNode, text);
                     }
-                    
-                    paragraph.AppendChild(newRun);
+                    else
+                    {
+                        textNode.Text = text;
+                    }
+                }
+            }
+        }
+
+        private void SimplifyRuns(OpenXmlElement element)
+        {
+            var paragraphs = element.Descendants<Paragraph>().ToList();
+            foreach (var paragraph in paragraphs)
+            {
+                var runs = paragraph.Elements<Run>().ToList();
+                for (int i = runs.Count - 2; i >= 0; i--)
+                {
+                    Run currentRun = runs[i];
+                    Run nextRun = runs[i + 1];
+
+                    var currentText = currentRun.GetFirstChild<Text>();
+                    var nextText = nextRun.GetFirstChild<Text>();
+
+                    if (currentText == null || nextText == null) continue;
+
+                    // Si ambos tienen las mismas propiedades, o si el texto combinado parece un placeholder
+                    // forzamos el merge para evitar que Word rompa {{marcador}} en múltiples nodos.
+                    bool sameProps = CompareProperties(currentRun.RunProperties, nextRun.RunProperties);
+                    bool isPlaceholderSplit = (currentText.Text.Contains("{") || nextText.Text.Contains("}"));
+
+                    if (sameProps || isPlaceholderSplit)
+                    {
+                        currentText.Text += nextText.Text;
+                        currentText.Space = SpaceProcessingModeValues.Preserve;
+                        nextRun.Remove();
+                        runs.RemoveAt(i + 1);
+                    }
+                }
+            }
+        }
+
+        private bool CompareProperties(RunProperties? p1, RunProperties? p2)
+        {
+            if (p1 == null && p2 == null) return true;
+            if (p1 == null || p2 == null) return false;
+            
+            // Ignoramos diferencias menores como idiomas o correcciones ortográficas
+            // que Word inserta automáticamente y rompen los marcadores.
+            string xml1 = p1.OuterXml.Replace("w:lang", "lang").Replace("w:noProof", "np");
+            string xml2 = p2.OuterXml.Replace("w:lang", "lang").Replace("w:noProof", "np");
+            
+            return xml1 == xml2;
+        }
+
+        private void InsertTextWithBreaks(Text textNode, string fullText)
+        {
+            var parent = textNode.Parent;
+            if (parent == null) return;
+
+            var run = (Run)parent;
+            string[] lines = fullText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            
+            run.RemoveAllChildren<Text>();
+            run.RemoveAllChildren<Break>();
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                run.AppendChild(new Text(lines[i]) { Space = SpaceProcessingModeValues.Preserve });
+                if (i < lines.Length - 1)
+                {
+                    run.AppendChild(new Break());
                 }
             }
         }

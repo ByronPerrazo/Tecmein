@@ -1,3 +1,4 @@
+using BLL.ContractEngine;
 using BLL.DTOs;
 using BLL.Interfaces;
 using DAL.DBContext;
@@ -21,13 +22,10 @@ namespace BLL.Implementacion.ContractEngine
             _context = context;
         }
 
-        public async Task ResolveAsync(Dictionary<string, string> textPlaceholders, Dictionary<string, Table> tablePlaceholders, PreContratoGeneratorDTO data)
+        public async Task ResolveAsync(Dictionary<string, string> textPlaceholders, Dictionary<string, Table> tablePlaceholders, ContractEngineContext context)
         {
-            // 1. Obtener detalles de la cotización e incluir los equipos
-            var cotizacion = await _context.Cotizacion
-                .Include(c => c.Cotizaciondetalles)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Secuencial == data.SecCotizacion);
+            var cotizacion = context.Cotizacion;
+            var data = context.Data;
 
             if (cotizacion == null || !cotizacion.Cotizaciondetalles.Any()) return;
 
@@ -81,9 +79,12 @@ namespace BLL.Implementacion.ContractEngine
                 if (!string.IsNullOrEmpty(recorrido) && recorrido != "0") infoInstalacion.Add($"Recorrido: {recorrido} mm");
             }
 
-            textPlaceholders["{{detalleinstalacionyducto}}"] = infoInstalacion.Any() 
+            textPlaceholders["{{detalleinstalacionducto}}"] = infoInstalacion.Any() 
                 ? string.Join(", ", infoInstalacion) 
                 : "Se instalará en ducto existente según especificaciones técnicas de fábrica y planos adjuntos.";
+            
+            // Alias para compatibilidad total (con y sin 'y')
+            textPlaceholders["{{detalleinstalacionyducto}}"] = textPlaceholders["{{detalleinstalacionducto}}"];
 
             // Tabla de Especificaciones Técnicas
             textPlaceholders["{{tablaespecificacionesequipo}}"] = "";

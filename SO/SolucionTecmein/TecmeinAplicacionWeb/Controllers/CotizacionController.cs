@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
 using TecmeinWebApp.Utilidades.ViewComponents;
+using BLL.DTOs;
 
 namespace TecmeinWebApp.Controllers
 {
@@ -15,12 +16,14 @@ namespace TecmeinWebApp.Controllers
         private readonly ICotizacionServices _cotizacionServices;
         private readonly IMapper _mapper;
         private readonly IAuditService _auditService;
+        private readonly IUsuarioServices _usuarioServices;
 
-        public CotizacionController(ICotizacionServices cotizacionServices, IMapper mapper, IAuditService auditService)
+        public CotizacionController(ICotizacionServices cotizacionServices, IMapper mapper, IAuditService auditService, IUsuarioServices usuarioServices)
         {
             _cotizacionServices = cotizacionServices;
             _mapper = mapper;
             _auditService = auditService;
+            _usuarioServices = usuarioServices;
         }
 
         [ValidatePermission("LEER")]
@@ -33,24 +36,11 @@ namespace TecmeinWebApp.Controllers
         [ValidatePermission("LEER")]
         public async Task<IActionResult> Lista()
         {
-            var lista = await _cotizacionServices.Lista();
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier);
+            int idUsuario = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
+
+            var lista = await _cotizacionServices.Lista(idUsuario);
             var listaVM = _mapper.Map<List<CotizacionVM>>(lista);
-
-            foreach (var cotizacionVM in listaVM)
-            {
-                var cotizacionOriginal = lista.FirstOrDefault(c => c.Secuencial == cotizacionVM.Secuencial);
-                if (cotizacionOriginal != null && cotizacionOriginal.SecVisitaNavigation != null && cotizacionOriginal.SecVisitaNavigation.Contactovisita.Any())
-                {
-                    var contactoPrincipal = cotizacionOriginal.SecVisitaNavigation.Contactovisita
-                        .FirstOrDefault(cv => cv.EstaActivo == 1 && cv.SecContactoNavigation != null)?.SecContactoNavigation;
-
-                    cotizacionVM.NombreContacto = contactoPrincipal != null ? $"{contactoPrincipal.Nombres} {contactoPrincipal.Apellidos}" : "Sin Contacto";
-                }
-                else
-                {
-                    cotizacionVM.NombreContacto = "Sin Contacto";
-                }
-            }
 
             return StatusCode(StatusCodes.Status200OK, new { data = listaVM });
         }
@@ -59,7 +49,10 @@ namespace TecmeinWebApp.Controllers
         [ValidatePermission("LEER")]
         public async Task<IActionResult> Detalle(int id)
         {
-            var cotizacion = await _cotizacionServices.Detalle(id);
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier);
+            int idUsuario = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
+
+            var cotizacion = await _cotizacionServices.Detalle(id, idUsuario);
             var cotizacionVM = _mapper.Map<CotizacionVM>(cotizacion);
             return StatusCode(StatusCodes.Status200OK, cotizacionVM);
         }
@@ -76,44 +69,26 @@ namespace TecmeinWebApp.Controllers
         [ValidatePermission("LEER")]
         public async Task<IActionResult> GenerarPDF(int idCotizacion)
         {
-            try
-            {
-                byte[] pdfBytes = await _cotizacionServices.GenerarPdfCotizacion(idCotizacion);
-                string fileName = $"Cotizacion_{idCotizacion}.pdf";
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier);
+            int idUsuario = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
 
-                return File(pdfBytes, "application/pdf", fileName);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                // Log the exception
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al generar el PDF. {ex.Message}");
-            }
+            byte[] pdfBytes = await _cotizacionServices.GenerarPdfCotizacion(idCotizacion, idUsuario);
+            string fileName = $"Cotizacion_{idCotizacion}.pdf";
+
+            return File(pdfBytes, "application/pdf", fileName);
         }
 
         [HttpGet]
         [ValidatePermission("LEER")]
         public async Task<IActionResult> GenerarPDFSolicitud(int idCotizacion)
         {
-            try
-            {
-                byte[] pdfBytes = await _cotizacionServices.GenerarPdfSolicitudEquipos(idCotizacion);
-                string fileName = $"Solicitud_Equipos_{idCotizacion}.pdf";
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier);
+            int idUsuario = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
 
-                return File(pdfBytes, "application/pdf", fileName);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                // Log the exception
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al generar el PDF de solicitud. {ex.Message}");
-            }
+            byte[] pdfBytes = await _cotizacionServices.GenerarPdfSolicitudEquipos(idCotizacion, idUsuario);
+            string fileName = $"Solicitud_Equipos_{idCotizacion}.pdf";
+
+            return File(pdfBytes, "application/pdf", fileName);
         }
 
         [HttpPost]
@@ -124,7 +99,6 @@ namespace TecmeinWebApp.Controllers
             try
             {
                 var cotizacionVM = JsonConvert.DeserializeObject<CotizacionVM>(modelo);
-                var cotizacion = _mapper.Map<Cotizacion>(cotizacionVM);
 
                 var claims = HttpContext.User.Claims;
                 var userIdClaim = claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier);
@@ -137,7 +111,8 @@ namespace TecmeinWebApp.Controllers
 
                 int idUsuario = int.Parse(userIdClaim.Value);
 
-                var cotizacionCreada = await _cotizacionServices.Crear(cotizacion, idUsuario);
+                var cotizacionDTO = _mapper.Map<CotizacionDTO>(cotizacionVM);
+                var cotizacionCreada = await _cotizacionServices.Crear(cotizacionDTO, idUsuario);
                 var cotizacionCreadaVM = _mapper.Map<CotizacionVM>(cotizacionCreada);
 
                 response.Estado = true;
@@ -159,7 +134,6 @@ namespace TecmeinWebApp.Controllers
             try
             {
                 var cotizacionVM = JsonConvert.DeserializeObject<CotizacionVM>(modelo);
-                var cotizacion = _mapper.Map<Cotizacion>(cotizacionVM);
 
                 var claims = HttpContext.User.Claims;
                 var userIdClaim = claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier);
@@ -172,7 +146,8 @@ namespace TecmeinWebApp.Controllers
 
                 int idUsuario = int.Parse(userIdClaim.Value);
 
-                var cotizacionEditada = await _cotizacionServices.Editar(cotizacion, idUsuario);
+                var cotizacionDTO = _mapper.Map<CotizacionDTO>(cotizacionVM);
+                var cotizacionEditada = await _cotizacionServices.Editar(cotizacionDTO, idUsuario);
                 var cotizacionEditadaVM = _mapper.Map<CotizacionVM>(cotizacionEditada);
 
                 response.Estado = true;
@@ -191,15 +166,10 @@ namespace TecmeinWebApp.Controllers
         public async Task<IActionResult> Eliminar(int secuencial)
         {
             var response = new GenericResponse<string>();
-            try
-            {
-                response.Estado = await _cotizacionServices.Eliminar(secuencial);
-            }
-            catch (Exception ex)
-            {
-                response.Estado = false;
-                response.Mensajes = ex.Message;
-            }
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier);
+            int idUsuario = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
+
+            response.Estado = await _cotizacionServices.Eliminar(secuencial, idUsuario);
             return StatusCode(StatusCodes.Status200OK, response);
         }
 

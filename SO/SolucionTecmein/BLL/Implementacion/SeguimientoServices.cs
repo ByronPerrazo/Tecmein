@@ -128,6 +128,7 @@ namespace BLL.Implementacion
 
         public async Task<bool> Eliminar(int secuencial)
         {
+            await _unitOfWork.BeginTransactionAsync();
             try
             {
                 var seguimiento = await _repositorio.Obtener(s => s.SecSeguimiento == secuencial);
@@ -136,10 +137,13 @@ namespace BLL.Implementacion
                     return false;
                 }
                 bool resultado = await _repositorio.Eliminar(seguimiento);
+
+                await _unitOfWork.CommitTransactionAsync();
                 return resultado;
             }
             catch
             {
+                await _unitOfWork.RollbackTransactionAsync();
                 throw;
             }
         }

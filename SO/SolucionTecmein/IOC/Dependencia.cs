@@ -77,6 +77,7 @@ namespace IOC
                     provider.GetRequiredService<IEquiposVisitaServices>(),
                     provider.GetRequiredService<IAuditService>(),
                     provider.GetRequiredService<IUsuarioServices>(),
+                    provider.GetRequiredService<IMapper>(),
                     provider.GetRequiredService<IUnitOfWork>()
                 ));
             services.AddScoped<IEtapaServices, EtapaServices>();
@@ -120,6 +121,8 @@ namespace IOC
                     provider.GetRequiredService<IGenericRepository<TipoDocumento>>(),
                     provider.GetRequiredService<IGenericRepository<PlantillaPreContrato>>(),
                     provider.GetRequiredService<IGenericRepository<PreContratoCompromisoPago>>(),
+                    provider.GetRequiredService<IUsuarioServices>(),
+                    provider.GetRequiredService<IMapper>(),
                     provider.GetRequiredService<IStorageServices>(),
                     provider.GetRequiredService<IUnitOfWork>()
                 ));

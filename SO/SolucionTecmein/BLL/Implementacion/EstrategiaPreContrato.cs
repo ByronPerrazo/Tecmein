@@ -27,7 +27,7 @@ namespace BLL.Implementacion
 
             preContratoData.SecCotizacion = (int?)type.GetProperty("SecCotizacion")?.GetValue(datos) ?? 0;
             preContratoData.SecTipoDocumento = (int?)type.GetProperty("SecTipoDocumento")?.GetValue(datos) ?? 0;
-            preContratoData.Dias = (int?)type.GetProperty("Dias")?.GetValue(datos) ?? 0;
+            preContratoData.Dias = (int?)type.GetProperty("Dias")?.GetValue(datos) ?? (int?)type.GetProperty("DiasDeEntrega")?.GetValue(datos) ?? 0;
             preContratoData.TipoDias = type.GetProperty("TipoDias")?.GetValue(datos)?.ToString();
             preContratoData.PeriodoMantenimiento = type.GetProperty("PeriodoMantenimiento")?.GetValue(datos)?.ToString();
             preContratoData.AniosGarantia = (int?)type.GetProperty("AniosGarantia")?.GetValue(datos) ?? 0;

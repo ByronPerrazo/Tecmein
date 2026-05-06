@@ -1,3 +1,4 @@
+using BLL.ContractEngine;
 using BLL.DTOs;
 using BLL.Interfaces;
 using DAL.DBContext;
@@ -19,18 +20,10 @@ namespace BLL.Implementacion.ContractEngine
             _context = context;
         }
 
-        public async Task ResolveAsync(Dictionary<string, string> textPlaceholders, Dictionary<string, Table> tablePlaceholders, PreContratoGeneratorDTO data)
+        public Task ResolveAsync(Dictionary<string, string> textPlaceholders, Dictionary<string, Table> tablePlaceholders, ContractEngineContext context)
         {
-            var cotizacion = await _context.Cotizacion
-                .Include(c => c.SecVisitaNavigation).ThenInclude(v => v.SecEmpresaNavigation)
-                .Include(c => c.SecVisitaNavigation).ThenInclude(v => v.Contactovisita).ThenInclude(cv => cv.SecContactoNavigation).ThenInclude(con => con.SecConstructoraNavigation).ThenInclude(cs => cs.Cliente)
-                .Include(c => c.SecVisitaNavigation).ThenInclude(v => v.SecProvinciaNavigation)
-                .Include(c => c.SecVisitaNavigation).ThenInclude(v => v.SecCantonNavigation)
-                .Include(c => c.SecVisitaNavigation).ThenInclude(v => v.SecParroquiaNavigation)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Secuencial == data.SecCotizacion);
-
-            if (cotizacion == null) return;
+            var cotizacion = context.Cotizacion;
+            var data = context.Data;
 
             var visita = cotizacion.SecVisitaNavigation;
             var empresa = visita?.SecEmpresaNavigation;
@@ -71,7 +64,7 @@ namespace BLL.Implementacion.ContractEngine
             textPlaceholders["{{IdentificacionEmpresa}}"] = empresa?.Identificacion ?? "";
 
             // Datos de la Negociación (Desde el DTO)
-            textPlaceholders["{{diasdeentrega}}"] = data.Dias?.ToString() ?? "0";
+            textPlaceholders["{{diasdeentrega}}"] = $"{data.Dias?.ToString() ?? "0"} {data.TipoDias ?? ""}".Trim();
             textPlaceholders["{{aniosgarantia}}"] = data.AniosGarantia?.ToString() ?? "0";
             textPlaceholders["{{añosgarantia}}"] = data.AniosGarantia?.ToString() ?? "0";
             textPlaceholders["{{mesesgarantia}}"] = data.MesesGarantia?.ToString() ?? "0";
@@ -82,6 +75,10 @@ namespace BLL.Implementacion.ContractEngine
             textPlaceholders["{{fecha_actual}}"] = DateTime.Now.ToString("dd/MM/yyyy");
             textPlaceholders["{{fecha_actual_larga}}"] = DateTime.Now.ToString("dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-ES"));
             textPlaceholders["{{fechafirmacontratoenletras}}"] = DateTime.Now.ToString("dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-ES"));
+            textPlaceholders["{{fechafirmacontrato}}"] = textPlaceholders["{{fechafirmacontratoenletras}}"];
+            textPlaceholders["{{fecha_firma}}"] = textPlaceholders["{{fechafirmacontratoenletras}}"];
+
+            return Task.CompletedTask;
         }
     }
 }
