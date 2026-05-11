@@ -1,8 +1,8 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using TecmeinWebApp.Utilidades.Response;
 using System.Net;
-using FluentValidation;
+using TecmeinWebApp.Utilidades.Response;
 
 namespace TecmeinWebApp.Utilidades.Filters
 {
@@ -31,7 +31,7 @@ namespace TecmeinWebApp.Utilidades.Filters
                 statusCode = (int)HttpStatusCode.BadRequest;
                 response.Mensajes = string.Join(" | ", valEx.Errors.Select(e => e.ErrorMessage));
             }
-            else if (context.Exception is InvalidOperationException || 
+            else if (context.Exception is InvalidOperationException ||
                      context.Exception is TaskCanceledException ||
                      context.Exception is ArgumentException ||
                      context.Exception is UnauthorizedAccessException)

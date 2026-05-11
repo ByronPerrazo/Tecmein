@@ -130,7 +130,7 @@ namespace BLL.Implementacion
 
                 var seElimino = false;
                 var query = await _repositorio.Consultar(x => x.Secuencial == secuencial);
-                
+
                 if (!esAdmin)
                 {
                     query = query.Where(v => v.SecUsuario == secUsuario);
@@ -163,7 +163,7 @@ namespace BLL.Implementacion
             bool esAdmin = _userSession.SecRol == 1;
 
             var query = await _repositorio.Consultar(v => v.IdEtapaNavigation.Codigo != "HIST");
-            
+
             if (!esAdmin)
             {
                 query = query.Where(v => v.SecUsuario == secUsuario);
@@ -244,7 +244,7 @@ namespace BLL.Implementacion
                 if (etapaActual.Codigo == "SEG" && nuevoCodigoEtapa == "COT" && !permitirRetroceso)
                 {
                     // No se hace nada, se mantiene en SEG
-                    return true; 
+                    return true;
                 }
 
                 // Regla de negocio general: No se puede retroceder en el flujo de etapas (basado en orden).

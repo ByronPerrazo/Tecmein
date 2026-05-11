@@ -1,3 +1,4 @@
+using BLL.Mcp;
 using IOC;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +8,6 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using QuestPDF.Infrastructure;
 using Serilog;
 using TecmeinAplicacionWeb.Utilidades.AutoMapper;
-using BLL.Mcp;
 using TecmeinWebApp.Utilidades.Filters;
 
 Log.Logger = new LoggerConfiguration()

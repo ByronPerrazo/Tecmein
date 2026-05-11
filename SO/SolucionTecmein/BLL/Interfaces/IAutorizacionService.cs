@@ -1,6 +1,4 @@
-﻿using Entity;
-
-namespace BLL.Interfaces
+﻿namespace BLL.Interfaces
 {
     public interface IAutorizacionService
     {

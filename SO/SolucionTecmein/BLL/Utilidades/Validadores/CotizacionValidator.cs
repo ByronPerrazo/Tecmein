@@ -32,7 +32,7 @@ namespace BLL.Utilidades.Validadores
 
             RuleFor(x => x.Total)
                 .GreaterThan(0).WithMessage("El total del detalle debe ser mayor a cero.");
-            
+
             RuleFor(x => x.NombreEquipo)
                 .NotEmpty().When(x => x.SecEquipoVisita == null)
                 .WithMessage("Debe especificar un nombre de equipo si no está asociado a una visita.");

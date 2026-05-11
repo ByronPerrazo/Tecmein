@@ -1,13 +1,11 @@
 
-using Microsoft.AspNetCore.Mvc;
-using BLL.Interfaces;
-using System.Threading.Tasks;
-using Entity;
-using TecmeinAplicacionWeb.Models.ViewModels;
 using AutoMapper;
+using BLL.Interfaces;
+using Entity;
+using Microsoft.AspNetCore.Mvc;
+using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
 using TecmeinWebApp.Utilidades.ViewComponents;
-using System.Collections.Generic;
 
 namespace TecmeinAplicacionWeb.Controllers
 {

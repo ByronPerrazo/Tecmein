@@ -1,7 +1,5 @@
 using BLL.ContractEngine;
 using DocumentFormat.OpenXml.Wordprocessing;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace BLL.Interfaces
 {

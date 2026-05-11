@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using TecmeinAplicacionWeb.Models.ViewModels;
-
 namespace TecmeinAplicacionWeb.Models.ViewModels
 {
     public class UsuarioEditarVM

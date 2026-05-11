@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using TecmeinWebApp.Utilidades.Response;
-using TecmeinWebApp.Utilidades.ViewComponents;
-
 namespace TecmeinWebApp.Controllers
 {
     public class PlantillaController : Controller

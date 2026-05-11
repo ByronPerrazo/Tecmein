@@ -1,7 +1,5 @@
 using AutoMapper;
 using BLL.Interfaces;
-using DAL.Interfaces;
-using Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using TecmeinAplicacionWeb.Models.ViewModels;

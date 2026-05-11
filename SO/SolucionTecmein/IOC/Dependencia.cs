@@ -1,8 +1,8 @@
 using AutoMapper;
+using BLL.DTOs;
 using BLL.Implementacion;
 using BLL.Implementacion.ContractEngine;
 using BLL.Interfaces;
-using BLL.DTOs;
 using DAL.DBContext;
 using DAL.Implementacion;
 using DAL.Interfaces;
@@ -144,12 +144,12 @@ namespace IOC
                     provider.GetRequiredService<IUnitOfWork>()
                 ));
             services.AddScoped<IFormaPagoServices, FormaPagoServices>();
-            
+
             // Motores de resolución de plantillas
             services.AddScoped<IPlaceholderProvider, FinancialPlaceholderProvider>();
             services.AddScoped<IPlaceholderProvider, GeneralPlaceholderProvider>();
             services.AddScoped<IPlaceholderProvider, EquipmentPlaceholderProvider>();
-            
+
             services.AddScoped<IPreContratoGeneratorService, PreContratoGeneratorService>();
 
             services.AddScoped<IPlantillaPreContratoServices, PlantillaPreContratoServices>();
@@ -209,7 +209,7 @@ namespace IOC
             services.AddScoped<BLL.Mcp.IMcpService, BLL.Mcp.McpService>();
 
             // --- FIN MCP ---
-            
+
             // Validadores de FluentValidation
             services.AddValidatorsFromAssemblyContaining<BLL.Utilidades.Validadores.CotizacionValidator>();
 

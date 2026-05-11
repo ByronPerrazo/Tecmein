@@ -1,14 +1,9 @@
-using System;
 using BLL.ContractEngine;
 using BLL.DTOs;
 using BLL.Interfaces;
 using DAL.DBContext;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Humanizer;
 
 namespace BLL.Implementacion.ContractEngine
@@ -31,10 +26,10 @@ namespace BLL.Implementacion.ContractEngine
 
             // Tags de Texto Financieros
             textPlaceholders["{{totalcontrato}}"] = cotizacion.TotalConImpuestos.ToString("N2");
-            
+
             var totalEnteros = (int)Math.Truncate(cotizacion.TotalConImpuestos);
             textPlaceholders["{{totalcontratoenterosenletras}}"] = totalEnteros.ToWords(new System.Globalization.CultureInfo("es")).ToUpper();
-            
+
             var centavos = (int)Math.Round((cotizacion.TotalConImpuestos - Math.Truncate(cotizacion.TotalConImpuestos)) * 100);
             textPlaceholders["{{centavoscontrato}}"] = centavos.ToString("00");
 

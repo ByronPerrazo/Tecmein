@@ -3,10 +3,6 @@ using DAL.Interfaces;
 using Entity;
 using Microsoft.EntityFrameworkCore; // Añadido para ToListAsync
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq; // Añadido para IQueryable
-using System.Threading.Tasks;
 
 namespace BLL.Implementacion
 {

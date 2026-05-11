@@ -1,14 +1,7 @@
-using Microsoft.EntityFrameworkCore;
 using BLL.Interfaces;
 using DAL.Interfaces;
 using Entity;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using BLL.DTOs;
-using DAL.DBContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Implementacion
 {
@@ -235,7 +228,7 @@ namespace BLL.Implementacion
                 if (clienteExistente != null)
                 {
                     // Si ya existe, no necesitamos la transacción. Pero como ya se inició, la cerramos limpiamente.
-                    await _unitOfWork.CommitTransactionAsync(); 
+                    await _unitOfWork.CommitTransactionAsync();
                     return clienteExistente;
                 }
 

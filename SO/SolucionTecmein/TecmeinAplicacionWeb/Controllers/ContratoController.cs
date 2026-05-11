@@ -1,17 +1,14 @@
-using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using BLL.DTOs;
 using BLL.Interfaces;
 using Entity;
-using System.Threading.Tasks;
-using TecmeinAplicacionWeb.Models.ViewModels;
-using AutoMapper;
-using System.Collections.Generic;
-using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Globalization;
+using System.Security.Claims;
+using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
 using TecmeinWebApp.Utilidades.ViewComponents;
-using System.Globalization;
-using BLL.DTOs;
-using Microsoft.EntityFrameworkCore;
 
 namespace TecmeinAplicacionWeb.Controllers
 {

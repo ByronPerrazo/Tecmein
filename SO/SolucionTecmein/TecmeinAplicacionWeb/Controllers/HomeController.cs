@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
 using TecmeinAplicacionWeb.Models.ViewModels;
-using TecmeinAplicacionWeb.Models.ViewModels;
-using TecmeinWebApp.Utilidades.ViewComponents;
 
 namespace TecmeinWebApp.Controllers;
 

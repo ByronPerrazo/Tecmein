@@ -1,6 +1,4 @@
 using Entity;
-using System.Threading.Tasks;
-using BLL.DTOs;
 
 namespace BLL.Interfaces
 {

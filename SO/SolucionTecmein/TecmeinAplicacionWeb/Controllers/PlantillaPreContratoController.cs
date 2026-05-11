@@ -1,16 +1,12 @@
-using Microsoft.AspNetCore.Mvc;
-using BLL.Interfaces;
-using Entity;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using TecmeinAplicacionWeb.Models.ViewModels;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Linq;
 using AutoMapper;
-using TecmeinWebApp.Utilidades.Response;
-using TecmeinWebApp.Utilidades.ViewComponents;
-using DAL.Interfaces;
 using BLL.DTOs; // Añadido para IGenericRepository
+using BLL.Interfaces;
+using DAL.Interfaces;
+using Entity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using TecmeinAplicacionWeb.Models.ViewModels;
+using TecmeinWebApp.Utilidades.ViewComponents;
 
 namespace TecmeinAplicacionWeb.Controllers
 {

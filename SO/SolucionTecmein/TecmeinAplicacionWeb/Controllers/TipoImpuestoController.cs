@@ -3,12 +3,11 @@ using BLL.Interfaces;
 using Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
 using TecmeinWebApp.Utilidades.ViewComponents;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace TecmeinWebApp.Controllers
 {

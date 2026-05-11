@@ -1,15 +1,10 @@
 using BLL.ContractEngine;
-using BLL.DTOs;
 using BLL.Interfaces;
 using DAL.DBContext;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace BLL.Implementacion.ContractEngine
 {
@@ -79,10 +74,10 @@ namespace BLL.Implementacion.ContractEngine
                 if (!string.IsNullOrEmpty(recorrido) && recorrido != "0") infoInstalacion.Add($"Recorrido: {recorrido} mm");
             }
 
-            textPlaceholders["{{detalleinstalacionducto}}"] = infoInstalacion.Any() 
-                ? string.Join(", ", infoInstalacion) 
+            textPlaceholders["{{detalleinstalacionducto}}"] = infoInstalacion.Any()
+                ? string.Join(", ", infoInstalacion)
                 : "Se instalará en ducto existente según especificaciones técnicas de fábrica y planos adjuntos.";
-            
+
             // Alias para compatibilidad total (con y sin 'y')
             textPlaceholders["{{detalleinstalacionyducto}}"] = textPlaceholders["{{detalleinstalacionducto}}"];
 
@@ -107,13 +102,13 @@ namespace BLL.Implementacion.ContractEngine
 
             AddRow(table, "Equipo", equipo?.TipoEquipo ?? GetValueFromDetail(d, "Tipo Eq", "Ascensor"));
             AddRow(table, "Marca", equipo?.Marca ?? GetValueFromDetail(d, "Marca", "S/N"));
-            
-            string capacidadText = equipo != null 
+
+            string capacidadText = equipo != null
                 ? $"{equipo.Capacidad} Kg / {equipo.NumeroPersonas ?? 0} Personas"
                 : $"{GetValueFromDetail(d, "Capacidad", "0")} Kg / {GetValueFromDetail(d, "Num Personas", "0")} Personas";
-            
+
             AddRow(table, "Capacidad", capacidadText);
-            
+
             string velocidadVal = equipo?.Velocidad?.ToString("N2") ?? GetValueFromDetail(d, "Velocidad", "0.00");
             AddRow(table, "Velocidad", $"{velocidadVal} m/s");
 

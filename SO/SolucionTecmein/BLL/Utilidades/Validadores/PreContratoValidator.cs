@@ -27,7 +27,7 @@ namespace BLL.Utilidades.Validadores
 
             RuleFor(x => x.PolizaGarantia)
                 .NotEmpty().WithMessage("Debe especificar el tipo de póliza de garantía.");
-                
+
             RuleFor(x => x.PreContratoCompromisoPagos)
                 .NotEmpty().WithMessage("Debe definir al menos un compromiso de pago.");
         }

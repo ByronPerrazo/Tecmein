@@ -1,19 +1,12 @@
-using BLL.ContractEngine;
 using BLL.DTOs;
 using BLL.Interfaces;
 using DAL.DBContext;
-using DAL.Interfaces;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Entity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace BLL.Implementacion
 {
@@ -62,7 +55,7 @@ namespace BLL.Implementacion
 
             // Recopilar datos usando los proveedores modulares
             var (datosTexto, datosTabla) = await RecopilarDatosModulares(preContratoData);
-            
+
             byte[] docBytes = parrafoPlantilla.Contenido;
 
             using (var ms = new MemoryStream())
@@ -84,7 +77,7 @@ namespace BLL.Implementacion
                     {
                         ProcessTextReplacements(part, datosTexto);
                     }
-                    
+
                     wordDoc.Save();
                 }
                 return ms.ToArray();
@@ -140,7 +133,7 @@ namespace BLL.Implementacion
 
             // 2. Realizar el reemplazo a nivel de Text nodes (Preserva Formato)
             var textNodes = part.RootElement.Descendants<Text>().ToList();
-            
+
             foreach (var textNode in textNodes)
             {
                 string text = textNode.Text;
@@ -153,7 +146,7 @@ namespace BLL.Implementacion
                     // Ejemplo: {{ nombre }} coincidirá con {{nombre}}
                     string keyContent = replacement.Key.Trim('{', '}');
                     string pattern = @"\{\{\s*" + Regex.Escape(keyContent) + @"\s*\}\}";
-                    
+
                     if (Regex.IsMatch(text, pattern, RegexOptions.IgnoreCase))
                     {
                         text = Regex.Replace(text, pattern, replacement.Value ?? "", RegexOptions.IgnoreCase);
@@ -212,12 +205,12 @@ namespace BLL.Implementacion
         {
             if (p1 == null && p2 == null) return true;
             if (p1 == null || p2 == null) return false;
-            
+
             // Ignoramos diferencias menores como idiomas o correcciones ortográficas
             // que Word inserta automáticamente y rompen los marcadores.
             string xml1 = p1.OuterXml.Replace("w:lang", "lang").Replace("w:noProof", "np");
             string xml2 = p2.OuterXml.Replace("w:lang", "lang").Replace("w:noProof", "np");
-            
+
             return xml1 == xml2;
         }
 
@@ -228,7 +221,7 @@ namespace BLL.Implementacion
 
             var run = (Run)parent;
             string[] lines = fullText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-            
+
             run.RemoveAllChildren<Text>();
             run.RemoveAllChildren<Break>();
 

@@ -1,13 +1,7 @@
 using BLL.ContractEngine;
-using BLL.DTOs;
 using BLL.Interfaces;
 using DAL.DBContext;
 using DocumentFormat.OpenXml.Wordprocessing;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BLL.Implementacion.ContractEngine
 {
@@ -51,14 +45,14 @@ namespace BLL.Implementacion.ContractEngine
             textPlaceholders["{{clientetelefono}}"] = constructora?.Telefono ?? "";
             textPlaceholders["{{clientecorreo}}"] = constructora?.Correo ?? "";
             textPlaceholders["{{clienterepresentantelegal}}"] = constructora?.Administrador ?? "";
-            
+
             // Contacto Específico (Template)
             string nombreContacto = ((contacto?.Nombres ?? "") + " " + (contacto?.Apellidos ?? "")).Trim();
             textPlaceholders["{{NombreContacto}}"] = !string.IsNullOrEmpty(nombreContacto) ? nombreContacto : (constructora?.Administrador ?? "");
             textPlaceholders["{{EmailContacto}}"] = contacto?.Correo ?? constructora?.Correo ?? "";
             textPlaceholders["{{IdentificacionContacto}}"] = constructora?.Ruc ?? "";
             textPlaceholders["{{NumeroHojasDocumentoGenerado}}"] = "2"; // Valor estándar o placeholder de relleno
-            
+
             // Empresa (Alias adicionales)
             textPlaceholders["{{EmailEmpresa}}"] = empresa?.Correo ?? "";
             textPlaceholders["{{IdentificacionEmpresa}}"] = empresa?.Identificacion ?? "";

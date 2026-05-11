@@ -1,11 +1,7 @@
 using AutoMapper;
 using BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using TecmeinAplicacionWeb.Models.ViewModels;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using TecmeinWebApp.Utilidades.Response;
 using TecmeinWebApp.Utilidades.ViewComponents;
 

@@ -1,13 +1,12 @@
-using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 using BLL.Interfaces;
 using Entity;
-using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
 using TecmeinWebApp.Utilidades.ViewComponents;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Reflection;
 
 namespace TecmeinAplicacionWeb.Controllers
 {

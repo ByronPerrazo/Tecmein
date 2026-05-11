@@ -1,16 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
-using BLL.Interfaces;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Entity;
 using AutoMapper;
+using BLL.Interfaces;
+using Entity;
+using Microsoft.AspNetCore.Mvc;
 using TecmeinAplicacionWeb.Models.ViewModels;
-using Newtonsoft.Json;
-using System.Security.Claims;
-using TecmeinWebApp.Utilidades.Response;
 using TecmeinWebApp.Utilidades.ViewComponents;
-using BLL.DTOs;
-using System.Linq;
 
 namespace TecmeinAplicacionWeb.Controllers
 {
@@ -215,14 +208,14 @@ namespace TecmeinAplicacionWeb.Controllers
         [ValidatePermission("LEER")]
         public async Task<IActionResult> DescargarContratoFinal(int id)
         {
-             try
-             {
-                 return StatusCode(StatusCodes.Status501NotImplemented, new { mensajes = "Descarga de contrato final no implementada aún." });
-             }
-             catch(Exception ex)
-             {
-                 return StatusCode(StatusCodes.Status500InternalServerError, new { estado = false, mensajes = ex.Message });
-             }
+            try
+            {
+                return StatusCode(StatusCodes.Status501NotImplemented, new { mensajes = "Descarga de contrato final no implementada aún." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { estado = false, mensajes = ex.Message });
+            }
         }
 
         [HttpGet]
@@ -230,7 +223,7 @@ namespace TecmeinAplicacionWeb.Controllers
         public async Task<IActionResult> DescargarDocumentoActual(int id)
         {
             byte[] documentoGuardado = await _preContratoService.ObtenerContenidoDocumento(id);
-            
+
             if (documentoGuardado != null)
             {
                 return File(documentoGuardado, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", $"PreContrato_Editado_{id}.docx");
@@ -376,5 +369,5 @@ namespace TecmeinAplicacionWeb.Controllers
         }
     }
 
-        // GuardarPreContratoRequest eliminado
+    // GuardarPreContratoRequest eliminado
 }

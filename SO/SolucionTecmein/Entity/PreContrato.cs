@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -25,7 +23,7 @@ namespace Entity
         [Required]
         public string Estado { get; set; }
         public bool EstaActivo { get; set; }
-        public DateTime? FechaRegistro { get; set; } 
+        public DateTime? FechaRegistro { get; set; }
 
         [NotMapped]
         public int? SecUsuario { get => SecUsuarioCrea; set => SecUsuarioCrea = value; }

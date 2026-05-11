@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Http; // Added for IFormFile
-
 namespace TecmeinAplicacionWeb.Models.ViewModels
 {
     public class RegistrarPagoVM

@@ -2,12 +2,9 @@ using AutoMapper;
 using BLL.Interfaces;
 using Entity;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
 using TecmeinWebApp.Utilidades.ViewComponents;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace TecmeinWebApp.Controllers
 {

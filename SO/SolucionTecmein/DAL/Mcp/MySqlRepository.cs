@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Configuration;
-using MySql.Data.MySqlClient;
-using System.Data;
 using Microsoft.Extensions.Logging; // Added
+using MySql.Data.MySqlClient;
 
 namespace DAL.Mcp
 {

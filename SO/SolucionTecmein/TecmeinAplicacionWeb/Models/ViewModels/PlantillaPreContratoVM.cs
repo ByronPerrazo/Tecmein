@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-
 namespace TecmeinAplicacionWeb.Models.ViewModels
 {
     public class PlantillaPreContratoVM

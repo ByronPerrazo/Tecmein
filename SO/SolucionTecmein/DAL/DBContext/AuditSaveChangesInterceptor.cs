@@ -44,7 +44,7 @@ namespace DAL.DBContext
                 {
                     entry.Entity.FechaModificacion = now;
                     entry.Entity.SecUsuarioModifica = userId;
-                    
+
                     // Aseguramos que no se sobrescriban los campos de creación
                     entry.Property(x => x.FechaRegistro).IsModified = false;
                     entry.Property(x => x.SecUsuario).IsModified = false;

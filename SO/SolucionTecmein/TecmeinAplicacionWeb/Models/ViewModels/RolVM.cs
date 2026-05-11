@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace TecmeinAplicacionWeb.Models.ViewModels
+﻿namespace TecmeinAplicacionWeb.Models.ViewModels
 {
     public class RolVM
     {

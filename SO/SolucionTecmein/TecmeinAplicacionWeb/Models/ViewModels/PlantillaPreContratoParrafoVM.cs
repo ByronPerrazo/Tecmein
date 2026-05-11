@@ -1,5 +1,3 @@
-using System;
-
 namespace TecmeinAplicacionWeb.Models.ViewModels
 {
     public class PlantillaPreContratoParrafoVM

@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-
 namespace BLL.DTOs
 {
     public class ContratoCreacionDTO

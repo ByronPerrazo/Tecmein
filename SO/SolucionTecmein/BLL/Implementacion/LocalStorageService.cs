@@ -1,7 +1,4 @@
 using BLL.Interfaces;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace BLL.Implementacion
 {
@@ -13,7 +10,7 @@ namespace BLL.Implementacion
         {
             // Usamos una ruta absoluta fuera de wwwroot para evitar restricciones de IIS
             _basePath = @"C:\TecmeinFiles";
-            
+
             if (!Directory.Exists(_basePath))
             {
                 Directory.CreateDirectory(_basePath);
@@ -33,7 +30,7 @@ namespace BLL.Implementacion
                 }
 
                 string rutaCompleta = Path.Combine(carpetaRuta, NombreArchivo);
-                
+
                 using (var fileStream = new FileStream(rutaCompleta, FileMode.Create))
                 {
                     await RepositorioExterno.CopyToAsync(fileStream);

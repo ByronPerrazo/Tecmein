@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using BLL.Interfaces;
 using Entity;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using TecmeinAplicacionWeb.Models.ViewModels;

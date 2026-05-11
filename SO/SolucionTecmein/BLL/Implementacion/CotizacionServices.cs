@@ -1,14 +1,13 @@
-using BLL.Interfaces;
-using DAL.Interfaces;
-using Entity;
-using Microsoft.EntityFrameworkCore;
-using QuestPDF.Fluent;
-using System;
-using System.Text;
-using BLL.Utilidades.PDF;
 using AutoMapper;
 using BLL.DTOs;
+using BLL.Interfaces;
+using BLL.Utilidades.PDF;
+using DAL.Interfaces;
+using Entity;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
+using QuestPDF.Fluent;
+using System.Text;
 
 
 namespace BLL.Implementacion
@@ -35,7 +34,7 @@ namespace BLL.Implementacion
             IImpuestoServices impuestoServices,
             IVisitaServices visitaServices,
             IEquiposVisitaServices equiposVisitaServices,
-            IAuditService auditService, 
+            IAuditService auditService,
             IUsuarioServices usuarioServices,
             IValidator<CotizacionDTO> validator,
             IMapper mapper,
@@ -498,7 +497,7 @@ namespace BLL.Implementacion
 
                 cotizacion.EstaActivo = 0;
                 bool resultado = await _repositorio.Editar(cotizacion);
-                
+
                 if (resultado)
                 {
                     // Regresar la visita a etapa "VIS" (Atómico con la eliminación)

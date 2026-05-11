@@ -1,13 +1,10 @@
-using System;
-using System.Linq;
-using System.Net.Mail;
-using System.Threading.Tasks;
 using Azure.Identity;
 using BLL.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Graph;
 using Microsoft.Graph.Models;
 using Microsoft.Graph.Users.Item.SendMail;
+using System.Net.Mail;
 
 namespace BLL.Implementacion
 {

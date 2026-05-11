@@ -1,13 +1,8 @@
 using BLL.Interfaces;
 using DAL.Interfaces;
-using Entity;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using DocumentFormat.OpenXml.Packaging; // Añadido para Open XML SDK
+using Entity;
+using System.Text.RegularExpressions;
 
 namespace BLL.Implementacion
 {

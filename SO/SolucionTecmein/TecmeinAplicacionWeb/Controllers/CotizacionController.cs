@@ -1,13 +1,11 @@
 using AutoMapper;
+using BLL.DTOs;
 using BLL.Interfaces;
-using Entity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Threading.Tasks;
 using TecmeinAplicacionWeb.Models.ViewModels;
 using TecmeinWebApp.Utilidades.Response;
 using TecmeinWebApp.Utilidades.ViewComponents;
-using BLL.DTOs;
 
 namespace TecmeinWebApp.Controllers
 {

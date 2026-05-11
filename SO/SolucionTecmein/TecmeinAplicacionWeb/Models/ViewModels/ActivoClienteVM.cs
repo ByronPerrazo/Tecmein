@@ -1,6 +1,3 @@
-using System;
-using System.ComponentModel.DataAnnotations;
-
 namespace TecmeinAplicacionWeb.Models.ViewModels
 {
     public class ActivoClienteVM

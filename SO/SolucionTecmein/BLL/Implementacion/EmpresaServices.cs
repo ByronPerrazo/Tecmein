@@ -1,10 +1,6 @@
 ﻿using BLL.Interfaces;
 using DAL.Interfaces;
 using Entity;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace BLL.Implementacion
 {

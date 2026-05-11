@@ -4,10 +4,6 @@ using DAL.DBContext;
 using DAL.Interfaces;
 using Entity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BLL.Implementacion
 {
@@ -80,7 +76,7 @@ namespace BLL.Implementacion
                         .FirstOrDefaultAsync(c => c.Secuencial == dto.IdCotizacion.Value);
 
                     if (cotizacion == null) throw new Exception("La cotización especificada no fue encontrada.");
-                    
+
                     int? secConstructora = cotizacion.SecVisitaNavigation?.SecConstructora;
 
                     // Lógica de respaldo: Si SecConstructora es nulo, buscar a través de ContactoVisita
@@ -90,7 +86,7 @@ namespace BLL.Implementacion
                         if (contactoVisita?.SecContactoNavigation?.SecConstructora != null)
                         {
                             secConstructora = contactoVisita.SecContactoNavigation.SecConstructora;
-                            
+
                             // Opcional: Actualizar el campo en Visita para futuras referencias
                             // cotizacion.SecVisitaNavigation.SecConstructora = secConstructora;
                         }
@@ -129,12 +125,12 @@ namespace BLL.Implementacion
 
                 // Recuperar SecTipoDocumento desde PreContrato si no viene en el DTO
                 int? secTipoDocumentoFinal = dto.SecTipoDocumento > 0 ? dto.SecTipoDocumento : (int?)null;
-                
+
                 if ((secTipoDocumentoFinal == null || secTipoDocumentoFinal == 0) && idCotizacionFinal > 0)
                 {
                     var preContratoOrigen = await _repositorioPreContrato.Consultar(p => p.SecCotizacion == idCotizacionFinal && p.Estado == "Aprobado");
                     var preContratoConPlantilla = await preContratoOrigen.Include(p => p.SecPlantillaPreContratoNavigation).FirstOrDefaultAsync();
-                    
+
                     if (preContratoConPlantilla != null && preContratoConPlantilla.SecPlantillaPreContratoNavigation != null)
                     {
                         secTipoDocumentoFinal = preContratoConPlantilla.SecPlantillaPreContratoNavigation.SecTipoDocumento;
