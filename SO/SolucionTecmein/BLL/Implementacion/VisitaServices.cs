@@ -1,4 +1,4 @@
-﻿using BLL.Interfaces;
+using BLL.Interfaces;
 using DAL.Interfaces;
 using Entity;
 using Microsoft.EntityFrameworkCore;
@@ -10,21 +10,32 @@ namespace BLL.Implementacion
         private readonly IGenericRepository<Visita> _repositorio;
         private readonly IGenericRepository<Equiposvisita> _repositorioEquipos;
         private readonly IEtapaServices _etapaServices;
+        private readonly IUserSession _userSession;
 
         public VisitaServices(
             IGenericRepository<Visita> repositorio,
             IGenericRepository<Equiposvisita> repositorioEquipos,
-            IEtapaServices etapaServices
+            IEtapaServices etapaServices,
+            IUserSession userSession
             )
         {
             _repositorio = repositorio;
             _repositorioEquipos = repositorioEquipos;
             _etapaServices = etapaServices;
+            _userSession = userSession;
         }
 
         public async Task<Visita> ConsultaVisita(int secuencial)
         {
+            int secUsuario = _userSession.SecUsuario ?? 0;
+            bool esAdmin = _userSession.SecRol == 1;
+
             IQueryable<Visita> query = await _repositorio.Consultar(x => x.Secuencial == secuencial);
+
+            if (!esAdmin)
+            {
+                query = query.Where(v => v.SecUsuario == secUsuario);
+            }
 
             Visita visitaEncontrada = await query.Include(x => x.SecProvinciaNavigation)
                                                  .Include(x => x.SecCantonNavigation)
@@ -43,6 +54,7 @@ namespace BLL.Implementacion
         {
             try
             {
+                entidad.SecUsuario = _userSession.SecUsuario ?? 0;
                 var etapaInicial = await _etapaServices.ObtenerPorCodigo("VIS");
                 if (etapaInicial == null) throw new TaskCanceledException("No se encontró la etapa inicial 'VIS'.");
 
@@ -65,10 +77,18 @@ namespace BLL.Implementacion
         {
             try
             {
+                int secUsuario = _userSession.SecUsuario ?? 0;
+                bool esAdmin = _userSession.SecRol == 1;
+
                 var visitaOriginal = await _repositorio.Obtener(v => v.Secuencial == entidad.Secuencial, "IdEtapaNavigation");
                 if (visitaOriginal == null)
                 {
                     throw new KeyNotFoundException($"No se encontró la visita con el secuencial {entidad.Secuencial}");
+                }
+
+                if (!esAdmin && visitaOriginal.SecUsuario != secUsuario)
+                {
+                    throw new UnauthorizedAccessException("No tiene permisos para editar esta visita.");
                 }
 
                 if (visitaOriginal.IdEtapaNavigation.Codigo == "PRE" || visitaOriginal.IdEtapaNavigation.Codigo == "SEG" || visitaOriginal.IdEtapaNavigation.Codigo == "COT")
@@ -105,12 +125,18 @@ namespace BLL.Implementacion
         {
             try
             {
-                var seElimino = false;
-                var visita
-                    = await _repositorio
-                             .Consultar(x => x.Secuencial == secuencial);
+                int secUsuario = _userSession.SecUsuario ?? 0;
+                bool esAdmin = _userSession.SecRol == 1;
 
-                var visitaAEliminar = visita.FirstOrDefault();
+                var seElimino = false;
+                var query = await _repositorio.Consultar(x => x.Secuencial == secuencial);
+                
+                if (!esAdmin)
+                {
+                    query = query.Where(v => v.SecUsuario == secUsuario);
+                }
+
+                var visitaAEliminar = await query.FirstOrDefaultAsync();
                 if (visitaAEliminar != null)
                 {
                     seElimino = await _repositorio.Eliminar(visitaAEliminar);
@@ -131,30 +157,24 @@ namespace BLL.Implementacion
                 throw;
             }
         }
-        public async Task<List<Visita>> ListaVisitas()
+        public async Task<List<Visita>> Lista()
         {
+            int secUsuario = _userSession.SecUsuario ?? 0;
+            bool esAdmin = _userSession.SecRol == 1;
+
             var query = await _repositorio.Consultar(v => v.IdEtapaNavigation.Codigo != "HIST");
+            
+            if (!esAdmin)
+            {
+                query = query.Where(v => v.SecUsuario == secUsuario);
+            }
+
             var queryIncludes = query.Include(x => x.SecProvinciaNavigation)
                                       .Include(y => y.SecCantonNavigation)
                                       .Include(z => z.SecParroquiaNavigation)
                                       .Include(u => u.SecUsuarioNavigation)
-                                      .Include(e => e.IdEtapaNavigation) // <-- Added
-                                      .Include(em => em.SecEmpresaNavigation) // <-- Added
-                                      .Include(c => c.SecConstructoraNavigation)
-                                      .AsNoTracking();
-
-            return await queryIncludes.ToListAsync();
-        }
-
-        public async Task<List<Visita>> ListaVisitasPorUsuario(int idUsuario)
-        {
-            var query = await _repositorio.Consultar(v => v.SecUsuario == idUsuario && v.IdEtapaNavigation.Codigo != "HIST");
-            var queryIncludes = query.Include(x => x.SecProvinciaNavigation)
-                                      .Include(y => y.SecCantonNavigation)
-                                      .Include(z => z.SecParroquiaNavigation)
-                                      .Include(u => u.SecUsuarioNavigation)
-                                      .Include(e => e.IdEtapaNavigation) // <-- Added
-                                      .Include(em => em.SecEmpresaNavigation) // <-- Added
+                                      .Include(e => e.IdEtapaNavigation)
+                                      .Include(em => em.SecEmpresaNavigation)
                                       .Include(c => c.SecConstructoraNavigation)
                                       .AsNoTracking();
 
@@ -163,7 +183,15 @@ namespace BLL.Implementacion
 
         public async Task<Visita> ObtenerDetalleVisita(int secuencial)
         {
+            int secUsuario = _userSession.SecUsuario ?? 0;
+            bool esAdmin = _userSession.SecRol == 1;
+
             IQueryable<Visita> query = await _repositorio.Consultar(v => v.Secuencial == secuencial);
+
+            if (!esAdmin)
+            {
+                query = query.Where(v => v.SecUsuario == secUsuario);
+            }
 
             var visitaDetalle = await query
                 .Include(v => v.SecProvinciaNavigation)
@@ -184,10 +212,18 @@ namespace BLL.Implementacion
 
         public async Task<List<Visita>> ListaConEquipos()
         {
+            int secUsuario = _userSession.SecUsuario ?? 0;
+            bool esAdmin = _userSession.SecRol == 1;
+
             IQueryable<Equiposvisita> equiposQuery = await _repositorioEquipos.Consultar();
             List<int> visitaIdsConEquipos = await equiposQuery.Select(e => e.SecVisita).Distinct().ToListAsync();
 
             IQueryable<Visita> visitasQuery = await _repositorio.Consultar(v => visitaIdsConEquipos.Contains(v.Secuencial));
+
+            if (!esAdmin)
+            {
+                visitasQuery = visitasQuery.Where(v => v.SecUsuario == secUsuario);
+            }
 
             return await visitasQuery.AsNoTracking().ToListAsync();
         }

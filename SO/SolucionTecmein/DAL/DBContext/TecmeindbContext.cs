@@ -771,6 +771,8 @@ public partial class TecmeindbContext : DbContext
             entity.Property(e => e.Estado).HasMaxLength(50).HasColumnName("Estado");
             entity.Property(e => e.EstaActivo).HasColumnName("EstaActivo");
             entity.Property(e => e.FechaRegistro).HasColumnType("datetime").HasColumnName("FechaRegistro");
+            entity.Property(e => e.FechaModificacion).HasColumnType("datetime").HasColumnName("FechaModificacion");
+            entity.Property(e => e.SecUsuarioModifica).HasColumnName("SecUsuarioModifica");
 
             entity.Property(e => e.Dias).HasColumnName("Dias");
             entity.Property(e => e.TipoDias).HasMaxLength(50).HasColumnName("TipoDias");
@@ -875,6 +877,8 @@ public partial class TecmeindbContext : DbContext
             entity.Property(e => e.ValorCompra).HasColumnName("ValorCompra");
             entity.Property(e => e.MargenGanancia).HasColumnName("MargenGanancia");
             entity.Property(e => e.Total).HasColumnName("Total");
+            entity.Property(e => e.Subtotal).HasColumnName("Subtotal");
+            entity.Property(e => e.Impuestos).HasColumnName("Impuestos");
             entity.Property(e => e.EstaActivo).HasColumnName("EstaActivo");
             entity.Property(e => e.FechaRegistro).HasColumnName("FechaRegistro");
 
@@ -967,6 +971,7 @@ public partial class TecmeindbContext : DbContext
             entity.Property(e => e.EsIva).HasColumnName("EsIva");
             entity.Property(e => e.EsImportacion).HasColumnName("EsImportacion");
             entity.Property(e => e.EstaActivo).HasColumnName("EstaActivo");
+            entity.Property(e => e.Prioridad).HasColumnName("Prioridad");
             entity.Property(e => e.FechaCreacion)
                 .HasColumnType("datetime")
                 .HasColumnName("FechaCreacion");
@@ -1099,6 +1104,8 @@ public partial class TecmeindbContext : DbContext
             entity.Property(e => e.RutaArchivo).HasMaxLength(1024).HasColumnName("RutaArchivo");
             entity.Property(e => e.FechaCreacion).HasColumnType("datetime").HasColumnName("FechaCreacion");
             entity.Property(e => e.EsActivo).HasColumnName("EsActivo");
+            entity.Property(e => e.FechaModificacion).HasColumnType("datetime").HasColumnName("FechaModificacion");
+            entity.Property(e => e.SecUsuarioModifica).HasColumnName("SecUsuarioModifica");
             entity.Property(e => e.SecTipoDocumento).HasColumnName("SecTipoDocumento");
 
             entity.HasOne(d => d.SecClienteNavigation)

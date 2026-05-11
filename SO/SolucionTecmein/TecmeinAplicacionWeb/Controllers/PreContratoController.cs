@@ -49,10 +49,7 @@ namespace TecmeinAplicacionWeb.Controllers
         [ValidatePermission("LEER")]
         public async Task<IActionResult> Listar()
         {
-            var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            int usuarioId = usuarioIdClaim != null ? int.Parse(usuarioIdClaim.Value) : 0;
-
-            var lista = await _preContratoService.Lista(usuarioId);
+            var lista = await _preContratoService.Lista();
             List<PreContratoVM> vmLista = _mapper.Map<List<PreContratoVM>>(lista);
             return StatusCode(StatusCodes.Status200OK, new { data = vmLista });
         }
@@ -76,10 +73,7 @@ namespace TecmeinAplicacionWeb.Controllers
         [ValidatePermission("ELIMINAR")]
         public async Task<IActionResult> Eliminar(int id)
         {
-            var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            int usuarioId = usuarioIdClaim != null ? int.Parse(usuarioIdClaim.Value) : 0;
-
-            bool resultado = await _preContratoService.Eliminar(id, usuarioId);
+            bool resultado = await _preContratoService.Eliminar(id);
             return StatusCode(StatusCodes.Status200OK, new { estado = resultado, mensajes = resultado ? "Pre-contrato eliminado correctamente." : "No se pudo eliminar el pre-contrato." });
         }
 
@@ -103,14 +97,11 @@ namespace TecmeinAplicacionWeb.Controllers
 
         [HttpGet]
         [ValidatePermission("LEER")]
-        public async Task<IActionResult> ListaCotizacionesAprobadas()
+        public async Task<IActionResult> ListaCotizacionesAprobadas(int? incluirId = null)
         {
             try
             {
-                var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                int usuarioId = usuarioIdClaim != null ? int.Parse(usuarioIdClaim.Value) : 0;
-
-                var cotizaciones = await _cotizacionService.Lista(usuarioId);
+                var cotizaciones = await _cotizacionService.Lista();
                 var cotizacionesAprobadas = cotizaciones
                     .Where(c => c.EstaActivo == 1 && c.Confirmacion == true)
                     .Select(c => new
@@ -119,6 +110,31 @@ namespace TecmeinAplicacionWeb.Controllers
                         text = $"COT-{c.Secuencial} - {(!string.IsNullOrEmpty(c.NombreObra) ? c.NombreObra : "Sin Nombre de Obra")}"
                     })
                     .ToList();
+
+                if (incluirId.HasValue && !cotizacionesAprobadas.Any(c => c.value == incluirId.Value))
+                {
+                    try
+                    {
+                        var cotizacionEspecifica = await _cotizacionService.Detalle(incluirId.Value);
+                        if (cotizacionEspecifica != null)
+                        {
+                            cotizacionesAprobadas.Add(new
+                            {
+                                value = cotizacionEspecifica.Secuencial,
+                                text = $"COT-{cotizacionEspecifica.Secuencial} - {(!string.IsNullOrEmpty(cotizacionEspecifica.NombreObra) ? cotizacionEspecifica.NombreObra : "Sin Nombre de Obra")}"
+                            });
+                        }
+                    }
+                    catch (System.Exception)
+                    {
+                        // Si falla por permisos o cualquier motivo, agregamos el item de respaldo para que no rompa el combo
+                        cotizacionesAprobadas.Add(new
+                        {
+                            value = incluirId.Value,
+                            text = $"COT-{incluirId.Value} - (Sin Acceso / Inactiva)"
+                        });
+                    }
+                }
 
                 return StatusCode(StatusCodes.Status200OK, new { data = cotizacionesAprobadas });
             }
@@ -187,12 +203,9 @@ namespace TecmeinAplicacionWeb.Controllers
             if (extension != ".docx")
                 return Json(new { estado = false, mensajes = "Solo se permiten archivos DOCX." });
 
-            var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            int usuarioId = usuarioIdClaim != null ? int.Parse(usuarioIdClaim.Value) : 0;
-
             using (var stream = archivo.OpenReadStream())
             {
-                await _preContratoService.SubirContratoFinal(secPreContrato, stream, usuarioId);
+                await _preContratoService.SubirContratoFinal(secPreContrato, stream);
             }
 
             return Json(new { estado = true, mensajes = "Contrato final guardado exitosamente." });
@@ -216,17 +229,14 @@ namespace TecmeinAplicacionWeb.Controllers
         [ValidatePermission("LEER")]
         public async Task<IActionResult> DescargarDocumentoActual(int id)
         {
-            var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            int usuarioId = usuarioIdClaim != null ? int.Parse(usuarioIdClaim.Value) : 0;
-
-            byte[] documentoGuardado = await _preContratoService.ObtenerContenidoDocumento(id, usuarioId);
+            byte[] documentoGuardado = await _preContratoService.ObtenerContenidoDocumento(id);
             
             if (documentoGuardado != null)
             {
                 return File(documentoGuardado, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", $"PreContrato_Editado_{id}.docx");
             }
 
-            var datosEdicion = await _preContratoService.ObtenerParaEdicion(id, usuarioId);
+            var datosEdicion = await _preContratoService.ObtenerParaEdicion(id);
             var preContratoData = new BLL.DTOs.PreContratoConPagosDTO
             {
                 SecCotizacion = datosEdicion.SecCotizacion,
@@ -282,24 +292,9 @@ namespace TecmeinAplicacionWeb.Controllers
         {
             try
             {
-                // Obtener el ID del usuario autenticado
-                var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (usuarioIdClaim == null || !int.TryParse(usuarioIdClaim.Value, out int usuarioId))
-                {
-                    return Json(new { estado = false, mensajes = "Usuario no autenticado o ID de usuario inválido." });
-                }
-
-                // Mapear el request a PreContrato
                 var entidad = new PreContrato
                 {
                     SecCotizacion = request.SecCotizacion,
-                    //SecFormaPago = request.SecFormaPago,
-                    SecPlantillaPreContrato = request.SecPlantillaPreContrato,
-                    //ValorContrato = request.ValorContrato,
-                    //ValorAnticipo = request.ValorAnticipo,
-                    //FechaAnticipo = string.IsNullOrEmpty(request.FechaAnticipo) ? (DateTime?)null : DateTime.Parse(request.FechaAnticipo),
-                    //NumeroCuotas = request.NumeroCuotas,
-                    //FechaPrimeraCuota = string.IsNullOrEmpty(request.FechaPrimeraCuota) ? (DateTime?)null : DateTime.Parse(request.FechaPrimeraCuota),
                     Dias = request.Dias,
                     TipoDias = request.TipoDias,
                     PeriodoMantenimiento = request.PeriodoMantenimiento,
@@ -308,7 +303,7 @@ namespace TecmeinAplicacionWeb.Controllers
                     PolizaGarantia = request.PolizaGarantia
                 };
 
-                var preContratoCreado = await _preContratoService.CrearDesdeModal(entidad, usuarioId);
+                var preContratoCreado = await _preContratoService.CrearDesdeModal(entidad);
                 if (preContratoCreado == null || preContratoCreado.SecPreContrato == 0)
                 {
                     return Json(new { estado = false, mensajes = "No se pudo crear el pre-contrato." });
@@ -340,18 +335,7 @@ namespace TecmeinAplicacionWeb.Controllers
 
             try
             {
-                var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (usuarioIdClaim == null || !int.TryParse(usuarioIdClaim.Value, out int usuarioId))
-                {
-                    return Json(new { estado = false, mensajes = "Usuario no autenticado o ID de usuario inválido." });
-                }
-
-                if (dto == null)
-                {
-                     return Json(new { estado = false, mensajes = "El servidor recibió un objeto nulo. Verifique el formato de los datos." });
-                }
-
-                var preContratoGuardado = await _preContratoService.GuardarBorrador(dto, usuarioId);
+                var preContratoGuardado = await _preContratoService.GuardarBorrador(dto);
                 if (preContratoGuardado == null || preContratoGuardado.SecPreContrato == 0)
                 {
                     return Json(new { estado = false, mensajes = "No se pudo guardar el borrador del pre-contrato." });
@@ -369,10 +353,7 @@ namespace TecmeinAplicacionWeb.Controllers
         [ValidatePermission("LEER")]
         public async Task<IActionResult> DetallesParaEdicion(int id)
         {
-            var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            int usuarioId = usuarioIdClaim != null ? int.Parse(usuarioIdClaim.Value) : 0;
-
-            var dto = await _preContratoService.ObtenerParaEdicion(id, usuarioId);
+            var dto = await _preContratoService.ObtenerParaEdicion(id);
             return Json(new { estado = true, objeto = dto });
         }
 

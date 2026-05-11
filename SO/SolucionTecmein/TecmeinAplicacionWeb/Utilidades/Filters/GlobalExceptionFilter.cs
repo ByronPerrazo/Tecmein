@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using TecmeinWebApp.Utilidades.Response;
 using System.Net;
+using FluentValidation;
 
 namespace TecmeinWebApp.Utilidades.Filters
 {
@@ -20,17 +21,29 @@ namespace TecmeinWebApp.Utilidades.Filters
 
             var response = new GenericResponse<string>
             {
-                Estado = false,
-                Mensajes = context.Exception.Message
+                Estado = false
             };
 
-            // Si es una excepción de negocio (ej. TaskCanceledException o InvalidOperationException), 
-            // devolvemos 400 Bad Request, de lo contrario 500 Internal Server Error.
-            int statusCode = context.Exception is InvalidOperationException || 
-                             context.Exception is TaskCanceledException ||
-                             context.Exception is ArgumentException
-                             ? (int)HttpStatusCode.BadRequest 
-                             : (int)HttpStatusCode.InternalServerError;
+            int statusCode = (int)HttpStatusCode.InternalServerError;
+
+            if (context.Exception is ValidationException valEx)
+            {
+                statusCode = (int)HttpStatusCode.BadRequest;
+                response.Mensajes = string.Join(" | ", valEx.Errors.Select(e => e.ErrorMessage));
+            }
+            else if (context.Exception is InvalidOperationException || 
+                     context.Exception is TaskCanceledException ||
+                     context.Exception is ArgumentException ||
+                     context.Exception is UnauthorizedAccessException)
+            {
+                statusCode = context.Exception is UnauthorizedAccessException ? (int)HttpStatusCode.Forbidden : (int)HttpStatusCode.BadRequest;
+                response.Mensajes = context.Exception.Message;
+            }
+            else
+            {
+                response.Mensajes = "Ocurrió un error inesperado en el servidor. Contacte al administrador.";
+                // En desarrollo podrías querer ver el Message original, en producción no.
+            }
 
             context.Result = new ObjectResult(response)
             {

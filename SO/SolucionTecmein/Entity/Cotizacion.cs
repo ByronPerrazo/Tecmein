@@ -1,10 +1,9 @@
-
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema; // New using statement
 
 namespace Entity;
 
-public partial class Cotizacion
+public partial class Cotizacion : IAuditEntity
 {
     [Key]
     public int Secuencial { get; set; }

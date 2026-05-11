@@ -36,10 +36,7 @@ namespace TecmeinWebApp.Controllers
         [ValidatePermission("LEER")]
         public async Task<IActionResult> Lista()
         {
-            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier);
-            int idUsuario = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
-
-            var lista = await _cotizacionServices.Lista(idUsuario);
+            var lista = await _cotizacionServices.Lista();
             var listaVM = _mapper.Map<List<CotizacionVM>>(lista);
 
             return StatusCode(StatusCodes.Status200OK, new { data = listaVM });
@@ -49,10 +46,7 @@ namespace TecmeinWebApp.Controllers
         [ValidatePermission("LEER")]
         public async Task<IActionResult> Detalle(int id)
         {
-            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier);
-            int idUsuario = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
-
-            var cotizacion = await _cotizacionServices.Detalle(id, idUsuario);
+            var cotizacion = await _cotizacionServices.Detalle(id);
             var cotizacionVM = _mapper.Map<CotizacionVM>(cotizacion);
             return StatusCode(StatusCodes.Status200OK, cotizacionVM);
         }
@@ -69,10 +63,7 @@ namespace TecmeinWebApp.Controllers
         [ValidatePermission("LEER")]
         public async Task<IActionResult> GenerarPDF(int idCotizacion)
         {
-            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier);
-            int idUsuario = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
-
-            byte[] pdfBytes = await _cotizacionServices.GenerarPdfCotizacion(idCotizacion, idUsuario);
+            byte[] pdfBytes = await _cotizacionServices.GenerarPdfCotizacion(idCotizacion);
             string fileName = $"Cotizacion_{idCotizacion}.pdf";
 
             return File(pdfBytes, "application/pdf", fileName);
@@ -82,10 +73,7 @@ namespace TecmeinWebApp.Controllers
         [ValidatePermission("LEER")]
         public async Task<IActionResult> GenerarPDFSolicitud(int idCotizacion)
         {
-            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier);
-            int idUsuario = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
-
-            byte[] pdfBytes = await _cotizacionServices.GenerarPdfSolicitudEquipos(idCotizacion, idUsuario);
+            byte[] pdfBytes = await _cotizacionServices.GenerarPdfSolicitudEquipos(idCotizacion);
             string fileName = $"Solicitud_Equipos_{idCotizacion}.pdf";
 
             return File(pdfBytes, "application/pdf", fileName);
@@ -100,19 +88,8 @@ namespace TecmeinWebApp.Controllers
             {
                 var cotizacionVM = JsonConvert.DeserializeObject<CotizacionVM>(modelo);
 
-                var claims = HttpContext.User.Claims;
-                var userIdClaim = claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier);
-                if (userIdClaim == null)
-                {
-                    response.Estado = false;
-                    response.Mensajes = "No se pudo obtener el usuario para la creación de la cotización.";
-                    return StatusCode(StatusCodes.Status401Unauthorized, response);
-                }
-
-                int idUsuario = int.Parse(userIdClaim.Value);
-
                 var cotizacionDTO = _mapper.Map<CotizacionDTO>(cotizacionVM);
-                var cotizacionCreada = await _cotizacionServices.Crear(cotizacionDTO, idUsuario);
+                var cotizacionCreada = await _cotizacionServices.Crear(cotizacionDTO);
                 var cotizacionCreadaVM = _mapper.Map<CotizacionVM>(cotizacionCreada);
 
                 response.Estado = true;
@@ -135,19 +112,8 @@ namespace TecmeinWebApp.Controllers
             {
                 var cotizacionVM = JsonConvert.DeserializeObject<CotizacionVM>(modelo);
 
-                var claims = HttpContext.User.Claims;
-                var userIdClaim = claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier);
-                if (userIdClaim == null)
-                {
-                    response.Estado = false;
-                    response.Mensajes = "No se pudo obtener el usuario para la edición de la cotización.";
-                    return StatusCode(StatusCodes.Status401Unauthorized, response);
-                }
-
-                int idUsuario = int.Parse(userIdClaim.Value);
-
                 var cotizacionDTO = _mapper.Map<CotizacionDTO>(cotizacionVM);
-                var cotizacionEditada = await _cotizacionServices.Editar(cotizacionDTO, idUsuario);
+                var cotizacionEditada = await _cotizacionServices.Editar(cotizacionDTO);
                 var cotizacionEditadaVM = _mapper.Map<CotizacionVM>(cotizacionEditada);
 
                 response.Estado = true;
@@ -166,10 +132,7 @@ namespace TecmeinWebApp.Controllers
         public async Task<IActionResult> Eliminar(int secuencial)
         {
             var response = new GenericResponse<string>();
-            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier);
-            int idUsuario = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
-
-            response.Estado = await _cotizacionServices.Eliminar(secuencial, idUsuario);
+            response.Estado = await _cotizacionServices.Eliminar(secuencial);
             return StatusCode(StatusCodes.Status200OK, response);
         }
 

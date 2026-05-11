@@ -10,6 +10,7 @@ public partial class TipoImpuesto
     public bool EsIva { get; set; }
     public bool EsImportacion { get; set; }
     public bool EstaActivo { get; set; }
+    public int Prioridad { get; set; }
     public DateTime FechaCreacion { get; set; }
     public DateTime? FechaModificacion { get; set; }
 }

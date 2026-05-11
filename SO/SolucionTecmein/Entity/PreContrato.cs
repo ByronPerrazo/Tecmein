@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entity
 {
-    public partial class PreContrato
+    public partial class PreContrato : IAuditEntity
     {
         public PreContrato()
         {
@@ -18,14 +18,17 @@ namespace Entity
 
         public int SecCotizacion { get; set; }
         public int SecPlantillaPreContrato { get; set; }
-        public int SecUsuarioCrea { get; set; }
+        public int? SecUsuarioCrea { get; set; }
         // Campos de pago y forma de pago movidos a PlanDePago
 
         public int Version { get; set; }
         [Required]
         public string Estado { get; set; }
         public bool EstaActivo { get; set; }
-        public DateTime FechaRegistro { get; set; } // Renombrado de FechaCreacion
+        public DateTime? FechaRegistro { get; set; } 
+
+        [NotMapped]
+        public int? SecUsuario { get => SecUsuarioCrea; set => SecUsuarioCrea = value; }
 
         // Campos de negocio añadidos
         public int Dias { get; set; }
@@ -40,6 +43,9 @@ namespace Entity
         public string PolizaGarantia { get; set; }
         // ValorAnticipo, FechaAnticipo, NumeroCuotas, FechaPrimeraCuota movidos a PlanDePago
 
+        public DateTime? FechaModificacion { get; set; }
+        public int? SecUsuarioModifica { get; set; }
+
 
         [ForeignKey("SecCotizacion")]
         public virtual Cotizacion SecCotizacionNavigation { get; set; }
@@ -49,6 +55,9 @@ namespace Entity
 
         [ForeignKey("SecUsuarioCrea")]
         public virtual Usuario SecUsuarioCreaNavigation { get; set; }
+
+        [ForeignKey("SecUsuarioModifica")]
+        public virtual Usuario SecUsuarioModificaNavigation { get; set; }
 
         // [ForeignKey("SecFormaPago")]
         // public virtual FormaPago SecFormaPagoNavigation { get; set; } // Añadido // Removed

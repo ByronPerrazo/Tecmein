@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entity;
 
-public partial class Contrato
+public partial class Contrato : IAuditEntity
 {
     [Key]
     public int IdContrato { get; set; }
@@ -23,6 +24,15 @@ public partial class Contrato
 
     public bool? EsActivo { get; set; }
 
+    public DateTime? FechaModificacion { get; set; }
+    public int? SecUsuarioModifica { get; set; }
+
+    // Map para IAuditEntity (utilizando campos existentes)
+    [NotMapped]
+    public int? SecUsuario { get => IdUsuarioCarga; set => IdUsuarioCarga = value ?? 0; }
+    [NotMapped]
+    public DateTime? FechaRegistro { get => FechaCreacion; set => FechaCreacion = value; }
+
     public int SecCliente { get; set; } // Propiedad para la FK a Cliente
 
     public int? SecTipoDocumento { get; set; } // Propiedad para la FK a TipoDocumento
@@ -30,6 +40,8 @@ public partial class Contrato
     public virtual Cotizacion IdCotizacionNavigation { get; set; } = null!;
 
     public virtual Usuario IdUsuarioCargaNavigation { get; set; } = null!;
+
+    public virtual Usuario? SecUsuarioModificaNavigation { get; set; }
 
     public virtual Cliente SecClienteNavigation { get; set; } = null!; // Propiedad de navegación
 

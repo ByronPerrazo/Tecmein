@@ -126,19 +126,8 @@ namespace TecmeinWebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Lista()
         {
-            List<Visita> lista = await _visitaServices.ListaVisitas();
-
+            List<Visita> lista = await _visitaServices.Lista();
             var listaVisitaVM = _mapper.Map<List<VisitaVM>>(lista);
-
-            foreach (var visitaVM in listaVisitaVM)
-            {
-                var visitaOriginal = lista.FirstOrDefault(v => v.Secuencial == visitaVM.Secuencial);
-                if (visitaOriginal != null)
-                {
-                    visitaVM.DescripcionEtapa = visitaOriginal.IdEtapaNavigation?.Descripcion;
-                    visitaVM.NombreEmpresa = visitaOriginal.SecEmpresaNavigation?.Nombre;
-                }
-            }
 
             var jsonResult = JsonConvert.SerializeObject(new { data = listaVisitaVM });
             return Content(jsonResult, "application/json");
@@ -213,17 +202,6 @@ namespace TecmeinWebApp.Controllers
                 }
 
                 _logger.LogInformation("Creando visita: {@Visita}", visitaIngresadaVM);
-
-                ClaimsPrincipal claimsUser = HttpContext.User;
-                string? secUsuario
-                       = claimsUser.Claims
-                                   .Where(x => x.Type == ClaimTypes.NameIdentifier)
-                                   .Select(x => x.Value)
-                                   .SingleOrDefault();
-
-                visitaIngresadaVM.SecUsuario = ObtieneSecuencialUsuario();
-                visitaIngresadaVM.IdEtapa = 1;
-                visitaIngresadaVM.EstaActivo = 1;
 
                 var visitaGenerada
                     = await _visitaServices

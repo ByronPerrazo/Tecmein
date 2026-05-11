@@ -4,6 +4,7 @@ using DAL.Interfaces;
 using Entity;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using FluentValidation;
 
 namespace BLL.Implementacion
 {
@@ -20,6 +21,9 @@ namespace BLL.Implementacion
         private readonly IMapper _mapper;
         private readonly IVisitaServices _visitaServices;
         private readonly IStorageServices _storageService;
+        private readonly IValidator<BLL.DTOs.PreContratoDTO> _validator;
+        private readonly IValidator<BLL.DTOs.PreContratoConPagosDTO> _validatorConPagos;
+        private readonly IUserSession _userSession;
         private readonly IUnitOfWork _unitOfWork;
 
         public PreContratoServices(
@@ -34,6 +38,9 @@ namespace BLL.Implementacion
             IUsuarioServices usuarioServices,
             IMapper mapper,
             IStorageServices storageService,
+            IValidator<BLL.DTOs.PreContratoDTO> validator,
+            IValidator<BLL.DTOs.PreContratoConPagosDTO> validatorConPagos,
+            IUserSession userSession,
             IUnitOfWork unitOfWork)
         {
             _repositorio = repositorio;
@@ -47,35 +54,50 @@ namespace BLL.Implementacion
             _usuarioServices = usuarioServices;
             _mapper = mapper;
             _storageService = storageService;
+            _validator = validator;
+            _validatorConPagos = validatorConPagos;
+            _userSession = userSession;
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<List<PreContratoDTO>> Lista(int secUsuario)
-        {
-            IQueryable<PreContrato> query = await _repositorio.Consultar(p => p.EstaActivo == true);
 
-            var lista = await query.Include(p => p.SecCotizacionNavigation)
-                                    .ThenInclude(c => c.SecVisitaNavigation)
-                                        .ThenInclude(v => v.SecEmpresaNavigation) // Incluir Empresa
-                                 .Include(p => p.SecCotizacionNavigation)
-                                    .ThenInclude(c => c.SecVisitaNavigation)
-                                        .ThenInclude(v => v.Contactovisita)
-                                            .ThenInclude(cv => cv.SecContactoNavigation)
-                               .Include(p => p.SecUsuarioCreaNavigation)
-                               .ToListAsync();
+        public async Task<List<PreContratoDTO>> Lista()
+        {
+            int secUsuario = _userSession.SecUsuario ?? 0;
+            bool esAdmin = _userSession.SecRol == 1;
+
+            var preContratos = await _repositorio.Consultar(p => p.EstaActivo == true);
+            
+            if (!esAdmin)
+            {
+                preContratos = preContratos.Where(p => p.SecUsuarioCrea == secUsuario);
+            }
+
+            var lista = await preContratos
+                .Include(p => p.SecUsuarioCreaNavigation)
+                .Include(p => p.SecCotizacionNavigation)
+                .Include(p => p.SecPlantillaPreContratoNavigation)
+                .ToListAsync();
 
             return _mapper.Map<List<PreContratoDTO>>(lista);
         }
 
-        public async Task<PreContratoDTO> Obtener(int secPreContrato, int secUsuario)
+        public async Task<PreContratoDTO> Obtener(int secPreContrato)
         {
+            int secUsuario = _userSession.SecUsuario ?? 0;
+            bool esAdmin = _userSession.SecRol == 1;
+
             var preContrato = await _repositorio.Obtener(p => p.SecPreContrato == secPreContrato);
+
             if (preContrato == null) return null;
+
+            if (!esAdmin && preContrato.SecUsuarioCrea != secUsuario)
+            {
+                throw new UnauthorizedAccessException("No tiene permisos para ver este pre-contrato.");
+            }
 
             return _mapper.Map<PreContratoDTO>(preContrato);
         }
-
-
 
         public async Task<PreContratoDTO> Crear(PreContratoDTO entidadDTO)
         {
@@ -85,10 +107,11 @@ namespace BLL.Implementacion
                 var entidad = _mapper.Map<PreContrato>(entidadDTO);
                 if (entidad == null) throw new ArgumentNullException(nameof(entidad));
 
+                entidad.SecUsuarioCrea = _userSession.SecUsuario ?? 0;
                 ValidatePreContratoFields(entidad);
 
-                // Note: ICotizacionServices.Detalle now requires secUsuario.
-                var cotizacion = await _cotizacionServices.Detalle(entidad.SecCotizacion, entidad.SecUsuarioCrea);
+                // Note: ICotizacionServices.Detalle now gets user from session internally.
+                var cotizacion = await _cotizacionServices.Detalle(entidad.SecCotizacion);
                 if (cotizacion == null)
                 {
                     throw new Exception("La cotización especificada no existe.");
@@ -120,6 +143,9 @@ namespace BLL.Implementacion
 
         public async Task<PreContratoDTO> Editar(PreContratoDTO entidadDTO)
         {
+            int secUsuario = _userSession.SecUsuario ?? 0;
+            bool esAdmin = _userSession.SecRol == 1;
+
             var entidad = _mapper.Map<PreContrato>(entidadDTO);
             if (entidad == null) throw new ArgumentNullException(nameof(entidad));
 
@@ -129,6 +155,11 @@ namespace BLL.Implementacion
             if (preContratoExistente == null)
             {
                 throw new Exception("El pre-contrato no existe.");
+            }
+
+            if (!esAdmin && preContratoExistente.SecUsuarioCrea != secUsuario)
+            {
+                throw new UnauthorizedAccessException("No tiene permisos para editar este pre-contrato.");
             }
 
             preContratoExistente.Dias = entidad.Dias;
@@ -163,19 +194,21 @@ namespace BLL.Implementacion
             }
         }
 
-        public async Task<bool> Eliminar(int secPreContrato, int secUsuario)
+        public async Task<bool> Eliminar(int secPreContrato)
         {
             await _unitOfWork.BeginTransactionAsync();
             try
             {
+                int secUsuario = _userSession.SecUsuario ?? 0;
+                bool esAdmin = _userSession.SecRol == 1;
+
                 var preContrato = await _repositorio.Obtener(p => p.SecPreContrato == secPreContrato, "SecCotizacionNavigation");
                 if (preContrato == null)
                 {
                     throw new Exception("El pre-contrato no existe.");
                 }
 
-                var usuario = await _usuarioServices.ObtenerPorId(secUsuario);
-                if (usuario?.SecRol != 1 && preContrato.SecUsuarioCrea != secUsuario)
+                if (!esAdmin && preContrato.SecUsuarioCrea != secUsuario)
                 {
                     throw new UnauthorizedAccessException("No tiene permisos para eliminar este pre-contrato.");
                 }
@@ -213,15 +246,16 @@ namespace BLL.Implementacion
             return _mapper.Map<PreContratoDTO>(preContrato);
         }
 
-        public async Task<PreContratoDTO> CrearDesdeCotizacion(int cotizacionId, int secUsuario)
+        public async Task<PreContratoDTO> CrearDesdeCotizacion(int cotizacionId)
         {
+            int secUsuario = _userSession.SecUsuario ?? 0;
             var preContratoExistente = await _repositorio.Obtener(p => p.SecCotizacion == cotizacionId && p.EstaActivo == true);
             if (preContratoExistente != null)
             {
                 return _mapper.Map<PreContratoDTO>(preContratoExistente);
             }
 
-            var cotizacion = await _cotizacionServices.Detalle(cotizacionId, secUsuario);
+            var cotizacion = await _cotizacionServices.Detalle(cotizacionId);
             if (cotizacion == null)
             {
                 throw new Exception("La cotización especificada no existe.");
@@ -268,7 +302,7 @@ namespace BLL.Implementacion
 
         // Método ObtenerPrimerParrafo eliminado
 
-        public async Task<PreContratoDTO> CrearDesdeModal(PreContrato entidad, int usuarioId)
+        public async Task<PreContratoDTO> CrearDesdeModal(PreContrato entidad)
         {
             await _unitOfWork.BeginTransactionAsync();
             try
@@ -299,7 +333,7 @@ namespace BLL.Implementacion
                 }
 
                 entidad.SecPlantillaPreContrato = plantillaPorDefecto.SecPlantillaPreContrato; // Asignar la plantilla encontrada
-                entidad.SecUsuarioCrea = usuarioId;
+                entidad.SecUsuarioCrea = _userSession.SecUsuario ?? 0;
                 entidad.Version = 1; // Siempre 1 para la creación inicial
                 entidad.Estado = "Borrador"; // O el estado inicial que corresponda
                 entidad.EstaActivo = true;
@@ -340,7 +374,7 @@ namespace BLL.Implementacion
 
         // Métodos de manejo de contenido HTML eliminados (ObtenerContenidoHtml, ActualizarContenidoPreContrato, CrearDesdeModalConPagos)
 
-        public async Task<PreContratoDTO> GuardarBorrador(PreContratoConPagosDTO dto, int usuarioId)
+        public async Task<PreContratoDTO> GuardarBorrador(PreContratoConPagosDTO dto)
         {
             if (dto == null) throw new ArgumentNullException(nameof(dto), "Los datos del pre-contrato son nulos o inválidos.");
 
@@ -378,7 +412,7 @@ namespace BLL.Implementacion
                 {
                     SecCotizacion = oldPreContrato.SecCotizacion,
                     SecPlantillaPreContrato = oldPreContrato.SecPlantillaPreContrato,
-                    SecUsuarioCrea = usuarioId, // El usuario que guarda la nueva versión
+                    SecUsuarioCrea = _userSession.SecUsuario ?? 0, // El usuario que guarda la nueva versión
                     Version = maxVersion + 1,
                     Estado = "Borrador", // Sigue siendo borrador
                     EstaActivo = true,
@@ -447,7 +481,7 @@ namespace BLL.Implementacion
                     MesesGarantia = dto.MesesGarantia ?? 0,
                     PolizaGarantia = dto.PolizaGarantia,
                     SecPlantillaPreContrato = plantillaPorDefecto.SecPlantillaPreContrato,
-                    SecUsuarioCrea = usuarioId,
+                    SecUsuarioCrea = _userSession.SecUsuario ?? 0,
                     Version = 1,
                     Estado = "Borrador",
                     EstaActivo = true,
@@ -490,8 +524,11 @@ namespace BLL.Implementacion
         }
     }
 
-        public async Task<PreContratoParaEdicionDTO> ObtenerParaEdicion(int secPreContrato, int secUsuario)
+        public async Task<PreContratoParaEdicionDTO> ObtenerParaEdicion(int secPreContrato)
         {
+            int secUsuario = _userSession.SecUsuario ?? 0;
+            bool esAdmin = _userSession.SecRol == 1;
+
             var query = await _repositorio.Consultar(p => p.SecPreContrato == secPreContrato);
             var preContrato = await query.Include(p => p.PreContratoCompromisoPagos).FirstOrDefaultAsync();
 
@@ -500,8 +537,7 @@ namespace BLL.Implementacion
                 throw new Exception("No se encontró el pre-contrato solicitado para edición.");
             }
 
-            var usuario = await _usuarioServices.ObtenerPorId(secUsuario);
-            if (usuario?.SecRol != 1 && preContrato.SecUsuarioCrea != secUsuario)
+            if (!esAdmin && preContrato.SecUsuarioCrea != secUsuario)
             {
                 throw new UnauthorizedAccessException("No tiene permisos para editar este pre-contrato.");
             }
@@ -538,15 +574,17 @@ namespace BLL.Implementacion
 
             return dto;
         }
-        public async Task<bool> SubirContratoFinal(int secPreContrato, Stream archivoStream, int secUsuario)
+        public async Task<bool> SubirContratoFinal(int secPreContrato, Stream archivoStream)
         {
+            int secUsuario = _userSession.SecUsuario ?? 0;
+            bool esAdmin = _userSession.SecRol == 1;
+
             var preContratoQuery = await _repositorio.Consultar(p => p.SecPreContrato == secPreContrato);
             var entidad = await preContratoQuery.Include(p => p.PreContratoParrafos).FirstOrDefaultAsync();
 
             if (entidad == null) throw new Exception("Pre-contrato no encontrado.");
 
-            var usuario = await _usuarioServices.ObtenerPorId(secUsuario);
-            if (usuario?.SecRol != 1 && entidad.SecUsuarioCrea != secUsuario)
+            if (!esAdmin && entidad.SecUsuarioCrea != secUsuario)
             {
                 throw new UnauthorizedAccessException("No tiene permisos para subir archivos a este pre-contrato.");
             }
@@ -575,13 +613,15 @@ namespace BLL.Implementacion
             return true;
         }
 
-        public async Task<byte[]> ObtenerContenidoDocumento(int secPreContrato, int secUsuario)
+        public async Task<byte[]> ObtenerContenidoDocumento(int secPreContrato)
         {
+            int secUsuario = _userSession.SecUsuario ?? 0;
+            bool esAdmin = _userSession.SecRol == 1;
+
             var preContrato = await _repositorio.Obtener(p => p.SecPreContrato == secPreContrato);
             if (preContrato == null) return null;
 
-            var usuario = await _usuarioServices.ObtenerPorId(secUsuario);
-            if (usuario?.SecRol != 1 && preContrato.SecUsuarioCrea != secUsuario)
+            if (!esAdmin && preContrato.SecUsuarioCrea != secUsuario)
             {
                 throw new UnauthorizedAccessException("No tiene permisos para descargar este documento.");
             }

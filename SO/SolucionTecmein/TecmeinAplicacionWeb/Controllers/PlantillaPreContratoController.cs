@@ -142,7 +142,7 @@ namespace TecmeinAplicacionWeb.Controllers
                 var gCurrentUser = HttpContext.User;
                 int usuarioId = int.Parse(gCurrentUser.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
 
-                PreContratoDTO preContrato = await _preContratoServices.Obtener(secPreContrato, usuarioId);
+                PreContratoDTO preContrato = await _preContratoServices.Obtener(secPreContrato);
                 if (preContrato == null)
                 {
                     return NotFound($"PreContrato con ID {secPreContrato} no encontrado.");

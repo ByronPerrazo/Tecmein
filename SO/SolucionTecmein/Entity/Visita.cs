@@ -1,14 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entity;
 
-public partial class Visita
+public partial class Visita : IAuditEntity
 {
     [Key]
     public int Secuencial { get; set; }
 
-    public int SecUsuario { get; set; }
+    public int? SecUsuario { get; set; }
 
     public int? SecProvincia { get; set; }
 
@@ -35,6 +35,10 @@ public partial class Visita
     public short? EstaActivo { get; set; }
 
     public int? SecConstructora { get; set; } // Nuevo campo
+
+    // Implementación IAuditEntity
+    public int? SecUsuarioModifica { get; set; }
+    public DateTime? FechaModificacion { get; set; }
 
     public virtual Canton? SecCantonNavigation { get; set; }
 

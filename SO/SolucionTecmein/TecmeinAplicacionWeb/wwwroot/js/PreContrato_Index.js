@@ -186,7 +186,7 @@ $(document).ready(function () {
     }
 
     $("#btnNuevo").click(function () {
-        $("#cboCotizacionesAceptadas").val("");
+        $("#cboCotizacionesAceptadas").val("").prop('disabled', false);
         $("#totalCotizacionDisplay").text("0.00");
         totalCotizacion = 0;
         $("#Dias, #AniosGarantia, #MesesGarantia").val("");
@@ -507,23 +507,26 @@ $(document).ready(function () {
         $("#cboTipoDocumento").val(""); // Limpiar la selección de tipo de documento
         validarSumaCompromisos();
 
-        $.when(
-            cargarDropdown("/PreContrato/ListaCotizacionesAprobadas", "#cboCotizacionesAceptadas"),
-            cargarDropdown("/PolizaGarantia/ListaParaDropdown", "#PolizaGarantia"),
-            cargarDropdown("/PreContrato/ListaTipoDocumentos", "#cboTipoDocumento") // <-- Añadido
-        ).done(function () {
-            $.ajax({
-                url: `/PreContrato/DetallesParaEdicion/${id}`,
-                type: "GET",
-                beforeSend: () => Swal.fire({ title: 'Cargando Datos...', allowOutsideClick: false, didOpen: () => Swal.showLoading() }),
-                success: function (response) {
-                    Swal.close();
-                    if (response.estado) {
-                        const data = response.objeto;
+        // Fetch details first
+        $.ajax({
+            url: `/PreContrato/DetallesParaEdicion/${id}`,
+            type: "GET",
+            beforeSend: () => Swal.fire({ title: 'Cargando Datos...', allowOutsideClick: false, didOpen: () => Swal.showLoading() }),
+            success: function (response) {
+                if (response.estado) {
+                    const data = response.objeto;
 
+                    // Now load dropdowns with specific inclusion
+                    $.when(
+                        cargarDropdown(`/PreContrato/ListaCotizacionesAprobadas?incluirId=${data.secCotizacion}`, "#cboCotizacionesAceptadas"),
+                        cargarDropdown("/PolizaGarantia/ListaParaDropdown", "#PolizaGarantia"),
+                        cargarDropdown("/PreContrato/ListaTipoDocumentos", "#cboTipoDocumento")
+                    ).done(function () {
+                        Swal.close();
+                        
                         // Poblar campos principales
-                        $("#SecPreContrato").val(data.secPreContrato); // Establecer el ID del pre-contrato
-                        $("#cboCotizacionesAceptadas").val(data.secCotizacion).trigger('change');
+                        $("#SecPreContrato").val(data.secPreContrato);
+                        $("#cboCotizacionesAceptadas").val(data.secCotizacion).trigger('change').prop('disabled', true);
                         $("#Dias").val(data.dias);
                         // Corrección temporal para el desajuste 'Hábil' vs 'Hábiles'
                         $("#TipoDias").val(data.tipoDias === "Hábil" ? "Hábiles" : data.tipoDias);
@@ -531,7 +534,7 @@ $(document).ready(function () {
                         $("#AniosGarantia").val(data.aniosGarantia);
                         $("#MesesGarantia").val(data.mesesGarantia);
                         $("#PolizaGarantia").val(data.polizaGarantia);
-                        $("#cboTipoDocumento").val(data.secTipoDocumento).prop('disabled', true); // <-- Añadido para edición (Bloqueado)
+                        $("#cboTipoDocumento").val(data.secTipoDocumento).prop('disabled', true); // <-- Bloqueado para edición
 
                         // Poblar tabla de compromisos
                         if (data.compromisosDePago && data.compromisosDePago.$values && data.compromisosDePago.$values.length > 0) {
@@ -551,14 +554,18 @@ $(document).ready(function () {
 
                         $("#btnGenerarPreContrato").prop("disabled", false); // Habilitar botón para registros existentes
                         $('#modalPreContrato').modal('show');
-                    } else {
-                        Swal.fire("Error", response.mensajes, "error");
-                    }
-                },
-                error: () => Swal.fire("Error", "No se pudieron cargar los datos para edición.", "error")
-            });
-        }).fail(() => {
-            Swal.fire("Error", "Ocurrió un error al preparar el formulario.", "error");
+                    }).fail(() => {
+                        Swal.fire("Error", "Ocurrió un error al preparar el formulario.", "error");
+                    });
+                } else {
+                    Swal.close();
+                    Swal.fire("Error", response.mensajes, "error");
+                }
+            },
+            error: () => {
+                Swal.close();
+                Swal.fire("Error", "No se pudieron cargar los datos para edición.", "error");
+            }
         });
     });
 

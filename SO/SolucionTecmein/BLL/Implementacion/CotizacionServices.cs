@@ -8,6 +8,7 @@ using System.Text;
 using BLL.Utilidades.PDF;
 using AutoMapper;
 using BLL.DTOs;
+using FluentValidation;
 
 
 namespace BLL.Implementacion
@@ -18,10 +19,13 @@ namespace BLL.Implementacion
         private readonly IGenericRepository<Cotizaciondetalle> _repositorioDetalle;
         private readonly IGenericRepository<ImpuestoCotizacion> _repositorioImpuestoCotizacion;
         private readonly IImpuestoServices _impuestoServices;
-        private readonly ITipoImpuestoServices _tipoImpuestoServices;
         private readonly IAuditService _auditService;
         private readonly IUsuarioServices _usuarioServices;
+        private readonly IValidator<CotizacionDTO> _validator;
         private readonly IMapper _mapper;
+        private readonly IUserSession _userSession;
+        private readonly IVisitaServices _visitaServices;
+        private readonly IEquiposVisitaServices _equiposVisitaServices;
         private readonly IUnitOfWork _unitOfWork;
 
         public CotizacionServices(
@@ -30,11 +34,12 @@ namespace BLL.Implementacion
             IGenericRepository<ImpuestoCotizacion> repositorioImpuestoCotizacion,
             IImpuestoServices impuestoServices,
             IVisitaServices visitaServices,
-            ITipoImpuestoServices tipoImpuestoServices,
             IEquiposVisitaServices equiposVisitaServices,
             IAuditService auditService, 
             IUsuarioServices usuarioServices,
+            IValidator<CotizacionDTO> validator,
             IMapper mapper,
+            IUserSession userSession,
             IUnitOfWork unitOfWork
             )
         {
@@ -46,15 +51,15 @@ namespace BLL.Implementacion
             _equiposVisitaServices = equiposVisitaServices;
             _auditService = auditService;
             _usuarioServices = usuarioServices;
+            _validator = validator;
             _mapper = mapper;
+            _userSession = userSession;
             _unitOfWork = unitOfWork;
         }
 
-        private readonly IVisitaServices _visitaServices;
-        private readonly IEquiposVisitaServices _equiposVisitaServices;
-
-        public async Task<List<CotizacionDTO>> Lista(int secUsuario)
+        public async Task<List<CotizacionDTO>> Lista()
         {
+            int secUsuario = _userSession.SecUsuario ?? 0;
             var usuario = await _usuarioServices.ObtenerPorId(secUsuario);
             bool esAdmin = usuario?.SecRol == 1;
 
@@ -81,10 +86,11 @@ namespace BLL.Implementacion
 
 
 
-        public async Task<CotizacionDTO> Detalle(int secuencial, int secUsuario)
+        public async Task<CotizacionDTO> Detalle(int secuencial)
         {
+            int secUsuario = _userSession.SecUsuario ?? 0;
             var usuario = await _usuarioServices.ObtenerPorId(secUsuario);
-            bool esAdmin = usuario?.SecRol == 1; // Suponiendo 1 = Admin
+            bool esAdmin = _userSession.SecRol == 1 || usuario?.SecRol == 1; // Suponiendo 1 = Admin
 
             IQueryable<Cotizacion> query = await _repositorio.Consultar(c => c.Secuencial == secuencial);
             var cotizacion = await query
@@ -110,8 +116,8 @@ namespace BLL.Implementacion
 
             if (cotizacion == null) return null;
 
-            // Validación IDOR: El usuario debe ser el creador o un Admin
-            if (!esAdmin && cotizacion.SecUsuario != secUsuario)
+            // Validación IDOR: El usuario debe ser el creador o un Admin. Se ignora si el creador es 0 (registro heredado)
+            if (!esAdmin && cotizacion.SecUsuario != secUsuario && cotizacion.SecUsuario > 0)
             {
                 throw new UnauthorizedAccessException("No tiene permisos para ver esta cotización.");
             }
@@ -119,8 +125,15 @@ namespace BLL.Implementacion
             return _mapper.Map<CotizacionDTO>(cotizacion);
         }
 
-        public async Task<CotizacionDTO> Crear(CotizacionDTO entidadDTO, int secUsuario)
+        public async Task<CotizacionDTO> Crear(CotizacionDTO entidadDTO)
         {
+            int secUsuario = _userSession.SecUsuario ?? 0;
+            var validationResult = await _validator.ValidateAsync(entidadDTO);
+            if (!validationResult.IsValid)
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
+
             var entidad = _mapper.Map<Cotizacion>(entidadDTO);
             await _unitOfWork.BeginTransactionAsync();
             try
@@ -134,66 +147,84 @@ namespace BLL.Implementacion
 
                 entidad.SecUsuario = secUsuario;
                 entidad.FechaRegistro = DateTime.Now;
-                decimal subtotalCalculado = 0;
-                foreach (var detalle in entidad.Cotizaciondetalles)
-                {
-                    detalle.Total = detalle.ValorCompra * detalle.Cantidad * (1 + detalle.MargenGanancia / 100);
-                    detalle.FechaRegistro = DateTime.Now;
-                    subtotalCalculado += detalle.Total;
-                }
-                entidad.Subtotal = subtotalCalculado;
 
-                // Cálculos de Impuestos
-                decimal valorIVACalculado = 0;
-                decimal valorImportacionCalculado = 0;
+                // 1. Obtener todos los impuestos vigentes ordenados por prioridad
+                var impuestosActivos = (await _impuestoServices.Lista())
+                                        .Where(i => i.Vigente)
+                                        .OrderBy(i => i.SecTipoImpuestoNavigation.Prioridad)
+                                        .ToList();
+
+                decimal subtotalGlobal = 0;
+                decimal totalImpuestosGlobal = 0;
+                decimal totalIvaGlobal = 0;
+                decimal totalImportacionGlobal = 0;
 
                 entidad.ImpuestoCotizaciones.Clear();
 
-                var impuestosActivos = await _impuestoServices.Lista();
-
-                var ivaImpuesto = impuestosActivos.FirstOrDefault(i => i.Vigente && i.SecTipoImpuestoNavigation.EsIva);
-                if (ivaImpuesto != null && ivaImpuesto.Porcentaje.HasValue)
+                // 2. Calcular ítem por ítem
+                foreach (var detalle in entidad.Cotizaciondetalles)
                 {
-                    valorIVACalculado = entidad.Subtotal * (ivaImpuesto.Porcentaje.Value / 100m);
-                    entidad.ImpuestoCotizaciones.Add(new ImpuestoCotizacion
-                    {
-                        ImpuestoId = ivaImpuesto.Id,
-                        BaseImponible = entidad.Subtotal,
-                        ValorImpuesto = valorIVACalculado,
-                        Exento = false,
-                        FechaRegistro = DateTime.Now
-                    });
-                }
+                    decimal subtotalItem = detalle.ValorCompra * detalle.Cantidad * (1 + detalle.MargenGanancia / 100);
+                    decimal impuestosItem = 0;
 
-                var importacionImpuesto = impuestosActivos.FirstOrDefault(i => i.Vigente && i.SecTipoImpuestoNavigation.EsImportacion);
-                if (importacionImpuesto != null)
-                {
-                    if (importacionImpuesto.Porcentaje.HasValue)
+                    // Aplicar cada impuesto al ítem
+                    foreach (var impuesto in impuestosActivos)
                     {
-                        valorImportacionCalculado = entidad.Subtotal * (importacionImpuesto.Porcentaje.Value / 100m);
-                    }
-                    else if (importacionImpuesto.ValorFijo.HasValue)
-                    {
-                        valorImportacionCalculado = importacionImpuesto.ValorFijo.Value;
-                    }
-
-                    if (valorImportacionCalculado > 0)
-                    {
-                        entidad.ImpuestoCotizaciones.Add(new ImpuestoCotizacion
+                        decimal valorCalculado = 0;
+                        if (impuesto.Porcentaje.HasValue)
                         {
-                            ImpuestoId = importacionImpuesto.Id,
-                            BaseImponible = entidad.Subtotal,
-                            ValorImpuesto = valorImportacionCalculado,
-                            Exento = false,
-                            FechaRegistro = DateTime.Now
-                        });
+                            // El impuesto se puede calcular sobre el subtotal acumulado (cascada) 
+                            // o sobre el subtotal base. Por ahora, base estándar.
+                            valorCalculado = subtotalItem * (impuesto.Porcentaje.Value / 100m);
+                        }
+                        else if (impuesto.ValorFijo.HasValue)
+                        {
+                            valorCalculado = impuesto.ValorFijo.Value * detalle.Cantidad;
+                        }
+
+                        if (valorCalculado > 0)
+                        {
+                            impuestosItem += valorCalculado;
+
+                            // Acumuladores globales por tipo para campos históricos
+                            if (impuesto.SecTipoImpuestoNavigation.EsIva) totalIvaGlobal += valorCalculado;
+                            if (impuesto.SecTipoImpuestoNavigation.EsImportacion) totalImportacionGlobal += valorCalculado;
+
+                            // Registrar el desglose (se agrupará al final para la tabla resumen de la cotización)
+                            var resumenExistente = entidad.ImpuestoCotizaciones.FirstOrDefault(ic => ic.ImpuestoId == impuesto.Id);
+                            if (resumenExistente == null)
+                            {
+                                entidad.ImpuestoCotizaciones.Add(new ImpuestoCotizacion
+                                {
+                                    ImpuestoId = impuesto.Id,
+                                    BaseImponible = subtotalItem,
+                                    ValorImpuesto = valorCalculado,
+                                    Exento = false,
+                                    FechaRegistro = DateTime.Now
+                                });
+                            }
+                            else
+                            {
+                                resumenExistente.BaseImponible += subtotalItem;
+                                resumenExistente.ValorImpuesto += valorCalculado;
+                            }
+                        }
                     }
+
+                    detalle.Subtotal = subtotalItem;
+                    detalle.Impuestos = impuestosItem;
+                    detalle.Total = subtotalItem + impuestosItem;
+                    detalle.FechaRegistro = DateTime.Now;
+
+                    subtotalGlobal += subtotalItem;
+                    totalImpuestosGlobal += impuestosItem;
                 }
 
-                entidad.ValorIVA = valorIVACalculado;
-                entidad.ValorImportacion = valorImportacionCalculado;
-                entidad.ValorImpuestos = valorIVACalculado + valorImportacionCalculado;
-                entidad.TotalConImpuestos = entidad.Subtotal + entidad.ValorImpuestos;
+                entidad.Subtotal = subtotalGlobal;
+                entidad.ValorIVA = totalIvaGlobal;
+                entidad.ValorImportacion = totalImportacionGlobal;
+                entidad.ValorImpuestos = totalImpuestosGlobal;
+                entidad.TotalConImpuestos = subtotalGlobal + totalImpuestosGlobal;
 
                 Cotizacion cotizacionCreada = await _repositorio.Crear(entidad);
                 if (cotizacionCreada.Secuencial == 0)
@@ -215,8 +246,15 @@ namespace BLL.Implementacion
             }
         }
 
-        public async Task<CotizacionDTO> Editar(CotizacionDTO entidadDTO, int secUsuarioActual)
+        public async Task<CotizacionDTO> Editar(CotizacionDTO entidadDTO)
         {
+            int secUsuarioActual = _userSession.SecUsuario ?? 0;
+            var validationResult = await _validator.ValidateAsync(entidadDTO);
+            if (!validationResult.IsValid)
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
+
             var entidad = _mapper.Map<Cotizacion>(entidadDTO);
             await _unitOfWork.BeginTransactionAsync();
             try
@@ -432,8 +470,9 @@ namespace BLL.Implementacion
             }
         }
 
-        public async Task<bool> Eliminar(int secuencial, int secUsuario)
+        public async Task<bool> Eliminar(int secuencial)
         {
+            int secUsuario = _userSession.SecUsuario ?? 0;
             await _unitOfWork.BeginTransactionAsync();
             try
             {
@@ -498,8 +537,9 @@ namespace BLL.Implementacion
             return cotizacionExistente != null;
         }
 
-        public async Task<byte[]> GenerarPdfCotizacion(int idCotizacion, int secUsuario)
+        public async Task<byte[]> GenerarPdfCotizacion(int idCotizacion)
         {
+            int secUsuario = _userSession.SecUsuario ?? 0;
             try
             {
                 var query = await _repositorio.Consultar(c => c.Secuencial == idCotizacion);
@@ -549,8 +589,9 @@ namespace BLL.Implementacion
             }
         }
 
-        public async Task<byte[]> GenerarPdfSolicitudEquipos(int idCotizacion, int secUsuario)
+        public async Task<byte[]> GenerarPdfSolicitudEquipos(int idCotizacion)
         {
+            int secUsuario = _userSession.SecUsuario ?? 0;
             try
             {
                 var query = await _repositorio.Consultar(c => c.Secuencial == idCotizacion);

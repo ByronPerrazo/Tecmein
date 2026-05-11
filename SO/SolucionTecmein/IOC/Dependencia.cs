@@ -2,10 +2,12 @@ using AutoMapper;
 using BLL.Implementacion;
 using BLL.Implementacion.ContractEngine;
 using BLL.Interfaces;
+using BLL.DTOs;
 using DAL.DBContext;
 using DAL.Implementacion;
 using DAL.Interfaces;
 using Entity; // Added this line
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,12 +19,17 @@ namespace IOC
         public static void InyectarDependencia(this IServiceCollection services, IConfiguration configuration)
         {
             services
-                .AddDbContext<TecmeindbContext>(options =>
+                .AddScoped<AuditSaveChangesInterceptor>();
+
+            services
+                .AddDbContext<TecmeindbContext>((sp, options) =>
                 {
+                    var interceptor = sp.GetRequiredService<AuditSaveChangesInterceptor>();
                     options
                     .UseMySql(configuration.GetConnectionString("ConexionDB"),
                               Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.37-mysql"),
                               o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+                    .AddInterceptors(interceptor)
                     .EnableSensitiveDataLogging();
                 });
 
@@ -73,15 +80,22 @@ namespace IOC
                     provider.GetRequiredService<IGenericRepository<ImpuestoCotizacion>>(),
                     provider.GetRequiredService<IImpuestoServices>(),
                     provider.GetRequiredService<IVisitaServices>(),
-                    provider.GetRequiredService<ITipoImpuestoServices>(),
                     provider.GetRequiredService<IEquiposVisitaServices>(),
                     provider.GetRequiredService<IAuditService>(),
                     provider.GetRequiredService<IUsuarioServices>(),
+                    provider.GetRequiredService<IValidator<BLL.DTOs.CotizacionDTO>>(),
                     provider.GetRequiredService<IMapper>(),
+                    provider.GetRequiredService<IUserSession>(),
                     provider.GetRequiredService<IUnitOfWork>()
                 ));
             services.AddScoped<IEtapaServices, EtapaServices>();
-            services.AddScoped<IVisitaServices, VisitaServices>();
+            services.AddScoped<IVisitaServices, VisitaServices>(provider =>
+                new VisitaServices(
+                    provider.GetRequiredService<IGenericRepository<Visita>>(),
+                    provider.GetRequiredService<IGenericRepository<Equiposvisita>>(),
+                    provider.GetRequiredService<IEtapaServices>(),
+                    provider.GetRequiredService<IUserSession>()
+                ));
             services.AddScoped<IClienteServices, ClienteServices>(provider =>
                 new ClienteServices(
                     provider.GetRequiredService<IGenericRepository<Cliente>>(),
@@ -124,6 +138,9 @@ namespace IOC
                     provider.GetRequiredService<IUsuarioServices>(),
                     provider.GetRequiredService<IMapper>(),
                     provider.GetRequiredService<IStorageServices>(),
+                    provider.GetRequiredService<IValidator<PreContratoDTO>>(),
+                    provider.GetRequiredService<IValidator<PreContratoConPagosDTO>>(),
+                    provider.GetRequiredService<IUserSession>(),
                     provider.GetRequiredService<IUnitOfWork>()
                 ));
             services.AddScoped<IFormaPagoServices, FormaPagoServices>();
@@ -192,6 +209,9 @@ namespace IOC
             services.AddScoped<BLL.Mcp.IMcpService, BLL.Mcp.McpService>();
 
             // --- FIN MCP ---
+            
+            // Validadores de FluentValidation
+            services.AddValidatorsFromAssemblyContaining<BLL.Utilidades.Validadores.CotizacionValidator>();
 
 
 

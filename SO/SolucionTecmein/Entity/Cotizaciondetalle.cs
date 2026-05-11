@@ -13,6 +13,8 @@ public partial class Cotizaciondetalle
     public decimal ValorCompra { get; set; }
     public decimal MargenGanancia { get; set; }
     public decimal Total { get; set; }
+    public decimal? Subtotal { get; set; }
+    public decimal? Impuestos { get; set; }
     public int Cantidad { get; set; }
     public short? EstaActivo { get; set; }
     public DateTime? FechaRegistro { get; set; }
