@@ -1,0 +1,286 @@
+/* 
+    NexAsis Premium Design System 
+    Unified UI/UX for all modules
+*/
+
+:root {
+    --primary-gradient: linear-gradient(135deg, var(--app-primary) 0%, rgba(0,0,0,0.1) 100%);
+    --secondary-gradient: linear-gradient(135deg, var(--app-secondary) 0%, rgba(0,0,0,0.1) 100%);
+    --info-gradient: linear-gradient(135deg, #36b9cc 0%, #258391 100%);
+    --success-gradient: linear-gradient(135deg, #1cc88a 0%, #13855c 100%);
+    --warning-gradient: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%);
+    --danger-gradient: linear-gradient(135deg, #e74a3b 0%, #be2617 100%);
+    --premium-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    --app-bg: #f8f9fc;
+    
+    /* Colores Estandarizados para Botones de Exportación */
+    --export-excel-color: #198754;
+    --export-pdf-color: #dc3545;
+    --export-print-color: #0d6efd;
+}
+
+/* Modal Premium Global */
+.modal-content-premium {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--premium-shadow);
+}
+
+.modal-header-premium {
+    background: var(--primary-gradient);
+    color: white !important;
+    border: none;
+    padding: 0.8rem 1.2rem;
+}
+
+.modal-header-premium .modal-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.modal-header-premium .modal-title i {
+    font-size: 1.1rem;
+    background: rgba(255,255,255,0.2);
+    padding: 6px;
+    border-radius: 8px;
+}
+
+/* Variaciones de Color para Cabeceras */
+.header-primary { background: var(--primary-gradient) !important; }
+.header-info { background: var(--info-gradient) !important; }
+.header-success { background: var(--success-gradient) !important; }
+.header-warning { background: var(--warning-gradient) !important; }
+.header-danger { background: var(--danger-gradient) !important; }
+
+/* Secciones y Controles */
+.form-section-premium {
+    background: #fdfdfd;
+    border: 1px solid #edf2f9;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+}
+
+.form-control-premium {
+    border-radius: 8px;
+    border: 1.5px solid #d1d9e6;
+    padding: 6px 10px;
+    height: 32px;
+    font-size: 0.78rem;
+    transition: all 0.2s;
+}
+
+.form-control-premium:focus {
+    border-color: var(--app-primary);
+    box-shadow: 0 0 0 0.2rem rgba(var(--app-primary-rgb), 0.15);
+}
+
+/* Tablas Modernas Unificadas */
+.table-premium {
+    border-collapse: separate;
+    border-spacing: 0 4px;
+}
+
+.table-premium thead th {
+    padding: 8px 12px;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    color: var(--app-primary);
+    font-weight: 800;
+    border: none;
+    background: #f8f9fc;
+    border-bottom: 2px solid var(--app-primary);
+}
+
+.table-premium td {
+    padding: 6px 12px;
+    font-size: 0.72rem;
+    line-height: 1.1;
+    border-top: 1px solid #f1f4f8 !important;
+    border-bottom: 1px solid #f1f4f8 !important;
+}
+
+/* Botones de Acción Estilo Moderno */
+.btn-action-modern {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    background: #f8f9fc;
+    color: #5a5c69;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin: 0 2px;
+}
+
+.btn-action-modern i { font-size: 0.85rem; }
+.btn-action-modern:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+
+.btn-action-primary { color: var(--app-primary); background: #eaecf4; border: 1px solid rgba(var(--app-primary-rgb), 0.1); }
+.btn-action-edit { color: var(--app-primary); background: #eaecf4; border: 1px solid rgba(var(--app-primary-rgb), 0.2); }
+.btn-action-info { color: #36b9cc; background: #e2f7fa; border: 1px solid rgba(54, 185, 204, 0.2); }
+.btn-action-warning { color: #f6c23e; background: #fff9e6; border: 1px solid rgba(246, 194, 62, 0.2); }
+.btn-action-success { color: #1cc88a; background: #e6f9f1; border: 1px solid rgba(28, 200, 138, 0.2); }
+.btn-action-delete { color: #e74a3b; background: #fdf2f0; border: 1px solid rgba(231, 74, 59, 0.2); }
+
+/* Estados y Badges Compactos */
+.badge-premium {
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.62rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+}
+
+.badge-premium i { font-size: 0.7rem; margin-right: 4px; }
+
+.btn-action-edit:hover, .btn-action-primary:hover { background: #4e73df; color: white; }
+.btn-action-info:hover { background: #36b9cc; color: white; }
+.btn-action-warning:hover { background: #f6c23e; color: white; }
+.btn-action-success:hover { background: #1cc88a; color: white; }
+.btn-action-delete:hover { background: #e74a3b; color: white; }
+
+/* Animaciones */
+.animate-fade-in { animation: fadeInPremium 0.3s ease-out; }
+@keyframes fadeInPremium { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Responsive & Mobile Support */
+@media (max-width: 768px) {
+    .modal-header-premium {
+        padding: 0.6rem 1rem;
+    }
+    
+    .modal-header-premium .modal-title {
+        font-size: 0.85rem;
+    }
+    
+    .modal-header-premium .modal-title i {
+        font-size: 1rem;
+        padding: 4px;
+    }
+    
+    .form-section-premium {
+        padding: 8px 10px;
+        margin-bottom: 8px;
+        height: auto !important;
+    }
+    
+    .section-title-premium {
+        font-size: 0.75rem !important;
+    }
+    
+    .form-control-premium {
+        font-size: 0.85rem;
+        height: 36px;
+    }
+    
+    .table-premium td {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .btn-action-modern {
+        width: 32px;
+        height: 32px;
+    }
+
+    .modal-content-premium {
+        max-height: 98vh !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+    }
+
+    .modal-body {
+        overflow-y: auto !important;
+        flex: 1 1 auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .modal-dialog {
+        margin: 0.5rem !important;
+        height: calc(100% - 1rem) !important;
+        display: flex;
+        align-items: center;
+    }
+
+    .row > [class*="col-"] {
+        margin-bottom: 15px;
+        width: 100% !important;
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+
+    .d-flex.justify-content-end {
+        justify-content: center !important;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .input-group {
+        width: 100% !important;
+        margin-right: 0 !important;
+    }
+
+    .btn-icon-split {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+}
+
+/* Fix for DataTables Responsive behavior with Premium Table */
+.dtr-details {
+    width: 100%;
+    font-size: 0.75rem;
+}
+
+.dtr-data {
+    font-weight: 600;
+    color: var(--app-primary);
+}
+
+table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control,
+table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control {
+    padding-left: 35px !important;
+    position: relative;
+}
+
+table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control:before,
+table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control:before {
+    top: 50% !important;
+    margin-top: -9px !important;
+    left: 8px !important;
+    background-color: #1cc88a !important;
+    box-shadow: 0 0 3px rgba(0,0,0,0.2) !important;
+}
+
+.info-highlight-reno {
+    height: 38px !important;
+    border-width: 2px !important;
+    border-color: #1cc88a !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-weight: 700 !important;
+    background: white !important;
+}
+
+input.info-highlight-reno:focus {
+    background: #f0fff4 !important;
+}
+
+div.info-highlight-reno.badge-success {
+    background: #1cc88a !important;
+    color: white !important;
+    border: none !important;
+}

@@ -245,41 +245,74 @@ $(document).ready(function () {
 
                 {
                     "defaultContent":
-                        '<div class="btn-group" role="group">' +
-                        '<button class="btn btn-primary btn-editar btn-sm" title="Editar"><i class="fas fa-pencil-alt"></i></button>' +
-                        '<button class="btn btn-secondary btn-default btn-sm" title="Ver Archivo"><i class="fas fa-file-alt"></i></button>' +
-                        '<button class="btn btn-info btn-sm" title="Ver Detalles"><i class="fas fa-list-alt"></i></button>' +
-                        '<button class="btn btn-warning btn-rechazar btn-sm" title="Marcar como Rechazada"><i class="fas fa-ban"></i></button>' +
-                        '<button class="btn btn-danger btn-eliminar btn-sm" title="Eliminar"><i class="fas fa-trash-alt"></i></button>' +
+                        '<div class="dropdown">' +
+                        '<button class="btn btn-primary btn-sm dropdown-toggle rounded-pill" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #007bff; border-color: #007bff;">' +
+                        '<i class="fas fa-cog text-warning mr-1"></i> Acciones' +
+                        '</button>' +
+                        '<div class="dropdown-menu">' +
+                        '<a class="dropdown-item btn-editar" href="#"><i class="fas fa-pencil-alt text-primary mr-2"></i> Editar</a>' +
+                        '<a class="dropdown-item btn-default" href="#"><i class="fas fa-file-alt text-secondary mr-2"></i> Ver Archivo</a>' +
+                        '<a class="dropdown-item btn-detalles" href="#"><i class="fas fa-list-alt text-info mr-2"></i> Ver Detalles</a>' +
+                        '<a class="dropdown-item btn-rechazar" href="#"><i class="fas fa-ban text-warning mr-2"></i> Rechazar</a>' +
+                        '<a class="dropdown-item btn-eliminar" href="#"><i class="fas fa-trash-alt text-danger mr-2"></i> Eliminar</a>' +
+                        '</div>' +
                         '</div>',
                     "orderable": false, "searchable": false
                 }
             ],
             order: [[0, "desc"]],
-            dom: "Bfrtip",
+            dom: '<"row mb-2 align-items-center"<"col-sm-12 col-md-6 d-flex align-items-center gap-2"<"toolbar-left">f><"col-sm-12 col-md-6 d-flex justify-content-end align-items-center gap-2"B l>>rtip',
             buttons: [
                 {
-                    text: 'Exportar Excel',
+                    text: '<i class="fas fa-file-excel text-success fa-lg"></i>',
                     extend: 'excelHtml5',
                     title: 'Reporte de Visitas',
                     filename: 'Reporte de Visitas',
                     exportOptions: {
                         columns: [1, 2, 3, 4]
-                    }
+                    },
+                    className: 'btn btn-link btn-sm p-1'
                 },
                 {
-                    text: 'Exportar PDF',
+                    text: '<i class="fas fa-file-pdf text-danger fa-lg"></i>',
                     extend: 'pdfHtml5',
                     title: 'Reporte de Visitas',
                     filename: 'Reporte de Visitas',
                     exportOptions: {
                         columns: [1, 2, 3, 4]
-                    }
+                    },
+                    className: 'btn btn-link btn-sm p-1'
                 },
-                'pageLength'
+                {
+                    text: '<i class="fas fa-print text-primary fa-lg"></i>',
+                    extend: 'print',
+                    title: 'Reporte de Visitas',
+                    exportOptions: {
+                        columns: [1, 2, 3, 4]
+                    },
+                    className: 'btn btn-link btn-sm p-1'
+                }
             ],
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
+                processing:     "Procesando...",
+                search:         "",
+                searchPlaceholder: "Buscar...",
+                lengthMenu:    "Mostrar _MENU_",
+                info:           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                infoEmpty:      "Mostrando 0 a 0 de 0 registros",
+                infoFiltered:   "(filtrado de _MAX_ registros totales)",
+                loadingRecords: "Cargando...",
+                zeroRecords:    "No se encontraron resultados",
+                emptyTable:     "Ningún dato disponible en esta tabla",
+                paginate: {
+                    first:      "Primero",
+                    previous:   "Anterior",
+                    next:       "Siguiente",
+                    last:       "Último"
+                }
+            },
+            initComplete: function() {
+                $("#btnNuevo").appendTo(".toolbar-left");
             },
         });
     });
@@ -574,7 +607,8 @@ $("#btnGuardarVisitas").click(function () {
 });
 
 let filaSeleccionada;
-$("#tbdata tbody").on("click", ".btn-editar", function () {
+$("#tbdata tbody").on("click", ".btn-editar", function (e) {
+    e.preventDefault();
     esEdicion = true;
     if ($(this).closest("tr").hasClass("child")) {
         filaSeleccionada = $(this).closest("tr").prev();
@@ -587,7 +621,8 @@ $("#tbdata tbody").on("click", ".btn-editar", function () {
     mostrarModalVisita(true, data);
 })
 
-$("#tbdata tbody").on("click", ".btn-rechazar", function () {
+$("#tbdata tbody").on("click", ".btn-rechazar", function (e) {
+    e.preventDefault();
     let fila;
     if ($(this).closest("tr").hasClass("child")) {
         fila = $(this).closest("tr").prev();
@@ -637,7 +672,8 @@ $("#tbdata tbody").on("click", ".btn-rechazar", function () {
     });
 });
 
-$("#tbdata tbody").on("click", ".btn-eliminar", function () {
+$("#tbdata tbody").on("click", ".btn-eliminar", function (e) {
+    e.preventDefault();
     let fila
     if ($(this).closest("tr").hasClass("child")) {
         fila = $(this).closest("tr").prev();
