@@ -1,4 +1,4 @@
-﻿
+
 const MODELO_VISITA_CONTACTO = {
     secuencial: 0,
     secVisita: "",
@@ -57,25 +57,7 @@ let contactoSelect;
 let visitaContactoSelecionada = 0;
 
 
-$("#tbdata tbody").on("click", ".btn-default", function () {
 
-    limpiarFormularioModalContacto()
-
-    esEdicion = true;
-    if ($(this).closest("tr").hasClass("child")) {
-        filaSeleccionada = $(this).closest("tr").prev();
-    } else {
-        filaSeleccionada = $(this).closest("tr");
-    }
-
-    cmboConstructora.value = -1;
-
-    const data = tablaData.row(filaSeleccionada).data();
-    visitaContactoSelecionada = data.Secuencial;
-    mostrarModalVisitaContacto(data);
-
-    $("#modalDataContacto").modal("show");
-})
 
 
 
@@ -252,18 +234,14 @@ async function crearContactoVisita() {
         if (response.ok) {
             const responseJson = await response.json();
             if (responseJson.estado) {
-                $("#modalDataContacto").modal("hide");
                 Swal.fire("Listo!", "Contacto de Visita Guardado", "success");
-
             } else {
                 Swal.fire("Fallo!", responseJson.mensajes, "error");
             }
         } else {
-            // Handle non-OK responses
             if (response.status === 403) {
                 Swal.fire("Acceso Denegado", "No tiene permisos para actualizar contactos de visita.", "error");
             } else {
-                // For other non-OK responses, try to get a more specific message if available
                 const errorText = await response.text();
                 Swal.fire("Error!", `Error en la respuesta del servidor: ${errorText || response.statusText}`, "error");
             }
@@ -271,7 +249,28 @@ async function crearContactoVisita() {
     } catch (error) {
         Swal.fire("Error!", error.message, "error");
     } finally {
-        $("#modalDataContacto").find("div.modal-content").LoadingOverlay("hide");
+        $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+    }
+}
+
+async function crearContactoVisitaSilencioso() {
+    try {
+        if (!contactoSelect || contactoSelect == "" || contactoSelect == "-1" || contactoSelect == -1) return;
+
+        const modeloContactoVisita = structuredClone(MODELO_VISITA_CONTACTO);
+        modeloContactoVisita.secVisita = visitaContactoSelecionada;
+        modeloContactoVisita.secContacto = contactoSelect;
+        modeloContactoVisita.estaActivo = 1;
+
+        const datosContactoVisita = new FormData();
+        datosContactoVisita.append("modelo", JSON.stringify(modeloContactoVisita));
+
+        await fetch("ProcesoGuardasContactoVisita", {
+            method: "POST",
+            body: datosContactoVisita
+        });
+    } catch (error) {
+        console.error("Error al guardar contacto:", error);
     }
 }
 

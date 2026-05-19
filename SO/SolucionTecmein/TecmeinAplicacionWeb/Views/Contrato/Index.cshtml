@@ -6,13 +6,14 @@
 @section Estilos {
     <!-- Bootstrap Datepicker CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="~/css/modern-table.css">
 }
 
 <div class="card shadow mb-4">
     <div class="card-header py-3 bg-second-primary">
         <h6 class="m-0 font-weight-bold text-white">Lista de Contratos</h6>
     </div>
-    <div class="card-body">
+    <div class="card-body pt-1">
         <div class="row">
             <div class="col-sm-3">
                 <button class="btn btn-success" id="btnNuevoContrato"><i class="fas fa-plus"></i> Nuevo Contrato</button>
@@ -21,7 +22,7 @@
         <hr />
         <div class="row">
             <div class="col-sm-12">
-                <table id="tbContrato" class="table table-bordered" style="width:100%">
+                <table id="tbContrato" class="table-modern" style="width:100%">
                     <thead>
                         <tr>
                             <th>Obra</th>
@@ -315,7 +316,7 @@
                 </div>
                 <div class="card-body p-2">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-sm" id="tblPagos">
+                        <table class="table-modern" id="tblPagos">
                             <thead>
                                 <tr>
                                     <th>Fecha de Pago</th>

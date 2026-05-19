@@ -33,7 +33,7 @@ $(document).ready(function () {
             },
             "error": function (jqXHR) { manejarErrorFetch(jqXHR.responseJSON, "Cargar Formato"); }
         },
-        "columns": [
+        columns: [
             { "data": "usaFormato", render: data => data ? '<span class="badge badge-info">Si</span>' : '<span class="badge badge-danger">No</span>' },
             { "data": "formato" },
             { "data": "numeroInicio" },
@@ -42,6 +42,36 @@ $(document).ready(function () {
                 "defaultContent": '<div class="btn-group" role="group"><button class="btn btn-primary btn-editar btn-sm"><i class="fas fa-pencil-alt"></i></button></div>',
                 "orderable": false, "searchable": false, "width": "40px"
             }
+        ],
+        dom: "Bfrtip",
+        buttons: [
+            {
+                text: '<i class="fas fa-file-excel"></i> Excel',
+                extend: 'excelHtml5',
+                title: 'Formatos de Número de Cliente',
+                filename: 'Reporte Formatos Número Cliente',
+                exportOptions: {
+                    columns: [0, 1, 2, 3]
+                }
+            },
+            {
+                text: '<i class="fas fa-file-pdf"></i> PDF',
+                extend: 'pdfHtml5',
+                title: 'Formatos de Número de Cliente',
+                filename: 'Reporte Formatos Número Cliente',
+                exportOptions: {
+                    columns: [0, 1, 2, 3]
+                }
+            },
+            {
+                text: '<i class="fas fa-print"></i> Imprimir',
+                extend: 'print',
+                title: 'Formatos de Número de Cliente',
+                exportOptions: {
+                    columns: [0, 1, 2, 3]
+                }
+            },
+            'pageLength'
         ],
         "processing": true,
         "language": { "url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json" },

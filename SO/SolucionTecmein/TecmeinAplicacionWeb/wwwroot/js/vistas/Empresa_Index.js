@@ -51,7 +51,35 @@ $(document).ready(function () {
         ],
         order: [[0, "desc"]],
         dom: "Bfrtip",
-        buttons: ['excelHtml5', 'pageLength'],
+        buttons: [
+            {
+                text: '<i class="fas fa-file-excel"></i> Excel',
+                extend: 'excelHtml5',
+                title: 'Empresas',
+                filename: 'Reporte Empresas',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6]
+                }
+            },
+            {
+                text: '<i class="fas fa-file-pdf"></i> PDF',
+                extend: 'pdfHtml5',
+                title: 'Empresas',
+                filename: 'Reporte Empresas',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6]
+                }
+            },
+            {
+                text: '<i class="fas fa-print"></i> Imprimir',
+                extend: 'print',
+                title: 'Empresas',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6]
+                }
+            },
+            'pageLength'
+        ],
         language: { url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json" },
     });
 });

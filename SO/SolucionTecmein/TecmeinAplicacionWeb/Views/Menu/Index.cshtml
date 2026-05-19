@@ -7,7 +7,7 @@
     <div class="card-header py-3 bg-second-primary">
         <h6 class="m-0 font-weight-bold text-white">Lista de Menús</h6>
     </div>
-    <div class="card-body">
+    <div class="card-body pt-1">
         <div class="row">
             <div class="col-sm-12">
                 <button class="btn btn-success" id="btnNuevo" data-toggle="modal" data-target="#modalData">
@@ -21,7 +21,7 @@
         <hr />
         <div class="row">
             <div class="col-sm-12">
-                <table id="tbdata" class="table table-bordered" cellspacing="0" style="width:100%">
+                <table class="table-modern" id="tbdata" cellspacing="0" style="width:100%">
                     <thead>
                         <tr>
                             <th>Id</th>
@@ -116,6 +116,8 @@
 </div>
 
 @section Estilos{
+    <link rel="stylesheet" href="~/css/styleGenerales.css">
+    <link rel="stylesheet" href="~/css/modern-table.css">
     <link href="~/vendor/select2/select2.min.css" rel="stylesheet">
 }
 

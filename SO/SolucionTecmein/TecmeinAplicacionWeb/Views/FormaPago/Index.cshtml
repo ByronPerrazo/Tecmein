@@ -5,12 +5,16 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section Estilos {
+    <link rel="stylesheet" href="~/css/modern-table.css">
+}
+
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 bg-second-primary">
         <h6 class="m-0 font-weight-bold text-white">Lista de Formas de Pago</h6>
     </div>
-    <div class="card-body">
+    <div class="card-body pt-1">
         <div class="row">
             <div class="col-sm-3">
                 <button class="btn btn-success" id="btnNuevaFormaPago"><i class="fas fa-plus-circle"></i> Nueva Forma de Pago</button>
@@ -19,7 +23,7 @@
         <hr />
         <div class="row">
             <div class="col-sm-12">
-                <table id="tbFormaPago" class="table table-bordered" cellspacing="0" style="width:100%">
+                <table id="tbFormaPago" class="table-modern" cellspacing="0" style="width:100%">
                     <thead>
                         <tr>
                             <th>Descripción</th>

@@ -8,14 +8,28 @@
     overflow: visible !important;
 }
 
+.table-modern .dropdown-toggle {
+    border-radius: 5px !important;
+}
+
+/* Asegurar misma altura para el botón Nuevo y el buscador */
+#btnNuevo {
+    height: 32px !important;
+    padding: 0 12px !important;
+    font-size: 0.85rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+}
+
 .table-modern thead th {
-    background-color: var(--app-secondary) !important;
+    background-color: #005f73 !important; /* Azul petróleo / Teal oscuro */
     color: white !important;
     border: none;
     padding: 10px 15px;
     font-weight: 600;
     text-transform: uppercase;
-    font-size: 0.85rem;
+    font-size: 0.75rem !important;
     letter-spacing: 0.5px;
 }
 
@@ -158,9 +172,13 @@
 }
 
 .dataTables_wrapper .dataTables_filter input {
-    border: 1px solid #e3e6f0;
-    border-radius: 20px;
-    padding: 6px 15px;
+    height: 32px !important;
+    padding: 5px 10px 5px 30px !important;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%236c757d" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: left 10px center;
+    border-radius: 5px !important;
+    border: 1px solid #ced4da !important;
     outline: none;
     transition: border-color 0.2s;
     width: 250px;
@@ -180,16 +198,17 @@
     min-width: 75px;
 }
 
-.dataTables_wrapper .dt-buttons .btn {
-    background-color: white;
-    border: 1px solid #d1d3e2;
-    color: #6e707e;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    padding: 6px 15px;
-    margin-bottom: 0 !important;
-    box-shadow: 0 .125rem .25rem 0 rgba(58, 59, 69, .2) !important;
-    transition: all 0.2s;
+.dataTables_wrapper .dt-buttons .btn,
+.dataTables_wrapper .dt-buttons .btn-link,
+.dt-buttons .dt-button {
+    background: none !important;
+    background-color: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+    padding: 5px !important;
+    transition: transform 0.2s ease !important;
 }
 
 .dataTables_wrapper .dataTables_length {
@@ -208,10 +227,13 @@
     margin-bottom: 0 !important;
 }
 
+.dataTables_wrapper .dt-buttons .dt-button:hover,
 .dataTables_wrapper .dt-buttons .btn:hover {
+    background: none !important;
     background-color: transparent !important;
-    border-color: transparent !important;
-    color: inherit;
+    border: none !important;
+    box-shadow: none !important;
+    transform: scale(1.2) !important;
 }
 
 .dataTables_wrapper .pagination .page-item .page-link {
@@ -610,3 +632,156 @@ div.input-group,
         font-size: 0.75rem !important;
     }
 }
+
+/* ==========================================
+   ESTILOS PREMIUM - MODALES Y BOTONES
+   ========================================== */
+
+/* Modales Premium */
+.modal-content {
+    border: none !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+    overflow: hidden !important;
+}
+
+.modal-header, 
+.modal-content .card-header.bg-second-primary {
+    background: linear-gradient(135deg, #005f73 0%, #0a9396 100%) !important; /* Gradiente Premium */
+    color: white !important;
+    border-bottom: none !important;
+}
+
+.modal-header .modal-title,
+.modal-content .card-header.bg-second-primary h6 {
+    font-weight: 700 !important;
+    letter-spacing: 0.5px;
+}
+
+.modal-header .close,
+.modal-content .card-header.bg-second-primary .close {
+    color: white !important;
+    opacity: 0.8;
+    text-shadow: none !important;
+    transition: all 0.3s;
+}
+
+.modal-header .close:hover,
+.modal-content .card-header.bg-second-primary .close:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.modal-body {
+    background-color: #f8f9fa !important;
+    padding: 1.5rem !important;
+}
+
+/* Inputs en Modales */
+.modal-body .form-control {
+    border-radius: 5px !important; /* Radio 5 */
+    border: 1px solid #d1d3e2 !important;
+    font-size: 0.85rem !important;
+    transition: all 0.3s ease;
+}
+
+.modal-body .form-control:focus {
+    border-color: #0a9396 !important;
+    box-shadow: 0 0 0 0.2rem rgba(10, 147, 150, 0.15) !important;
+}
+
+/* Cards internas en Modales (como "Información del Administrador") */
+.modal-body .card {
+    border: 1px solid #e3e6f0 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03) !important;
+    background-color: white !important;
+}
+
+.modal-body .card-header {
+    background-color: #f8f9fc !important;
+    border-bottom: 1px solid #e3e6f0 !important;
+}
+
+.modal-body .card-header h6 {
+    color: #005f73 !important;
+    font-weight: 600 !important;
+}
+
+/* Botones de acción en Modales */
+.modal-footer .btn,
+.modal-content .card-body p-0 .btn {
+    border-radius: 5px !important; /* Radio 5 */
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    padding: 6px 15px !important;
+    transition: all 0.3s;
+}
+
+.modal-footer .btn-primary,
+.modal-content .card-body p-0 .btn-primary,
+#btnGuardar {
+    background-color: #0a9396 !important;
+    border-color: #0a9396 !important;
+}
+
+.modal-footer .btn-primary:hover,
+.modal-content .card-body p-0 .btn-primary:hover,
+#btnGuardar:hover {
+    background-color: #005f73 !important;
+    border-color: #005f73 !important;
+    transform: translateY(-1px);
+}
+
+/* ==========================================
+   ESTILOS DE BOTONES COMO ICONOS (ESTILO VISITAS)
+   ========================================== */
+
+/* Estilo para el buscador con icono */
+.dataTables_filter input {
+    height: 32px !important;
+    padding: 5px 10px 5px 30px !important;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%236c757d" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: left 10px center;
+    border-radius: 5px !important;
+    border: 1px solid #ced4da !important;
+}
+
+/* Ajustes para el combo de longitud (Mostrar X filas) */
+.dataTables_wrapper .dataTables_length select {
+    border-radius: 5px !important;
+    border: 1px solid #ced4da !important;
+    padding: 4px 5px !important;
+    height: 32px !important;
+}
+
+/* ==========================================
+   ESTILOS PREMIUM PARA MODALES
+   ========================================== */
+
+/* Estilos para inputs dentro de modales */
+.modal-content input,
+.modal-content select,
+.modal-content textarea {
+    border-radius: 5px !important;
+    border: 1px solid #ced4da !important;
+    padding: 6px 10px !important;
+    font-size: 0.85rem !important;
+    transition: all 0.2s !important;
+}
+
+.modal-content input:focus,
+.modal-content select:focus,
+.modal-content textarea:focus {
+    border-color: #0a9396 !important;
+    box-shadow: 0 0 0 0.2rem rgba(10, 147, 150, 0.25) !important;
+    outline: none !important;
+}
+
+/* Hacer la cabecera del modal con gradiente premium */
+.modal-content .card-header.bg-second-primary {
+    background: linear-gradient(135deg, #005f73 0%, #0a9396 100%) !important;
+    border-bottom: none !important;
+}
+

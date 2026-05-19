@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Empresa";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="~/vendor/datatables/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/responsive.dataTables.min.css">
     <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="~/css/modern-table.css">
 }
 
 
@@ -14,7 +15,7 @@
     <div class="card-header py-3 bg-second-primary">
         <h6 class="m-0 font-weight-bold text-white">Listado de Empresas</h6>
     </div>
-    <div class="card-body">
+    <div class="card-body pt-1">
         <div class="row">
             <div class="col-sm-3">
                 <button class="btn btn-success" id="btnNuevaEmpresa" data-toggle="modal" data-target="#modalData">
@@ -25,7 +26,7 @@
         <hr />
         <div class="row">
             <div class="col-sm-12">
-                <table class="table table-bordered" id="tbdata" cellspacing="0" style="width:100%">
+                <table class="table-modern" id="tbdata" cellspacing="0" style="width:100%">
                     <thead>
                         <tr>
                             <th>Id</th>

@@ -37,16 +37,76 @@
             margin-bottom: 2px !important;
             display: block;
         }
-        /* Hacer visible la X de cerrar */
+        /* Cabecera Premium Flexbox para alinear titulo y boton cerrar */
+        .modal-header-premium {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
         .modal-header-premium .close {
-            color: #2e3d62 !important;
+            color: #ffffff !important;
             opacity: 0.8;
             text-shadow: none;
+            padding: 0;
+            margin: 0;
         }
         .modal-header-premium .close:hover {
             opacity: 1;
-            color: #000 !important;
+            color: #ffffff !important;
         }
+        
+        /* Smart Location Picker */
+        .location-picker-trigger {
+            background: #fff;
+            border: 1.5px solid #d1d9e6;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #5a5c69;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .location-picker-trigger:hover {
+            border-color: #4e73df;
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.15);
+        }
+        .location-picker-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 5px;
+            right: 5px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border: 1px solid #edf2f9;
+            z-index: 1050;
+            margin-top: 4px;
+        }
+
+        /* Ajustes compactos para el formulario premium */
+        #formVisita .form-group {
+            margin-bottom: 0.4rem;
+        }
+        #formVisita .cab_i_sm {
+            margin-bottom: 0.15rem;
+            font-size: 0.75rem;
+            color: #5a5c69;
+            font-weight: 600;
+        }
+        #formVisita .form-control-premium,
+        #formVisita .location-picker-trigger {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+            height: auto;
+            min-height: 30px;
+            border-radius: 6px;
+        }
+        #formVisita textarea.form-control-premium {
+            min-height: 40px;
+            line-height: 1.2;
+        }
+        
         /* Ajustes para diseño depurado de tabla */
         .dataTables_wrapper .row {
             margin-bottom: 2px !important;
@@ -169,12 +229,12 @@
                         <input type="hidden" value="0" id="txtGeolocallizacion" name="GeoUbicacion">
 
                         <div class="form-row">
-                            <div class="form-group col-sm-6">
+                            <div class="form-group col-sm-5">
                                 <label class="cab_i_sm" for="txtNombreObra">Nombre Obra / Proyecto</label>
                                 <input type="text" class="form-control-premium w-100" id="txtNombreObra" name="Nombre">
                                 <span asp-validation-for="Nombre" class="text-danger"></span>
                             </div>
-                            <div class="form-group col-sm-3">
+                            <div class="form-group col-sm-4">
                                 <label class="cab_i_sm" for="cboOperador">Operador</label>
                                 <select class="form-control-premium w-100" id="cboOperador" name="SecEmpresa">
                                 </select>
@@ -182,46 +242,70 @@
                             </div>
                             <div class="form-group col-sm-3">
                                 <label class="cab_i_sm">Etapa</label>
-                                <select class="form-control-premium w-100" id="cboEtapaObra" name="IdEtapa" onchange="mostrarDiv()" disabled>
+                                <select class="form-control-premium w-100" id="cboEtapaObra" name="IdEtapa" disabled>
                                 </select>
                             </div>
                         </div>
                         
                         <div class="form-row">
-                            <div class="form-group col-sm-4">
-                                <label class="cab_i_sm" for="cboProvincia">Provincia</label>
-                                <select class="form-control-premium w-100" id="cboProvincia" name="SecProvincia">
-                                    <option value="" disabled selected>Seleccione Provincia</option>
-                                </select>
-                                <span asp-validation-for="SecProvincia" class="text-danger"></span>
+                            <!-- Ubicación Geográfica Smart Picker -->
+                            <div class="form-group col-sm-6 position-relative">
+                                <label class="cab_i_sm text-primary">
+                                    <i class="fas fa-map-marker-alt"></i> Div. Política
+                                </label>
+                                <div class="location-picker-trigger d-flex justify-content-between align-items-center" id="btnLocationPicker">
+                                    <span id="lblLocationText" class="text-secondary font-weight-bold text-truncate" style="max-width: 90%;">Seleccione Provincia...</span>
+                                    <i class="fas fa-chevron-down text-primary"></i>
+                                </div>
+                                
+                                <!-- Dropdown Flotante -->
+                                <div class="location-picker-dropdown d-none p-2" id="dropdownLocationPicker">
+                                    <div class="form-row">
+                                        <div class="form-group col-sm-4 mb-0">
+                                            <label class="text-xs font-weight-bold text-secondary mb-1">1. Provincia</label>
+                                            <select class="form-control-premium w-100" id="cboProvincia" name="SecProvincia">
+                                                <option value="" disabled selected>Seleccione...</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-sm-4 mb-0">
+                                            <label class="text-xs font-weight-bold text-secondary mb-1">2. Cantón</label>
+                                            <select class="form-control-premium w-100" id="cboCanton" name="SecCanton" disabled>
+                                                <option value="" disabled selected>Esperando...</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-sm-4 mb-0">
+                                            <label class="text-xs font-weight-bold text-secondary mb-1">3. Parroquia</label>
+                                            <select class="form-control-premium w-100" id="cboParroquia" name="SecParroquia" disabled>
+                                                <option value="" disabled selected>Esperando...</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-end mt-2 pt-2 border-top">
+                                        <button type="button" class="btn btn-sm btn-light mr-2 py-0 px-2" style="font-size:0.75rem;" id="btnCloseLocationPicker">Cerrar</button>
+                                        <button type="button" class="btn btn-sm btn-primary py-0 px-2" style="font-size:0.75rem;" id="btnConfirmLocation">
+                                            <i class="fas fa-check"></i> Confirmar
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-group col-sm-4">
-                                <label class="cab_i_sm" for="cboCanton">Cantón</label>
-                                <select class="form-control-premium w-100" id="cboCanton" name="SecCanton">
-                                    <option value="" disabled selected>Seleccione Cantón</option>
-                                </select>
-                                <span asp-validation-for="SecCanton" class="text-danger"></span>
-                            </div>
-                            <div class="form-group col-sm-4">
-                                <label class="cab_i_sm" for="cboParroquia">Parroquia</label>
-                                <select class="form-control-premium w-100" id="cboParroquia" name="SecParroquia">
-                                    <option value="" disabled selected>Seleccione Parroquia</option>
-                                </select>
-                                <span asp-validation-for="SecParroquia" class="text-danger"></span>
+
+                            <div class="form-group col-sm-6">
+                                <label class="cab_i_sm" for="txtDireccion">Dirección Obra / Proyecto</label>
+                                <input type="text" class="form-control-premium w-100" id="txtDireccion" placeholder="Dirección" name="Direccion">
+                                <span asp-validation-for="Direccion" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group col-sm-8">
-                                <label class="cab_i_sm" for="txtDireccion">Dirección Obra / Proyecto</label>
-                                <input type="text" class="form-control-premium w-100" id="txtDireccion" placeholder="Dirección" name="Direccion">
-                                <span asp-validation-for="Direccion" class="text-danger"></span>
+                                <label class="cab_i_sm" for="txtDescripcion">Detalle de Visita</label>
+                                <textarea rows="1" class="form-control-premium w-100" id="txtDescripcion" name="Detalle"></textarea>
                             </div>
                             <div class="form-group col-sm-4">
                                 <label class="cab_i_sm">Próxima Visita</label>
-                                <div class="d-flex align-items-center gap-2">
+                                <div class="d-flex align-items-center gap-2 mt-1">
                                     <input type="checkbox" name="esSigVisita" id="chkEsSigVisita">
-                                    <input type="date" class="form-control-premium validar-fecha-mayor" id="dtpkFechaSigVisita" style="display:none" name="FechaSiguienteVisita">
+                                    <input type="date" class="form-control-premium" id="dtpkFechaSigVisita" style="display:none; padding: 2px 5px;" name="FechaSiguienteVisita">
                                 </div>
                             </div>
                         </div>
@@ -235,10 +319,24 @@
                             </div>
                         </div>
                         
-                        <div class="form-row">
-                            <div class="form-group col-sm-12">
-                                <label class="cab_i_sm" for="txtDescripcion">Detalle</label>
-                                <textarea rows="2" class="form-control-premium w-100" id="txtDescripcion" name="Detalle" style="height: auto !important;"></textarea>
+                        <!-- Contacto a 3 columnas -->
+                        <div class="mt-2 border-top pt-2" id="Detalle_Contacto_vista">
+                            <h6 class="font-weight-bold text-secondary mb-2" style="font-size: 0.75rem;">
+                                <i class="fas fa-id-card text-primary"></i> Información de Contacto
+                            </h6>
+                            <div class="form-row">
+                                <div class="form-group col-sm-4">
+                                    <label class="cab_i_sm">Constructora</label>
+                                    <select class="form-control-premium w-100" id="cboEmpresa" name="Constructora"></select>
+                                </div>
+                                <div class="form-group col-sm-4">
+                                    <label class="cab_i_sm">Contacto</label>
+                                    <select class="form-control-premium w-100" id="cboContactos" name="Contacto"></select>
+                                </div>
+                                <div class="form-group col-sm-4">
+                                    <label class="cab_i_sm d-block" style="visibility:hidden;">Detalle</label>
+                                    <textarea readonly="readonly" class="form-control-premium w-100 border-0 bg-light text-muted" id="txtDescripcionContacto" name="Detalle Contacto" style="resize:none; padding:4px;" rows="2" placeholder="Información no disponible"></textarea>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -254,101 +352,31 @@
 </div>
 
 <!-- Other Modals remain unchanged -->
-<!--Contacto-->
-<div class="modal fade" id="modalDataContacto" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="static">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="card shadow-sm">
-                <div class="card-header py-2 bg-second-primary">
-                    <h6 class="m-0 font-weight-bold text-white">
-                        <i class="fas fa-id-card"></i> Contacto
-                        <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true" class="text-white">×</span>
-                        </button>
-                    </h6>
-                </div>
-                <div class="card-body p-2">
-                    <!--seccion Contacto -->
-                    <div class="col-sm-12" id="Detalle_Contacto_vista">
-                        <div class="card shadow-sm ml-1">
-                            <div class="card-header py-2 bg-second-primary">
-                                <h6 class="m-0 font-weight-bold text-white"><i class="fas fa-id-card"></i> Contacto</h6>
-                            </div>
 
-                            <div class="card-body Contacto">
-                                <div class="form-row">
-                                    <div class="form-group col-sm-12">
-                                        <i class="cab_i_sm">Constructora</i>
-                                        <select class="form-control form-control-sm text-xs"
-                                                id="cboEmpresa"
-                                                name="Constructora">
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-row">
-                                    <div class="form-group col-sm-12">
-                                        <i class="cab_i_sm">Contacto</i>
-                                        <select class="form-control form-control-sm text-xs"
-                                                id="cboContactos"
-                                                name="Contacto">
-                                        </select>
-
-                                    </div>
-                                </div>
-
-                                <div class="form-row">
-                                    <i class="cab_i_sm">Detalle Contacto</i>
-                                    <textarea readonly="readonly"
-                                              class="form-control form-control-sm text-xs"
-                                              id="txtDescripcionContacto"
-                                              name="Detalle Contacto"></textarea>
-                                </div>
-                                <div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body p-0 d-flex justify-content-end">
-                    <button class="btn btn-primary btn-sm m-1 mr-2" type="button" id="btnGrdVisitaContacto">Guardar</button>
-                    <button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal" id="btnCancelVisitaContacto">Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!--Detalle de Productos Visita-->
 <div class="modal fade" id="modalDataDetalleVisita" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
-
-            <!--seccion Detalle lista -->
-            <div class="DetalleVisita" id="detalleVisita_Vista">
-                <div class="card shadow-sm">
-                    <div class="card-header py-2 bg-second-primary">
-                        <h6 class="m-0 font-weight-bold text-white">
-                            <i class="fas fa-thumbtack"></i> Detalle Visita
-                            <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true" class="text-white">×</span>
-                            </button>
+        <div class="modal-content modal-content-premium">
+            <div class="modal-header-premium header-primary">
+                <h6 class="modal-title">
+                    <i class="fas fa-cogs"></i> Detalle Visita - Equipos
+                </h6>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            
+            <div class="modal-body p-3 DetalleVisita" id="detalleVisita_Vista">
+                <div class="form-section-premium mb-3">
+                    <a href="#collapseGeneralInfo" class="d-block text-decoration-none" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseGeneralInfo">
+                        <h6 class="font-weight-bold text-primary mb-2" style="font-size: 0.85rem;">
+                            <i class="fas fa-info-circle"></i> Información General del Equipo
+                            <i class="fas fa-chevron-down float-right text-secondary"></i>
                         </h6>
-                    </div>
-
-                    <div class="card-body p-2">
-
-                        <div class="card shadow-sm mb-4">
-                            <div class="card-header py-2 bg-second-primary">
-                                <a href="#collapseGeneralInfo" class="d-block card-header-link text-white" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseGeneralInfo">
-                                    <h6 class="m-0 font-weight-bold text-white">
-                                        <i class="fas fa-info-circle"></i> Información General del Equipo
-                                        <i class="fas fa-chevron-down float-right"></i>
-                                    </h6>
-                                </a>
-                            </div>
-                            <div id="collapseGeneralInfo" class="collapse show">
-                                <div class="card-body p-2">
+                    </a>
+                    <div id="collapseGeneralInfo" class="collapse show mt-2">
+                        <div>
                                     <div class="form-row form-row-compact">
                                         <div class="form-group col">
                                             <i class="cab_i_sm_equipos">Tipo Equipo</i>
@@ -408,17 +436,15 @@
                             </div>
                         </div>
 
-                        <div class="card shadow-sm mb-4">
-                            <div class="card-header py-2 bg-second-primary">
-                                <a href="#collapseInstallationDetails" class="d-block card-header-link text-white" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseInstallationDetails">
-                                    <h6 class="m-0 font-weight-bold text-white">
-                                        <i class="fas fa-tools"></i> Detalles de Instalación y Ducto
-                                        <i class="fas fa-chevron-down float-right"></i>
-                                    </h6>
-                                </a>
-                            </div>
-                            <div id="collapseInstallationDetails" class="collapse show">
-                                <div class="card-body pb-1">
+                <div class="form-section-premium mb-3">
+                    <a href="#collapseInstallationDetails" class="d-block text-decoration-none" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseInstallationDetails">
+                        <h6 class="font-weight-bold text-primary mb-2" style="font-size: 0.85rem;">
+                            <i class="fas fa-tools"></i> Detalles de Instalación y Ducto
+                            <i class="fas fa-chevron-down float-right text-secondary"></i>
+                        </h6>
+                    </a>
+                    <div id="collapseInstallationDetails" class="collapse show mt-2">
+                        <div>
                                     <div class="form-row form-row-compact">
                                         <div class="form-group col">
                                             <i class="cab_i_sm_equipos">Número Paradas</i>
@@ -503,13 +529,12 @@
                             </div>
                         </div>
 
-                        <div class="card shadow-sm mb-4">
-
-                            <div class="card-header py-2 bg-second-primary">
-                                <h6 class="m-0 font-weight-bold text-white"><i class="fas fa-list"></i> Equipos Agregados</h6>
-                            </div>
-                            <div class="card-body p-2">
-                                <div class="form-group form-row">
+                <div class="form-section-premium">
+                    <h6 class="font-weight-bold text-primary mb-3" style="font-size: 0.85rem;">
+                        <i class="fas fa-list"></i> Equipos Agregados
+                    </h6>
+                    <div>
+                        <div class="form-group form-row">
                                     <div class="col">
                                         <table class="table table-sm text-xs" id="tbDataItems" style="width:100%">
                                             <thead>
@@ -528,16 +553,13 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-
-                    </div>
-
-                    <div class="card-body p-1">
-                        <!-- <button class="btn btn-danger btn-sm float-right" type="button" data-dismiss="modal">Cancel</button> -->
                     </div>
                 </div>
-
+            </div>
+            
+            <div class="modal-footer border-0 p-3">
+                <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal">Cerrar</button>
             </div>
 
         </div>
@@ -547,18 +569,16 @@
 <!--Mapa ubicacion -->
 <div class="modal fade" id="modalDataMapa" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="card shadow-sm">
-                <div class="card-header py-2 bg-second-primary">
-                    <h6 class="m-0 font-weight-bold text-white">
-                        <i class="fas fa-map-marker-alt"></i> Ubicación
-                        <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true" class="text-white">×</span>
-                        </button>
-                    </h6>
-                </div>
-                <div class="card-body p-0" id="map"></div>
+        <div class="modal-content modal-content-premium">
+            <div class="modal-header-premium header-primary">
+                <h6 class="modal-title">
+                    <i class="fas fa-map-marker-alt"></i> Ubicación
+                </h6>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
             </div>
+            <div class="modal-body p-0" id="map" style="height: 500px; border-radius: 0 0 12px 12px; overflow: hidden;"></div>
         </div>
     </div>
 </div>

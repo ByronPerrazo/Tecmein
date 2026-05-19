@@ -251,8 +251,7 @@ $(document).ready(function () {
                         '</button>' +
                         '<div class="dropdown-menu">' +
                         '<a class="dropdown-item btn-editar" href="#"><i class="fas fa-pencil-alt text-primary mr-2"></i> Editar</a>' +
-                        '<a class="dropdown-item btn-default" href="#"><i class="fas fa-file-alt text-secondary mr-2"></i> Ver Archivo</a>' +
-                        '<a class="dropdown-item btn-detalles" href="#"><i class="fas fa-list-alt text-info mr-2"></i> Ver Detalles</a>' +
+                        '<a class="dropdown-item btn-detalles" href="#"><i class="fas fa-cogs text-info mr-2"></i> Equipos</a>' +
                         '<a class="dropdown-item btn-rechazar" href="#"><i class="fas fa-ban text-warning mr-2"></i> Rechazar</a>' +
                         '<a class="dropdown-item btn-eliminar" href="#"><i class="fas fa-trash-alt text-danger mr-2"></i> Eliminar</a>' +
                         '</div>' +
@@ -363,7 +362,9 @@ const cmboParroquia = document.getElementById('cboParroquia');
 
 function cargarCantones(secProvincia) {
     cmboCanton.innerHTML = '<option value="" disabled selected>Seleccione Cantón</option>';
-    cmboParroquia.innerHTML = '<option value="" disabled selected>Seleccione Parroquia</option>';
+    cmboParroquia.innerHTML = '<option value="" disabled selected>Esperando Cantón...</option>';
+    $("#cboCanton").prop("disabled", false);
+    $("#cboParroquia").prop("disabled", true);
 
     const cantonesFiltrados = listaCompletaCanton.filter(c => c.secProvincia == secProvincia);
     cantonesFiltrados.forEach(item => {
@@ -373,6 +374,7 @@ function cargarCantones(secProvincia) {
 
 function cargarParroquias(secCanton) {
     cmboParroquia.innerHTML = '<option value="" disabled selected>Seleccione Parroquia</option>';
+    $("#cboParroquia").prop("disabled", false);
 
     const parroquiasFiltradas = listaCompletaParroquia.filter(p => p.secCanton == secCanton);
     parroquiasFiltradas.forEach(item => {
@@ -387,6 +389,35 @@ cmboProvincia.onchange = function () {
 cmboCanton.onchange = function () {
     cargarParroquias(this.value);
 };
+
+// Logica de Smart Location Picker
+$("#btnLocationPicker").on("click", function() {
+    $("#dropdownLocationPicker").toggleClass("d-none");
+});
+$("#btnCloseLocationPicker").on("click", function() {
+    $("#dropdownLocationPicker").addClass("d-none");
+});
+$("#btnConfirmLocation").on("click", function() {
+    actualizarEtiquetaLocation();
+    $("#dropdownLocationPicker").addClass("d-none");
+});
+
+function actualizarEtiquetaLocation() {
+    let prov = $("#cboProvincia option:selected").text();
+    let cant = $("#cboCanton option:selected").text();
+    let parr = $("#cboParroquia option:selected").text();
+    
+    if(!$("#cboProvincia").val()) {
+        $("#lblLocationText").text("Seleccione Provincia, Cantón y Parroquia...");
+        return;
+    }
+    
+    let label = prov;
+    if($("#cboCanton").val()) label += ` > ${cant}`;
+    if($("#cboParroquia").val()) label += ` > ${parr}`;
+    
+    $("#lblLocationText").text(label);
+}
 
 function obtenerGeoubicacion() {
     if (navigator.geolocation) {
@@ -408,8 +439,9 @@ function limpiarFormularioModal() {
     $("#txtId").val('');
     $("#txtNombreObra").val('');
     $("#cboProvincia").val("");
-    $("#cboCanton").val("");
-    $("#cboParroquia").val("");
+    $("#cboCanton").val("").prop("disabled", true);
+    $("#cboParroquia").val("").prop("disabled", true);
+    actualizarEtiquetaLocation();
     $("#txtDireccion").val('');
     $("#txtGeolocallizacion").val('');
     $("#cboEstado").val(1);
@@ -419,6 +451,8 @@ function limpiarFormularioModal() {
 }
 function mostrarModalVisita(esEdicion, modeloVisita = MODELO_BASEVISITA) {
     limpiarFormularioModal();
+    limpiarFormularioModalContacto();
+    
     $("#txtId").val(modeloVisita.Secuencial)
     $("#txtNombreObra").val(modeloVisita.Nombre)
     $("#cboOperador").val(modeloVisita.SecEmpresa);
@@ -440,9 +474,11 @@ function mostrarModalVisita(esEdicion, modeloVisita = MODELO_BASEVISITA) {
                 $("#cboParroquia").val(modeloVisita.SecParroquia);
             }
         }
+        actualizarEtiquetaLocation();
     } else {
         $("#cboProvincia").val($("#cboProvincia option:first").val());
         cargarCantones($("#cboProvincia option:first").val());
+        actualizarEtiquetaLocation();
     }
 
     $("#txtDireccion").val(modeloVisita.Direccion)
@@ -455,6 +491,12 @@ function mostrarModalVisita(esEdicion, modeloVisita = MODELO_BASEVISITA) {
 
     // Forzar a la validación no intrusiva a parsear el formulario del modal
     $.validator.unobtrusive.parse("#formVisita");
+
+    // Cargar contacto integrado en el modal si es edicion
+    visitaContactoSelecionada = modeloVisita.Secuencial || 0;
+    if (esEdicion && visitaContactoSelecionada > 0) {
+        mostrarModalVisitaContacto(modeloVisita);
+    }
 
     $("#modalData").modal("show")
 };
@@ -555,6 +597,11 @@ $("#btnGuardarVisitas").click(function () {
         })
         .then(responseJson => {
             if (responseJson.estado) {
+                
+                // Guardar contacto (si se ha seleccionado)
+                visitaContactoSelecionada = responseJson.objeto.secuencial;
+                crearContactoVisitaSilencioso();
+
                 // Convertir propiedades a PascalCase para DataTables
                 const dataForRow = {
                     Secuencial: responseJson.objeto.secuencial,

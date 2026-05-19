@@ -31,10 +31,27 @@ $(document).ready(function () {
         dom: "Bfrtip",
         buttons: [
             {
-                text: 'Exportar Excel',
+                text: '<i class="fas fa-file-excel"></i> Excel',
                 extend: 'excelHtml5',
-                title: '',
+                title: 'Permisos',
                 filename: 'Reporte Permisos',
+                exportOptions: {
+                    columns: [0, 1]
+                }
+            },
+            {
+                text: '<i class="fas fa-file-pdf"></i> PDF',
+                extend: 'pdfHtml5',
+                title: 'Permisos',
+                filename: 'Reporte Permisos',
+                exportOptions: {
+                    columns: [0, 1]
+                }
+            },
+            {
+                text: '<i class="fas fa-print"></i> Imprimir',
+                extend: 'print',
+                title: 'Permisos',
                 exportOptions: {
                     columns: [0, 1]
                 }

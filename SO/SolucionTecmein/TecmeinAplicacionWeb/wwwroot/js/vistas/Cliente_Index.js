@@ -51,14 +51,32 @@ $(document).ready(function () {
         dom: "Bfrtip",
         buttons: [
             {
-                text: 'Exportar Excel',
+                text: '<i class="fas fa-file-excel"></i> Excel',
                 extend: 'excelHtml5',
-                title: '',
+                title: 'Clientes',
                 filename: 'Reporte Clientes',
                 exportOptions: {
                     columns: [0, 1, 2, 3]
                 }
-            }, 'pageLength'
+            },
+            {
+                text: '<i class="fas fa-file-pdf"></i> PDF',
+                extend: 'pdfHtml5',
+                title: 'Clientes',
+                filename: 'Reporte Clientes',
+                exportOptions: {
+                    columns: [0, 1, 2, 3]
+                }
+            },
+            {
+                text: '<i class="fas fa-print"></i> Imprimir',
+                extend: 'print',
+                title: 'Clientes',
+                exportOptions: {
+                    columns: [0, 1, 2, 3]
+                }
+            },
+            'pageLength'
         ],
         language: {
             url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"

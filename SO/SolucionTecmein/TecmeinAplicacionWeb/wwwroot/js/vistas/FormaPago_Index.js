@@ -42,6 +42,36 @@ $(document).ready(function () {
                 "width": "100px"
             }
         ],
+        dom: "Bfrtip",
+        buttons: [
+            {
+                text: '<i class="fas fa-file-excel"></i> Excel',
+                extend: 'excelHtml5',
+                title: 'Formas de Pago',
+                filename: 'Reporte Formas de Pago',
+                exportOptions: {
+                    columns: [0, 1]
+                }
+            },
+            {
+                text: '<i class="fas fa-file-pdf"></i> PDF',
+                extend: 'pdfHtml5',
+                title: 'Formas de Pago',
+                filename: 'Reporte Formas de Pago',
+                exportOptions: {
+                    columns: [0, 1]
+                }
+            },
+            {
+                text: '<i class="fas fa-print"></i> Imprimir',
+                extend: 'print',
+                title: 'Formas de Pago',
+                exportOptions: {
+                    columns: [0, 1]
+                }
+            },
+            'pageLength'
+        ],
         language: {
             url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
         }

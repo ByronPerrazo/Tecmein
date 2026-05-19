@@ -56,14 +56,32 @@ $(document).ready(function () {
         dom: "Bfrtip",
         buttons: [
             {
-                text: 'Exportar Excel',
+                text: '<i class="fas fa-file-excel"></i> Excel',
                 extend: 'excelHtml5',
                 title: 'Usuarios',
                 filename: 'Reporte Usuarios',
                 exportOptions: {
                     columns: [0, 2, 3, 4, 5, 6]
                 }
-            }, 'pageLength'
+            },
+            {
+                text: '<i class="fas fa-file-pdf"></i> PDF',
+                extend: 'pdfHtml5',
+                title: 'Usuarios',
+                filename: 'Reporte Usuarios',
+                exportOptions: {
+                    columns: [0, 2, 3, 4, 5, 6]
+                }
+            },
+            {
+                text: '<i class="fas fa-print"></i> Imprimir',
+                extend: 'print',
+                title: 'Usuarios',
+                exportOptions: {
+                    columns: [0, 2, 3, 4, 5, 6]
+                }
+            },
+            'pageLength'
         ],
         language: {
             url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"

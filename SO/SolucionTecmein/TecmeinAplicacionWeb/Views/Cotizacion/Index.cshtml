@@ -2,37 +2,37 @@
      ViewData["Title"] = "Cotizaciones";
      Layout = "~/Views/Shared/_Layout.cshtml";
  }
- 
- @section Estilos {
-     <link rel="stylesheet" href="~/vendor/datatables/dataTables.bootstrap4.min.css">
-     <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/responsive.dataTables.min.css">
-     <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/buttons.dataTables.min.css">
-     <link rel="stylesheet" href="~/css/styleGenerales.css">
-     <style>
-         .bg-pale-blue {
-             background-color: #e0f2f7 !important; /* A light blue color */
-         }
-         #tbDetalles th:nth-child(3),
-         #tbDetalles td:nth-child(3),
-         #tbDetalles th:nth-child(4),
-         #tbDetalles td:nth-child(4),
-         #tbDetalles th:nth-child(5),
-         #tbDetalles td:nth-child(5) {
-             min-width: 70px;
-         }
+@section Estilos {
+    <link rel="stylesheet" href="~/vendor/datatables/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="~/css/styleGenerales.css">
+    <link rel="stylesheet" href="~/css/modern-table.css">
+    <style>
+        .bg-pale-blue {
+            background-color: #e0f2f7 !important; /* A light blue color */
+        }
+        #tbDetalles th:nth-child(3),
+        #tbDetalles td:nth-child(3),
+        #tbDetalles th:nth-child(4),
+        #tbDetalles td:nth-child(4),
+        #tbDetalles th:nth-child(5),
+        #tbDetalles td:nth-child(5) {
+            min-width: 70px;
+        }
 
         #tbDetalles th, #tbDetalles td {
             font-size: 0.8rem; /* Ajusta este valor si es necesario */
             vertical-align: middle;
         }
-     </style>
- }
+    </style>
+}
  
  <!-- Grilla inicial de proceso -->
                                              <div class="card shadow-sm mb-1">     <div class="card-header py-3 bg-second-primary">
          <h6 class="m-0 font-weight-bold text-white">Lista de Cotizaciones</h6>
      </div>
-     <div class="card-body">
+     <div class="card-body pt-1">
          <div class="row">
              <div class="col-sm-3">
                  <button class="btn btn-success" id="btnNuevo" data-toggle="modal" data-target="#modalData">
@@ -43,7 +43,7 @@
          <hr />
          <div class="row">
              <div class="col-sm-12">
-                 <table class="table table-bordered" id="tbdata" cellspacing="0" style="width:100%">
+                 <table class="table-modern" id="tbdata" cellspacing="0" style="width:100%">
                      <thead>
                          <tr>
                              <th>Id</th>

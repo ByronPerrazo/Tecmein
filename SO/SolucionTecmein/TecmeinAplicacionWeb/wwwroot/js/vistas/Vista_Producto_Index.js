@@ -69,7 +69,7 @@ function limpiarFormularioEquipos() {
 }
 
 
-$("#tbdata tbody").on("click", ".btn-info", function () {
+$("#tbdata tbody").on("click", ".btn-detalles", function () {
 
     if ($(this).closest("tr").hasClass("child")) {
         filaSeleccionada = $(this).closest("tr").prev();

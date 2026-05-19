@@ -48,29 +48,57 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    "defaultContent": '<button class="btn btn-primary btn-editar btn-sm mr-2"><i class="fas fa-pencil-alt"></i></button>' +
-                        '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button>',
+                    "defaultContent":
+                        '<div class="dropdown">' +
+                        '<button class="btn btn-primary btn-sm dropdown-toggle rounded-pill" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #007bff; border-color: #007bff;">' +
+                        '<i class="fas fa-cog text-warning mr-1"></i> Acciones' +
+                        '</button>' +
+                        '<div class="dropdown-menu">' +
+                        '<a class="dropdown-item btn-editar" href="#"><i class="fas fa-pencil-alt text-primary mr-2"></i> Editar</a>' +
+                        '<a class="dropdown-item btn-eliminar" href="#"><i class="fas fa-trash-alt text-danger mr-2"></i> Eliminar</a>' +
+                        '</div>' +
+                        '</div>',
                     "orderable": false,
                     "searchable": false,
-                    "width": "80px"
+                    "width": "120px"
                 }
             ],
             order: [[0, "desc"]],
-            dom: "Bfrtip",
+            dom: '<"row mb-2 align-items-center"<"col-sm-12 col-md-6 d-flex align-items-center gap-2"<"toolbar-left">f><"col-sm-12 col-md-6 d-flex justify-content-end align-items-center gap-2"B l>>rtip',
             buttons: [
                 {
-                    text: 'Exportar Excel',
+                    text: '<i class="fas fa-file-excel text-success fa-lg"></i>',
                     extend: 'excelHtml5',
                     title: 'Constructoras',
                     filename: 'Reporte Constructoras Registradas',
-                    exportOptions: {
-                        columns: [1, 2, 3, 4, 5, 6]
-                    }
-                }, 'pageLength'
+                    className: 'btn btn-link btn-sm p-1',
+                    exportOptions: { columns: [1, 2, 3, 4, 5, 6] }
+                },
+                {
+                    text: '<i class="fas fa-file-pdf text-danger fa-lg"></i>',
+                    extend: 'pdfHtml5',
+                    title: 'Constructoras',
+                    filename: 'Reporte Constructoras Registradas',
+                    className: 'btn btn-link btn-sm p-1',
+                    exportOptions: { columns: [1, 2, 3, 4, 5, 6] }
+                },
+                {
+                    text: '<i class="fas fa-print text-primary fa-lg"></i>',
+                    extend: 'print',
+                    title: 'Constructoras',
+                    className: 'btn btn-link btn-sm p-1',
+                    exportOptions: { columns: [1, 2, 3, 4, 5, 6] }
+                }
             ],
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
+                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json",
+                search: "",
+                searchPlaceholder: "Buscar...",
+                lengthMenu: "Mostrar _MENU_"
             },
+            initComplete: function() {
+                $("#btnNuevo").appendTo(".toolbar-left");
+            }
         });
 });
 
