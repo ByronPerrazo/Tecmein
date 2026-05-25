@@ -12,14 +12,17 @@
         <h6 class="m-0 font-weight-bold text-white">Lista de Clientes</h6>
     </div>
     <div class="card-body pt-1">
-        <div class="row">
-            <div class="col-sm-12">
-                <button class="btn btn-success" id="btnNuevoCliente">
-                    <i class="fas fa-plus-circle"></i> Crear Nuevo Cliente
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-users"></i> Directorio de Clientes</h6>
+            </div>
+            <div class="col-sm-6 text-right">
+                <button class="btn btn-primary btn-sm rounded-pill shadow-sm" id="btnNuevoCliente">
+                    <i class="fas fa-plus"></i> Nuevo Cliente
                 </button>
             </div>
         </div>
-        <hr />
+        <hr class="mt-2 mb-3" />
         <div class="row">
             <div class="col-sm-12">
                 <table id="tbdataClientes" class="table-modern" cellspacing="0" style="width:100%">
@@ -42,39 +45,39 @@
 <!-- Modal para Crear/Editar Cliente -->
 <div class="modal fade" id="modalCliente" tabindex="-1" role="dialog" aria-labelledby="modalClienteLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="card shadow-sm">
-                <div class="card-header py-2 bg-second-primary">
-                    <h6 class="m-0 font-weight-bold text-white">
-                        <i class="fas fa-user"></i> Detalle del Cliente
-                        <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true" class="text-white">×</span>
-                        </button>
-                    </h6>
-                </div>
-                <div class="card-body p-2">
-                    <form id="formCliente">
+        <div class="modal-content modal-content-premium">
+            <div class="modal-header-premium header-primary">
+                <h6 class="modal-title">
+                    <i class="fas fa-user"></i> Detalle del Cliente
+                </h6>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body p-3">
+                <form id="formCliente">
+                    <div class="form-section-premium mb-0">
                         <input type="hidden" id="txtSecCliente" value="0" />
                         <div class="form-group">
-                            <label for="cboConstructoraCliente">Constructora</label>
-                            <select class="form-control form-control-sm" id="cboConstructoraCliente">
-                                <!-- Opciones cargadas por JS -->
-                            </select>
+                            <label class="cab_i_sm" for="cboConstructoraCliente">Constructora</label>
+                            <select class="form-control-premium w-100" id="cboConstructoraCliente"></select>
                         </div>
                         <div class="form-group">
-                            <label for="txtNumeroCliente">Número de Cliente</label>
-                            <input type="text" class="form-control form-control-sm" id="txtNumeroCliente" readonly>
+                            <label class="cab_i_sm" for="txtNumeroCliente">Número de Cliente</label>
+                            <input type="text" class="form-control-premium w-100" id="txtNumeroCliente" readonly>
                         </div>
-                        <div class="form-group form-check">
-                            <input type="checkbox" class="form-check-input" id="chkEstaActivo" checked>
-                            <label class="form-check-label" for="chkEstaActivo">Activo</label>
+                        <div class="form-group mt-3 d-flex align-items-center">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="chkEstaActivo" checked>
+                                <label class="custom-control-label cab_i_sm" for="chkEstaActivo">Activo</label>
+                            </div>
                         </div>
-                    </form>
-                </div>
-                <div class="card-body p-0 d-flex justify-content-end">
-                    <button class="btn btn-primary btn-sm m-1 mr-2" type="button" id="btnGuardarCliente">Guardar</button>
-                    <button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal">Cancelar</button>
-                </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0 p-2">
+                <button class="btn btn-primary btn-sm" type="button" id="btnGuardarCliente"><i class="fas fa-save"></i> Guardar</button>
+                <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>

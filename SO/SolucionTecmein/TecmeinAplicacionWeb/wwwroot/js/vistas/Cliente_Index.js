@@ -40,43 +40,50 @@ $(document).ready(function () {
                 }
             },
             {
-                "defaultContent": '<div class="btn-group" role="group"><button class="btn btn-primary btn-editar btn-sm"><i class="fas fa-pencil-alt"></i></button>' +
-                    '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button></div>',
+                "defaultContent":
+                    '<div class="dropdown">' +
+                    '<button class="btn btn-primary btn-sm dropdown-toggle rounded-pill" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #007bff; border-color: #007bff;">' +
+                    '<i class="fas fa-cog text-warning mr-1"></i> Acciones' +
+                    '</button>' +
+                    '<div class="dropdown-menu">' +
+                    '<a class="dropdown-item btn-editar" href="#"><i class="fas fa-pencil-alt text-primary mr-2"></i> Editar</a>' +
+                    '<a class="dropdown-item btn-eliminar" href="#"><i class="fas fa-trash-alt text-danger mr-2"></i> Eliminar</a>' +
+                    '</div>' +
+                    '</div>',
                 "orderable": false,
                 "searchable": false,
                 "width": "80px"
             }
         ],
         order: [[0, "desc"]],
-        dom: "Bfrtip",
+        dom: '<"row mb-2 align-items-center"<"col-sm-12 col-md-6 d-flex align-items-center gap-2"<"toolbar-left">f><"col-sm-12 col-md-6 d-flex justify-content-end align-items-center gap-2"B l>>rtip',
         buttons: [
             {
-                text: '<i class="fas fa-file-excel"></i> Excel',
+                text: '<i class="fas fa-file-excel"></i>',
                 extend: 'excelHtml5',
+                titleAttr: 'Exportar a Excel',
+                className: 'btn btn-success btn-sm',
                 title: 'Clientes',
                 filename: 'Reporte Clientes',
-                exportOptions: {
-                    columns: [0, 1, 2, 3]
-                }
+                exportOptions: { columns: [0, 1, 2, 3] }
             },
             {
-                text: '<i class="fas fa-file-pdf"></i> PDF',
+                text: '<i class="fas fa-file-pdf"></i>',
                 extend: 'pdfHtml5',
+                titleAttr: 'Exportar a PDF',
+                className: 'btn btn-danger btn-sm',
                 title: 'Clientes',
                 filename: 'Reporte Clientes',
-                exportOptions: {
-                    columns: [0, 1, 2, 3]
-                }
+                exportOptions: { columns: [0, 1, 2, 3] }
             },
             {
-                text: '<i class="fas fa-print"></i> Imprimir',
+                text: '<i class="fas fa-print"></i>',
                 extend: 'print',
+                titleAttr: 'Imprimir',
+                className: 'btn btn-info btn-sm',
                 title: 'Clientes',
-                exportOptions: {
-                    columns: [0, 1, 2, 3]
-                }
-            },
-            'pageLength'
+                exportOptions: { columns: [0, 1, 2, 3] }
+            }
         ],
         language: {
             url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"

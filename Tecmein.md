@@ -23,6 +23,7 @@ Se ha utilizado el módulo de **Visitas** como plan piloto para estandarizar el 
    - Se reubicó el campo **Etapa** (antes en la cabecera del modal, ahora en la primera fila del formulario).
    - Se reubicó **Próxima Visita** (ahora junto a la Dirección).
    - Se hizo visible la "X" de cerrar el modal con un color oscuro contrastante.
+   - Se corrigió la estructura del modal "Detalle Visita - Equipos" (`#modalDataDetalleVisita`) eliminando etiquetas `</div>` de cierre excedentes que dejaban la sección `modal-footer` (botón Cerrar) fuera de la estructura del modal.
 
 ## Pendientes y Próximos Pasos (Estandarización)
 Para poder replicar esto en el resto del sistema de manera centralizada, se requiere:
