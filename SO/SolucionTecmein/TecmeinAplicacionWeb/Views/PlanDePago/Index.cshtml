@@ -4,7 +4,13 @@
 }
 
 @section Estilos {
-    <link rel="stylesheet" href="~/css/modern-table.css">
+    <link rel="stylesheet" href="~/vendor/datatables/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="~/css/styleGenerales.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/premium-design.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/modern-table.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/theme-overrides.css" asp-append-version="true">
 }
 
 <div class="card shadow mb-4">
@@ -38,17 +44,17 @@
 <!-- Modal para ver Cuotas -->
 <div class="modal fade" id="modalCuotas" tabindex="-1" role="dialog" aria-labelledby="modalCuotasLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="card shadow-sm">
-                <div class="card-header py-2 bg-second-primary">
-                    <h6 class="m-0 font-weight-bold text-white">
-                        <i class="fas fa-money-check-alt"></i> Cuotas del Plan de Pago #<span id="planDePagoIdModal"></span>
-                        <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true" class="text-white">×</span>
-                        </button>
-                    </h6>
-                </div>
-                <div class="card-body p-2">
+        <div class="modal-content modal-content-premium">
+            <div class="modal-header-premium header-primary">
+                <h6 class="modal-title">
+                    <i class="fas fa-money-check-alt"></i> Cuotas del Plan de Pago #<span id="planDePagoIdModal"></span>
+                </h6>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body p-3">
+                <div class="table-responsive">
                     <table id="tbCuotas" class="table-modern" cellspacing="0" style="width:100%">
                         <thead>
                             <tr>
@@ -62,14 +68,22 @@
                         <tbody></tbody>
                     </table>
                 </div>
-                <div class="card-body p-0 d-flex justify-content-end">
-                    <button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal">Cerrar</button>
-                </div>
+            </div>
+            <div class="modal-footer border-0 p-2">
+                <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
             </div>
         </div>
     </div>
 </div>
 
 @section Scripts{
-    <script src="~/js/vistas/PlanDePago_Index.js"></script>
+    <script src="~/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/dataTables.responsive.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/dataTables.buttons.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/jszip.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.html5.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.print.min.js"></script>
+    <script src="~/js/vistas/PlanDePago_Index.js" asp-append-version="true"></script>
 }
+

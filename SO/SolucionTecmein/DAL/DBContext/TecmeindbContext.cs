@@ -1132,6 +1132,11 @@ public partial class TecmeindbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Contrato_TipoDocumento");
 
+            entity.HasOne(d => d.SecUsuarioModificaNavigation)
+                .WithMany()
+                .HasForeignKey(d => d.SecUsuarioModifica)
+                .HasConstraintName("FK_Contrato_UsuarioModifica");
+
             // Configuración para la relación uno a uno con PlanDePago
             entity.HasOne(c => c.PlanDePagoNavigation)
                 .WithOne(pp => pp.IdContratoNavigation)

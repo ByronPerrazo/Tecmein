@@ -44,9 +44,9 @@ function mostrarHistorialSeguimiento(idCotizacion) {
                 { data: "aceptacionCliente", render: function (data) { return data ? '<span class="badge badge-success">Sí</span>' : '<span class="badge badge-danger">No</span>'; } },
                 {
                     "defaultContent":
-                        '<div class="btn-group" role="group">' +
-                        '<button class="btn btn-primary btn-editar-seguimiento btn-sm" title="Editar Seguimiento"><i class="fas fa-pencil-alt"></i></button>' +
-                        '<button class="btn btn-danger btn-eliminar-seguimiento btn-sm" title="Eliminar Seguimiento"><i class="fas fa-trash-alt"></i></button>' +
+                        '<div class="d-flex justify-content-center align-items-center gap-1">' +
+                        '<button class="btn-action-modern btn-action-edit btn-editar-seguimiento" title="Editar Seguimiento"><i class="fas fa-pencil-alt"></i></button>' +
+                        '<button class="btn-action-modern btn-action-delete btn-eliminar-seguimiento" title="Eliminar Seguimiento"><i class="fas fa-trash-alt"></i></button>' +
                         '</div>',
                     "orderable": false,
                     "searchable": false,
@@ -56,7 +56,22 @@ function mostrarHistorialSeguimiento(idCotizacion) {
             ],
             order: [[2, "desc"]], // Order by date descending (index is now 2)
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
+                processing:     "Procesando...",
+                search:         "",
+                searchPlaceholder: "Buscar...",
+                lengthMenu:    "Mostrar _MENU_",
+                info:           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                infoEmpty:      "Mostrando 0 a 0 de 0 registros",
+                infoFiltered:   "(filtrado de _MAX_ registros totales)",
+                loadingRecords: "Cargando...",
+                zeroRecords:    "No se encontraron resultados",
+                emptyTable:     "Ningún dato disponible en esta tabla",
+                paginate: {
+                    first:      "Primero",
+                    previous:   "Anterior",
+                    next:       "Siguiente",
+                    last:       "Último"
+                }
             },
         });
     }

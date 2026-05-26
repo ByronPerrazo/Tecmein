@@ -6,7 +6,13 @@
 @section Estilos {
     <!-- Bootstrap Datepicker CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
-    <link rel="stylesheet" href="~/css/modern-table.css">
+    <link rel="stylesheet" href="~/vendor/datatables/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="~/css/styleGenerales.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/premium-design.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/modern-table.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/theme-overrides.css" asp-append-version="true">
 }
 
 <div class="card shadow mb-4">
@@ -14,12 +20,11 @@
         <h6 class="m-0 font-weight-bold text-white">Lista de Contratos</h6>
     </div>
     <div class="card-body pt-1">
-        <div class="row">
+        <div class="row" style="display:none;">
             <div class="col-sm-3">
-                <button class="btn btn-success" id="btnNuevoContrato"><i class="fas fa-plus"></i> Nuevo Contrato</button>
+                <button class="btn btn-primary" id="btnNuevoContrato"><i class="fas fa-plus"></i> Nuevo Contrato</button>
             </div>
         </div>
-        <hr />
         <div class="row">
             <div class="col-sm-12">
                 <table id="tbContrato" class="table-modern" style="width:100%">
@@ -45,86 +50,83 @@
 <!-- Modal para Crear Contrato Directo -->
 <div class="modal fade" id="modalContratoUnificado" tabindex="-1" role="dialog" aria-labelledby="modalContratoDirectoLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="card shadow-sm">
-                <div class="card-header py-2 bg-second-primary">
-                    <h6 class="m-0 font-weight-bold text-white" id="modalContratoUnificadoTitle">
-                        <i class="fas fa-plus"></i> 
-                        @* <span>Crear Contrato Directo</span> *@
-                        <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true" class="text-white">×</span>
-                        </button>
-                    </h6>
-                </div>
-                <div class="card-body p-2">
-                    <form id="formContratoDirecto" enctype="multipart/form-data">
-                        <input type="hidden" id="txtIdContratoDirecto" value="0" />
-                        <div class="form-group">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="chkCrearDesdePreContrato">
-                                <label class="form-check-label" for="chkCrearDesdePreContrato">
-                                    Crear desde Pre-Contrato
-                                </label>
+        <div class="modal-content modal-content-premium">
+            <div class="modal-header-premium header-primary">
+                <h6 class="modal-title" id="modalContratoUnificadoTitle">
+                    <i class="fas fa-file-contract"></i> <span>Nuevo Contrato</span>
+                </h6>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body p-3">
+                <form id="formContratoDirecto" enctype="multipart/form-data">
+                    <input type="hidden" id="txtIdContratoDirecto" value="0" />
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="chkCrearDesdePreContrato">
+                            <label class="form-check-label" for="chkCrearDesdePreContrato">
+                                Crear desde Pre-Contrato
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="divPreContrato" class="col-sm-6" style="display: none;">
+                            <div class="form-group">
+                                <label for="cboPreContrato">Pre-Contrato Aprobado</label>
+                                <select class="form-control form-control-sm" id="cboPreContrato">
+                                    <!-- Opciones cargadas por JS -->
+                                </select>
                             </div>
                         </div>
-                        <div class="row">
-                            <div id="divPreContrato" class="col-sm-6" style="display: none;">
-                                <div class="form-group">
-                                    <label for="cboPreContrato">Pre-Contrato Aprobado</label>
-                                    <select class="form-control form-control-sm" id="cboPreContrato">
-                                        <!-- Opciones cargadas por JS -->
-                                    </select>
-                                </div>
-                            </div>
-                            <div id="divCliente" class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="cboClienteDirecto">Cliente</label>
-                                    <select class="form-control form-control-sm" id="cboClienteDirecto">
-                                        <!-- Opciones cargadas por JS -->
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="txtNombreProyecto">Nombre del Proyecto</label>
-                                    <input type="text" class="form-control form-control-sm" id="txtNombreProyecto" placeholder="Ej: Edificio XYZ">
-                                </div>
+                        <div id="divCliente" class="col-sm-6">
+                            <div class="form-group">
+                                <label for="cboClienteDirecto">Cliente</label>
+                                <select class="form-control form-control-sm" id="cboClienteDirecto">
+                                    <!-- Opciones cargadas por JS -->
+                                </select>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="txtFechaFirmaDirecto">Fecha de Firma</label>
-                                    <div class="input-group date" data-provide="datepicker">
-                                        <input type="text" class="form-control form-control-sm" id="txtFechaFirmaDirecto">
-                                        <div class="input-group-addon">
-                                            <span class="glyphicon glyphicon-th"></span>
-                                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="txtNombreProyecto">Nombre del Proyecto</label>
+                                <input type="text" class="form-control form-control-sm" id="txtNombreProyecto" placeholder="Ej: Edificio XYZ">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="txtFechaFirmaDirecto">Fecha de Firma</label>
+                                <div class="input-group date" data-provide="datepicker">
+                                    <input type="text" class="form-control form-control-sm" id="txtFechaFirmaDirecto">
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-th"></span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="cboEstadoDirecto">Estado</label>
-                                    <select class="form-control form-control-sm" id="cboEstadoDirecto">
-                                        <option value="1">Activo</option>
-                                        <option value="0">Inactivo</option>
-                                    </select>
-                                </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="cboEstadoDirecto">Estado</label>
+                                <select class="form-control form-control-sm" id="cboEstadoDirecto">
+                                    <option value="1">Activo</option>
+                                    <option value="0">Inactivo</option>
+                                </select>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="fileContratoDirecto">Archivo PDF del Contrato</label>
-                            <input type="file" class="form-control-file" id="fileContratoDirecto" accept="application/pdf">
-                        </div>
-                    </form>
-                </div>
-                <div class="card-body p-0 d-flex justify-content-end">
-                    <button class="btn btn-primary btn-sm m-1 mr-2" type="button" id="btnGuardarContratoDirecto">Guardar</button>
-                    <button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal">Cancelar</button>
-                </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="fileContratoDirecto">Archivo PDF del Contrato</label>
+                        <input type="file" class="form-control-file" id="fileContratoDirecto" accept="application/pdf">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0 p-2">
+                <button class="btn btn-primary btn-sm" type="button" id="btnGuardarContratoDirecto">Guardar</button>
+                <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>
@@ -133,131 +135,131 @@
 <!-- Modal para Plan de Pagos -->
 <div class="modal fade" id="modalPlanDePago" tabindex="-1" role="dialog" aria-labelledby="modalPlanDePagoLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="card shadow-sm">
-                <div class="card-header py-2 bg-second-primary d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-white" id="modalPlanDePagoTitle">Plan de Pagos</h6>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true" class="text-white">×</span>
-                    </button>
+        <div class="modal-content modal-content-premium">
+            <div class="modal-header-premium header-primary">
+                <h6 class="modal-title" id="modalPlanDePagoTitle">
+                    <i class="fas fa-money-check-alt"></i> <span>Plan de Pagos</span>
+                </h6>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body p-3">
+                <div id="mensajeSoloLectura" class="alert alert-info" style="display: none;" role="alert">
+                    <strong>Modo Solo Lectura:</strong> El plan de pagos proviene de un pre-contrato y no puede ser modificado. Solo puede asignar la Forma de Pago.
                 </div>
-                <div class="card-body p-2">
-                    <div id="mensajeSoloLectura" class="alert alert-info" style="display: none;" role="alert">
-                        <strong>Modo Solo Lectura:</strong> El plan de pagos proviene de un pre-contrato y no puede ser modificado. Solo puede asignar la Forma de Pago.
-                    </div>
-                    <div id="divPlanDePagoForm">
-                        <form id="formPlanDePago">
-                            <input type="hidden" id="txtIdContratoPlan" value="0" />
-                            <div class="row">
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label for="txtValorContratoPlan">Valor del Contrato</label>
-                                        <input type="number" class="form-control form-control-sm" id="txtValorContratoPlan">
-                                    </div>
-                                </div>
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label for="cboFormaPagoPlan">Forma de Pago</label>
-                                        <select class="form-control form-control-sm" id="cboFormaPagoPlan">
-                                            <!-- Opciones cargadas por JS -->
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label for="txtValorAnticipoPlan">Valor del Anticipo</label>
-                                        <input type="number" class="form-control form-control-sm" id="txtValorAnticipoPlan" value="0" min="0">
-                                        <span id="errorValorAnticipo" class="invalid-feedback"></span>
-                                    </div>
+                <div id="divPlanDePagoForm">
+                    <form id="formPlanDePago">
+                        <input type="hidden" id="txtIdContratoPlan" value="0" />
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="txtValorContratoPlan">Valor del Contrato</label>
+                                    <input type="number" class="form-control form-control-sm" id="txtValorContratoPlan">
                                 </div>
                             </div>
-                            <div class="card mt-3">
-                                <div class="card-header py-2 bg-primary text-white">
-                                    <h6 class="m-0 font-weight-bold">Generación Inteligente de Cuotas</h6>
-                                </div>
-                                <div class="card-body p-2">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="form-group mb-0">
-                                                <label for="numCuotasGenerar" class="small">N° de Cuotas</label>
-                                                <input type="number" class="form-control form-control-sm" id="numCuotasGenerar" min="1">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group mb-0">
-                                                <label for="montoCuotaGenerar" class="small">Monto Base</label>
-                                                <input type="number" class="form-control form-control-sm" id="montoCuotaGenerar" min="0.01" step="0.01">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group mb-0">
-                                                <label for="fechaPrimeraCuotaGenerar" class="small">Fecha Inicial</label>
-                                                <div class="input-group date" data-provide="datepicker">
-                                                    <input type="text" class="form-control form-control-sm" id="fechaPrimeraCuotaGenerar">
-                                                    <div class="input-group-addon"><span class="glyphicon glyphicon-th"></span></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 d-flex align-items-end">
-                                            <button type="button" class="btn btn-info btn-sm btn-block" id="btnGenerarCuotasInteligentes">Generar</button>
-                                        </div>
-                                    </div>
-                                    <hr />
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-sm">
-                                            <thead class="thead-light">
-                                                <tr style="background-color: #e9f2fa;">
-                                                    <th># Cuota</th>
-                                                    <th>Tipo</th>
-                                                    <th>Fecha de Vencimiento</th>
-                                                    <th>Monto</th>
-                                                    <th>Acciones</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="tbodyCuotas">
-                                                <!-- Filas generadas por JS -->
-                                            </tbody>
-                                            <tfoot>
-                                                <tr>
-                                                    <td colspan="3" class="text-right font-weight-bold">Total:</td>
-                                                    <td id="totalCuotasPlan" class="font-weight-bold">0.00</td>
-                                                    <td></td>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
-                                    </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="cboFormaPagoPlan">Forma de Pago</label>
+                                    <select class="form-control form-control-sm" id="cboFormaPagoPlan">
+                                        <!-- Opciones cargadas por JS -->
+                                    </select>
                                 </div>
                             </div>
-                        </form>
-                    </div>
-                    <div id="divPlanDePagoVista" class="border rounded p-2" style="display: none;">
-                        <div class="d-flex justify-content-between align-items-center mb-2 p-2 bg-info text-white rounded-top">
-                            <h6 class="mb-0 font-weight-bold">Estado de Cuenta</h6>
-                            <button class="btn btn-light btn-sm btn-ver-pagos-plan" title="Ver Historial de Pagos del Plan"><i class="fas fa-eye"></i> Ver Pagos</button>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="txtValorAnticipoPlan">Valor del Anticipo</label>
+                                    <input type="number" class="form-control form-control-sm" id="txtValorAnticipoPlan" value="0" min="0">
+                                    <span id="errorValorAnticipo" class="invalid-feedback"></span>
+                                </div>
+                            </div>
                         </div>
-                        <div id="vistaResumenPlan"></div>
-                        <table class="table table-hover table-sm mb-0">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Fecha Vencimiento</th>
-                                    <th>Monto Esperado</th>
-                                    <th>Monto Pagado</th>
-                                    <th>Saldo</th>
-                                    <th>Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbodyCuotasVista">
-                                <!-- Las cuotas existentes se renderizarán aquí -->
-                            </tbody>
-                        </table>
+                        <div class="card mt-3">
+                            <div class="card-header py-2 bg-primary text-white">
+                                <h6 class="m-0 font-weight-bold">Generación Inteligente de Cuotas</h6>
+                            </div>
+                            <div class="card-body p-2">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group mb-0">
+                                            <label for="numCuotasGenerar" class="small">N° de Cuotas</label>
+                                            <input type="number" class="form-control form-control-sm" id="numCuotasGenerar" min="1">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group mb-0">
+                                            <label for="montoCuotaGenerar" class="small">Monto Base</label>
+                                            <input type="number" class="form-control form-control-sm" id="montoCuotaGenerar" min="0.01" step="0.01">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group mb-0">
+                                            <label for="fechaPrimeraCuotaGenerar" class="small">Fecha Inicial</label>
+                                            <div class="input-group date" data-provide="datepicker">
+                                                <input type="text" class="form-control form-control-sm" id="fechaPrimeraCuotaGenerar">
+                                                <div class="input-group-addon"><span class="glyphicon glyphicon-th"></span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 d-flex align-items-end">
+                                        <button type="button" class="btn btn-info btn-sm btn-block" id="btnGenerarCuotasInteligentes">Generar</button>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-sm">
+                                        <thead class="thead-light">
+                                            <tr style="background-color: #e9f2fa;">
+                                                <th># Cuota</th>
+                                                <th>Tipo</th>
+                                                <th>Fecha de Vencimiento</th>
+                                                <th>Monto</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbodyCuotas">
+                                            <!-- Filas generadas por JS -->
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="3" class="text-right font-weight-bold">Total:</td>
+                                                <td id="totalCuotasPlan" class="font-weight-bold">0.00</td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div id="divPlanDePagoVista" class="border rounded p-2" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-2 p-2 bg-info text-white rounded-top">
+                        <h6 class="mb-0 font-weight-bold">Estado de Cuenta</h6>
+                        <button class="btn btn-light btn-sm btn-ver-pagos-plan" title="Ver Historial de Pagos del Plan"><i class="fas fa-eye"></i> Ver Pagos</button>
                     </div>
+                    <div id="vistaResumenPlan"></div>
+                    <table class="table table-hover table-sm mb-0">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Fecha Vencimiento</th>
+                                <th>Monto Esperado</th>
+                                <th>Monto Pagado</th>
+                                <th>Saldo</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyCuotasVista">
+                            <!-- Las cuotas existentes se renderizarán aquí -->
+                        </tbody>
+                    </table>
                 </div>
-                <div class="card-body p-0 d-flex justify-content-end">
-                    <button class="btn btn-success btn-sm m-1 mr-2" type="button" id="btnRegistrarPago" style="display: none;">Registrar Pago</button>
-                    <button class="btn btn-primary btn-sm m-1 mr-2" type="button" id="btnGuardarPlanDePago">Guardar Cambios</button>
-                    <button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal">Cancelar</button>
-                </div>
+            </div>
+            <div class="modal-footer border-0 p-2">
+                <button class="btn btn-success btn-sm" type="button" id="btnRegistrarPago" style="display: none;">Registrar Pago</button>
+                <button class="btn btn-primary btn-sm" type="button" id="btnGuardarPlanDePago">Guardar Cambios</button>
+                <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>
@@ -266,38 +268,38 @@
 <!-- Modal para Registrar Pago -->
 <div class="modal fade" id="modalRegistrarPago" tabindex="-1" role="dialog" aria-labelledby="modalRegistrarPagoLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="card shadow-sm">
-                <div class="card-header py-2 bg-success d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-white">Registrar Nuevo Pago</h6>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true" class="text-white">×</span>
-                    </button>
-                </div>
-                <div class="card-body p-2">
-                    <form id="formRegistrarPago">
-                        <input type="hidden" id="txtIdPlanDePagoParaPago" value="0" />
-                        <div class="form-group">
-                            <label for="txtMontoPago">Monto del Pago</label>
-                            <input type="number" class="form-control form-control-sm" id="txtMontoPago" min="0.01" step="0.01">
+        <div class="modal-content modal-content-premium">
+            <div class="modal-header-premium header-primary bg-success text-white">
+                <h6 class="modal-title" id="modalRegistrarPagoLabel">
+                    <i class="fas fa-money-bill-wave"></i> <span>Registrar Nuevo Pago</span>
+                </h6>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body p-3">
+                <form id="formRegistrarPago">
+                    <input type="hidden" id="txtIdPlanDePagoParaPago" value="0" />
+                    <div class="form-group">
+                        <label for="txtMontoPago">Monto del Pago</label>
+                        <input type="number" class="form-control form-control-sm" id="txtMontoPago" min="0.01" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label for="txtFechaPago">Fecha del Pago</label>
+                        <div class="input-group date" data-provide="datepicker">
+                            <input type="text" class="form-control form-control-sm" id="txtFechaPago">
+                            <div class="input-group-addon"><span class="glyphicon glyphicon-th"></span></div>
                         </div>
-                        <div class="form-group">
-                            <label for="txtFechaPago">Fecha del Pago</label>
-                            <div class="input-group date" data-provide="datepicker">
-                                <input type="text" class="form-control form-control-sm" id="txtFechaPago">
-                                <div class="input-group-addon"><span class="glyphicon glyphicon-th"></span></div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="fileComprobante">Comprobante (Opcional)</label>
-                            <input type="file" class="form-control-file" id="fileComprobante" accept="application/pdf,image/*">
-                        </div>
-                    </form>
-                </div>
-                <div class="card-body p-0 d-flex justify-content-end">
-                    <button class="btn btn-primary btn-sm m-1 mr-2" type="button" id="btnGuardarPago">Guardar Pago</button>
-                    <button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal">Cancelar</button>
-                </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="fileComprobante">Comprobante (Opcional)</label>
+                        <input type="file" class="form-control-file" id="fileComprobante" accept="application/pdf,image/*">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0 p-2">
+                <button class="btn btn-primary btn-sm" type="button" id="btnGuardarPago">Guardar Pago</button>
+                <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>
@@ -306,33 +308,33 @@
 <!-- Modal para Ver Pagos Aplicados -->
 <div class="modal fade" id="modalVerPagos" tabindex="-1" role="dialog" aria-labelledby="modalVerPagosLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="card shadow-sm">
-                <div class="card-header py-2 bg-info d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-white">Historial de Pagos del Plan</h6>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true" class="text-white">×</span>
-                    </button>
+        <div class="modal-content modal-content-premium">
+            <div class="modal-header-premium header-primary bg-info text-white">
+                <h6 class="modal-title" id="modalVerPagosLabel">
+                    <i class="fas fa-history"></i> <span>Historial de Pagos del Plan</span>
+                </h6>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body p-3">
+                <div class="table-responsive">
+                    <table class="table-modern" id="tblPagos" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Fecha de Pago</th>
+                                <th>Monto</th>
+                                <th>Comprobante</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyPagos">
+                            <!-- Filas generadas por JS -->
+                        </tbody>
+                    </table>
                 </div>
-                <div class="card-body p-2">
-                    <div class="table-responsive">
-                        <table class="table-modern" id="tblPagos">
-                            <thead>
-                                <tr>
-                                    <th>Fecha de Pago</th>
-                                    <th>Monto</th>
-                                    <th>Comprobante</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbodyPagos">
-                                <!-- Filas generadas por JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="card-body p-0 d-flex justify-content-end">
-                    <button class="btn btn-secondary btn-sm m-1" type="button" data-dismiss="modal">Cerrar</button>
-                </div>
+            </div>
+            <div class="modal-footer border-0 p-2">
+                <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
@@ -346,6 +348,10 @@
     <script src="~/vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="~/vendor/datatables/dataTables.bootstrap4.min.js"></script>
     <script src="~/vendor/datatables/extensiones/js/dataTables.responsive.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/dataTables.buttons.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/jszip.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.html5.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.print.min.js"></script>
     
-    <script src="~/js/vistas/Contrato_Index.js"></script>
+    <script src="~/js/vistas/Contrato_Index.js" asp-append-version="true"></script>
 }

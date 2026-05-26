@@ -262,11 +262,16 @@ $(document).ready(function () {
             { data: "estaActivo", render: function (data) { return data === 1 ? '<span class="badge badge-info">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>'; } },
             {
                 "defaultContent":
-                    '<div class="btn-group" role="group">' +
-                    '<button class="btn btn-primary btn-editar btn-sm" title="Editar"><i class="fas fa-pencil-alt"></i></button>' +
-                    '<button class="btn btn-info btn-sm btn-seguimiento" title="Seguimiento"><i class="fas fa-history"></i></button>' +
-                    '<button class="btn btn-warning btn-historial btn-sm" title="Historial"><i class="fas fa-book-open"></i></button>' +
-                    '<button class="btn btn-danger btn-eliminar btn-sm" title="Eliminar"><i class="fas fa-trash-alt"></i></button>' +
+                    '<div class="dropdown">' +
+                    '<button class="btn btn-primary btn-sm dropdown-toggle rounded-pill" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #007bff; border-color: #007bff;">' +
+                    '<i class="fas fa-cog text-warning mr-1"></i> Acciones' +
+                    '</button>' +
+                    '<div class="dropdown-menu">' +
+                    '<a class="dropdown-item btn-editar" href="#"><i class="fas fa-pencil-alt text-primary mr-2"></i> Editar</a>' +
+                    '<a class="dropdown-item btn-seguimiento" href="#"><i class="fas fa-history text-info mr-2"></i> Seguimiento</a>' +
+                    '<a class="dropdown-item btn-historial" href="#"><i class="fas fa-book-open text-warning mr-2"></i> Historial</a>' +
+                    '<a class="dropdown-item btn-eliminar" href="#"><i class="fas fa-trash-alt text-danger mr-2"></i> Eliminar</a>' +
+                    '</div>' +
                     '</div>',
                 "orderable": false,
                 "searchable": false,
@@ -274,31 +279,47 @@ $(document).ready(function () {
             }
         ],
         order: [[0, "desc"]],
-        dom: "Bfrtip",
+        dom: '<"row mb-2 align-items-center"<"col-sm-12 col-md-6 d-flex align-items-center gap-2"<"toolbar-left">f><"col-sm-12 col-md-6 d-flex justify-content-end align-items-center gap-2"B l>>rtip',
         buttons: [
             {
-                text: 'Exportar Excel',
+                text: '<i class="fas fa-file-excel text-success fa-lg"></i>',
                 extend: 'excelHtml5',
-                title: 'Reporte de Cotizaciones',
+                title: 'Cotizaciones',
                 filename: 'Reporte de Cotizaciones',
-                exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8]
-                }
+                exportOptions: { columns: [1, 2, 3, 4, 5, 6, 7, 8] },
+                className: 'btn btn-link btn-sm p-1'
             },
             {
-                text: 'Exportar PDF',
+                text: '<i class="fas fa-file-pdf text-danger fa-lg"></i>',
                 extend: 'pdfHtml5',
-                title: 'Reporte de Cotizaciones',
+                title: 'Cotizaciones',
                 filename: 'Reporte de Cotizaciones',
-                exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8]
-                }
-            },
-            'pageLength'
+                exportOptions: { columns: [1, 2, 3, 4, 5, 6, 7, 8] },
+                className: 'btn btn-link btn-sm p-1'
+            }
         ],
         language: {
-            url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
+            processing:     "Procesando...",
+            search:         "",
+            searchPlaceholder: "Buscar...",
+            lengthMenu:    "Mostrar _MENU_",
+            info:           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            infoEmpty:      "Mostrando 0 a 0 de 0 registros",
+            infoFiltered:   "(filtrado de _MAX_ registros totales)",
+            loadingRecords: "Cargando...",
+            zeroRecords:    "No se encontraron resultados",
+            emptyTable:     "Ningún dato disponible en esta tabla",
+            paginate: {
+                first:      "Primero",
+                previous:   "Anterior",
+                next:       "Siguiente",
+                last:       "Último"
+            }
         },
+        initComplete: function() {
+            $("#btnNuevo").appendTo(".toolbar-left");
+            $("#btnNuevo").closest(".row").show();
+        }
     });
 
     // Cargar Tipos de Documento para el combo

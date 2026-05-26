@@ -6,8 +6,10 @@
     <link rel="stylesheet" href="~/vendor/datatables/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/responsive.dataTables.min.css">
     <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="~/css/styleGenerales.css">
-    <link rel="stylesheet" href="~/css/modern-table.css">
+    <link rel="stylesheet" href="~/css/styleGenerales.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/premium-design.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/modern-table.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/theme-overrides.css" asp-append-version="true">
     <style>
         .bg-pale-blue {
             background-color: #e0f2f7 !important; /* A light blue color */
@@ -33,14 +35,13 @@
          <h6 class="m-0 font-weight-bold text-white">Lista de Cotizaciones</h6>
      </div>
      <div class="card-body pt-1">
-         <div class="row">
-             <div class="col-sm-3">
-                 <button class="btn btn-success" id="btnNuevo" data-toggle="modal" data-target="#modalData">
-                     <i class="fas fa-plus-circle"></i> Nueva Cotización
-                 </button>
-             </div>
-         </div>
-         <hr />
+          <div class="row" style="display:none;">
+              <div class="col-sm-3">
+                  <button class="btn btn-primary" id="btnNuevo" data-toggle="modal" data-target="#modalData">
+                      <i class="fas fa-plus-circle"></i> Nueva Cotización
+                  </button>
+              </div>
+          </div>
          <div class="row">
              <div class="col-sm-12">
                  <table class="table-modern" id="tbdata" cellspacing="0" style="width:100%">
@@ -67,20 +68,19 @@
      </div>
  </div>
  
- <!-- Modal de Detalle/Edición -->
+<!-- Modal de Detalle/Edición -->
  <div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
      <div class="modal-dialog modal-xl" role="document">
-         <div class="modal-content">
-             <div class="card shadow-sm">
-                 <div class="card-header py-2 bg-second-primary">
-                     <h6 class="m-0 font-weight-bold text-white">
-                         <i class="fas fa-file-signature"></i> Detalle Cotización
-                         <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
-                             <span aria-hidden="true" class="text-white">×</span>
-                         </button>
-                     </h6>
-                 </div>
-                 <div class="card-body p-2">
+         <div class="modal-content modal-content-premium">
+             <div class="modal-header-premium header-primary">
+                 <h6 class="modal-title">
+                     <i class="fas fa-file-signature"></i> Detalle Cotización
+                 </h6>
+                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                     <span aria-hidden="true">×</span>
+                 </button>
+             </div>
+             <div class="modal-body p-3">
                      <form>
                          <input type="hidden" value="0" id="txtId">
                         <div class="row">
@@ -227,11 +227,10 @@
                             
                         </div>
                      </form>
-                 </div>
-                 <div class="card-body p-0 d-flex justify-content-end">
-                     <button class="btn btn-primary btn-sm m-1 mr-2" type="button" id="btnGuardar">Guardar</button>
-                     <button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal">Cancelar</button>
-                 </div>
+             </div>
+             <div class="modal-footer border-0 p-2">
+                 <button class="btn btn-primary btn-sm" type="button" id="btnGuardar">Guardar</button>
+                 <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal">Cancelar</button>
              </div>
          </div>
      </div>
@@ -240,32 +239,30 @@
 <!-- Modal de Seguimiento -->
 <div class="modal fade" id="modalSeguimiento" tabindex="-1" role="dialog" aria-labelledby="modalSeguimientoLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="card shadow-sm">
-                <div class="card-header py-2 bg-second-primary">
-                    <h6 class="m-0 font-weight-bold text-white">
-                        <i class="fas fa-history"></i> Historial de Seguimiento
-                        <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true" class="text-white">×</span>
-                        </button>
-                    </h6>
-                </div>
-                <div class="card-body p-2">
-                    <input type="hidden" id="hiddenCotizacionId" value="0" />
-                    <button id="btnNuevoSeguimiento" class="btn btn-sm btn-success mb-2">Nuevo Seguimiento</button>
-                    <table id="tbSeguimiento" class="table table-striped table-bordered" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>Acción</th>
-                                <th>Detalle</th>
-                                <th>Fecha Acción</th>
-                                <th>Aceptado</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
+        <div class="modal-content modal-content-premium">
+            <div class="modal-header-premium header-primary">
+                <h6 class="modal-title" id="modalSeguimientoLabel">
+                    <i class="fas fa-history"></i> Historial de Seguimiento
+                </h6>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body p-3">
+                <input type="hidden" id="hiddenCotizacionId" value="0" />
+                <button id="btnNuevoSeguimiento" class="btn btn-sm btn-success mb-3"><i class="fas fa-plus"></i> Nuevo Seguimiento</button>
+                <table id="tbSeguimiento" class="table-modern" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Acción</th>
+                            <th>Detalle</th>
+                            <th>Fecha Acción</th>
+                            <th>Aceptado</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -274,43 +271,41 @@
 <!-- Modal para Crear/Editar Seguimiento -->
 <div class="modal fade" id="modalDataSeguimiento" tabindex="-1" role="dialog" aria-labelledby="modalDataSeguimientoLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="card shadow-sm">
-                <div class="card-header py-2 bg-second-primary">
-                    <h6 class="m-0 font-weight-bold text-white">
-                        <i class="fas fa-clipboard-list"></i> Detalle de Seguimiento
-                        <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true" class="text-white">×</span>
-                        </button>
-                    </h6>
-                </div>
-                <div class="card-body p-2">
-                    <form id="formSeguimiento">
-                        <input type="hidden" id="txtIdSeguimiento" value="0">
-                        <div class="form-group">
-                            <label for="txtAccion">Acción</label>
-                            <input type="text" class="form-control" id="txtAccion" placeholder="Ej: Llamada, Correo, Reunión">
-                        </div>
-                        <div class="form-group">
-                            <label for="txtDetalle">Detalle</label>
-                            <textarea class="form-control" id="txtDetalle" rows="4"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="txtFechaAccion">Fecha de Acción</label>
-                            <input type="date" class="form-control" id="txtFechaAccion">
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="chkAceptacionCliente">
-                            <label class="form-check-label" for="chkAceptacionCliente">
-                                Aceptación del Cliente (Convierte a Pre-Contrato)
-                            </label>
-                        </div>
-                    </form>
-                </div>
-                <div class="card-body p-0 d-flex justify-content-end">
-                    <button type="button" class="btn btn-primary btn-sm m-1 mr-2" id="btnGuardarSeguimiento">Guardar</button>
-                    <button type="button" class="btn btn-danger btn-sm m-1" data-dismiss="modal">Cancelar</button>
-                </div>
+        <div class="modal-content modal-content-premium">
+            <div class="modal-header-premium header-primary">
+                <h6 class="modal-title" id="modalDataSeguimientoLabel">
+                    <i class="fas fa-clipboard-list"></i> Detalle de Seguimiento
+                </h6>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body p-3">
+                <form id="formSeguimiento">
+                    <input type="hidden" id="txtIdSeguimiento" value="0">
+                    <div class="form-group">
+                        <label for="txtAccion">Acción</label>
+                        <input type="text" class="form-control form-control-sm" id="txtAccion" placeholder="Ej: Llamada, Correo, Reunión">
+                    </div>
+                    <div class="form-group">
+                        <label for="txtDetalle">Detalle</label>
+                        <textarea class="form-control form-control-sm" id="txtDetalle" rows="4"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtFechaAccion">Fecha de Acción</label>
+                        <input type="date" class="form-control form-control-sm" id="txtFechaAccion">
+                    </div>
+                    <div class="form-check mt-2">
+                        <input class="form-check-input" type="checkbox" id="chkAceptacionCliente">
+                        <label class="form-check-label text-xs" for="chkAceptacionCliente">
+                            Aceptación del Cliente (Convierte a Pre-Contrato)
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0 p-2">
+                <button type="button" class="btn btn-primary btn-sm" id="btnGuardarSeguimiento">Guardar</button>
+                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>
@@ -320,19 +315,19 @@
  <!-- Modal para Editor de Pre-Contrato -->
 <div class="modal fade" id="modalPreContratoEditor" tabindex="-1" role="dialog" aria-labelledby="modalPreContratoEditorLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalPreContratoEditorLabel">Editor de Pre-Contrato</h5>
+        <div class="modal-content modal-content-premium">
+            <div class="modal-header-premium header-primary">
+                <h6 class="modal-title" id="modalPreContratoEditorLabel">Editor de Pre-Contrato</h6>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-3">
                 <textarea id="txtPreContratoEditor"></textarea>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="btnGuardarPreContratoVersion">Guardar Versión</button>
+            <div class="modal-footer border-0 p-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary btn-sm" id="btnGuardarPreContratoVersion">Guardar Versión</button>
             </div>
         </div>
     </div>
@@ -341,13 +336,14 @@
 <!-- Modal Historial Cambios -->
 <div class="modal fade" id="modalHistorial" tabindex="-1" role="dialog" aria-labelledby="modalHistorialLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
-                            <div class="modal-header py-2 bg-second-primary">
-                                <h6 class="m-0 font-weight-bold text-white" id="modalHistorialLabel">Historial de Cambios de la Cotización</h6>
-                                <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true" class="text-white">×</span>
-                                </button>
-                            </div>            <div class="modal-body">
+        <div class="modal-content modal-content-premium">
+            <div class="modal-header-premium header-primary">
+                <h6 class="modal-title" id="modalHistorialLabel">Historial de Cambios de la Cotización</h6>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body p-3">
                 <div id="historial-cards-container" class="overflow-auto" style="max-height: 600px;">
                     <!-- History cards will be injected here by JavaScript -->
                 </div>
@@ -361,9 +357,13 @@
      <script src="~/vendor/datatables/jquery.dataTables.min.js"></script>
      <script src="~/vendor/datatables/dataTables.bootstrap4.min.js"></script>
      <script src="~/vendor/datatables/extensiones/js/dataTables.responsive.min.js"></script>
+     <script src="~/vendor/datatables/extensiones/js/dataTables.buttons.min.js"></script>
+     <script src="~/vendor/datatables/extensiones/js/jszip.min.js"></script>
+     <script src="~/vendor/datatables/extensiones/js/buttons.html5.min.js"></script>
+     <script src="~/vendor/datatables/extensiones/js/buttons.print.min.js"></script>
     <!-- jsPDF y autoTable -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
-    <script src="~/js/vistas/Seguimiento_Index.js"></script>
-    <script src="~/js/vistas/Cotizacion_Index.js"></script>
+    <script src="~/js/vistas/Seguimiento_Index.js" asp-append-version="true"></script>
+    <script src="~/js/vistas/Cotizacion_Index.js" asp-append-version="true"></script>
  }

@@ -2,42 +2,40 @@
 
 <div class="modal fade" id="registrarPagoModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="card shadow-sm">
-                <div class="card-header py-2 bg-second-primary">
-                    <h6 class="m-0 font-weight-bold text-white">
-                        <i class="fas fa-money-bill-wave"></i> Registrar Nuevo Pago
-                        <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true" class="text-white">×</span>
-                        </button>
-                    </h6>
-                </div>
-                <div class="card-body p-2">
-                    <form id="formRegistrarPago">
-                        <input type="hidden" id="registroPagoIdPlanDePago" name="IdPlanDePago" value="" />
+        <div class="modal-content modal-content-premium">
+            <div class="modal-header-premium header-primary">
+                <h6 class="modal-title">
+                    <i class="fas fa-money-bill-wave"></i> Registrar Nuevo Pago
+                </h6>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body p-3">
+                <form id="formRegistrarPago">
+                    <input type="hidden" id="registroPagoIdPlanDePago" name="IdPlanDePago" value="" />
 
-                        <div class="form-group">
-                            <label for="registroPagoMonto">Monto del Pago</label>
-                            <input type="number" class="form-control" id="registroPagoMonto" name="Monto" step="0.01" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="registroPagoFecha">Fecha del Pago</label>
-                            <input type="date" class="form-control" id="registroPagoFecha" name="FechaPago" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="registroPagoComprobanteFile">Comprobante de Pago</label>
-                            <input type="file" class="form-control-file" id="registroPagoComprobanteFile" name="ComprobanteFile" accept="image/*,application/pdf">
-                            <small class="form-text text-muted">Seleccione una imagen o PDF.</small>
-                            <img id="imgComprobantePreview" src="" alt="Previsualización Comprobante" class="img-thumbnail mt-2" style="max-width: 150px; display:none;">
-                        </div>
-                        <!-- Hidden field for RegistradoPorUsuarioId, to be populated by JS from claims/context -->
-                        <input type="hidden" id="registroPagoUsuarioId" name="RegistradoPorUsuarioId" value="" />
-                    </form>
-                </div>
-                <div class="card-body p-0 d-flex justify-content-end">
-                    <button type="button" class="btn btn-primary btn-sm m-1 mr-2" id="btnGuardarPago"><i class="fas fa-save"></i> Guardar</button>
-                    <button type="button" class="btn btn-danger btn-sm m-1" data-dismiss="modal">Cancelar</button>
-                </div>
+                    <div class="form-group">
+                        <label for="registroPagoMonto">Monto del Pago</label>
+                        <input type="number" class="form-control form-control-sm" id="registroPagoMonto" name="Monto" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registroPagoFecha">Fecha del Pago</label>
+                        <input type="date" class="form-control form-control-sm" id="registroPagoFecha" name="FechaPago" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registroPagoComprobanteFile">Comprobante de Pago</label>
+                        <input type="file" class="form-control-file" id="registroPagoComprobanteFile" name="ComprobanteFile" accept="image/*,application/pdf">
+                        <small class="form-text text-muted">Seleccione una imagen o PDF.</small>
+                        <img id="imgComprobantePreview" src="" alt="Previsualización Comprobante" class="img-thumbnail mt-2" style="max-width: 150px; display:none;">
+                    </div>
+                    <!-- Hidden field for RegistradoPorUsuarioId, to be populated by JS from claims/context -->
+                    <input type="hidden" id="registroPagoUsuarioId" name="RegistradoPorUsuarioId" value="" />
+                </form>
+            </div>
+            <div class="modal-footer border-0 p-2">
+                <button type="button" class="btn btn-primary btn-sm" id="btnGuardarPago"><i class="fas fa-save"></i> Guardar</button>
+                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>

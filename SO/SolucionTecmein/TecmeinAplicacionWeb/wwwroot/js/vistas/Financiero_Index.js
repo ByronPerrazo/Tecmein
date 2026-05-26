@@ -43,17 +43,48 @@ $(document).ready(function () {
             { "data": "idPlanDePago", "visible": false }, // Hidden ID column
             { "data": "nombreProyecto" }, // Display project name instead of contract number
             { "data": "nombreCliente" },
-            { "data": "valorTotalContrato" }, 
-            { "data": "montoPagado" },
-            { "data": "saldoPendiente" },
+            { 
+                "data": "valorTotalContrato",
+                "render": function(data) {
+                    return data.toLocaleString('es-ES', { style: 'currency', currency: 'USD' });
+                }
+            }, 
+            { 
+                "data": "montoPagado",
+                "render": function(data) {
+                    return data.toLocaleString('es-ES', { style: 'currency', currency: 'USD' });
+                }
+            },
+            { 
+                "data": "saldoPendiente",
+                "render": function(data) {
+                    return data.toLocaleString('es-ES', { style: 'currency', currency: 'USD' });
+                }
+            },
             { "data": "estadoPlan" },
             {
                 "data": null,
-                "defaultContent": '<button class="btn btn-info btn-sm btn-detalle-plan"><i class="fas fa-eye"></i> Ver Detalle</button>'
+                "defaultContent": '<button class="btn btn-info btn-sm btn-detalle-plan rounded-pill"><i class="fas fa-eye mr-1"></i> Ver Detalle</button>'
             }
         ],
+        dom: '<"row mb-2 align-items-center"<"col-sm-12 col-md-6 d-flex align-items-center gap-2"f><"col-sm-12 col-md-6 d-flex justify-content-end align-items-center gap-2"l>>rtip',
         "language": {
-            "url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json" // Spanish language for DataTables
+            processing:     "Procesando...",
+            search:         "",
+            searchPlaceholder: "Buscar...",
+            lengthMenu:    "Mostrar _MENU_",
+            info:           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            infoEmpty:      "Mostrando 0 a 0 de 0 registros",
+            infoFiltered:   "(filtrado de _MAX_ registros totales)",
+            loadingRecords: "Cargando...",
+            zeroRecords:    "No se encontraron resultados",
+            emptyTable:     "Ningún dato disponible en esta tabla",
+            paginate: {
+                first:      "Primero",
+                previous:   "Anterior",
+                next:       "Siguiente",
+                last:       "Último"
+            }
         },
         "responsive": true
     });
@@ -188,8 +219,18 @@ function cargarDetallePlanDePago(idPlanDePago) {
                     "data": plan.cuotas.$values || [], // Accediendo a $values
                     "columns": [
                         { "data": "numeroCuota" },
-                        { "data": "montoEsperado" },
-                        { "data": "montoPagado" },
+                        { 
+                            "data": "montoEsperado",
+                            "render": function(data) {
+                                return data.toLocaleString('es-ES', { style: 'currency', currency: 'USD' });
+                            }
+                        },
+                        { 
+                            "data": "montoPagado",
+                            "render": function(data) {
+                                return data.toLocaleString('es-ES', { style: 'currency', currency: 'USD' });
+                            }
+                        },
                         { "data": "fechaVencimiento",
                           "render": function (data) {
                               return new Date(data).toLocaleDateString('es-ES');
@@ -199,15 +240,30 @@ function cargarDetallePlanDePago(idPlanDePago) {
                         { // Nueva columna para las acciones
                             "data": "idCuota", // Asumiendo que idCuota es el ID de la cuota
                             "render": function (data, type, row) {
-                                return `<button class="btn btn-primary btn-sm btn-historial-pago" data-id-cuota="${data}"><i class="fas fa-history"></i> Ver Pagos</button>`;
+                                return `<button class="btn btn-primary btn-sm btn-historial-pago rounded-pill" data-id-cuota="${data}"><i class="fas fa-history mr-1"></i> Ver Pagos</button>`;
                             },
                             "orderable": false,
                             "searchable": false,
-                            "width": "100px" // Ancho de la columna
+                            "width": "120px" // Ancho de la columna
                         }
                     ],
                     "language": {
-                        "url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
+                        processing:     "Procesando...",
+                        search:         "",
+                        searchPlaceholder: "Buscar...",
+                        lengthMenu:    "Mostrar _MENU_",
+                        info:           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                        infoEmpty:      "Mostrando 0 a 0 de 0 registros",
+                        infoFiltered:   "(filtrado de _MAX_ registros totales)",
+                        loadingRecords: "Cargando...",
+                        zeroRecords:    "No se encontraron resultados",
+                        emptyTable:     "Ningún dato disponible en esta tabla",
+                        paginate: {
+                            first:      "Primero",
+                            previous:   "Anterior",
+                            next:       "Siguiente",
+                            last:       "Último"
+                        }
                     },
                     "responsive": true,
                     "paging": false, // No paginar las cuotas en el modal
@@ -262,14 +318,29 @@ function mostrarHistorialPagos(idCuota) {
                         { "data": "comprobanteUrl",
                           "render": function (data, type, row) {
                               if (data) {
-                                  return `<a href="${data}" target="_blank" class="btn btn-info btn-sm"><i class="fas fa-file-alt"></i> Ver Comprobante</a>`;
+                                  return `<a href="${data}" target="_blank" class="btn btn-info btn-sm rounded-pill"><i class="fas fa-file-alt mr-1"></i> Ver Comprobante</a>`;
                               }
                               return 'N/A';
                           }
                         }
                     ],
                     "language": {
-                        "url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
+                        processing:     "Procesando...",
+                        search:         "",
+                        searchPlaceholder: "Buscar...",
+                        lengthMenu:    "Mostrar _MENU_",
+                        info:           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                        infoEmpty:      "Mostrando 0 a 0 de 0 registros",
+                        infoFiltered:   "(filtrado de _MAX_ registros totales)",
+                        loadingRecords: "Cargando...",
+                        zeroRecords:    "No se encontraron resultados",
+                        emptyTable:     "Ningún dato disponible en esta tabla",
+                        paginate: {
+                            first:      "Primero",
+                            previous:   "Anterior",
+                            next:       "Siguiente",
+                            last:       "Último"
+                        }
                     },
                     "responsive": true,
                     "paging": false,
