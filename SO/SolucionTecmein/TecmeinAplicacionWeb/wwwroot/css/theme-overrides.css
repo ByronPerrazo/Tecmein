@@ -1,3 +1,11 @@
+:root {
+    --app-primary: #004A93;
+    --app-secondary: #004A93;
+    --app-sidebar: #004A93;
+    --app-text-primary: #ffffff;
+    --app-primary-rgb: 0, 74, 147;
+}
+
 /* Reemplazar colores estáticos de SB Admin 2 / Bootstrap con variables */
 
 /* Backgrounds */

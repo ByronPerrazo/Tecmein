@@ -59,35 +59,51 @@ $(document).ready(function () {
         dom: '<"row mb-2 align-items-center"<"col-sm-12 col-md-6 d-flex align-items-center gap-2"<"toolbar-left">f><"col-sm-12 col-md-6 d-flex justify-content-end align-items-center gap-2"B l>>rtip',
         buttons: [
             {
-                text: '<i class="fas fa-file-excel"></i>',
+                text: '<i class="fas fa-file-excel text-success fa-lg"></i>',
                 extend: 'excelHtml5',
-                titleAttr: 'Exportar a Excel',
-                className: 'btn btn-success btn-sm',
                 title: 'Clientes',
                 filename: 'Reporte Clientes',
-                exportOptions: { columns: [0, 1, 2, 3] }
+                exportOptions: { columns: [0, 1, 2, 3] },
+                className: 'btn btn-link btn-sm p-1'
             },
             {
-                text: '<i class="fas fa-file-pdf"></i>',
+                text: '<i class="fas fa-file-pdf text-danger fa-lg"></i>',
                 extend: 'pdfHtml5',
-                titleAttr: 'Exportar a PDF',
-                className: 'btn btn-danger btn-sm',
                 title: 'Clientes',
                 filename: 'Reporte Clientes',
-                exportOptions: { columns: [0, 1, 2, 3] }
+                exportOptions: { columns: [0, 1, 2, 3] },
+                className: 'btn btn-link btn-sm p-1'
             },
             {
-                text: '<i class="fas fa-print"></i>',
+                text: '<i class="fas fa-print text-primary fa-lg"></i>',
                 extend: 'print',
-                titleAttr: 'Imprimir',
-                className: 'btn btn-info btn-sm',
                 title: 'Clientes',
-                exportOptions: { columns: [0, 1, 2, 3] }
+                exportOptions: { columns: [0, 1, 2, 3] },
+                className: 'btn btn-link btn-sm p-1'
             }
         ],
         language: {
-            url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
+            processing:     "Procesando...",
+            search:         "",
+            searchPlaceholder: "Buscar...",
+            lengthMenu:    "Mostrar _MENU_",
+            info:           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            infoEmpty:      "Mostrando 0 a 0 de 0 registros",
+            infoFiltered:   "(filtrado de _MAX_ registros totales)",
+            loadingRecords: "Cargando...",
+            zeroRecords:    "No se encontraron resultados",
+            emptyTable:     "Ningún dato disponible en esta tabla",
+            paginate: {
+                first:      "Primero",
+                previous:   "Anterior",
+                next:       "Siguiente",
+                last:       "Último"
+            }
         },
+        initComplete: function() {
+            $("#btnNuevoCliente").appendTo(".toolbar-left");
+            $("#btnNuevoCliente").closest(".row").show();
+        }
     });
 
     // Evento para el botón 'Crear Nuevo Cliente'

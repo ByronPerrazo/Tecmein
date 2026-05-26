@@ -91,13 +91,26 @@ $(document).ready(function () {
                 }
             ],
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json",
-                search: "",
+                processing:     "Procesando...",
+                search:         "",
                 searchPlaceholder: "Buscar...",
-                lengthMenu: "Mostrar _MENU_"
+                lengthMenu:    "Mostrar _MENU_",
+                info:           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                infoEmpty:      "Mostrando 0 a 0 de 0 registros",
+                infoFiltered:   "(filtrado de _MAX_ registros totales)",
+                loadingRecords: "Cargando...",
+                zeroRecords:    "No se encontraron resultados",
+                emptyTable:     "Ningún dato disponible en esta tabla",
+                paginate: {
+                    first:      "Primero",
+                    previous:   "Anterior",
+                    next:       "Siguiente",
+                    last:       "Último"
+                }
             },
             initComplete: function() {
                 $("#btnNuevo").appendTo(".toolbar-left");
+                $("#btnNuevo").closest(".row").show();
             }
         });
 });

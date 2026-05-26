@@ -32,6 +32,22 @@
     color: white !important;
     border: none;
     padding: 0.8rem 1.2rem;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+.modal-header-premium .close {
+    color: #ffffff !important;
+    opacity: 0.8 !important;
+    text-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.modal-header-premium .close:hover {
+    opacity: 1 !important;
+    color: #ffffff !important;
 }
 
 .modal-header-premium .modal-title {
