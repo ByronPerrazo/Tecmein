@@ -1,5 +1,25 @@
 var tablaData;
 
+// Configuración de idioma local en español para DataTable
+const lenguajeEspanol = {
+    processing:     "Procesando...",
+    search:         "",
+    searchPlaceholder: "Buscar...",
+    lengthMenu:    "Mostrar _MENU_",
+    info:           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+    infoEmpty:      "Mostrando 0 a 0 de 0 registros",
+    infoFiltered:   "(filtrado de _MAX_ registros totales)",
+    loadingRecords: "Cargando...",
+    zeroRecords:    "No se encontraron resultados",
+    emptyTable:     "Ningún dato disponible en esta tabla",
+    paginate: {
+        first:      "Primero",
+        previous:   "Anterior",
+        next:       "Siguiente",
+        last:       "Último"
+    }
+};
+
 $(document).ready(function () {
     tablaData = $('#tbdata').DataTable({
         responsive: true,
@@ -13,56 +33,115 @@ $(document).ready(function () {
             { "data": "secPlantillaPreContrato", "visible": false, "searchable": false },
             { "data": "nombre" },
             { "data": "numeracionInicial" },
-            { "data": "descripcionTipoDocumento" }, // Nueva columna
+            { "data": "descripcionTipoDocumento" },
             { "data": "fechaRegistro" },
             {
                 "data": "estaActivo", "render": function (valor) {
                     if (valor == 1) {
-                        return '<span class="badge badge-success">Activo</span>'
+                        return '<span class="badge badge-info">Activo</span>'
                     } else {
                         return '<span class="badge badge-danger">Inactivo</span>'
                     }
                 }
             },
             {
-                "defaultContent": '<div class="btn-group" role="group">' +
-                    '<button class="btn btn-primary btn-editar btn-sm"><i class="fas fa-pencil-alt"></i></button>' +
-                    '<button class="btn btn-info btn-parrafos btn-sm"><i class="fas fa-list"></i></button>' +
-                    '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button>' +
-                    '</div>',
+                data: "secPlantillaPreContrato",
+                render: function (data, type, row) {
+                    return `<div class="dropdown">` +
+                           `<button class="btn btn-primary btn-sm dropdown-toggle rounded-pill" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #007bff; border-color: #007bff;">` +
+                           `<i class="fas fa-cog text-warning mr-1"></i> Acciones` +
+                           `</button>` +
+                           `<div class="dropdown-menu">` +
+                           `<a class="dropdown-item btn-editar" href="#"><i class="fas fa-pencil-alt text-primary mr-2"></i> Editar</a>` +
+                           `<a class="dropdown-item btn-parrafos" href="#"><i class="fas fa-paragraph text-info mr-2"></i> Configurar Párrafos</a>` +
+                           `<a class="dropdown-item btn-eliminar" href="#"><i class="fas fa-trash-alt text-danger mr-2"></i> Eliminar</a>` +
+                           `</div>` +
+                           `</div>`;
+                },
                 "orderable": false,
                 "searchable": false,
                 "width": "120px"
             }
         ],
         order: [[0, "desc"]],
-        dom: "Bfrtip",
+        dom: '<"row mb-2 align-items-center"<"col-sm-12 col-md-6 d-flex align-items-center gap-2"<"toolbar-left">f><"col-sm-12 col-md-6 d-flex justify-content-end align-items-center gap-2"B l>>rtip',
         buttons: [
             {
-                text: 'Guardar Excel',
+                text: '<i class="fas fa-file-excel text-success fa-lg"></i>',
                 extend: 'excelHtml5',
-                title: '',
-                filename: 'Reporte Plantillas',
+                title: 'Plantillas de Pre-Contrato',
+                filename: 'Reporte Plantillas Pre-Contrato',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5] // Ajustado para la nueva columna
-                }
-            },
-            {
-                text: 'Guardar PDF',
-                extend: 'pdfHtml5',
-                title: 'Reporte Plantillas',
-                filename: 'Reporte Plantillas',
-                exportOptions: {
-                    columns: [1, 2, 3, 4, 5] // Ajustado para la nueva columna
+                    columns: [0, 1, 2, 3, 4, 5]
                 },
-                customize: function (doc) {
-                    doc.content[1].table.widths = ['20%', '20%', '20%', '20%', '20%'] // Ajustado
-                }
-            },
+                className: 'btn btn-link btn-sm p-1'
+            }
         ],
-        language: {
-            url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
-        },
+        "language": lenguajeEspanol,
+        initComplete: function() {
+            $("#btnNuevo").appendTo(".toolbar-left");
+            $("#btnNuevo").closest(".row").show();
+        }
+    });
+
+    $("#btnNuevo").click(function () {
+        mostrarModal();
+    });
+
+    $("#btnGuardar").click(function () {
+        GuardarCambios();
+    });
+
+    // Evento para el botón de editar
+    $('#tbdata tbody').on('click', '.btn-editar', function (e) {
+        e.preventDefault();
+        let fila = $(this).closest("tr").hasClass("child") ? $(this).closest("tr").prev() : $(this).closest("tr");
+        var data = tablaData.row(fila).data();
+        mostrarModal(data);
+    });
+
+    // Evento para el botón de eliminar
+    $('#tbdata tbody').on('click', '.btn-eliminar', function (e) {
+        e.preventDefault();
+        let fila = $(this).closest("tr").hasClass("child") ? $(this).closest("tr").prev() : $(this).closest("tr");
+        var data = tablaData.row(fila).data();
+
+        Swal.fire({
+            title: "¿Está seguro de eliminar esta plantilla?",
+            text: "Una vez eliminada, no podrá recuperarse.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            confirmButtonText: "Sí, eliminar",
+            cancelButtonText: "No, cancelar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/PlantillaPreContrato/Eliminar?SecPlantillaPreContrato=${data.secPlantillaPreContrato}`, {
+                    method: "DELETE"
+                })
+                .then(response => response.json())
+                .then(responseJson => {
+                    if (responseJson.resultado) {
+                        tablaData.ajax.reload();
+                        Swal.fire("¡Eliminado!", "La plantilla ha sido eliminada correctamente.", "success");
+                    } else {
+                        Swal.fire("Error", "No se pudo eliminar la plantilla.", "error");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error al eliminar:", error);
+                    Swal.fire("Error", "Ocurrió un error al intentar eliminar la plantilla.", "error");
+                });
+            }
+        });
+    });
+
+    // Evento para el botón de párrafos
+    $('#tbdata tbody').on('click', '.btn-parrafos', function (e) {
+        e.preventDefault();
+        let fila = $(this).closest("tr").hasClass("child") ? $(this).closest("tr").prev() : $(this).closest("tr");
+        let data = tablaData.row(fila).data();
+        window.location.href = `/PlantillaPreContrato/Parrafos?id=${data.secPlantillaPreContrato}`;
     });
 });
 
@@ -72,16 +151,14 @@ function mostrarModal(data = null) {
     $("#txtNumeracionInicial").val(data ? data.numeracionInicial : "");
     $("#cboEstado").val(data ? data.estaActivo : 1);
 
-    // Fetch TipoDocumento list and populate dropdown
     fetch("/PlantillaPreContrato/ListaTiposDocumento")
         .then(response => response.json())
         .then(responseJson => {
             if (responseJson.data) {
-                $("#cboTipoDocumento").empty(); // Clear existing options
-                responseJson.data.$values.forEach(item => { // Assuming $values for OData
+                $("#cboTipoDocumento").empty();
+                responseJson.data.$values.forEach(item => {
                     $("#cboTipoDocumento").append(new Option(item.text, item.value));
                 });
-                // Set selected value if editing
                 if (data) {
                     $("#cboTipoDocumento").val(data.secTipoDocumento);
                 }
@@ -100,7 +177,12 @@ function GuardarCambios() {
         Nombre: $("#txtNombre").val(),
         NumeracionInicial: $("#txtNumeracionInicial").val(),
         EstaActivo: parseInt($("#cboEstado").val()),
-        SecTipoDocumento: parseInt($("#cboTipoDocumento").val()) // Añadido
+        SecTipoDocumento: parseInt($("#cboTipoDocumento").val())
+    }
+
+    if (!objeto.Nombre || objeto.Nombre.trim() === "" || !objeto.SecTipoDocumento) {
+        Swal.fire("Atención", "Por favor, complete todos los campos requeridos.", "warning");
+        return;
     }
 
     fetch(`/PlantillaPreContrato/${objeto.SecPlantillaPreContrato == 0 ? "Crear" : "Editar"}`, {
@@ -125,49 +207,3 @@ function GuardarCambios() {
         Swal.fire("Error", "Ocurrió un error al intentar guardar los cambios.", "error");
     });
 }
-
-// Evento para el botón de editar
-$('#tbdata tbody').on('click', '.btn-editar', function () {
-    var data = tablaData.row($(this).parents('tr')).data();
-    mostrarModal(data);
-});
-
-// Evento para el botón de eliminar
-$('#tbdata tbody').on('click', '.btn-eliminar', function () {
-    var data = tablaData.row($(this).parents('tr')).data();
-
-    Swal.fire({
-        title: "¿Está seguro de eliminar esta plantilla?",
-        text: "Una vez eliminada, no podrá recuperarse.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: '#dc3545',
-        confirmButtonText: "Sí, eliminar",
-        cancelButtonText: "No, cancelar"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch(`/PlantillaPreContrato/Eliminar?SecPlantillaPreContrato=${data.secPlantillaPreContrato}`, {
-                method: "DELETE"
-            })
-            .then(response => response.json())
-            .then(responseJson => {
-                if (responseJson.resultado) {
-                    tablaData.ajax.reload();
-                    Swal.fire("¡Eliminado!", "La plantilla ha sido eliminada correctamente.", "success");
-                } else {
-                    Swal.fire("Error", "No se pudo eliminar la plantilla.", "error");
-                }
-            })
-            .catch(error => {
-                console.error("Error al eliminar:", error);
-                Swal.fire("Error", "Ocurrió un error al intentar eliminar la plantilla.", "error");
-            });
-        }
-    });
-});
-
-// Evento para el botón de párrafos
-$('#tbdata tbody').on('click', '.btn-parrafos', function () {
-    let data = tablaData.row($(this).parents('tr')).data();
-    window.location.href = `/PlantillaPreContrato/Parrafos?id=${data.secPlantillaPreContrato}`;
-});

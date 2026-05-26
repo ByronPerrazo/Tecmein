@@ -1,11 +1,11 @@
 function renderMenuTree(menus, container) {
-    let html = '<table class="table table-bordered table-hover table-rounded">';
-    html += '<thead class="thead-dark"><tr>';
-    html += '<th style="width: 50%;"><input type="checkbox" id="checkAllMenus"> Menú</th>';
-    html += '<th style="width: 12.5%; text-align: center;"><input type="checkbox" id="checkAllCrear"> Crear</th>';
-    html += '<th style="width: 12.5%; text-align: center;"><input type="checkbox" id="checkAllLeer"> Leer</th>';
-    html += '<th style="width: 12.5%; text-align: center;"><input type="checkbox" id="checkAllActualizar"> Actualizar</th>';
-    html += '<th style="width: 12.5%; text-align: center;"><input type="checkbox" id="checkAllEliminar"> Eliminar</th>';
+    let html = '<table class="table-modern table-bordered" style="width: 100%;">';
+    html += '<thead><tr>';
+    html += '<th style="width: 50%;"><input type="checkbox" id="checkAllMenus" class="mr-1"> Menú</th>';
+    html += '<th style="width: 12.5%; text-align: center;"><input type="checkbox" id="checkAllCrear" class="mr-1"> Crear</th>';
+    html += '<th style="width: 12.5%; text-align: center;"><input type="checkbox" id="checkAllLeer" class="mr-1"> Leer</th>';
+    html += '<th style="width: 12.5%; text-align: center;"><input type="checkbox" id="checkAllActualizar" class="mr-1"> Actualizar</th>';
+    html += '<th style="width: 12.5%; text-align: center;"><input type="checkbox" id="checkAllEliminar" class="mr-1"> Eliminar</th>';
     html += '</tr></thead>';
     html += '<tbody>';
 

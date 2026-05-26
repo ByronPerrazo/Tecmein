@@ -1,6 +1,4 @@
 let tablaData;
-// Corregido: Apunta a modalData, el id estándar en la nueva vista.
-const modalData = new bootstrap.Modal(document.getElementById('modalData'));
 
 const modeloBase = {
     idPermiso: "",
@@ -8,6 +6,26 @@ const modeloBase = {
 };
 
 $(document).ready(function () {
+    // Configuración de idioma local en español para DataTable
+    const lenguajeEspanol = {
+        processing:     "Procesando...",
+        search:         "",
+        searchPlaceholder: "Buscar...",
+        lengthMenu:    "Mostrar _MENU_",
+        info:           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+        infoEmpty:      "Mostrando 0 a 0 de 0 registros",
+        infoFiltered:   "(filtrado de _MAX_ registros totales)",
+        loadingRecords: "Cargando...",
+        zeroRecords:    "No se encontraron resultados",
+        emptyTable:     "Ningún dato disponible en esta tabla",
+        paginate: {
+            first:      "Primero",
+            previous:   "Anterior",
+            next:       "Siguiente",
+            last:       "Último"
+        }
+    };
+
     tablaData = $('#tablaPermisos').DataTable({
         responsive: true,
         "ajax": {
@@ -20,47 +38,61 @@ $(document).ready(function () {
             { "data": "idPermiso" },
             { "data": "descripcion" },
             {
-                "defaultContent": '<div class="btn-group" role="group"><button class="btn btn-primary btn-sm btn-editar"><i class="fas fa-pencil-alt"></i></button>' +
-                                  '<button class="btn btn-danger btn-sm btn-eliminar"><i class="fas fa-trash-alt"></i></button></div>',
+                data: "idPermiso",
+                render: function (data, type, row) {
+                    return `<div class="dropdown">` +
+                           `<button class="btn btn-primary btn-sm dropdown-toggle rounded-pill" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #007bff; border-color: #007bff;">` +
+                           `<i class="fas fa-cog text-warning mr-1"></i> Acciones` +
+                           `</button>` +
+                           `<div class="dropdown-menu">` +
+                           `<a class="dropdown-item btn-editar" href="#"><i class="fas fa-pencil-alt text-primary mr-2"></i> Editar</a>` +
+                           `<a class="dropdown-item btn-eliminar" href="#"><i class="fas fa-trash-alt text-danger mr-2"></i> Eliminar</a>` +
+                           `</div>` +
+                           `</div>`;
+                },
                 "orderable": false,
                 "searchable": false,
-                "width": "80px"
+                "width": "120px"
             }
         ],
         order: [[0, "asc"]],
-        dom: "Bfrtip",
+        dom: '<"row mb-2 align-items-center"<"col-sm-12 col-md-6 d-flex align-items-center gap-2"<"toolbar-left">f><"col-sm-12 col-md-6 d-flex justify-content-end align-items-center gap-2"B l>>rtip',
         buttons: [
             {
-                text: '<i class="fas fa-file-excel"></i> Excel',
+                text: '<i class="fas fa-file-excel text-success fa-lg"></i>',
                 extend: 'excelHtml5',
                 title: 'Permisos',
                 filename: 'Reporte Permisos',
                 exportOptions: {
                     columns: [0, 1]
-                }
+                },
+                className: 'btn btn-link btn-sm p-1'
             },
             {
-                text: '<i class="fas fa-file-pdf"></i> PDF',
+                text: '<i class="fas fa-file-pdf text-danger fa-lg"></i>',
                 extend: 'pdfHtml5',
                 title: 'Permisos',
                 filename: 'Reporte Permisos',
                 exportOptions: {
                     columns: [0, 1]
-                }
+                },
+                className: 'btn btn-link btn-sm p-1'
             },
             {
-                text: '<i class="fas fa-print"></i> Imprimir',
+                text: '<i class="fas fa-print text-primary fa-lg"></i>',
                 extend: 'print',
                 title: 'Permisos',
                 exportOptions: {
                     columns: [0, 1]
-                }
-            },
-            'pageLength'
+                },
+                className: 'btn btn-link btn-sm p-1'
+            }
         ],
-        language: {
-            url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
-        },
+        "language": lenguajeEspanol,
+        initComplete: function() {
+            $("#btnNuevo").appendTo(".toolbar-left");
+            $("#btnNuevo").closest(".row").show();
+        }
     });
 });
 
@@ -73,7 +105,7 @@ function mostrarModal(modelo = modeloBase) {
     // Si es un nuevo permiso, el ID es editable. Si se edita, no.
     $("#txtIdPermisoInput").prop("disabled", modelo.idPermiso !== "");
 
-    modalData.show(); // Corregido
+    $('#modalData').modal('show');
 }
 
 $("#btnNuevo").click(function () {
@@ -104,7 +136,7 @@ $("#btnGuardar").click(function () {
     })
     .then(responseJson => {
         if (responseJson.estado) {
-            modalData.hide(); // Corregido
+            $('#modalData').modal('hide');
             Swal.fire("Listo!", "El permiso fue guardado", "success");
             tablaData.ajax.reload();
         } else {

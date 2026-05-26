@@ -1,57 +1,49 @@
-<div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-labelledby="modalDataLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="exampleModalLabel">Plantilla de Pre-Contrato</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <div class="modal-header modal-header-premium bg-second-primary">
+                <h5 class="modal-title m-0 font-weight-bold text-white" id="modalDataLabel"><i class="fas fa-file-alt text-warning mr-2"></i> Plantilla de Pre-Contrato</h5>
+                <button class="close text-white" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
             <div class="modal-body">
                 <form>
                     <input type="hidden" id="txtSecPlantillaPreContrato" value="0" />
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <label for="txtNombre">Nombre</label>
-                                <input type="text" class="form-control" id="txtNombre" autocomplete="off">
-                            </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="txtNombre" class="font-weight-bold">Nombre</label>
+                            <input type="text" class="form-control form-control-sm" id="txtNombre" autocomplete="off">
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <label for="txtNumeracionInicial">Numeración Inicial</label>
-                                <input type="text" class="form-control" id="txtNumeracionInicial" autocomplete="off">
-                            </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="txtNumeracionInicial" class="font-weight-bold">Numeración Inicial</label>
+                            <input type="text" class="form-control form-control-sm" id="txtNumeracionInicial" autocomplete="off">
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <label for="cboTipoDocumento">Tipo de Documento</label>
-                                <select id="cboTipoDocumento" name="SecTipoDocumento" class="form-control">
-                                    <!-- Options will be loaded by JavaScript -->
-                                </select>
-                            </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="cboTipoDocumento" class="font-weight-bold">Tipo de Documento</label>
+                            <select id="cboTipoDocumento" name="SecTipoDocumento" class="form-control form-control-sm">
+                                <!-- Options will be loaded by JavaScript -->
+                            </select>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <label for="cboEstado">Estado</label>
-                                <select id="cboEstado" class="form-control">
-                                    <option value="1">Activo</option>
-                                    <option value="0">Inactivo</option>
-                                </select>
-                            </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="cboEstado" class="font-weight-bold">Estado</label>
+                            <select id="cboEstado" class="form-control form-control-sm">
+                                <option value="1">Activo</option>
+                                <option value="0">Inactivo</option>
+                            </select>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-danger" type="button" data-dismiss="modal">Cancelar</button>
-                <button class="btn btn-primary" type="button" onclick="GuardarCambios()">Guardar</button>
+                <button class="btn btn-primary btn-sm rounded-pill" type="button" id="btnGuardar"><i class="fas fa-save mr-1"></i> Guardar</button>
+                <button class="btn btn-danger btn-sm rounded-pill" type="button" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>

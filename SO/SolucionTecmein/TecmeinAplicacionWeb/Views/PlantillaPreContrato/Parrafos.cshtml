@@ -6,110 +6,114 @@
 @section Estilos {
     <link rel="stylesheet" href="~/vendor/datatables/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="~/css/styleGenerales.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/premium-design.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/modern-table.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/theme-overrides.css" asp-append-version="true">
 }
 
 <div class="card shadow mb-4">
     <div class="card-header py-3 bg-second-primary">
-        <h6 class="m-0 font-weight-bold text-white">Párrafos de la Plantilla</h6>
+        <h6 class="m-0 font-weight-bold text-white">
+            <i class="fas fa-paragraph text-warning mr-1"></i> Párrafos de la Plantilla
+        </h6>
     </div>
-    <div class="card-body">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <button class="btn btn-success" id="btnNuevo"><i class="fas fa-plus-circle"></i> Nuevo Párrafo</button>
-                        <div class="d-inline-block ml-2">
-                            <input type="file" id="archivoWord" accept=".docx" style="display: none;" />
-                            <button class="btn btn-primary" id="btnCargarWord"><i class="fas fa-file-word"></i> Cargar desde Word</button>
-                        </div>
-                    </div>
-                </div>
-                <hr />
-                <div class="row">
-                    <div class="col-sm-12">
-                        <table class="table table-bordered" id="tbParrafos" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>Orden</th>
-                                    <th>Contenido</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
+    <div class="card-body pt-1">
+        <div class="row" style="display:none;">
+            <div id="toolbar-botones" class="d-flex align-items-center">
+                <button class="btn btn-success" id="btnNuevo"><i class="fas fa-plus"></i> Nuevo Párrafo</button>
+                <div class="d-inline-block ml-2">
+                    <input type="file" id="archivoWord" accept=".docx" style="display: none;" />
+                    <button class="btn btn-primary" id="btnCargarWord"><i class="fas fa-file-word mr-1"></i> Cargar desde Word</button>
                 </div>
             </div>
         </div>
-        
-        <!-- Modal -->
-        <div class="modal fade" id="parrafoModal" tabindex="-1" role="dialog" aria-labelledby="parrafoModalLabel" aria-hidden="true" data-backdrop="static">
-            <div class="modal-dialog modal-xl" role="document">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title" id="parrafoModalLabel">Detalle del Párrafo</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-sm-8">
-                                <form id="parrafoForm">
-                                    <input type="hidden" id="SecPlantillaPreContratoParrafo" value="0" />
-                                    <input type="hidden" id="SecPlantillaPreContrato" value="@ViewBag.IdPlantilla" />
-        
-                                    <div class="form-group">
-                                        <label for="Contenido">Contenido</label>
-                                        <textarea class="form-control" id="Contenido" rows="15"></textarea>
-                                    </div>
-        
-                                     <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label for="Orden">Orden</label>
-                                                <input type="number" class="form-control" id="Orden" min="0">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                             <div class="form-group">
-                                                <label for="EstaActivo">Estado</label>
-                                                <select class="form-control" id="EstaActivo">
-                                                    <option value="1">Activo</option>
-                                                    <option value="0">Inactivo</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="col-sm-4">
-                                <div class="card shadow">
-                                    <div class="card-header py-3 bg-info">
-                                        <h6 class="m-0 font-weight-bold text-white">Parámetros Disponibles</h6>
-                                    </div>
-                                    <div class="card-body" id="parametros-disponibles" style="max-height: 450px; overflow-y: auto;">
-                                        <!-- Los parámetros se cargarán aquí dinámicamente -->
-                                    </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table-modern" id="tbParrafos" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Orden</th>
+                            <th>Contenido</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Crear/Editar Párrafo -->
+<div class="modal fade" id="parrafoModal" tabindex="-1" role="dialog" aria-labelledby="parrafoModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header modal-header-premium bg-second-primary">
+                <h5 class="modal-title m-0 font-weight-bold text-white" id="parrafoModalLabel"><i class="fas fa-paragraph text-warning mr-2"></i> Detalle del Párrafo</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <form id="parrafoForm">
+                            <input type="hidden" id="SecPlantillaPreContratoParrafo" value="0" />
+                            <input type="hidden" id="SecPlantillaPreContrato" value="@ViewBag.IdPlantilla" />
+
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label for="Contenido" class="font-weight-bold">Contenido</label>
+                                    <textarea class="form-control" id="Contenido" rows="15"></textarea>
                                 </div>
                             </div>
-                        </div>
+
+                             <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="Orden" class="font-weight-bold">Orden</label>
+                                    <input type="number" class="form-control form-control-sm" id="Orden" min="0">
+                                </div>
+                                <div class="form-group col-md-6">
+                                     <label for="EstaActivo" class="font-weight-bold">Estado</label>
+                                     <select class="form-control form-control-sm" id="EstaActivo">
+                                         <option value="1">Activo</option>
+                                         <option value="0">Inactivo</option>
+                                     </select>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                        <button type="button" class="btn btn-primary" id="btnGuardar">Guardar</button>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-header py-2 bg-second-primary">
+                                <h6 class="m-0 font-weight-bold text-white"><i class="fas fa-code text-warning mr-1"></i> Parámetros Disponibles</h6>
+                            </div>
+                            <div class="card-body bg-light" id="parametros-disponibles" style="max-height: 450px; overflow-y: auto; padding: 10px;">
+                                <!-- Los parámetros se cargarán aquí dinámicamente -->
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm rounded-pill" id="btnGuardar"><i class="fas fa-save mr-1"></i> Guardar</button>
+                <button type="button" class="btn btn-danger btn-sm rounded-pill" data-dismiss="modal">Cancelar</button>
+            </div>
         </div>
-        
-        
-        @section Scripts{
-            
-            <script src="~/vendor/datatables/jquery.dataTables.min.js"></script>
-            <script src="~/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-            <script src="~/vendor/datatables/extensiones/js/dataTables.responsive.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-            <script src="~/js/vistas/PlantillaPreContratoParrafo_Parrafos.js"></script>
-        }
-        
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/dataTables.responsive.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/dataTables.buttons.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/jszip.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.html5.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.print.min.js"></script>
+    <script src="~/js/vistas/PlantillaPreContratoParrafo_Parrafos.js" asp-append-version="true"></script>
+}

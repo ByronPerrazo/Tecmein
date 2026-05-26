@@ -10,6 +10,26 @@ $(document).ready(function () {
         }
     }
 
+    // Configuración de idioma local en español para DataTable
+    const lenguajeEspanol = {
+        processing:     "Procesando...",
+        search:         "",
+        searchPlaceholder: "Buscar...",
+        lengthMenu:    "Mostrar _MENU_",
+        info:           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+        infoEmpty:      "Mostrando 0 a 0 de 0 registros",
+        infoFiltered:   "(filtrado de _MAX_ registros totales)",
+        loadingRecords: "Cargando...",
+        zeroRecords:    "No se encontraron resultados",
+        emptyTable:     "Ningún dato disponible en esta tabla",
+        paginate: {
+            first:      "Primero",
+            previous:   "Anterior",
+            next:       "Siguiente",
+            last:       "Último"
+        }
+    };
+
     tablaFormaPago = $('#tbFormaPago').DataTable({
         responsive: true,
         ajax: {
@@ -33,47 +53,59 @@ $(document).ready(function () {
                 }
             },
             {
-                "defaultContent": '<div class="btn-group" role="group" aria-label="Acciones de Forma de Pago">' +
-                                    '<button class="btn btn-primary btn-editar btn-sm" title="Editar"><i class="fas fa-pencil-alt"></i></button>' +
-                                    '<button class="btn btn-danger btn-eliminar btn-sm" title="Eliminar"><i class="fas fa-trash-alt"></i></button>' +
-                                  '</div>',
+                data: "secFormaPago",
+                render: function (data, type, row) {
+                    return `<div class="dropdown">` +
+                           `<button class="btn btn-primary btn-sm dropdown-toggle rounded-pill" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #007bff; border-color: #007bff;">` +
+                           `<i class="fas fa-cog text-warning mr-1"></i> Acciones` +
+                           `</button>` +
+                           `<div class="dropdown-menu">` +
+                           `<a class="dropdown-item btn-editar" href="#"><i class="fas fa-pencil-alt text-primary mr-2"></i> Editar</a>` +
+                           `<a class="dropdown-item btn-eliminar" href="#"><i class="fas fa-trash-alt text-danger mr-2"></i> Eliminar</a>` +
+                           `</div>` +
+                           `</div>`;
+                },
                 "orderable": false,
                 "searchable": false,
-                "width": "100px"
+                "width": "120px"
             }
         ],
-        dom: "Bfrtip",
+        dom: '<"row mb-2 align-items-center"<"col-sm-12 col-md-6 d-flex align-items-center gap-2"<"toolbar-left">f><"col-sm-12 col-md-6 d-flex justify-content-end align-items-center gap-2"B l>>rtip',
         buttons: [
             {
-                text: '<i class="fas fa-file-excel"></i> Excel',
+                text: '<i class="fas fa-file-excel text-success fa-lg"></i>',
                 extend: 'excelHtml5',
                 title: 'Formas de Pago',
                 filename: 'Reporte Formas de Pago',
                 exportOptions: {
                     columns: [0, 1]
-                }
+                },
+                className: 'btn btn-link btn-sm p-1'
             },
             {
-                text: '<i class="fas fa-file-pdf"></i> PDF',
+                text: '<i class="fas fa-file-pdf text-danger fa-lg"></i>',
                 extend: 'pdfHtml5',
                 title: 'Formas de Pago',
                 filename: 'Reporte Formas de Pago',
                 exportOptions: {
                     columns: [0, 1]
-                }
+                },
+                className: 'btn btn-link btn-sm p-1'
             },
             {
-                text: '<i class="fas fa-print"></i> Imprimir',
+                text: '<i class="fas fa-print text-primary fa-lg"></i>',
                 extend: 'print',
                 title: 'Formas de Pago',
                 exportOptions: {
                     columns: [0, 1]
-                }
-            },
-            'pageLength'
+                },
+                className: 'btn btn-link btn-sm p-1'
+            }
         ],
-        language: {
-            url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
+        "language": lenguajeEspanol,
+        initComplete: function() {
+            $("#btnNuevaFormaPago").appendTo(".toolbar-left");
+            $("#btnNuevaFormaPago").closest(".row").show();
         }
     });
 
@@ -126,7 +158,8 @@ $(document).ready(function () {
     });
 
     $('#tbFormaPago tbody').on('click', '.btn-editar', function () {
-        const data = tablaFormaPago.row($(this).parents('tr')).data();
+        let fila = $(this).closest("tr").hasClass("child") ? $(this).closest("tr").prev() : $(this).closest("tr");
+        const data = tablaFormaPago.row(fila).data();
         
         $('#SecFormaPago').val(data.secFormaPago);
         $('#Descripcion').val(data.descripcion);
@@ -136,7 +169,8 @@ $(document).ready(function () {
     });
 
     $('#tbFormaPago tbody').on('click', '.btn-eliminar', function () {
-        const data = tablaFormaPago.row($(this).parents('tr')).data();
+        let fila = $(this).closest("tr").hasClass("child") ? $(this).closest("tr").prev() : $(this).closest("tr");
+        const data = tablaFormaPago.row(fila).data();
         
         Swal.fire({
             title: '¿Está seguro?',

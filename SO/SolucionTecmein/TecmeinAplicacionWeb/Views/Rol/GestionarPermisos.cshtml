@@ -5,9 +5,18 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section Estilos {
+    <link rel="stylesheet" href="~/css/styleGenerales.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/premium-design.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/modern-table.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/theme-overrides.css" asp-append-version="true">
+}
+
 <div class="card shadow mb-4">
     <div class="card-header py-3 bg-second-primary">
-        <h6 class="m-0 font-weight-bold text-white">Gestionar Permisos para Rol: @Model.NombreRol</h6>
+        <h6 class="m-0 font-weight-bold text-white">
+            <i class="fas fa-key text-warning mr-1"></i> Gestionar Permisos para Rol: @Model.NombreRol
+        </h6>
     </div>
     <div class="card-body">
         <input type="hidden" id="secRol" value="@Model.SecRol" />
@@ -18,12 +27,15 @@
             </div>
         </div>
         <hr />
-        <button class="btn btn-primary" id="btnGuardarPermisos">Guardar Permisos</button>
+        <div class="text-right">
+            <button class="btn btn-primary btn-sm rounded-pill mr-1" id="btnGuardarPermisos"><i class="fas fa-save mr-1"></i> Guardar Permisos</button>
+            <a href="/Rol/Index" class="btn btn-secondary btn-sm rounded-pill"><i class="fas fa-arrow-left mr-1"></i> Volver a la Lista</a>
+        </div>
     </div>
 </div>
 
 @section Scripts{
-    <script src="~/js/vistas/gestionar_permisos.js"></script>
+    <script src="~/js/vistas/gestionar_permisos.js" asp-append-version="true"></script>
     <script>
         $(document).ready(function () {
             const rawMenusData = @Html.Raw(Json.Serialize(Model.Menus));

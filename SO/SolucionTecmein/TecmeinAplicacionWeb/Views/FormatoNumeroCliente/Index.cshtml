@@ -1,22 +1,30 @@
-
 @{
     ViewData["Title"] = "Numeración de Clientes";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section Estilos {
+    <link rel="stylesheet" href="~/vendor/datatables/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="~/css/styleGenerales.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/premium-design.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/modern-table.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/theme-overrides.css" asp-append-version="true">
+}
+
 <div class="card shadow mb-4">
     <div class="card-header py-3 bg-second-primary">
-        <h6 class="m-0 font-weight-bold text-white">Configuración de Numeración de Clientes</h6>
+        <h6 class="m-0 font-weight-bold text-white">
+            <i class="fas fa-cogs text-warning mr-1"></i> Configuración de Numeración de Clientes
+        </h6>
     </div>
     <div class="card-body pt-1">
-        <div class="row">
+        <div class="row" style="display:none;">
             <div class="col-sm-3">
-                <button class="btn btn-success" id="btnNuevo">
-                    <i class="fas fa-plus-circle"></i> Nueva Configuración
-                </button>
+                <button class="btn btn-success" id="btnNuevo"><i class="fas fa-plus"></i> Nueva Configuración</button>
             </div>
         </div>
-        <hr />
         <div class="row">
             <div class="col-sm-12">
                 <table class="table-modern" id="tbdata" cellspacing="0" style="width:100%">
@@ -36,59 +44,62 @@
     </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+<!-- Modal para Configuración -->
+<div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-labelledby="modalDataLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="card shadow-sm">
-                <div class="card-header py-2 bg-second-primary">
-                    <h6 class="m-0 font-weight-bold text-white">
-                        <i class="fas fa-cogs"></i> Detalle de Configuración
-                        <button class="close float-right" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true" class="text-white">×</span>
-                        </button>
-                    </h6>
-                </div>
-                <div class="card-body p-1">
-                    <form>
-                        <link rel="stylesheet" href="~/css/styleGenerales.css">
-                        <link rel="stylesheet" href="~/css/modern-table.css">
-                        <input type="hidden" id="txtId" value="0">
-                        <div class="form-group">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="checkUsaFormato">
-                                <label class="form-check-label" for="checkUsaFormato">Usar Formato de Numeración Automática</label>
+            <div class="modal-header modal-header-premium bg-second-primary">
+                <h5 class="modal-title m-0 font-weight-bold text-white" id="modalDataLabel"><i class="fas fa-cogs text-warning mr-2"></i> Detalle de Configuración</h5>
+                <button class="close text-white" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="hidden" id="txtId" value="0">
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="checkUsaFormato">
+                                <label class="custom-control-label font-weight-bold" for="checkUsaFormato">Usar Formato de Numeración Automática</label>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="txtFormato">Formato</label>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="txtFormato" class="font-weight-bold">Formato</label>
                             <input type="text" class="form-control form-control-sm" id="txtFormato" placeholder="Ej: CLI-{YYYY}-">
                             <small class="form-text text-muted">Use {YYYY} para el año actual. El número consecutivo se agregará al final.</small>
                         </div>
-                        <div class="form-group">
-                            <label for="txtNumeroInicio">Próximo Número</label>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="txtNumeroInicio" class="font-weight-bold">Próximo Número</label>
                             <input type="number" class="form-control form-control-sm" id="txtNumeroInicio">
                         </div>
-                        <div class="form-group">
-                            <label for="txtLongitudNumero">Longitud Número</label>
+                        <div class="form-group col-md-6">
+                            <label for="txtLongitudNumero" class="font-weight-bold">Longitud Número</label>
                             <input type="number" class="form-control form-control-sm" id="txtLongitudNumero" min="3">
-                            <small class="form-text text-muted">Define el número total de dígitos para el consecutivo (ej: 5 para 00001).</small>
+                            <small class="form-text text-muted">Mínimo 3 dígitos (ej: 5 para 00001).</small>
                         </div>
-                    </form>
-                </div>
-                <div class="card-body p-0 d-flex justify-content-end">
-                    <button class="btn btn-primary btn-sm m-1 mr-2" type="button" id="btnGuardar">Guardar</button>
-                    <button class="btn btn-danger btn-sm m-1" type="button" data-dismiss="modal">Cancelar</button>
-                </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary btn-sm rounded-pill" type="button" id="btnGuardar"><i class="fas fa-save mr-1"></i> Guardar</button>
+                <button class="btn btn-danger btn-sm rounded-pill" type="button" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>
 </div>
 
-
 @section Scripts{
     <script src="~/vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="~/vendor/datatables/dataTables.bootstrap4.min.js"></script>
     <script src="~/vendor/datatables/extensiones/js/dataTables.responsive.min.js"></script>
-    <script src="~/js/vistas/FormatoNumeroCliente_Index.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/dataTables.buttons.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/jszip.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.html5.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.print.min.js"></script>
+    <script src="~/js/vistas/FormatoNumeroCliente_Index.js" asp-append-version="true"></script>
 }

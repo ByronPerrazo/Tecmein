@@ -1,8 +1,24 @@
 $(document).ready(function () {
     var tablaActivosCliente;
 
-    const spanishLanguage = {
-        "url": "/js/datatables/i18n/Spanish.json"
+    // Configuración de idioma local en español para DataTable
+    const lenguajeEspanol = {
+        processing:     "Procesando...",
+        search:         "",
+        searchPlaceholder: "Buscar...",
+        lengthMenu:    "Mostrar _MENU_",
+        info:           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+        infoEmpty:      "Mostrando 0 a 0 de 0 registros",
+        infoFiltered:   "(filtrado de _MAX_ registros totales)",
+        loadingRecords: "Cargando...",
+        zeroRecords:    "No se encontraron resultados",
+        emptyTable:     "Ningún dato disponible en esta tabla",
+        paginate: {
+            first:      "Primero",
+            previous:   "Anterior",
+            next:       "Siguiente",
+            last:       "Último"
+        }
     };
 
     function cargarDatos() {
@@ -13,8 +29,7 @@ $(document).ready(function () {
         tablaActivosCliente = $("#tablaActivosCliente").DataTable({
             responsive: true,
             "ajax": {
-                // Endpoint para listar activos por cliente, o todos si no se especifica
-                "url": "/ActivoCliente/ListarActivosPorCliente?secCliente=0", // TODO: Ajustar para el cliente actual o una forma de seleccionar
+                "url": "/ActivoCliente/ListarActivosPorCliente?secCliente=0",
                 "type": "GET",
                 "datatype": "json",
                 "dataSrc": function (json) {
@@ -35,9 +50,15 @@ $(document).ready(function () {
                 {
                     "data": "idActivoCliente",
                     "render": function (data, type, row) {
-                        const btnEditar = `<button class="btn btn-primary btn-sm btn-editar" data-id="${data}" title="Editar"><i class="fas fa-pencil-alt"></i></button>`;
-                        const btnEliminar = `<button class="btn btn-danger btn-sm btn-eliminar" data-id="${data}" title="Eliminar"><i class="fas fa-trash-alt"></i></button>`;
-                        return `<div class="btn-group" role="group">${btnEditar}${btnEliminar}</div>`;
+                        return `<div class="dropdown">` +
+                               `<button class="btn btn-primary btn-sm dropdown-toggle rounded-pill" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #007bff; border-color: #007bff;">` +
+                               `<i class="fas fa-cog text-warning mr-1"></i> Acciones` +
+                               `</button>` +
+                               `<div class="dropdown-menu">` +
+                               `<a class="dropdown-item btn-editar" href="#" data-id="${data}"><i class="fas fa-pencil-alt text-primary mr-2"></i> Editar</a>` +
+                               `<a class="dropdown-item btn-eliminar" href="#" data-id="${data}"><i class="fas fa-trash-alt text-danger mr-2"></i> Eliminar</a>` +
+                               `</div>` +
+                               `</div>`;
                     },
                     "orderable": false,
                     "searchable": false,
@@ -45,7 +66,22 @@ $(document).ready(function () {
                 }
             ],
             "order": [[0, "desc"]],
-            "language": spanishLanguage
+            dom: '<"row mb-2 align-items-center"<"col-sm-12 col-md-6 d-flex align-items-center gap-2"<"toolbar-left">f><"col-sm-12 col-md-6 d-flex justify-content-end align-items-center gap-2"B l>>rtip',
+            buttons: [
+                {
+                    text: '<i class="fas fa-file-excel text-success fa-lg"></i>',
+                    extend: 'excelHtml5',
+                    title: 'Activos de Clientes',
+                    filename: 'Reporte Activos Clientes',
+                    exportOptions: { columns: [0, 1, 2, 3, 4] },
+                    className: 'btn btn-link btn-sm p-1'
+                }
+            ],
+            "language": lenguajeEspanol,
+            initComplete: function() {
+                $("#btnNuevo").appendTo(".toolbar-left");
+                $("#btnNuevo").closest(".row").show();
+            }
         });
     }
 

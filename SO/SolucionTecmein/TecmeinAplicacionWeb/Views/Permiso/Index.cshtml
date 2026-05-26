@@ -4,68 +4,75 @@
 }
 
 @section Estilos {
-    <link rel="stylesheet" href="~/css/modern-table.css">
+    <link rel="stylesheet" href="~/vendor/datatables/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="~/css/styleGenerales.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/premium-design.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/modern-table.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/theme-overrides.css" asp-append-version="true">
 }
 
-<div class="row">
-    <div class="col-sm-12">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3 bg-second-primary">
-                <h6 class="m-0 font-weight-bold text-white">Administración de Permisos</h6>
+<div class="card shadow mb-4">
+    <div class="card-header py-3 bg-second-primary">
+        <h6 class="m-0 font-weight-bold text-white">
+            <i class="fas fa-shield-alt text-warning mr-1"></i> Administración de Permisos
+        </h6>
+    </div>
+    <div class="card-body pt-1">
+        <div class="row" style="display:none;">
+            <div class="col-sm-3">
+                <button class="btn btn-success" id="btnNuevo"><i class="fas fa-plus"></i> Nuevo Permiso</button>
             </div>
-            <div class="card-body pt-1">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <button class="btn btn-success" id="btnNuevo"><i class="fas fa-plus-circle"></i> Nuevo Permiso</button>
-                    </div>
-                </div>
-                <hr />
-                <div class="row">
-                    <div class="col-sm-12">
-                        <table id="tablaPermisos" class="table-modern" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>ID Permiso</th>
-                                    <th>Descripción</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <table id="tablaPermisos" class="table-modern" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>ID Permiso</th>
+                            <th>Descripción</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Modal para Crear/Editar Permiso -->
+<div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-labelledby="modalDataLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Detalle Permiso</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <div class="modal-header modal-header-premium bg-second-primary">
+                <h5 class="modal-title m-0 font-weight-bold text-white" id="modalDataLabel"><i class="fas fa-shield-alt text-warning mr-2"></i> Detalle Permiso</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <form>
                     <input type="hidden" id="txtIdPermiso" value="">
-                    <div class="form-group">
-                        <label for="txtIdPermisoInput">ID Permiso</label>
-                        <input type="text" class="form-control" id="txtIdPermisoInput" placeholder="Ej: MODULO_ACCION">
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="txtIdPermisoInput" class="font-weight-bold">ID Permiso</label>
+                            <input type="text" class="form-control form-control-sm" id="txtIdPermisoInput" placeholder="Ej: MODULO_ACCION">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="txtDescripcion">Descripción</label>
-                        <input type="text" class="form-control" id="txtDescripcion" placeholder="Ej: Permite crear un nuevo item">
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="txtDescripcion" class="font-weight-bold">Descripción</label>
+                            <input type="text" class="form-control form-control-sm" id="txtDescripcion" placeholder="Ej: Permite crear un nuevo item">
+                        </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary" id="btnGuardar">Guardar</button>
+                <button type="button" class="btn btn-primary btn-sm rounded-pill" id="btnGuardar"><i class="fas fa-save mr-1"></i> Guardar</button>
+                <button type="button" class="btn btn-danger btn-sm rounded-pill" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>
@@ -75,5 +82,9 @@
     <script src="~/vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="~/vendor/datatables/dataTables.bootstrap4.min.js"></script>
     <script src="~/vendor/datatables/extensiones/js/dataTables.responsive.min.js"></script>
-    <script src="~/js/vistas/permiso_index.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/dataTables.buttons.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/jszip.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.html5.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.print.min.js"></script>
+    <script src="~/js/vistas/permiso_index.js" asp-append-version="true"></script>
 }

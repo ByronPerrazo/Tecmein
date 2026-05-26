@@ -30,6 +30,26 @@ function inicializarPagina() {
     const secPlantilla = $("#SecPlantillaPreContrato").val();
     MODELO_BASE.secPlantillaPreContrato = parseInt(secPlantilla);
 
+    // Configuración de idioma local en español para DataTable
+    const lenguajeEspanol = {
+        processing:     "Procesando...",
+        search:         "",
+        searchPlaceholder: "Buscar...",
+        lengthMenu:    "Mostrar _MENU_",
+        info:           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+        infoEmpty:      "Mostrando 0 a 0 de 0 registros",
+        infoFiltered:   "(filtrado de _MAX_ registros totales)",
+        loadingRecords: "Cargando...",
+        zeroRecords:    "No se encontraron resultados",
+        emptyTable:     "Ningún dato disponible en esta tabla",
+        paginate: {
+            first:      "Primero",
+            previous:   "Anterior",
+            next:       "Siguiente",
+            last:       "Último"
+        }
+    };
+
     tablaData = $('#tbParrafos').DataTable({
         responsive: true,
         "ajax": {
@@ -42,14 +62,45 @@ function inicializarPagina() {
         "columns": [
             { "data": "orden", "width": "10%" },
             { "data": "contenido", "render": function(data) { return data.length > 100 ? data.substr(0, 100) + '...' : data; } },
-            { "data": "estaActivo", "render": data => data ? '<span class="badge badge-success">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>', "width": "10%" },
+            { "data": "estaActivo", "render": data => data ? '<span class="badge badge-info">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>', "width": "10%" },
             {
-                "defaultContent": '<button class="btn btn-primary btn-editar btn-sm mr-2"><i class="fas fa-pencil-alt"></i></button><button class="btn btn-danger btn-eliminar btn-sm mr-2"><i class="fas fa-trash-alt"></i></button><button class="btn btn-info btn-maquetar btn-sm"><i class="fas fa-magic"></i></button>',
-                "orderable": false, "searchable": false, "width": "10%"
+                data: "secPlantillaPreContratoParrafo",
+                render: function (data, type, row) {
+                    return `<div class="dropdown">` +
+                           `<button class="btn btn-primary btn-sm dropdown-toggle rounded-pill" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #007bff; border-color: #007bff;">` +
+                           `<i class="fas fa-cog text-warning mr-1"></i> Acciones` +
+                           `</button>` +
+                           `<div class="dropdown-menu">` +
+                           `<a class="dropdown-item btn-editar" href="#" data-id="${data}"><i class="fas fa-pencil-alt text-primary mr-2"></i> Editar</a>` +
+                           `<a class="dropdown-item btn-maquetar" href="#" data-id="${data}"><i class="fas fa-magic text-info mr-2"></i> Maquetar con IA</a>` +
+                           `<a class="dropdown-item btn-eliminar" href="#" data-id="${data}"><i class="fas fa-trash-alt text-danger mr-2"></i> Eliminar</a>` +
+                           `</div>` +
+                           `</div>`;
+                },
+                "orderable": false,
+                "searchable": false,
+                "width": "120px"
             }
         ],
         order: [[0, "asc"]],
-        language: { url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json" },
+        dom: '<"row mb-2 align-items-center"<"col-sm-12 col-md-6 d-flex align-items-center gap-2"<"toolbar-left">f><"col-sm-12 col-md-6 d-flex justify-content-end align-items-center gap-2"B l>>rtip',
+        buttons: [
+            {
+                text: '<i class="fas fa-file-excel text-success fa-lg"></i>',
+                extend: 'excelHtml5',
+                title: 'Párrafos de Plantilla',
+                filename: 'Reporte Parrafos Plantilla',
+                exportOptions: {
+                    columns: [0, 1, 2]
+                },
+                className: 'btn btn-link btn-sm p-1'
+            }
+        ],
+        "language": lenguajeEspanol,
+        initComplete: function() {
+            $("#toolbar-botones").appendTo(".toolbar-left");
+            $("#toolbar-botones").closest(".row").show();
+        }
     });
 
     $("#btnNuevo").on("click", () => mostrarModal());
@@ -62,7 +113,7 @@ function inicializarPagina() {
     $("#archivoWord").on("change", function (e) {
         const input = e.target;
         if (input.files.length === 0) {
-            return; // No se seleccionó archivo
+            return;
         }
 
         const archivo = input.files[0];
@@ -93,7 +144,7 @@ function inicializarPagina() {
         })
         .then(responseJson => {
             if (responseJson.estado) {
-                tablaData.ajax.reload(null, false); // Recargar la tabla
+                tablaData.ajax.reload(null, false);
 
                 if (responseJson.advertencias && responseJson.advertencias.length > 0) {
                     let htmlAdvertencias = '<ul class="list-group text-left" style="max-height: 200px; overflow-y: auto;">';
@@ -117,22 +168,28 @@ function inicializarPagina() {
         })
         .catch(error => manejarErrorFetch(error, "Cargar Archivo Word"))
         .finally(() => {
-            // Limpiar el input para permitir cargar el mismo archivo de nuevo
             $(input).val('');
         });
     });
 
-    $('#tbParrafos tbody').on('click', '.btn-editar', function () {
-        let data = tablaData.row($(this).parents('tr')).data();
+    $('#tbParrafos tbody').on('click', '.btn-editar', function (e) {
+        e.preventDefault();
+        let fila = $(this).closest("tr").hasClass("child") ? $(this).closest("tr").prev() : $(this).closest("tr");
+        let data = tablaData.row(fila).data();
         mostrarModal(data);
     });
-    $('#tbParrafos tbody').on('click', '.btn-eliminar', function () {
-        let data = tablaData.row($(this).parents('tr')).data();
+
+    $('#tbParrafos tbody').on('click', '.btn-eliminar', function (e) {
+        e.preventDefault();
+        let fila = $(this).closest("tr").hasClass("child") ? $(this).closest("tr").prev() : $(this).closest("tr");
+        let data = tablaData.row(fila).data();
         eliminar(data);
     });
 
-    $('#tbParrafos tbody').on('click', '.btn-maquetar', function () {
-        let data = tablaData.row($(this).parents('tr')).data(); // Obtener los datos de la fila
+    $('#tbParrafos tbody').on('click', '.btn-maquetar', function (e) {
+        e.preventDefault();
+        let fila = $(this).closest("tr").hasClass("child") ? $(this).closest("tr").prev() : $(this).closest("tr");
+        let data = tablaData.row(fila).data();
 
         Swal.fire({
             title: 'Maquetando párrafo con IA...',
@@ -158,7 +215,7 @@ function inicializarPagina() {
         })
         .then(responseJson => {
             if (responseJson.estado) {
-                tablaData.ajax.reload(null, false); // Recargar la tabla
+                tablaData.ajax.reload(null, false);
                 Swal.fire("¡Éxito!", "El párrafo ha sido maquetado con placeholders.", "success");
             } else {
                 Swal.fire("Error", responseJson.mensajes, "error");
@@ -166,6 +223,7 @@ function inicializarPagina() {
         })
         .catch(error => manejarErrorFetch(error, "Maquetar Párrafo con IA"));
     });
+}
 
 
 }

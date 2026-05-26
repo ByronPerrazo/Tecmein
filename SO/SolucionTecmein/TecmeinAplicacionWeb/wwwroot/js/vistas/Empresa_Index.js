@@ -26,6 +26,26 @@ function manejarErrorFetch(error, operacion, overlayElement) {
 }
 
 $(document).ready(function () {
+    // Configuración de idioma local en español para DataTable
+    const lenguajeEspanol = {
+        processing:     "Procesando...",
+        search:         "",
+        searchPlaceholder: "Buscar...",
+        lengthMenu:    "Mostrar _MENU_",
+        info:           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+        infoEmpty:      "Mostrando 0 a 0 de 0 registros",
+        infoFiltered:   "(filtrado de _MAX_ registros totales)",
+        loadingRecords: "Cargando...",
+        zeroRecords:    "No se encontraron resultados",
+        emptyTable:     "Ningún dato disponible en esta tabla",
+        paginate: {
+            first:      "Primero",
+            previous:   "Anterior",
+            next:       "Siguiente",
+            last:       "Último"
+        }
+    };
+
     tablaData = $('#tbdata').DataTable({
         responsive: true,
         "ajax": {
@@ -44,43 +64,65 @@ $(document).ready(function () {
             { data: "telefono" },
             { data: "estaActivo", render: function (data) { return data == 1 ? '<span class="badge badge-info">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>'; } },
             {
-                "defaultContent": '<div class="btn-group" role="group"><button class="btn btn-primary btn-editar btn-sm"><i class="fas fa-pencil-alt"></i></button>' +
-                                  '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button></div>',
-                "orderable": false, "searchable": false, "width": "80px"
+                data: "secuencial",
+                render: function (data, type, row) {
+                    return `<div class="dropdown">` +
+                           `<button class="btn btn-primary btn-sm dropdown-toggle rounded-pill" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #007bff; border-color: #007bff;">` +
+                           `<i class="fas fa-cog text-warning mr-1"></i> Acciones` +
+                           `</button>` +
+                           `<div class="dropdown-menu">` +
+                           `<a class="dropdown-item btn-editar" href="#"><i class="fas fa-pencil-alt text-primary mr-2"></i> Editar</a>` +
+                           `<a class="dropdown-item btn-eliminar" href="#"><i class="fas fa-trash-alt text-danger mr-2"></i> Eliminar</a>` +
+                           `</div>` +
+                           `</div>`;
+                },
+                "orderable": false, "searchable": false, "width": "120px"
             }
         ],
         order: [[0, "desc"]],
-        dom: "Bfrtip",
+        dom: '<"row mb-2 align-items-center"<"col-sm-12 col-md-6 d-flex align-items-center gap-2"<"toolbar-left">f><"col-sm-12 col-md-6 d-flex justify-content-end align-items-center gap-2"B l>>rtip',
         buttons: [
             {
-                text: '<i class="fas fa-file-excel"></i> Excel',
+                text: '<i class="fas fa-file-excel text-success fa-lg"></i>',
                 extend: 'excelHtml5',
                 title: 'Empresas',
                 filename: 'Reporte Empresas',
                 exportOptions: {
                     columns: [1, 2, 3, 4, 5, 6]
-                }
+                },
+                className: 'btn btn-link btn-sm p-1'
             },
             {
-                text: '<i class="fas fa-file-pdf"></i> PDF',
+                text: '<i class="fas fa-file-pdf text-danger fa-lg"></i>',
                 extend: 'pdfHtml5',
                 title: 'Empresas',
                 filename: 'Reporte Empresas',
                 exportOptions: {
                     columns: [1, 2, 3, 4, 5, 6]
-                }
+                },
+                className: 'btn btn-link btn-sm p-1'
             },
             {
-                text: '<i class="fas fa-print"></i> Imprimir',
+                text: '<i class="fas fa-print text-primary fa-lg"></i>',
                 extend: 'print',
                 title: 'Empresas',
                 exportOptions: {
                     columns: [1, 2, 3, 4, 5, 6]
-                }
-            },
-            'pageLength'
+                },
+                className: 'btn btn-link btn-sm p-1'
+            }
         ],
-        language: { url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json" },
+        "language": lenguajeEspanol,
+        initComplete: function() {
+            $("#btnNuevaEmpresa").appendTo(".toolbar-left");
+            $("#btnNuevaEmpresa").closest(".row").show();
+        }
+    });
+
+    // Actualizar label del input file con el nombre del archivo seleccionado
+    $(".custom-file-input").on("change", function () {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     });
 });
 

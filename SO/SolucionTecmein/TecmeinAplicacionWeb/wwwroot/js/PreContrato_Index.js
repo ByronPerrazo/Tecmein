@@ -2,8 +2,24 @@ $(document).ready(function () {
     var tablaPreContratos;
     let totalCotizacion = 0;
 
-    const spanishLanguage = {
-        "url": "/js/datatables/i18n/Spanish.json"
+    // Configuración de idioma local en español para DataTable
+    const lenguajeEspanol = {
+        processing:     "Procesando...",
+        search:         "",
+        searchPlaceholder: "Buscar...",
+        lengthMenu:    "Mostrar _MENU_",
+        info:           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+        infoEmpty:      "Mostrando 0 a 0 de 0 registros",
+        infoFiltered:   "(filtrado de _MAX_ registros totales)",
+        loadingRecords: "Cargando...",
+        zeroRecords:    "No se encontraron resultados",
+        emptyTable:     "Ningún dato disponible en esta tabla",
+        paginate: {
+            first:      "Primero",
+            previous:   "Anterior",
+            next:       "Siguiente",
+            last:       "Último"
+        }
     };
 
     // --- Lógica de UI y Validaciones para Compromisos ---
@@ -152,23 +168,45 @@ $(document).ready(function () {
                 {
                     "data": "secPreContrato",
                     "render": function (data, type, row) {
-                        const btnEditar = `<button class="btn btn-primary btn-sm btn-editar" data-id="${data}" title="Editar"><i class="fas fa-pencil-alt"></i></button>`;
-                        const btnDescargar = `<button class="btn btn-info btn-sm btn-descargar-actual" data-id="${data}" title="Descargar DOCX Actual"><i class="fas fa-file-word"></i></button>`;
-                        const btnHistorial = `<button class="btn btn-secondary btn-sm btn-historial" data-id="${data}" title="Ver Historial"><i class="fas fa-history"></i></button>`;
-                        const btnEliminar = `<button class="btn btn-danger btn-sm btn-eliminar" data-id="${data}" title="Eliminar"><i class="fas fa-trash-alt"></i></button>`;
                         let btnAprobar = '';
                         if (row.estado !== "Aprobado") {
-                            btnAprobar = `<button class="btn btn-success btn-sm btn-aprobar" data-id="${data}" title="Aprobar"><i class="fas fa-check"></i></button>`;
+                            btnAprobar = `<a class="dropdown-item btn-aprobar" href="#" data-id="${data}"><i class="fas fa-check text-success mr-2"></i> Aprobar</a>`;
                         }
-                        return `<div class="btn-group" role="group">${btnEditar}${btnDescargar}${btnHistorial}${btnAprobar}${btnEliminar}</div>`;
+                        return `<div class="dropdown">` +
+                               `<button class="btn btn-primary btn-sm dropdown-toggle rounded-pill" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #007bff; border-color: #007bff;">` +
+                               `<i class="fas fa-cog text-warning mr-1"></i> Acciones` +
+                               `</button>` +
+                               `<div class="dropdown-menu">` +
+                               `<a class="dropdown-item btn-editar" href="#" data-id="${data}"><i class="fas fa-pencil-alt text-primary mr-2"></i> Editar</a>` +
+                               `<a class="dropdown-item btn-descargar-actual" href="#" data-id="${data}"><i class="fas fa-file-word text-info mr-2"></i> Descargar DOCX</a>` +
+                               `<a class="dropdown-item btn-historial" href="#" data-id="${data}"><i class="fas fa-history text-secondary mr-2"></i> Ver Historial</a>` +
+                               btnAprobar +
+                               `<a class="dropdown-item btn-eliminar" href="#" data-id="${data}"><i class="fas fa-trash-alt text-danger mr-2"></i> Eliminar</a>` +
+                               `</div>` +
+                               `</div>`;
                     },
                     "orderable": false,
                     "searchable": false,
-                    "width": "150px"
+                    "width": "120px"
                 }
             ],
             "order": [[0, "desc"]],
-            "language": spanishLanguage
+            dom: '<"row mb-2 align-items-center"<"col-sm-12 col-md-6 d-flex align-items-center gap-2"<"toolbar-left">f><"col-sm-12 col-md-6 d-flex justify-content-end align-items-center gap-2"B l>>rtip',
+            buttons: [
+                {
+                    text: '<i class="fas fa-file-excel text-success fa-lg"></i>',
+                    extend: 'excelHtml5',
+                    title: 'Pre-Contratos',
+                    filename: 'Reporte Pre-Contratos',
+                    exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
+                    className: 'btn btn-link btn-sm p-1'
+                }
+            ],
+            "language": lenguajeEspanol,
+            initComplete: function() {
+                $("#btnNuevo").appendTo(".toolbar-left");
+                $("#btnNuevo").closest(".row").show();
+            }
         });
     }
 
@@ -651,10 +689,10 @@ $(document).ready(function () {
                 { "data": "fechaRegistro", "render": function (data) { return new Date(data).toLocaleString(); } },
                 { "data": "nombreUsuarioCrea" },
                 { "data": "estaActivo", "render": function (data) { return data ? '<span class="badge badge-success">Activa</span>' : '<span class="badge badge-secondary">Histórica</span>'; } },
-                { "data": "secPreContrato", "render": function (data) { return `<button class="btn btn-info btn-sm btn-descargar-actual" data-id="${data}" title="Descargar Versión"><i class="fas fa-file-download"></i></button>`; }, "orderable": false, "searchable": false }
+                { "data": "secPreContrato", "render": function (data) { return `<button class="btn btn-info btn-sm btn-descargar-actual rounded-pill" data-id="${data}" title="Descargar Versión"><i class="fas fa-file-download mr-1"></i> Descargar</button>`; }, "orderable": false, "searchable": false }
             ],
             "order": [[0, "desc"]],
-            "language": spanishLanguage
+            "language": lenguajeEspanol
         });
         $('#modalHistorial').modal('show');
     });

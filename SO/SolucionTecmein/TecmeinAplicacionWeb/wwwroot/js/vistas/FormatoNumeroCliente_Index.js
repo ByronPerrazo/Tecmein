@@ -19,6 +19,26 @@ function manejarErrorFetch(error, operacion, overlayElement) {
 }
 
 $(document).ready(function () {
+    // Configuración de idioma local en español para DataTable
+    const lenguajeEspanol = {
+        processing:     "Procesando...",
+        search:         "",
+        searchPlaceholder: "Buscar...",
+        lengthMenu:    "Mostrar _MENU_",
+        info:           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+        infoEmpty:      "Mostrando 0 a 0 de 0 registros",
+        infoFiltered:   "(filtrado de _MAX_ registros totales)",
+        loadingRecords: "Cargando...",
+        zeroRecords:    "No se encontraron resultados",
+        emptyTable:     "Ningún dato disponible en esta tabla",
+        paginate: {
+            first:      "Primero",
+            previous:   "Anterior",
+            next:       "Siguiente",
+            last:       "Último"
+        }
+    };
+
     tablaData = $('#tbdata').DataTable({
         responsive: true,
         "ajax": {
@@ -39,48 +59,64 @@ $(document).ready(function () {
             { "data": "numeroInicio" },
             { "data": "longitudNumero" },
             {
-                "defaultContent": '<div class="btn-group" role="group"><button class="btn btn-primary btn-editar btn-sm"><i class="fas fa-pencil-alt"></i></button></div>',
-                "orderable": false, "searchable": false, "width": "40px"
+                data: "secFormatoNumeroCliente",
+                render: function (data, type, row) {
+                    return `<div class="dropdown">` +
+                           `<button class="btn btn-primary btn-sm dropdown-toggle rounded-pill" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #007bff; border-color: #007bff;">` +
+                           `<i class="fas fa-cog text-warning mr-1"></i> Acciones` +
+                           `</button>` +
+                           `<div class="dropdown-menu">` +
+                           `<a class="dropdown-item btn-editar" href="#"><i class="fas fa-pencil-alt text-primary mr-2"></i> Editar</a>` +
+                           `</div>` +
+                           `</div>`;
+                },
+                "orderable": false, "searchable": false, "width": "120px"
             }
         ],
-        dom: "Bfrtip",
+        dom: '<"row mb-2 align-items-center"<"col-sm-12 col-md-6 d-flex align-items-center gap-2"<"toolbar-left">f><"col-sm-12 col-md-6 d-flex justify-content-end align-items-center gap-2"B l>>rtip',
         buttons: [
             {
-                text: '<i class="fas fa-file-excel"></i> Excel',
+                text: '<i class="fas fa-file-excel text-success fa-lg"></i>',
                 extend: 'excelHtml5',
                 title: 'Formatos de Número de Cliente',
                 filename: 'Reporte Formatos Número Cliente',
                 exportOptions: {
                     columns: [0, 1, 2, 3]
-                }
+                },
+                className: 'btn btn-link btn-sm p-1'
             },
             {
-                text: '<i class="fas fa-file-pdf"></i> PDF',
+                text: '<i class="fas fa-file-pdf text-danger fa-lg"></i>',
                 extend: 'pdfHtml5',
                 title: 'Formatos de Número de Cliente',
                 filename: 'Reporte Formatos Número Cliente',
                 exportOptions: {
                     columns: [0, 1, 2, 3]
-                }
+                },
+                className: 'btn btn-link btn-sm p-1'
             },
             {
-                text: '<i class="fas fa-print"></i> Imprimir',
+                text: '<i class="fas fa-print text-primary fa-lg"></i>',
                 extend: 'print',
                 title: 'Formatos de Número de Cliente',
                 exportOptions: {
                     columns: [0, 1, 2, 3]
-                }
-            },
-            'pageLength'
+                },
+                className: 'btn btn-link btn-sm p-1'
+            }
         ],
         "processing": true,
-        "language": { "url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json" },
+        "language": lenguajeEspanol,
         "drawCallback": function(settings) {
             if (this.api().data().count() > 0) {
                 $('#btnNuevo').hide();
             } else {
                 $('#btnNuevo').show();
             }
+        },
+        initComplete: function() {
+            $("#btnNuevo").appendTo(".toolbar-left");
+            $("#btnNuevo").closest(".row").show();
         }
     });
 });

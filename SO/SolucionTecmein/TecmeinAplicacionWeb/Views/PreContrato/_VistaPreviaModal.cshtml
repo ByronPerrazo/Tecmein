@@ -1,23 +1,25 @@
 <!-- Modal para Generación de Pre-Contrato -->
 <div class="modal fade" id="modalVistaPrevia" tabindex="-1" role="dialog" aria-labelledby="generarDocumentoLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-md" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="generarDocumentoLabel">Generar Documento</h5>
+        <div class="modal-content modal-content-premium">
+            <div class="modal-header-premium header-primary">
+                <h6 class="modal-title" id="generarDocumentoLabel">
+                    <i class="fas fa-file-word"></i> Generar Documento
+                </h6>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body text-center">
+            <div class="modal-body text-center p-3">
                 <p>Haz clic en "Generar y Descargar" para obtener el documento de pre-contrato en formato DOCX.</p>
                 <div class="spinner-border text-primary" role="status" id="spinnerGeneracion" style="display: none;">
                     <span class="sr-only">Generando...</span>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="btnGenerarYDescargar">
-                    <span id="btnText">Generar y Descargar</span>
+            <div class="modal-footer border-0 p-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
+                <button type="button" class="btn btn-primary btn-sm" id="btnGenerarYDescargar">
+                    <span id="btnText"><i class="fas fa-download mr-1"></i> Generar y Descargar</span>
                     <span id="btnSpinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
                 </button>
             </div>
