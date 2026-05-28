@@ -675,9 +675,15 @@ namespace TecmeinAplicacionWeb.Utilidades.AutoMapper // <-- Restaurado
 
             // DTO to VM Mappings
             CreateMap<PlanDePagoDTO, PlanDePagoVM>();
-            CreateMap<CuotaDTO, CuotaVM>();
+            CreateMap<CuotaDTO, CuotaVM>()
+                .ForMember(destino => destino.FechaVencimiento,
+                           opt => opt.MapFrom(origen => origen.FechaVencimiento.ToString("dd/MM/yyyy")));
             CreateMap<PlanPagoDashboardDTO, PlanPagoDashboardVM>();
-            CreateMap<DetallePlanPagoDTO, DetallePlanPagoVM>();
+            CreateMap<DetallePlanPagoDTO, DetallePlanPagoVM>()
+                .ForMember(destino => destino.FechaAnticipo,
+                           opt => opt.MapFrom(origen => origen.FechaAnticipo.HasValue ? origen.FechaAnticipo.Value.ToString("dd/MM/yyyy") : null))
+                .ForMember(destino => destino.FechaPrimeraCuota,
+                           opt => opt.MapFrom(origen => origen.FechaPrimeraCuota.HasValue ? origen.FechaPrimeraCuota.Value.ToString("dd/MM/yyyy") : null));
 
             // VM to DTO Mappings
             CreateMap<PlanDePagoVM, PlanDePagoDTO>();

@@ -42,7 +42,7 @@ namespace IOC
 
             services.AddScoped<IUsuarioServices, UsuarioServices>();
             services.AddScoped<IRolServices, RolServices>();
-            services.AddScoped<IStorageServices, LocalStorageService>();
+            services.AddScoped<IStorageServices, StorageServices>();
             services.AddScoped<IUtilidadesServices, UtilidadesServices>();
             services.AddScoped<ICorreoServices, CorreoServices>();
             services.AddScoped<ISmtpClientWrapper, SmtpClientWrapper>();

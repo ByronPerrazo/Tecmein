@@ -108,47 +108,46 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- Modal Historial de Pagos por Cuota -->
-                <div class="modal fade" id="historialPagosCuotaModal" tabindex="-1" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content modal-content-premium">
-                            <div class="modal-header-premium header-primary">
-                                <h6 class="modal-title">
-                                    <i class="fas fa-history"></i> Historial de Pagos de la Cuota
-                                </h6>
-                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                            </div>
-                            <div class="modal-body p-3">
-                                    <div class="table-responsive">
-                                        <table id="tblHistorialPagos" class="table-modern" style="width:100%">
-                                            <thead>
-                                                <tr>
-                                                    <th>Monto Pagado</th>
-                                                    <th>Fecha de Pago</th>
-                                                    <th>Registrado Por</th>
-                                                    <th>Comprobante</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <!-- Data will be loaded by DataTable via AJAX -->
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer border-0 p-2">
-                                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
-                            </div>
-                        </div>
-                    </div>
+            </div> <!-- Closes modal-body p-3 of detallePlanPagoModal -->
+            <div class="modal-footer border-0 p-2">
+                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+                <button type="button" class="btn btn-success btn-sm" id="btnRegistrarPagoModal"><i class="fas fa-money-check-alt"></i> Registrar Pago</button>
+            </div>
+        </div> <!-- Closes modal-content -->
+    </div> <!-- Closes modal-dialog -->
+</div> <!-- Closes detallePlanPagoModal -->
+
+<!-- Modal Historial de Pagos por Cuota -->
+<div class="modal fade" id="historialPagosCuotaModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content modal-content-premium">
+            <div class="modal-header-premium header-primary">
+                <h6 class="modal-title">
+                    <i class="fas fa-history"></i> Historial de Pagos de la Cuota
+                </h6>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body p-3">
+                <div class="table-responsive">
+                    <table id="tblHistorialPagos" class="table-modern" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Monto Pagado</th>
+                                <th>Fecha de Pago</th>
+                                <th>Registrado Por</th>
+                                <th>Comprobante</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be loaded by DataTable via AJAX -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <div class="modal-footer border-0 p-2">
                 <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
-                <button type="button" class="btn btn-success btn-sm" id="btnRegistrarPagoModal"><i class="fas fa-money-check-alt"></i> Registrar Pago</button>
             </div>
         </div>
     </div>

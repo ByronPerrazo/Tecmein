@@ -112,8 +112,8 @@
     </div>
 </div>
 
-@Html.Partial("_DetallePlanPagoModal")
-@Html.Partial("_RegistrarPagoModal")
+@await Html.PartialAsync("_DetallePlanPagoModal")
+@await Html.PartialAsync("_RegistrarPagoModal")
 
 @section Scripts {
     <script src="~/vendor/datatables/jquery.dataTables.min.js"></script>

@@ -90,12 +90,19 @@ $(document).ready(function () {
     });
 
     // Manejar click en botón "Ver Detalle"
-    $('#tblPlanesPago tbody').on('click', '.btn-detalle-plan', function () {
-        var data = tablaPlanesPago.row($(this).parents('tr')).data();
-        IdPlanDePagoSeleccionado = data.idPlanDePago;
-
-        // Cargar y mostrar el modal de detalle
-        cargarDetallePlanDePago(IdPlanDePagoSeleccionado);
+    $('#tblPlanesPago tbody').on('click', '.btn-detalle-plan', function (e) {
+        e.preventDefault();
+        var tr = $(this).closest('tr');
+        if (tr.hasClass('child')) {
+            tr = tr.prev();
+        }
+        var data = tablaPlanesPago.row(tr).data();
+        if (data) {
+            IdPlanDePagoSeleccionado = data.idPlanDePago;
+            cargarDetallePlanDePago(IdPlanDePagoSeleccionado);
+        } else {
+            console.error("No se pudieron obtener los datos de la fila seleccionada.");
+        }
     });
 
     // Manejar click en botón "Registrar Pago" dentro del modal de detalle
@@ -200,51 +207,55 @@ function cargarDetallePlanDePago(idPlanDePago) {
                 var plan = response.objeto;
                 
                 // Actualizar los campos del modal de detalle
-                $('#modalNumeroContrato').text(plan.numeroContrato);
-                $('#modalNombreCliente').text(plan.nombreCliente);
-                $('#modalNombreProyecto').text(plan.nombreProyecto);
-                $('#modalValorContrato').text(plan.valorContrato.toLocaleString('es-ES', { style: 'currency', currency: 'USD' }));
-                $('#modalValorAnticipo').text(plan.valorAnticipo.toLocaleString('es-ES', { style: 'currency', currency: 'USD' }));
-                $('#modalNumeroCuotas').text(plan.numeroCuotas);
-                $('#modalFechaPrimeraCuota').text(new Date(plan.fechaPrimeraCuota).toLocaleDateString('es-ES'));
-                $('#modalMontoPagadoTotal').text(plan.montoPagadoTotal.toLocaleString('es-ES', { style: 'currency', currency: 'USD' }));
-                $('#modalSaldoPendienteTotal').text(plan.saldoPendienteTotal.toLocaleString('es-ES', { style: 'currency', currency: 'USD' }));
+                $('#modalNumeroContrato').text(plan.numeroContrato || "N/A");
+                $('#modalNombreCliente').text(plan.nombreCliente || "N/A");
+                $('#modalNombreProyecto').text(plan.nombreProyecto || "N/A");
+                $('#modalValorContrato').text((plan.valorContrato || 0).toLocaleString('es-ES', { style: 'currency', currency: 'USD' }));
+                $('#modalValorAnticipo').text((plan.valorAnticipo || 0).toLocaleString('es-ES', { style: 'currency', currency: 'USD' }));
+                $('#modalNumeroCuotas').text(plan.numeroCuotas || 0);
+                $('#modalFechaPrimeraCuota').text(plan.fechaPrimeraCuota || "N/A");
+                $('#modalMontoPagadoTotal').text((plan.montoPagadoTotal || 0).toLocaleString('es-ES', { style: 'currency', currency: 'USD' }));
+                $('#modalSaldoPendienteTotal').text((plan.saldoPendienteTotal || 0).toLocaleString('es-ES', { style: 'currency', currency: 'USD' }));
+                $('#modalSaldoVencidoTotal').text((plan.saldoVencidoTotal || 0).toLocaleString('es-ES', { style: 'currency', currency: 'USD' }));
 
                 // Destruir y reinicializar DataTable de Cuotas
                 if ($.fn.DataTable.isDataTable('#tblCuotasPlanPago')) {
                     $('#tblCuotasPlanPago').DataTable().destroy();
                 }
 
+                var cuotasData = (plan.cuotas && plan.cuotas.$values) ? plan.cuotas.$values : (plan.cuotas || []);
+
                 $('#tblCuotasPlanPago').DataTable({
-                    "data": plan.cuotas.$values || [], // Accediendo a $values
+                    "data": cuotasData,
                     "columns": [
                         { "data": "numeroCuota" },
                         { 
                             "data": "montoEsperado",
                             "render": function(data) {
-                                return data.toLocaleString('es-ES', { style: 'currency', currency: 'USD' });
+                                return (data || 0).toLocaleString('es-ES', { style: 'currency', currency: 'USD' });
                             }
                         },
                         { 
                             "data": "montoPagado",
                             "render": function(data) {
-                                return data.toLocaleString('es-ES', { style: 'currency', currency: 'USD' });
+                                return (data || 0).toLocaleString('es-ES', { style: 'currency', currency: 'USD' });
                             }
                         },
-                        { "data": "fechaVencimiento",
-                          "render": function (data) {
-                              return new Date(data).toLocaleDateString('es-ES');
-                          }
+                        { 
+                            "data": "fechaVencimiento",
+                            "render": function (data) {
+                                return data || "N/A";
+                            }
                         },
                         { "data": "estado" },
                         { // Nueva columna para las acciones
-                            "data": "idCuota", // Asumiendo que idCuota es el ID de la cuota
+                            "data": "idCuota",
                             "render": function (data, type, row) {
                                 return `<button class="btn btn-primary btn-sm btn-historial-pago rounded-pill" data-id-cuota="${data}"><i class="fas fa-history mr-1"></i> Ver Pagos</button>`;
                             },
                             "orderable": false,
                             "searchable": false,
-                            "width": "120px" // Ancho de la columna
+                            "width": "120px"
                         }
                     ],
                     "language": {
@@ -266,13 +277,13 @@ function cargarDetallePlanDePago(idPlanDePago) {
                         }
                     },
                     "responsive": true,
-                    "paging": false, // No paginar las cuotas en el modal
-                    "info": false,   // No mostrar información de paginación
-                    "searching": false // No buscar en las cuotas
+                    "paging": false,
+                    "info": false,
+                    "searching": false
                 });
 
                 // Manejar click en botón "Ver Pagos" dentro de la tabla de cuotas
-                $('#tblCuotasPlanPago tbody').on('click', '.btn-historial-pago', function () {
+                $('#tblCuotasPlanPago tbody').off('click', '.btn-historial-pago').on('click', '.btn-historial-pago', function () {
                     var idCuota = $(this).data('id-cuota');
                     mostrarHistorialPagos(idCuota);
                 });
@@ -295,23 +306,25 @@ function mostrarHistorialPagos(idCuota) {
         url: `/Financiero/ObtenerHistorialPagosPorCuota?idCuota=${idCuota}`,
         type: "GET",
         success: function (response) {
-            if (response.estado && response.objeto && Array.isArray(response.objeto.$values)) {
+            if (response.estado && response.objeto) {
+                var pagosData = (response.objeto && response.objeto.$values) ? response.objeto.$values : (response.objeto || []);
+
                 // Destruir y reinicializar DataTable de Historial de Pagos
                 if ($.fn.DataTable.isDataTable('#tblHistorialPagos')) {
                     $('#tblHistorialPagos').DataTable().destroy();
                 }
 
                 $('#tblHistorialPagos').DataTable({
-                    "data": response.objeto.$values,
+                    "data": pagosData,
                     "columns": [
                         { "data": "monto", 
                             "render": function (data) {
-                                return data.toLocaleString('es-ES', { style: 'currency', currency: 'USD' });
+                                return (data || 0).toLocaleString('es-ES', { style: 'currency', currency: 'USD' });
                             }
                         },
                         { "data": "fechaPago",
                           "render": function (data) {
-                              return new Date(data).toLocaleDateString('es-ES');
+                              return data ? new Date(data).toLocaleDateString('es-ES') : "N/A";
                           }
                         },
                         { "data": "registradoPorUsuarioNombre" }, // Asumiendo este campo en el ViewModel

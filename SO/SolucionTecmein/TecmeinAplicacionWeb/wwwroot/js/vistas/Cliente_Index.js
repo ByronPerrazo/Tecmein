@@ -191,6 +191,7 @@ $(document).ready(function () {
         $('#modalCliente #cboConstructoraCliente').val('');
         $('#modalCliente #txtNumeroCliente').val('');
         $('#modalCliente #chkEstaActivo').prop('checked', true);
+        $('#modalCliente #advertenciaConstructora').remove(); // Limpiar advertencias previas
 
         $.ajax({
             url: '/Cliente/ListarConstructoras',
@@ -199,10 +200,23 @@ $(document).ready(function () {
                 if (response.estado) {
                     var combo = $('#modalCliente #cboConstructoraCliente');
                     combo.empty();
-                    combo.append($('<option>', { value: '', text: 'Seleccione Constructora' }));
-                    $.each(response.objeto.$values, function (i, constructora) {
-                        combo.append($('<option>', { value: constructora.secuencial, text: constructora.nombre }));
-                    });
+                    var constructorasDisponibles = response.objeto.$values || [];
+
+                    if (constructorasDisponibles.length === 0 && !data) {
+                        combo.append($('<option>', { value: '', text: 'No hay constructoras disponibles' }));
+                        combo.prop('disabled', true);
+                        $('<small>', {
+                            id: 'advertenciaConstructora',
+                            class: 'text-danger d-block mt-1',
+                            text: '⚠️ Todas las constructoras registradas ya tienen un cliente asociado. Registre una nueva constructora primero.'
+                        }).insertAfter(combo);
+                    } else {
+                        combo.prop('disabled', false);
+                        combo.append($('<option>', { value: '', text: 'Seleccione Constructora' }));
+                        $.each(constructorasDisponibles, function (i, constructora) {
+                            combo.append($('<option>', { value: constructora.secuencial, text: constructora.nombre }));
+                        });
+                    }
 
                     if (data) { // Modo edición
                         if ($('#modalCliente #cboConstructoraCliente option[value="' + data.secConstructora + '"]').length === 0) {
@@ -219,7 +233,9 @@ $(document).ready(function () {
                         combo.prop('disabled', true);
                     } else { // Modo creación
                         $('#modalCliente #txtNumeroCliente').prop('readonly', false);
-                        combo.prop('disabled', false);
+                        if (constructorasDisponibles.length > 0) {
+                            combo.prop('disabled', false);
+                        }
                     }
                     $('#modalCliente').modal('show');
                 } else {

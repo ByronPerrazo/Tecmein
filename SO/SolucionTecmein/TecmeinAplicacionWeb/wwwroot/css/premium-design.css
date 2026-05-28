@@ -300,3 +300,52 @@ div.info-highlight-reno.badge-success {
     color: white !important;
     border: none !important;
 }
+
+/* --- Estilos para Modales Compactos y Profesionales (Unified UX) --- */
+.modal-content-premium div {
+    margin-bottom: 0;
+}
+
+.modal-content-premium .modal-body {
+    padding: 12px 18px !important;
+}
+
+.modal-content-premium .form-group {
+    margin-bottom: 8px !important;
+}
+
+.modal-content-premium .form-row {
+    margin-bottom: 2px !important;
+}
+
+.modal-content-premium label,
+.modal-content-premium .cab_i_sm,
+.modal-content-premium .cab_i_xs,
+.modal-content-premium i.cab_i_sm {
+    margin-bottom: 2px !important;
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    color: #495057 !important;
+    font-style: normal !important;
+    display: inline-block;
+}
+
+.modal-content-premium .form-control {
+    height: 30px !important;
+    padding: 4px 8px !important;
+    font-size: 0.75rem !important;
+    border-radius: 6px !important;
+    border: 1.5px solid #d1d9e6 !important;
+    transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+
+.modal-content-premium .form-control:focus {
+    border-color: var(--app-primary) !important;
+    box-shadow: 0 0 0 0.15rem rgba(0, 74, 147, 0.15) !important;
+}
+
+.modal-content-premium .modal-footer {
+    padding: 8px 18px !important;
+    border-top: 1px solid #edf2f9 !important;
+    margin-top: 5px;
+}

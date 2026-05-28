@@ -101,6 +101,19 @@ try
     app.UseForwardedHeaders();
     app.UseHttpsRedirection();
     app.UseStaticFiles();
+
+    // Serve files from C:\TecmeinFiles under /uploads locally
+    var localFilesPath = @"C:\TecmeinFiles";
+    if (!System.IO.Directory.Exists(localFilesPath))
+    {
+        System.IO.Directory.CreateDirectory(localFilesPath);
+    }
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(localFilesPath),
+        RequestPath = "/uploads"
+    });
+
     app.UseStatusCodePages();
 
     app.UseRouting();
