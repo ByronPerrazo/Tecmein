@@ -1,4 +1,4 @@
-﻿namespace BLL.Interfaces
+namespace BLL.Interfaces
 {
     public interface IDashBoardServices
     {
@@ -17,6 +17,6 @@
         Task<Dictionary<string, int>> VisitasPorEtapa();
         Task<Dictionary<string, int>> ContratosPorMes();
         Task<Dictionary<string, int>> TopClientesConMasContratos();
-
+        Task<List<BLL.DTOs.PagoVencidoDashboardDTO>> ObtenerDetallePagosVencidos();
     }
 }

@@ -156,5 +156,32 @@ namespace BLL.Implementacion
                 .ToDictionary(keySelector: r => r.Cliente, elementSelector: r => r.Total);
             return resultado;
         }
+
+        public async Task<List<BLL.DTOs.PagoVencidoDashboardDTO>> ObtenerDetallePagosVencidos()
+        {
+            DateTime fechaActual = DateTime.Now.Date;
+            
+            var query = await _cuotaRepository.Consultar(c =>
+                c.Estado == "Pendiente" && c.FechaVencimiento.Date < fechaActual);
+
+            var cuotasVencidas = await query
+                .Include(c => c.IdPlanDePagoNavigation)
+                    .ThenInclude(p => p.IdContratoNavigation)
+                        .ThenInclude(co => co.SecClienteNavigation)
+                            .ThenInclude(cl => cl.SecConstructoraNavigation)
+                .ToListAsync();
+
+            var resultado = cuotasVencidas.Select(c => new BLL.DTOs.PagoVencidoDashboardDTO
+            {
+                NumeroContrato = c.IdPlanDePagoNavigation?.IdContratoNavigation?.IdContrato.ToString() ?? "N/A",
+                NombreCliente = c.IdPlanDePagoNavigation?.IdContratoNavigation?.SecClienteNavigation?.SecConstructoraNavigation?.Nombre ?? "Cliente Desconocido",
+                NumeroCuota = c.NumeroCuota,
+                MontoCuota = c.MontoEsperado,
+                FechaVencimiento = c.FechaVencimiento.ToString("dd/MM/yyyy"),
+                DiasVencidos = (fechaActual - c.FechaVencimiento.Date).Days
+            }).OrderByDescending(x => x.DiasVencidos).ToList();
+
+            return resultado;
+        }
     }
 }

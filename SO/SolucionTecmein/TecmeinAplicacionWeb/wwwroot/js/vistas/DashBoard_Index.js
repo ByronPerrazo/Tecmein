@@ -2,15 +2,29 @@ $(document).ready(function () {
 
     $("div.container-fluid").LoadingOverlay("show");
 
-    // #region MCP (Asistente Tecmein) Element Initializations
+    // Guardará la información del resumen en el cliente para evitar consultas redundantes de red
+    window.dashboardData = null;
+
+    // #region MCP (Asistente Tecmein) Element Initializations y Flotante
     const mcpQueryInput = $('#mcpQueryInput');
     const mcpVoiceInputButton = $('#mcpVoiceInputButton');
     const mcpSendButton = $('#mcpSendButton');
     const mcpResponseArea = $('#mcpResponseArea');
+    const mcpInitialMsg = $('#mcpInitialMsg');
 
-    // Add initial message
-    //appendMessage('Asistente', 'Esperando tu consulta...', false);
+    // Toggle de ventana de chat flotante
+    $('.mcp-chat-trigger').on('click', function () {
+        $('.mcp-chat-window').toggleClass('show');
+    });
+
+    $('.close-chat').on('click', function () {
+        $('.mcp-chat-window').removeClass('show');
+    });
     // #endregion
+
+    // Paleta de colores premium para graficos
+    const coloresPremium = ['#004A93', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#6f42c1', '#fd7e14', '#20c997'];
+    const coloresPremiumHover = ['#003366', '#148c60', '#26828f', '#cca130', '#b83b2e', '#5a32a3', '#ca6510', '#179c74'];
 
     fetch("ObtenerResumen")
         .then(
@@ -26,12 +40,13 @@ $(document).ready(function () {
 
                 if (respuestaJson.estado) {
                     let d = respuestaJson.objeto;
+                    window.dashboardData = d; // Guardar copia global
 
-                    // Update top cards
-                    $("#totalContratos").text(d.totalContratos || 0); // New ID
-                    $("#ingresosMensuales").text(d.ingresosMensuales || '$0'); // New ID
-                    $("#pagosVencidos").text(d.pagosVencidos || 0); // New ID
-                    $("#nuevosClientes").text(d.nuevosClientes || 0); // New ID
+                    // Actualizar contadores
+                    $("#totalContratos").text(d.totalContratos || 0);
+                    $("#ingresosMensuales").text(d.ingresosMensuales || '$0');
+                    $("#pagosVencidos").text(d.pagosVencidos || 0);
+                    $("#nuevosClientes").text(d.nuevosClientes || 0);
 
                     let barchart_labeles = d.listaVisitasUktimaSemanaVM.map(item => item.fecha);
                     let barchart_data = d.listaVisitasUktimaSemanaVM.map(item => item.total);
@@ -39,7 +54,6 @@ $(document).ready(function () {
                     let piechart_labeles = d.listaMarcasMasVendidasVM.map(item => item.marca);
                     let piechart_data = d.listaMarcasMasVendidasVM.map(item => item.totalCantidad);
 
-                    // Ensure Chart is defined before rendering
                     if (typeof Chart !== 'undefined') {
                         // Area Chart - Ventas de los ultimos 7 días
                         let controlVenta = document.getElementById("charVentas");
@@ -48,32 +62,22 @@ $(document).ready(function () {
                             data: {
                                 labels: barchart_labeles.length > 0 ? barchart_labeles : ["Sin Resultados"],
                                 datasets: [{
-                                    label: "Cantidad",
-                                    backgroundColor: "#5e93df",
-                                    hoverBackgroundColor: "#2e59A9",
-                                    borderColor: "#4e73df",
+                                    label: "Visitas/Ventas",
+                                    backgroundColor: "#36b9cc",
+                                    hoverBackgroundColor: "#26828f",
+                                    borderColor: "#36b9cc",
                                     data: barchart_data.length > 0 ? barchart_data : [0],
                                 }],
                             },
                             options: {
                                 maintainAspectRatio: false,
-                                legend: {
-                                    display: false
-                                },
+                                legend: { display: false },
                                 scales: {
                                     xAxes: [{
-                                        gridLines: {
-                                            display: false,
-                                            drawBorder: false
-                                        },
-                                        maxBarThickness: 50,
+                                        gridLines: { display: false, drawBorder: false },
+                                        maxBarThickness: 40,
                                     }],
-                                    yAxes: [{
-                                        ticks: {
-                                            min: 0,
-                                            maxTicksLimit: 5
-                                        }
-                                    }],
+                                    yAxes: [{ ticks: { min: 0, maxTicksLimit: 5 } }],
                                 },
                             }
                         });
@@ -86,8 +90,8 @@ $(document).ready(function () {
                                 labels: piechart_labeles.length > 0 ? piechart_labeles : ["Sin Resultados"],
                                 datasets: [{
                                     data: piechart_data.length > 0 ? piechart_data : [0],
-                                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', "#FF785B"],
-                                    hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf', "#FF5733"],
+                                    backgroundColor: coloresPremium.slice(0, Math.max(piechart_labeles.length, 1)),
+                                    hoverBackgroundColor: coloresPremiumHover.slice(0, Math.max(piechart_labeles.length, 1)),
                                     hoverBorderColor: "rgba(234, 236, 244, 1)",
                                 }],
                             },
@@ -98,29 +102,24 @@ $(document).ready(function () {
                                     bodyFontColor: "#858796",
                                     borderColor: '#dddfeb',
                                     borderWidth: 1,
-                                    xPadding: 15,
-                                    yPadding: 15,
-                                    displayColors: false,
+                                    xPadding: 12,
+                                    yPadding: 12,
+                                    displayColors: true,
                                     caretPadding: 10,
                                 },
-                                legend: {
-                                    display: true
-                                },
-                                cutoutPercentage: 80,
+                                legend: { display: true, position: 'right', labels: { boxWidth: 12, fontSize: 10 } },
+                                cutoutPercentage: 75,
                             },
                         });
 
-                        // New Charts
+                        // Nuevos Graficos
                         renderPieChart("chartVisitasPorEtapa", d.visitasPorEtapa, "Visitas por Etapa");
                         renderBarChart("chartContratosPorMes", d.contratosPorMes, "Contratos por Mes");
                         renderHorizontalBarChart("chartTopClientes", d.topClientesConMasContratos, "Top 5 Clientes");
 
                         Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
                         Chart.defaults.global.defaultFontColor = '#858796';
-                    } else {
-                        console.error("Chart.js no está definido. Asegúrate de que la librería Chart.js esté cargada antes de DashBoard_Index.js.");
                     }
-
                 }
             }
         )
@@ -139,26 +138,14 @@ $(document).ready(function () {
                 labels: labels.length > 0 ? labels : ["Sin Resultados"],
                 datasets: [{
                     data: values.length > 0 ? values : [0],
-                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'],
-                    hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf', '#dda20a', '#c73021'],
+                    backgroundColor: coloresPremium.slice(0, Math.max(labels.length, 1)),
+                    hoverBackgroundColor: coloresPremiumHover.slice(0, Math.max(labels.length, 1)),
                     hoverBorderColor: "rgba(234, 236, 244, 1)",
                 }],
             },
             options: {
                 maintainAspectRatio: false,
-                tooltips: {
-                    backgroundColor: "rgb(255,255,255)",
-                    bodyFontColor: "#858796",
-                    borderColor: '#dddfeb',
-                    borderWidth: 1,
-                    xPadding: 15,
-                    yPadding: 15,
-                    displayColors: false,
-                    caretPadding: 10,
-                },
-                legend: {
-                    display: true
-                },
+                legend: { display: true, position: 'right', labels: { boxWidth: 12, fontSize: 10 } },
             },
         });
     }
@@ -174,31 +161,18 @@ $(document).ready(function () {
                 labels: labels.length > 0 ? labels : ["Sin Resultados"],
                 datasets: [{
                     label: label,
-                    backgroundColor: "#4e73df",
-                    hoverBackgroundColor: "#2e59A9",
-                    borderColor: "#4e73df",
+                    backgroundColor: "#004A93",
+                    hoverBackgroundColor: "#003366",
+                    borderColor: "#004A93",
                     data: values.length > 0 ? values : [0],
                 }],
             },
             options: {
                 maintainAspectRatio: false,
-                legend: {
-                    display: false
-                },
+                legend: { display: false },
                 scales: {
-                    xAxes: [{
-                        gridLines: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        maxBarThickness: 50,
-                    }],
-                    yAxes: [{
-                        ticks: {
-                            min: 0,
-                            maxTicksLimit: 5
-                        }
-                    }],
+                    xAxes: [{ gridLines: { display: false, drawBorder: false }, maxBarThickness: 40 }],
+                    yAxes: [{ ticks: { min: 0, maxTicksLimit: 5 } }],
                 },
             }
         });
@@ -215,55 +189,199 @@ $(document).ready(function () {
                 labels: labels.length > 0 ? labels : ["Sin Resultados"],
                 datasets: [{
                     label: label,
-                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'],
+                    backgroundColor: coloresPremium.slice(0, Math.max(labels.length, 1)),
                     data: values.length > 0 ? values : [0],
                 }],
             },
             options: {
                 maintainAspectRatio: false,
-                legend: {
-                    display: false
-                },
+                legend: { display: false },
                 scales: {
-                    xAxes: [{
-                        ticks: {
-                            min: 0,
-                            maxTicksLimit: 5
-                        }
-                    }],
+                    xAxes: [{ ticks: { min: 0, maxTicksLimit: 5 } }],
                 },
             }
         });
     }
 
+    // #region Lógica para Ampliar Datos en Modales
+    
+    // Clic en botones de ampliación de métricas (tarjetas superiores)
+    $(document).on('click', '.btn-ampliar-metric', function() {
+        const metric = $(this).data('metric');
+        const header = $('#tbDetalleHead');
+        const body = $('#tbDetalleBody');
+        
+        header.empty();
+        body.empty();
+        $('#modalDetalleDashboard').modal('show');
+        
+        if (metric === 'pagosVencidos') {
+            $('#modalDetalleTitulo').html('<i class="fas fa-calendar-times text-danger mr-2"></i> Desglose de Pagos Vencidos');
+            body.html('<tr><td colspan="6" class="text-center"><i class="fas fa-spinner fa-spin mr-2"></i> Cargando pagos vencidos...</td></tr>');
+            
+            fetch('/Dashboard/ObtenerDetallePagosVencidos')
+                .then(res => res.json())
+                .then(response => {
+                    body.empty();
+                    header.html(`
+                        <tr>
+                            <th>Contrato (ID)</th>
+                            <th>Cliente / Constructora</th>
+                            <th>Cuota N°</th>
+                            <th>Monto Pendiente</th>
+                            <th>Vencimiento</th>
+                            <th>Retraso (Días)</th>
+                        </tr>
+                    `);
+                    
+                    if (response.estado && response.objeto.length > 0) {
+                        response.objeto.forEach(item => {
+                            body.append(`
+                                <tr>
+                                    <td><strong>${item.numeroContrato}</strong></td>
+                                    <td>${item.nombreCliente}</td>
+                                    <td class="text-center">${item.numeroCuota}</td>
+                                    <td class="text-right font-weight-bold text-danger">$${item.montoCuota.toFixed(2)}</td>
+                                    <td>${item.fechaVencimiento}</td>
+                                    <td class="text-center"><span class="badge badge-danger">${item.diasVencidos} días</span></td>
+                                </tr>
+                            `);
+                        });
+                    } else {
+                        body.html('<tr><td colspan="6" class="text-center text-muted">No existen pagos vencidos actualmente.</td></tr>');
+                    }
+                })
+                .catch(err => {
+                    body.html('<tr><td colspan="6" class="text-center text-danger">Error al cargar la información.</td></tr>');
+                });
+        } 
+        else if (metric === 'totalContratos') {
+            $('#modalDetalleTitulo').html('<i class="fas fa-file-contract text-primary mr-2"></i> Información de Contratos');
+            header.html('<tr><th>Indicador</th><th>Valor</th></tr>');
+            const total = window.dashboardData ? window.dashboardData.totalContratos : 0;
+            body.append(`<tr><td><strong>Total de Contratos Activos</strong></td><td>${total} contratos</td></tr>`);
+            body.append(`<tr><td class="text-muted" colspan="2">Para ver el desglose completo y archivos de los contratos, dirígete al menú <strong>Ventas -> Contratos</strong>.</td></tr>`);
+        } 
+        else if (metric === 'ingresosMensuales') {
+            $('#modalDetalleTitulo').html('<i class="fas fa-dollar-sign text-success mr-2"></i> Ingresos del Mes Actual');
+            header.html('<tr><th>Métricas de Facturación</th><th>Monto</th></tr>');
+            const ingresos = window.dashboardData ? window.dashboardData.ingresosMensuales : '$0.00';
+            body.append(`<tr><td><strong>Valor Contratado Registrado en el Mes</strong></td><td class="font-weight-bold text-success">${ingresos}</td></tr>`);
+            body.append(`<tr><td class="text-muted" colspan="2">Representa la suma de los valores totales de los planes de pago creados/registrados durante el mes actual. Para auditar los pagos recibidos y cuotas, navega a <strong>Financiero -> Plan de Pago</strong>.</td></tr>`);
+        } 
+        else if (metric === 'nuevosClientes') {
+            $('#modalDetalleTitulo').html('<i class="fas fa-user-plus text-info mr-2"></i> Nuevos Clientes Registrados');
+            header.html('<tr><th>Indicador</th><th>Valor</th></tr>');
+            const nuevos = window.dashboardData ? window.dashboardData.nuevosClientes : 0;
+            body.append(`<tr><td><strong>Clientes Incorporados (Últimos 30 días)</strong></td><td>${nuevos} clientes</td></tr>`);
+            body.append(`<tr><td class="text-muted" colspan="2">Mide el total de clientes creados cuyo estado es activo dentro del último mes. Para ver y gestionar el listado completo, ingresa a <strong>Administración -> Clientes</strong>.</td></tr>`);
+        }
+    });
+
+    // Clic en botones de ampliación de gráficos
+    $(document).on('click', '.btn-ampliar-grafico', function() {
+        const chartType = $(this).data('chart');
+        const header = $('#tbDetalleHead');
+        const body = $('#tbDetalleBody');
+        
+        header.empty();
+        body.empty();
+        $('#modalDetalleDashboard').modal('show');
+        
+        if (!window.dashboardData) {
+            body.html('<tr><td class="text-center text-muted">No hay datos disponibles en memoria.</td></tr>');
+            return;
+        }
+
+        if (chartType === 'visitasPorEtapa') {
+            $('#modalDetalleTitulo').html('<i class="fas fa-filter text-primary mr-2"></i> Visitas por Etapa Comercial');
+            header.html('<tr><th>Etapa Comercial</th><th class="text-center">Total Visitas</th></tr>');
+            const data = window.dashboardData.visitasPorEtapa;
+            if (Object.keys(data).length > 0) {
+                Object.keys(data).forEach(key => {
+                    body.append(`<tr><td><strong>${key}</strong></td><td class="text-center">${data[key]}</td></tr>`);
+                });
+            } else {
+                body.html('<tr><td colspan="2" class="text-center text-muted">Sin datos.</td></tr>');
+            }
+        }
+        else if (chartType === 'marcasMasVendidas') {
+            $('#modalDetalleTitulo').html('<i class="fas fa-tags text-success mr-2"></i> Cantidad de Equipos por Marca');
+            header.html('<tr><th>Marca / Fabricante</th><th class="text-center">Equipos Registrados</th></tr>');
+            const list = window.dashboardData.listaMarcasMasVendidasVM;
+            if (list && list.length > 0) {
+                list.forEach(item => {
+                    body.append(`<tr><td><strong>${item.marca}</strong></td><td class="text-center font-weight-bold text-success">${item.totalCantidad}</td></tr>`);
+                });
+            } else {
+                body.html('<tr><td colspan="2" class="text-center text-muted">Sin datos.</td></tr>');
+            }
+        }
+        else if (chartType === 'visitasUltimaSemana') {
+            $('#modalDetalleTitulo').html('<i class="fas fa-calendar-day text-info mr-2"></i> Actividad de Visitas (Últimos Días)');
+            header.html('<tr><th>Fecha de Registro</th><th class="text-center">Visitas Completadas</th></tr>');
+            const list = window.dashboardData.listaVisitasUktimaSemanaVM;
+            if (list && list.length > 0) {
+                list.forEach(item => {
+                    body.append(`<tr><td><strong>${item.fecha}</strong></td><td class="text-center">${item.total}</td></tr>`);
+                });
+            } else {
+                body.html('<tr><td colspan="2" class="text-center text-muted">Sin datos.</td></tr>');
+            }
+        }
+        else if (chartType === 'contratosPorMes') {
+            $('#modalDetalleTitulo').html('<i class="fas fa-file-invoice-dollar text-warning mr-2"></i> Historial de Contratos por Mes');
+            header.html('<tr><th>Mes / Periodo</th><th class="text-center">Contratos Firmados</th></tr>');
+            const data = window.dashboardData.contratosPorMes;
+            if (Object.keys(data).length > 0) {
+                Object.keys(data).forEach(key => {
+                    body.append(`<tr><td><strong>${key}</strong></td><td class="text-center font-weight-bold text-primary">${data[key]}</td></tr>`);
+                });
+            } else {
+                body.html('<tr><td colspan="2" class="text-center text-muted">Sin datos.</td></tr>');
+            }
+        }
+        else if (chartType === 'topClientes') {
+            $('#modalDetalleTitulo').html('<i class="fas fa-trophy text-warning mr-2"></i> Ranking de Clientes con Mayor Volumen');
+            header.html('<tr><th>Cliente / Constructora</th><th class="text-center">Contratos Firmados</th></tr>');
+            const data = window.dashboardData.topClientesConMasContratos;
+            if (Object.keys(data).length > 0) {
+                Object.keys(data).forEach(key => {
+                    body.append(`<tr><td><strong>${key}</strong></td><td class="text-center font-weight-bold text-warning">${data[key]}</td></tr>`);
+                });
+            } else {
+                body.html('<tr><td colspan="2" class="text-center text-muted">Sin datos.</td></tr>');
+            }
+        }
+    });
+
+    // #endregion
+
     // #region MCP (Asistente Tecmein) Logic
 
     let isListening = false;
-    let recognition; // Will hold the SpeechRecognition object
+    let recognition; 
 
     function appendMessage(sender, message, isHtml = false) {
-        $('#mcpCollapseContent').collapse('show'); // Asegurarse de que el asistente esté visible antes de añadir un mensaje
-        const messageContainer = $('<div class="d-flex mb-2">');
-        const messageCard = $('<div class="card p-2 border-0">');
-        const messageBody = $('<div class="card-body p-2">');
+        // Asegurarse de que el asistente esté visible y desplegado
+        $('.mcp-chat-window').addClass('show');
+        mcpInitialMsg.remove(); // Quitar mensaje inicial si hay interaccion
+
+        const messageContainer = $('<div class="mcp-message-container">');
+        const messageCard = $('<div class="mcp-message-card">');
 
         if (sender === 'Tú') {
-            messageContainer.addClass('justify-content-end');
-            messageCard.addClass('bg-primary text-white');
-            messageBody.html(`<strong>Tú:</strong> <span class="ml-2">${message}</span>`);
+            messageContainer.addClass('user');
+            messageCard.html(message);
         } else {
-            messageContainer.addClass('justify-content-start');
-            messageCard.addClass('bg-light rounded-lg');
+            messageContainer.addClass('assistant');
             if (isHtml) {
-                // If message is already HTML, insert it directly
-                messageBody.html(`<strong style="color: #0FC233;">Asistente:</strong><div class="mt-1" style="color: #39493F;">${message}</div>`);
+                messageCard.html(message);
             } else {
-                // If it's plain text, wrap it in a span
-                messageBody.html(`<strong style="color: #0FC233;">Asistente:</strong> <span class="ml-2" style="color: #39493F;">${message}</span>`);
+                messageCard.text(message);
             }
         }
         
-        messageCard.append(messageBody);
         messageContainer.append(messageCard);
         mcpResponseArea.append(messageContainer);
         mcpResponseArea.scrollTop(mcpResponseArea[0].scrollHeight);
@@ -277,10 +395,10 @@ $(document).ready(function () {
 
         appendMessage('Tú', query);
         mcpQueryInput.val('');
-        mcpResponseArea.append('<div id="mcpLoading" class="text-center text-muted"><i class="fas fa-spinner fa-spin"></i> Pensando...</div>');
+        
+        const loader = $('<div id="mcpLoading" class="text-center text-muted small my-2"><i class="fas fa-spinner fa-spin mr-1"></i> Pensando...</div>');
+        mcpResponseArea.append(loader);
         mcpResponseArea.scrollTop(mcpResponseArea[0].scrollHeight);
-
-        console.log('Enviando consulta al MCP:', query);
 
         fetch('/api/Mcp/query', {
             method: 'POST',
@@ -302,19 +420,17 @@ $(document).ready(function () {
                 appendMessage('Asistente', responseJson.objeto.respuesta, true);
             } else {
                 appendMessage('Asistente', `Error: ${responseJson.mensajes || 'No se pudo procesar la consulta.'}`);
-                $('#mcpCollapseContent').collapse('hide'); // Ocultar el asistente en caso de error
             }
         })
         .catch(error => {
             $('#mcpLoading').remove();
-            $('#mcpCollapseContent').collapse('hide'); // Ocultar el asistente en caso de error
             if (error.status === 403) {
                 Swal.fire("Acceso Denegado", "No tiene permisos para realizar esta consulta.", "error");
                 appendMessage('Asistente', 'Acceso denegado. No tienes permisos para usar esta función.');
             } else {
                 console.error('Error al comunicarse con el MCP:', error);
                 Swal.fire("Error", "Hubo un error de comunicación con el asistente. Inténtalo de nuevo más tarde.", "error");
-                appendMessage('Asistente', 'Hubo un error de comunicación con el asistente. Inténtalo de nuevo más tarde.');
+                appendMessage('Asistente', 'Hubo un error de comunicación con el asistente.');
             }
         });
     }
@@ -325,37 +441,34 @@ $(document).ready(function () {
 
     if ('webkitSpeechRecognition' in window) {
         recognition = new webkitSpeechRecognition();
-        recognition.continuous = false; // Detener después de la primera pausa
-        recognition.interimResults = false; // Solo resultados finales
-        recognition.lang = 'es-ES'; // Establecer el idioma a español
+        recognition.continuous = false; 
+        recognition.interimResults = false; 
+        recognition.lang = 'es-ES'; 
 
         recognition.onstart = function () {
             isListening = true;
             mcpVoiceInputButton.addClass('btn-danger').removeClass('btn-primary');
             mcpVoiceInputButton.find('i').removeClass('fa-microphone').addClass('fa-stop-circle');
             mcpVoiceInputButton.prop('title', 'Detener dictado');
-            appendMessage('Asistente', 'Escuchando...', false); // Indicar que está escuchando
-
-            // Show the chat content if it's collapsed
-            $('#mcpCollapseContent').collapse('show');
+            
+            $('.mcp-chat-window').addClass('show');
+            mcpInitialMsg.remove();
+            
+            const esc = $('<div id="mcpEscuchando" class="text-center text-muted small my-2"><i class="fas fa-microphone fa-beat mr-1 text-danger"></i> Escuchando tu voz...</div>');
+            mcpResponseArea.append(esc);
+            mcpResponseArea.scrollTop(mcpResponseArea[0].scrollHeight);
         };
 
         recognition.onresult = function (event) {
             const transcript = event.results[0][0].transcript;
-            mcpQueryInput.val(transcript); // Poner el texto reconocido en el input
-
-            // Eliminar el mensaje 'Escuchando...' si aún está presente
-            const lastMessage = mcpResponseArea.children().last();
-            if (lastMessage.find('strong').text().includes('Asistente:') && lastMessage.text().includes('Escuchando...')) {
-                lastMessage.remove();
-            }
-
-            sendMcpQuery(transcript); // Enviar la consulta automáticamente
+            mcpQueryInput.val(transcript); 
+            $('#mcpEscuchando').remove();
+            sendMcpQuery(transcript); 
         };
 
         recognition.onerror = function (event) {
             console.error('Error de reconocimiento de voz:', event.error);
-            $('#mcpLoading').remove();
+            $('#mcpEscuchando').remove();
             appendMessage('Asistente', 'No pude entender tu voz. Por favor, intenta de nuevo o escribe tu consulta.');
             isListening = false;
             mcpVoiceInputButton.removeClass('btn-danger').addClass('btn-primary');
@@ -368,14 +481,10 @@ $(document).ready(function () {
             mcpVoiceInputButton.removeClass('btn-danger').addClass('btn-primary');
             mcpVoiceInputButton.find('i').removeClass('fa-stop-circle').addClass('fa-microphone');
             mcpVoiceInputButton.prop('title', 'Dictar consulta');
-            // Remove 'Escuchando...' message if no result was processed by onresult
-            if (mcpResponseArea.find('div:last-child span:contains("Escuchando...")').length) {
-                mcpResponseArea.find('div:last-child').remove();
-            }
+            $('#mcpEscuchando').remove();
         };
     } else {
         mcpVoiceInputButton.prop('disabled', true).attr('title', 'Reconocimiento de voz no soportado por tu navegador');
-        console.warn('webkitSpeechRecognition no es soportado por este navegador.');
     }
 
     // #endregion Speech Recognition Logic
@@ -387,7 +496,7 @@ $(document).ready(function () {
     });
 
     mcpQueryInput.on('keypress', function (e) {
-        if (e.which == 13) { // Enter key
+        if (e.which == 13) { 
             sendMcpQuery(mcpQueryInput.val());
         }
     });
@@ -397,11 +506,9 @@ $(document).ready(function () {
             recognition.stop();
         }
         else {
-            // Show the chat content if it's collapsed
-            $('#mcpCollapseContent').collapse('show');
-
-            mcpQueryInput.val(''); // Clear input field before listening
-            mcpResponseArea.find('p.text-muted').remove(); // Remove initial message
+            $('.mcp-chat-window').addClass('show');
+            mcpQueryInput.val(''); 
+            mcpInitialMsg.remove();
             recognition.start();
         }
     });

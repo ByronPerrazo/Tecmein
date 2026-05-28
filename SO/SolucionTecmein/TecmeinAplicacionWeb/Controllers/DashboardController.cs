@@ -1,4 +1,4 @@
-﻿using BLL.Interfaces;
+using BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using TecmeinAplicacionWeb.Models.ViewModels;
@@ -82,6 +82,24 @@ namespace TecmeinWebApp.Controllers
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
             return new JsonResult(gResponse, jsonOptions);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ObtenerDetallePagosVencidos()
+        {
+            var gResponse = new GenericResponse<List<BLL.DTOs.PagoVencidoDashboardDTO>>();
+            try
+            {
+                var detalle = await _dashBoarServicio.ObtenerDetallePagosVencidos();
+                gResponse.Estado = true;
+                gResponse.Objeto = detalle;
+            }
+            catch (Exception ex)
+            {
+                gResponse.Estado = false;
+                gResponse.Mensajes = ex.Message;
+            }
+            return StatusCode(200, gResponse);
         }
     }
 }

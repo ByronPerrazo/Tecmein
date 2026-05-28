@@ -1,43 +1,38 @@
-﻿
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
 @section Estilos {
-   
     <link href="~/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-
-    <!-- Custom styles for this template-->
-    <link href="~/css/sb-admin-2.css" rel="stylesheet">
+    <link href="~/css/premium-design.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/css/modern-table.css" rel="stylesheet" asp-append-version="true">
 }
 
-<!-- Begin Page Content -->
 <div class="container-fluid">
 
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+        <h1 class="h4 mb-0 text-gray-800 font-weight-bold">
+            <i class="fas fa-chart-pie text-primary mr-2"></i>Centro de Operaciones y Métricas
+        </h1>
     </div>
 
-    <!-- Content Row -->
+    <!-- Metricas Superiores -->
     <div class="row">
 
         <!-- Total de Contratos -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card card-metric-premium card-metric-primary py-2 h-100">
                 <div class="card-body">
+                    <i class="fas fa-expand-alt btn-ampliar-metric" data-metric="totalContratos" title="Ampliar detalles"></i>
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Total de Contratos
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalContratos">0</div>
+                            <div class="text-title mb-1">Total de Contratos</div>
+                            <div class="metric-value mb-0" id="totalContratos">0</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-file-contract fa-2x text-gray-300"></i>
+                            <i class="fas fa-file-contract fa-2x icon-bg"></i>
                         </div>
                     </div>
                 </div>
@@ -46,17 +41,16 @@
 
         <!-- Ingresos Mensuales -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
+            <div class="card card-metric-premium card-metric-success py-2 h-100">
                 <div class="card-body">
+                    <i class="fas fa-expand-alt btn-ampliar-metric" data-metric="ingresosMensuales" title="Ampliar detalles"></i>
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Ingresos Mensuales
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="ingresosMensuales">$0</div>
+                            <div class="text-title mb-1">Ingresos Mensuales</div>
+                            <div class="metric-value mb-0" id="ingresosMensuales">$0</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                            <i class="fas fa-dollar-sign fa-2x icon-bg"></i>
                         </div>
                     </div>
                 </div>
@@ -65,36 +59,34 @@
 
         <!-- Pagos Vencidos -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card card-metric-premium card-metric-danger py-2 h-100">
                 <div class="card-body">
+                    <i class="fas fa-expand-alt btn-ampliar-metric" data-metric="pagosVencidos" title="Ver pagos vencidos"></i>
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                Pagos Vencidos
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="pagosVencidos">0</div>
+                            <div class="text-title mb-1">Pagos Vencidos</div>
+                            <div class="metric-value mb-0" id="pagosVencidos">0</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-calendar-times fa-2x text-gray-300"></i>
+                            <i class="fas fa-calendar-times fa-2x icon-bg"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Nuevos Clientes (Último Mes) -->
+        <!-- Nuevos Clientes -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
+            <div class="card card-metric-premium card-metric-info py-2 h-100">
                 <div class="card-body">
+                    <i class="fas fa-expand-alt btn-ampliar-metric" data-metric="nuevosClientes" title="Ampliar detalles"></i>
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Nuevos Clientes (Último Mes)
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="nuevosClientes">0</div>
+                            <div class="text-title mb-1">Nuevos Clientes (Mes)</div>
+                            <div class="metric-value mb-0" id="nuevosClientes">0</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-user-plus fa-2x text-gray-300"></i>
+                            <i class="fas fa-user-plus fa-2x icon-bg"></i>
                         </div>
                     </div>
                 </div>
@@ -102,97 +94,64 @@
         </div>
     </div>
 
-    <!-- MCP Section -->
+    <!-- Rejilla Panorámica de Gráficos -->
     <div class="row">
-        <div class="col-xl-12">
-            <div class="card shadow mb-4">
-                <a href="#mcpCollapseContent" class="d-block card-header py-3 bg-second-primary" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="mcpCollapseContent">
-                    <h6 class="m-0 font-weight-bold text-white">
-                        <i class="fas fa-robot"></i> Asistente Tecmein (MCP)
-                    </h6>
-                </a>
-                <div class="input-group p-3 pt-0"> <!-- Input visible siempre, con padding para estética -->
-                    <input type="text" id="mcpQueryInput" class="form-control" placeholder="Escribe tu consulta o usa el micrófono..." aria-label="Consulta para el asistente" aria-describedby="mcpSendButton">
-                    <div class="input-group-append">
-                        <button class="btn btn-primary" type="button" id="mcpVoiceInputButton"><i class="fas fa-microphone"></i></button>
-                        <button class="btn btn-success" type="button" id="mcpSendButton"><i class="fas fa-paper-plane"></i> Enviar</button>
-                    </div>
+        <!-- Visitas por Etapa (Gráfico Circular) -->
+        <div class="col-xl-6 col-lg-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header py-3 d-flex align-items-center justify-content-between bg-white border-bottom-0">
+                    <h6 class="m-0 font-weight-bold text-dark"><i class="fas fa-filter text-primary mr-2"></i>Visitas por Etapa</h6>
+                    <i class="fas fa-expand-alt btn-ampliar-grafico" data-chart="visitasPorEtapa" title="Ampliar datos"></i>
                 </div>
-                <div class="collapse" id="mcpCollapseContent"> <!-- Contenido colapsable, inicialmente oculto -->
-                    <div class="card-body d-flex flex-column border rounded-bottom" style="height: 350px; background-color: #DAEBF5;"> <!-- Ajustar altura y rounded para que solo la parte inferior sea redondeada -->
-                        <div id="mcpResponseArea" class="p-1 flex-grow-1 overflow-auto" style="overflow-y: auto;">
-                            <!-- Las respuestas del MCP se mostrarán aquí -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Content Row for Charts -->
-    <div class="row mt-4">
-
-        <!-- Area Chart - Ventas de los ultimos 7 días -->
-        <div class="col-xl-8 col-lg-7">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Ventas de los últimos 7 días</h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="charVentas"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pie Chart - Marcas Más Vendidas -->
-        <div class="col-xl-4 col-lg-5">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Marcas Más Vendidas</h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="chart-pie pt-4 pb-2">
-                        <canvas id="charProductos"></canvas>
-                    </div>
-                    <div class="mt-4 text-center small">
-                        <span class="mr-2"><i class="fas fa-circle text-primary"></i> Direct</span>
-                        <span class="mr-2"><i class="fas fa-circle text-success"></i> Social</span>
-                        <span class="mr-2"><i class="fas fa-circle text-info"></i> Referral</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <!-- Pie Chart - Visitas por Etapa -->
-        <div class="col-xl-6 col-lg-6">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Visitas por Etapa</h6>
-                </div>
-                <div class="card-body">
-                    <div class="chart-pie pt-4 pb-2">
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <div class="chart-pie" style="position: relative; height: 260px;">
                         <canvas id="chartVisitasPorEtapa"></canvas>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Bar Chart - Contratos por Mes -->
-        <div class="col-xl-6 col-lg-6">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Contratos por Mes</h6>
+        <!-- Marcas Más Vendidas (Gráfico Doughnut) -->
+        <div class="col-xl-6 col-lg-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header py-3 d-flex align-items-center justify-content-between bg-white border-bottom-0">
+                    <h6 class="m-0 font-weight-bold text-dark"><i class="fas fa-tags text-success mr-2"></i>Marcas Más Vendidas</h6>
+                    <i class="fas fa-expand-alt btn-ampliar-grafico" data-chart="marcasMasVendidas" title="Ampliar datos"></i>
+                </div>
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <div class="chart-pie" style="position: relative; height: 260px;">
+                        <canvas id="charProductos"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Ventas / Visitas de los últimos 7 días (Gráfico de Barras) -->
+        <div class="col-xl-6 col-lg-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header py-3 d-flex align-items-center justify-content-between bg-white border-bottom-0">
+                    <h6 class="m-0 font-weight-bold text-dark"><i class="fas fa-calendar-day text-info mr-2"></i>Ventas de los últimos 7 días</h6>
+                    <i class="fas fa-expand-alt btn-ampliar-grafico" data-chart="visitasUltimaSemana" title="Ampliar datos"></i>
                 </div>
                 <div class="card-body">
-                    <div class="chart-bar">
+                    <div class="chart-bar" style="position: relative; height: 260px;">
+                        <canvas id="charVentas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contratos por Mes (Gráfico de Barras) -->
+        <div class="col-xl-6 col-lg-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header py-3 d-flex align-items-center justify-content-between bg-white border-bottom-0">
+                    <h6 class="m-0 font-weight-bold text-dark"><i class="fas fa-file-invoice-dollar text-warning mr-2"></i>Contratos por Mes</h6>
+                    <i class="fas fa-expand-alt btn-ampliar-grafico" data-chart="contratosPorMes" title="Ampliar datos"></i>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar" style="position: relative; height: 260px;">
                         <canvas id="chartContratosPorMes"></canvas>
                     </div>
                 </div>
@@ -200,27 +159,87 @@
         </div>
     </div>
 
+    <!-- Ranking de Clientes (Gráfico Horizontal Ancho Completo) -->
     <div class="row">
-        <!-- Horizontal Bar Chart - Top 5 Clientes -->
-        <div class="col-xl-12">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Top 5 Clientes con más Contratos</h6>
+        <div class="col-xl-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header py-3 d-flex align-items-center justify-content-between bg-white border-bottom-0">
+                    <h6 class="m-0 font-weight-bold text-dark"><i class="fas fa-trophy text-warning mr-2"></i>Top 5 Clientes con más Contratos</h6>
+                    <i class="fas fa-expand-alt btn-ampliar-grafico" data-chart="topClientes" title="Ampliar datos"></i>
                 </div>
                 <div class="card-body">
-                    <div class="chart-bar">
+                    <div class="chart-bar" style="position: relative; height: 260px;">
                         <canvas id="chartTopClientes"></canvas>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
+<!-- Asistente MCP en Chat Flotante Glassmorphic -->
+<div id="mcpFloatingChat">
+    <!-- Trigger flotante (Burbuja) -->
+    <div class="mcp-chat-trigger" title="Asistente Tecmein">
+        <i class="fas fa-robot"></i>
+    </div>
+    <!-- Ventana de conversacion -->
+    <div class="mcp-chat-window">
+        <div class="mcp-chat-header">
+            <h6><i class="fas fa-robot"></i> Asistente Tecmein (MCP)</h6>
+            <i class="fas fa-times close-chat" title="Cerrar chat"></i>
+        </div>
+        <div class="mcp-chat-body" id="mcpResponseArea">
+            <div class="text-center text-muted small my-auto" id="mcpInitialMsg">
+                <i class="fas fa-comments fa-2x mb-2 text-gray-300 d-block"></i>
+                ¿En qué puedo ayudarte hoy con el sistema Tecmein? Escribe tu consulta aquí abajo.
+            </div>
+        </div>
+        <div class="mcp-chat-footer">
+            <div class="input-group">
+                <input type="text" id="mcpQueryInput" class="form-control form-control-sm" placeholder="Haz una pregunta..." style="border-radius: 6px 0 0 6px;">
+                <div class="input-group-append">
+                    <button class="btn btn-primary btn-sm" type="button" id="mcpVoiceInputButton" title="Dictar por voz"><i class="fas fa-microphone"></i></button>
+                    <button class="btn btn-success btn-sm" type="button" id="mcpSendButton" title="Enviar"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- Modal Detalle Dashboard -->
+<div class="modal fade" id="modalDetalleDashboard" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content modal-content-premium animate-fade-in">
+            <div class="modal-header-premium header-primary">
+                <h6 class="modal-title" id="modalDetalleTitulo">
+                    <i class="fas fa-table"></i> Desglose de Datos
+                </h6>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="text-white">×</span>
+                </button>
+            </div>
+            <div class="modal-body p-3">
+                <div class="table-responsive">
+                    <table class="table-modern w-100" id="tbDetalleDashboard" cellspacing="0">
+                        <thead id="tbDetalleHead">
+                            <!-- Columnas dinamicas -->
+                        </thead>
+                        <tbody id="tbDetalleBody">
+                            <!-- Filas dinamicas -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer border-0 p-2">
+                <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
-    <script>console.log('Chart.js loaded:', typeof Chart);</script>
-    <script src="~/js/vistas/DashBoard_Index.js"></script>
+    <script src="~/js/vistas/DashBoard_Index.js" asp-append-version="true"></script>
 }
