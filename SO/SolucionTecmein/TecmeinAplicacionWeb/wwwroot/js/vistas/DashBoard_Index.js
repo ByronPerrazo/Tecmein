@@ -42,11 +42,15 @@ $(document).ready(function () {
                     let d = respuestaJson.objeto;
                     window.dashboardData = d; // Guardar copia global
 
-                    // Actualizar contadores
+                    // Actualizar contadores superiores
                     $("#totalContratos").text(d.totalContratos || 0);
                     $("#ingresosMensuales").text(d.ingresosMensuales || '$0');
                     $("#pagosVencidos").text(d.pagosVencidos || 0);
                     $("#nuevosClientes").text(d.nuevosClientes || 0);
+
+                    // Actualizar contadores del sexto cuadro (Resumen de Inventario)
+                    $("#txtTotalEquipos").text(d.totalEquipos || 0);
+                    $("#txtTotalMarcas").text(d.totalMarcas || 0);
 
                     let barchart_labeles = d.listaVisitasUktimaSemanaVM.map(item => item.fecha);
                     let barchart_data = d.listaVisitasUktimaSemanaVM.map(item => item.total);
@@ -75,9 +79,10 @@ $(document).ready(function () {
                                 scales: {
                                     xAxes: [{
                                         gridLines: { display: false, drawBorder: false },
-                                        maxBarThickness: 40,
+                                        maxBarThickness: 30,
+                                        ticks: { fontSize: 9 }
                                     }],
-                                    yAxes: [{ ticks: { min: 0, maxTicksLimit: 5 } }],
+                                    yAxes: [{ ticks: { min: 0, maxTicksLimit: 5, fontSize: 9 } }],
                                 },
                             }
                         });
@@ -102,13 +107,17 @@ $(document).ready(function () {
                                     bodyFontColor: "#858796",
                                     borderColor: '#dddfeb',
                                     borderWidth: 1,
-                                    xPadding: 12,
-                                    yPadding: 12,
+                                    xPadding: 10,
+                                    yPadding: 10,
                                     displayColors: true,
-                                    caretPadding: 10,
+                                    caretPadding: 5,
                                 },
-                                legend: { display: true, position: 'right', labels: { boxWidth: 12, fontSize: 10 } },
-                                cutoutPercentage: 75,
+                                legend: { 
+                                    display: true, 
+                                    position: 'bottom', 
+                                    labels: { boxWidth: 8, fontSize: 9, padding: 6 } 
+                                },
+                                cutoutPercentage: 70,
                             },
                         });
 
@@ -145,7 +154,11 @@ $(document).ready(function () {
             },
             options: {
                 maintainAspectRatio: false,
-                legend: { display: true, position: 'right', labels: { boxWidth: 12, fontSize: 10 } },
+                legend: { 
+                    display: true, 
+                    position: 'bottom', 
+                    labels: { boxWidth: 8, fontSize: 9, padding: 6 } 
+                },
             },
         });
     }
@@ -171,8 +184,12 @@ $(document).ready(function () {
                 maintainAspectRatio: false,
                 legend: { display: false },
                 scales: {
-                    xAxes: [{ gridLines: { display: false, drawBorder: false }, maxBarThickness: 40 }],
-                    yAxes: [{ ticks: { min: 0, maxTicksLimit: 5 } }],
+                    xAxes: [{ 
+                        gridLines: { display: false, drawBorder: false }, 
+                        maxBarThickness: 30,
+                        ticks: { fontSize: 9 }
+                    }],
+                    yAxes: [{ ticks: { min: 0, maxTicksLimit: 5, fontSize: 9 } }],
                 },
             }
         });
@@ -197,8 +214,9 @@ $(document).ready(function () {
                 maintainAspectRatio: false,
                 legend: { display: false },
                 scales: {
-                    xAxes: [{ ticks: { min: 0, maxTicksLimit: 5 } }],
-                },
+                    xAxes: [{ ticks: { min: 0, maxTicksLimit: 5, fontSize: 9 } }],
+                    yAxes: [{ ticks: { fontSize: 9 } }]
+                }
             }
         });
     }
@@ -208,79 +226,16 @@ $(document).ready(function () {
     // Clic en botones de ampliación de métricas (tarjetas superiores)
     $(document).on('click', '.btn-ampliar-metric', function() {
         const metric = $(this).data('metric');
-        const header = $('#tbDetalleHead');
-        const body = $('#tbDetalleBody');
-        
-        header.empty();
-        body.empty();
-        $('#modalDetalleDashboard').modal('show');
-        
-        if (metric === 'pagosVencidos') {
-            $('#modalDetalleTitulo').html('<i class="fas fa-calendar-times text-danger mr-2"></i> Desglose de Pagos Vencidos');
-            body.html('<tr><td colspan="6" class="text-center"><i class="fas fa-spinner fa-spin mr-2"></i> Cargando pagos vencidos...</td></tr>');
-            
-            fetch('/Dashboard/ObtenerDetallePagosVencidos')
-                .then(res => res.json())
-                .then(response => {
-                    body.empty();
-                    header.html(`
-                        <tr>
-                            <th>Contrato (ID)</th>
-                            <th>Cliente / Constructora</th>
-                            <th>Cuota N°</th>
-                            <th>Monto Pendiente</th>
-                            <th>Vencimiento</th>
-                            <th>Retraso (Días)</th>
-                        </tr>
-                    `);
-                    
-                    if (response.estado && response.objeto.length > 0) {
-                        response.objeto.forEach(item => {
-                            body.append(`
-                                <tr>
-                                    <td><strong>${item.numeroContrato}</strong></td>
-                                    <td>${item.nombreCliente}</td>
-                                    <td class="text-center">${item.numeroCuota}</td>
-                                    <td class="text-right font-weight-bold text-danger">$${item.montoCuota.toFixed(2)}</td>
-                                    <td>${item.fechaVencimiento}</td>
-                                    <td class="text-center"><span class="badge badge-danger">${item.diasVencidos} días</span></td>
-                                </tr>
-                            `);
-                        });
-                    } else {
-                        body.html('<tr><td colspan="6" class="text-center text-muted">No existen pagos vencidos actualmente.</td></tr>');
-                    }
-                })
-                .catch(err => {
-                    body.html('<tr><td colspan="6" class="text-center text-danger">Error al cargar la información.</td></tr>');
-                });
-        } 
-        else if (metric === 'totalContratos') {
-            $('#modalDetalleTitulo').html('<i class="fas fa-file-contract text-primary mr-2"></i> Información de Contratos');
-            header.html('<tr><th>Indicador</th><th>Valor</th></tr>');
-            const total = window.dashboardData ? window.dashboardData.totalContratos : 0;
-            body.append(`<tr><td><strong>Total de Contratos Activos</strong></td><td>${total} contratos</td></tr>`);
-            body.append(`<tr><td class="text-muted" colspan="2">Para ver el desglose completo y archivos de los contratos, dirígete al menú <strong>Ventas -> Contratos</strong>.</td></tr>`);
-        } 
-        else if (metric === 'ingresosMensuales') {
-            $('#modalDetalleTitulo').html('<i class="fas fa-dollar-sign text-success mr-2"></i> Ingresos del Mes Actual');
-            header.html('<tr><th>Métricas de Facturación</th><th>Monto</th></tr>');
-            const ingresos = window.dashboardData ? window.dashboardData.ingresosMensuales : '$0.00';
-            body.append(`<tr><td><strong>Valor Contratado Registrado en el Mes</strong></td><td class="font-weight-bold text-success">${ingresos}</td></tr>`);
-            body.append(`<tr><td class="text-muted" colspan="2">Representa la suma de los valores totales de los planes de pago creados/registrados durante el mes actual. Para auditar los pagos recibidos y cuotas, navega a <strong>Financiero -> Plan de Pago</strong>.</td></tr>`);
-        } 
-        else if (metric === 'nuevosClientes') {
-            $('#modalDetalleTitulo').html('<i class="fas fa-user-plus text-info mr-2"></i> Nuevos Clientes Registrados');
-            header.html('<tr><th>Indicador</th><th>Valor</th></tr>');
-            const nuevos = window.dashboardData ? window.dashboardData.nuevosClientes : 0;
-            body.append(`<tr><td><strong>Clientes Incorporados (Últimos 30 días)</strong></td><td>${nuevos} clientes</td></tr>`);
-            body.append(`<tr><td class="text-muted" colspan="2">Mide el total de clientes creados cuyo estado es activo dentro del último mes. Para ver y gestionar el listado completo, ingresa a <strong>Administración -> Clientes</strong>.</td></tr>`);
-        }
+        abrirDetalleDashboard(metric, true);
     });
 
-    // Clic en botones de ampliación de gráficos
+    // Clic en los botones de ampliación de gráficos
     $(document).on('click', '.btn-ampliar-grafico', function() {
-        const chartType = $(this).data('chart');
+        const chartType = $(this).data('active-tab');
+        abrirDetalleDashboard(chartType, false);
+    });
+
+    function abrirDetalleDashboard(type, isMetric) {
         const header = $('#tbDetalleHead');
         const body = $('#tbDetalleBody');
         
@@ -288,72 +243,138 @@ $(document).ready(function () {
         body.empty();
         $('#modalDetalleDashboard').modal('show');
         
-        if (!window.dashboardData) {
-            body.html('<tr><td class="text-center text-muted">No hay datos disponibles en memoria.</td></tr>');
-            return;
-        }
+        if (isMetric) {
+            if (type === 'pagosVencidos') {
+                $('#modalDetalleTitulo').html('<i class="fas fa-calendar-times text-danger mr-2"></i> Desglose de Pagos Vencidos');
+                body.html('<tr><td colspan="6" class="text-center"><i class="fas fa-spinner fa-spin mr-2"></i> Cargando pagos vencidos...</td></tr>');
+                
+                fetch('/Dashboard/ObtenerDetallePagosVencidos')
+                    .then(res => res.json())
+                    .then(response => {
+                        body.empty();
+                        header.html(`
+                            <tr>
+                                <th>Contrato (ID)</th>
+                                <th>Cliente / Constructora</th>
+                                <th>Cuota N°</th>
+                                <th>Monto Pendiente</th>
+                                <th>Vencimiento</th>
+                                <th>Retraso (Días)</th>
+                            </tr>
+                        `);
+                        
+                        if (response.estado && response.objeto.length > 0) {
+                            response.objeto.forEach(item => {
+                                body.append(`
+                                    <tr>
+                                        <td><strong>${item.numeroContrato}</strong></td>
+                                        <td>${item.nombreCliente}</td>
+                                        <td class="text-center">${item.numeroCuota}</td>
+                                        <td class="text-right font-weight-bold text-danger">$${item.montoCuota.toFixed(2)}</td>
+                                        <td>${item.fechaVencimiento}</td>
+                                        <td class="text-center"><span class="badge badge-danger">${item.diasVencidos} días</span></td>
+                                    </tr>
+                                `);
+                            });
+                        } else {
+                            body.html('<tr><td colspan="6" class="text-center text-muted">No existen pagos vencidos actualmente.</td></tr>');
+                        }
+                    })
+                    .catch(err => {
+                        body.html('<tr><td colspan="6" class="text-center text-danger">Error al cargar la información.</td></tr>');
+                    });
+            } 
+            else if (type === 'totalContratos') {
+                $('#modalDetalleTitulo').html('<i class="fas fa-file-contract text-primary mr-2"></i> Información de Contratos');
+                header.html('<tr><th>Indicador</th><th>Valor</th></tr>');
+                const total = window.dashboardData ? window.dashboardData.totalContratos : 0;
+                body.append(`<tr><td><strong>Total de Contratos Activos</strong></td><td>${total} contratos</td></tr>`);
+                body.append(`<tr><td class="text-muted" colspan="2">Para ver el desglose completo y archivos de los contratos, dirígete al menú <strong>Ventas -> Contratos</strong>.</td></tr>`);
+            } 
+            else if (type === 'ingresosMensuales') {
+                $('#modalDetalleTitulo').html('<i class="fas fa-dollar-sign text-success mr-2"></i> Ingresos del Mes Actual');
+                header.html('<tr><th>Métricas de Facturación</th><th>Monto</th></tr>');
+                const ingresos = window.dashboardData ? window.dashboardData.ingresosMensuales : '$0.00';
+                body.append(`<tr><td><strong>Valor Contratado Registrado en el Mes</strong></td><td class="font-weight-bold text-success">${ingresos}</td></tr>`);
+                body.append(`<tr><td class="text-muted" colspan="2">Representa la suma de los valores totales de los planes de pago creados/registrados durante el mes actual. Para auditar los pagos recibidos y cuotas, navega a <strong>Financiero -> Plan de Pago</strong>.</td></tr>`);
+            } 
+            else if (type === 'nuevosClientes') {
+                $('#modalDetalleTitulo').html('<i class="fas fa-user-plus text-info mr-2"></i> Nuevos Clientes Registrados');
+                header.html('<tr><th>Indicador</th><th>Valor</th></tr>');
+                const nuevos = window.dashboardData ? window.dashboardData.nuevosClientes : 0;
+                body.append(`<tr><td><strong>Clientes Incorporados (Últimos 30 días)</strong></td><td>${nuevos} clientes</td></tr>`);
+                body.append(`<tr><td class="text-muted" colspan="2">Mide el total de clientes creados cuyo estado es activo dentro del último mes. Para ver y gestionar el listado completo, ingresa a <strong>Administración -> Clientes</strong>.</td></tr>`);
+            }
+        } 
+        else {
+            // Graficos
+            if (!window.dashboardData) {
+                body.html('<tr><td class="text-center text-muted">No hay datos disponibles en memoria.</td></tr>');
+                return;
+            }
 
-        if (chartType === 'visitasPorEtapa') {
-            $('#modalDetalleTitulo').html('<i class="fas fa-filter text-primary mr-2"></i> Visitas por Etapa Comercial');
-            header.html('<tr><th>Etapa Comercial</th><th class="text-center">Total Visitas</th></tr>');
-            const data = window.dashboardData.visitasPorEtapa;
-            if (Object.keys(data).length > 0) {
-                Object.keys(data).forEach(key => {
-                    body.append(`<tr><td><strong>${key}</strong></td><td class="text-center">${data[key]}</td></tr>`);
-                });
-            } else {
-                body.html('<tr><td colspan="2" class="text-center text-muted">Sin datos.</td></tr>');
+            if (type === 'visitasPorEtapa') {
+                $('#modalDetalleTitulo').html('<i class="fas fa-filter text-primary mr-2"></i> Visitas por Etapa Comercial');
+                header.html('<tr><th>Etapa Comercial</th><th class="text-center">Total Visitas</th></tr>');
+                const data = window.dashboardData.visitasPorEtapa;
+                if (Object.keys(data).length > 0) {
+                    Object.keys(data).forEach(key => {
+                        body.append(`<tr><td><strong>${key}</strong></td><td class="text-center">${data[key]}</td></tr>`);
+                    });
+                } else {
+                    body.html('<tr><td colspan="2" class="text-center text-muted">Sin datos.</td></tr>');
+                }
+            }
+            else if (type === 'marcasMasVendidas') {
+                $('#modalDetalleTitulo').html('<i class="fas fa-tags text-success mr-2"></i> Cantidad de Equipos por Marca');
+                header.html('<tr><th>Marca / Fabricante</th><th class="text-center">Equipos Registrados</th></tr>');
+                const list = window.dashboardData.listaMarcasMasVendidasVM;
+                if (list && list.length > 0) {
+                    list.forEach(item => {
+                        body.append(`<tr><td><strong>${item.marca}</strong></td><td class="text-center font-weight-bold text-success">${item.totalCantidad}</td></tr>`);
+                    });
+                } else {
+                    body.html('<tr><td colspan="2" class="text-center text-muted">Sin datos.</td></tr>');
+                }
+            }
+            else if (type === 'visitasUltimaSemana') {
+                $('#modalDetalleTitulo').html('<i class="fas fa-calendar-day text-info mr-2"></i> Actividad de Visitas (Últimos Días)');
+                header.html('<tr><th>Fecha de Registro</th><th class="text-center">Visitas Completadas</th></tr>');
+                const list = window.dashboardData.listaVisitasUktimaSemanaVM;
+                if (list && list.length > 0) {
+                    list.forEach(item => {
+                        body.append(`<tr><td><strong>${item.fecha}</strong></td><td class="text-center">${item.total}</td></tr>`);
+                    });
+                } else {
+                    body.html('<tr><td colspan="2" class="text-center text-muted">Sin datos.</td></tr>');
+                }
+            }
+            else if (type === 'contratosPorMes') {
+                $('#modalDetalleTitulo').html('<i class="fas fa-file-invoice-dollar text-warning mr-2"></i> Historial de Contratos por Mes');
+                header.html('<tr><th>Mes / Periodo</th><th class="text-center">Contratos Firmados</th></tr>');
+                const data = window.dashboardData.contratosPorMes;
+                if (Object.keys(data).length > 0) {
+                    Object.keys(data).forEach(key => {
+                        body.append(`<tr><td><strong>${key}</strong></td><td class="text-center font-weight-bold text-primary">${data[key]}</td></tr>`);
+                    });
+                } else {
+                    body.html('<tr><td colspan="2" class="text-center text-muted">Sin datos.</td></tr>');
+                }
+            }
+            else if (type === 'topClientes') {
+                $('#modalDetalleTitulo').html('<i class="fas fa-trophy text-warning mr-2"></i> Ranking de Clientes con Mayor Volumen');
+                header.html('<tr><th>Cliente / Constructora</th><th class="text-center">Contratos Firmados</th></tr>');
+                const data = window.dashboardData.topClientesConMasContratos;
+                if (Object.keys(data).length > 0) {
+                    Object.keys(data).forEach(key => {
+                        body.append(`<tr><td><strong>${key}</strong></td><td class="text-center font-weight-bold text-warning">${data[key]}</td></tr>`);
+                    });
+                } else {
+                    body.html('<tr><td colspan="2" class="text-center text-muted">Sin datos.</td></tr>');
+                }
             }
         }
-        else if (chartType === 'marcasMasVendidas') {
-            $('#modalDetalleTitulo').html('<i class="fas fa-tags text-success mr-2"></i> Cantidad de Equipos por Marca');
-            header.html('<tr><th>Marca / Fabricante</th><th class="text-center">Equipos Registrados</th></tr>');
-            const list = window.dashboardData.listaMarcasMasVendidasVM;
-            if (list && list.length > 0) {
-                list.forEach(item => {
-                    body.append(`<tr><td><strong>${item.marca}</strong></td><td class="text-center font-weight-bold text-success">${item.totalCantidad}</td></tr>`);
-                });
-            } else {
-                body.html('<tr><td colspan="2" class="text-center text-muted">Sin datos.</td></tr>');
-            }
-        }
-        else if (chartType === 'visitasUltimaSemana') {
-            $('#modalDetalleTitulo').html('<i class="fas fa-calendar-day text-info mr-2"></i> Actividad de Visitas (Últimos Días)');
-            header.html('<tr><th>Fecha de Registro</th><th class="text-center">Visitas Completadas</th></tr>');
-            const list = window.dashboardData.listaVisitasUktimaSemanaVM;
-            if (list && list.length > 0) {
-                list.forEach(item => {
-                    body.append(`<tr><td><strong>${item.fecha}</strong></td><td class="text-center">${item.total}</td></tr>`);
-                });
-            } else {
-                body.html('<tr><td colspan="2" class="text-center text-muted">Sin datos.</td></tr>');
-            }
-        }
-        else if (chartType === 'contratosPorMes') {
-            $('#modalDetalleTitulo').html('<i class="fas fa-file-invoice-dollar text-warning mr-2"></i> Historial de Contratos por Mes');
-            header.html('<tr><th>Mes / Periodo</th><th class="text-center">Contratos Firmados</th></tr>');
-            const data = window.dashboardData.contratosPorMes;
-            if (Object.keys(data).length > 0) {
-                Object.keys(data).forEach(key => {
-                    body.append(`<tr><td><strong>${key}</strong></td><td class="text-center font-weight-bold text-primary">${data[key]}</td></tr>`);
-                });
-            } else {
-                body.html('<tr><td colspan="2" class="text-center text-muted">Sin datos.</td></tr>');
-            }
-        }
-        else if (chartType === 'topClientes') {
-            $('#modalDetalleTitulo').html('<i class="fas fa-trophy text-warning mr-2"></i> Ranking de Clientes con Mayor Volumen');
-            header.html('<tr><th>Cliente / Constructora</th><th class="text-center">Contratos Firmados</th></tr>');
-            const data = window.dashboardData.topClientesConMasContratos;
-            if (Object.keys(data).length > 0) {
-                Object.keys(data).forEach(key => {
-                    body.append(`<tr><td><strong>${key}</strong></td><td class="text-center font-weight-bold text-warning">${data[key]}</td></tr>`);
-                });
-            } else {
-                body.html('<tr><td colspan="2" class="text-center text-muted">Sin datos.</td></tr>');
-            }
-        }
-    });
+    }
 
     // #endregion
 
